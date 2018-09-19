@@ -1,0 +1,83 @@
+html
+{ height: 100%;}
+
+*
+{ margin: 0;
+  padding: 0;}
+
+body
+{ 
+    font: normal .80em 'trebuchet ms', arial, sans-serif;
+    background: #FFF;
+    color: #555;
+}
+
+header, .header
+{
+    background: #333333;
+    border-bottom: 1px solid #3d3d3d;
+    height: 60px;
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+h1, h2, h3
+{ font: normal 170% 'century gothic', arial;
+  margin: 0 0 5px 15px;
+  padding: 5px 0 5px 0;
+}
+
+#title{
+    float: left;
+}
+
+#title h1, #title h1 a
+{
+  font: normal 160% 'century gothic', arial;
+  padding: 10px 0 10px 5px;
+  color: #FFF;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+
+#menubar
+{ padding-right: 8px;
+  background: #333333;
+  height: inherit;
+} 
+
+ul#menu
+{ float: right;
+  list-style-type: none;
+  margin: 0;}
+
+ul#menu li
+{ float: left;
+  /*padding: 0 0 0 9px;
+  list-style: none;
+  margin: 15px 4px 0 4px;*/}
+
+ul#menu li a
+{ font: normal 100% 'trebuchet ms', sans-serif;
+  font-size: 16px;
+  display: block; 
+  float: left; 
+  padding: 20px 20px 20px 20px;
+  text-align: center;
+  color: #FFF;
+  text-decoration: none;
+} 
+
+ul#menu li.currentpage a
+{ padding: 20px 20px 20px 20px;}
+
+ul#menu li.currentpage
+{  background: #5E4238;}
+
+ul#menu li a:hover
+{ color: #B48A7C;}
+
+ul#menu li.currentpage a:hover
+{ color: #FFF;}
