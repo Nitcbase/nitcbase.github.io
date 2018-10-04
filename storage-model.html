@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Storage Model</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+    
+    
+<body>
+    <div class="header" id="top">
+        <div id="title">
+            <h1> <a href="index.html">Nitcbase</a></h1>
+            <!--h3> Database Management System</h3-->
+        </div>
+        
+        <div id="menubar">
+            <ul id="menu">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="documentation.html"> Documentation</a></li>
+                <li> <a href="roadmap.html">Roadmap</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="content">
+        
+        <div class="sidemenu">
+            <ul>
+                <li> <a href="#disk_model">Disk model</a></li>
+                <li> <a href="#">Record block structure</a></li>
+                <li> <a href="#">Index block structure</a></li>
+            </ul>
+        </div>
+        
+        <div id="main-content">
+            
+            <div class="pagetitle"><h1>Storage Model</h1></div>
+            
+            <div id="disk_model" class="detail">
+                <h2>Disk Model</h2>
+                <p>Nitcbase assumes that disk is a sequence of blocks and a block is a sequence of bytes. The disk consists of 8192 blocks and a block is of 2048 bytes. Hence there is a total of 16MB of storage. Disk blocks are indexed from 0 to 8191. </p>
+                <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4 is for storing Database Catalog. Block allocation map tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p> <br>
+                <center><img src="img/disk_model.png" style="max-width:70%"></center>
+            </div>
+            
+        </div>
+    </div>
+    
+</body>
+
+</html>
