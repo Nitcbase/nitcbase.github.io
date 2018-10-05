@@ -29,8 +29,8 @@
         <div class="sidemenu">
             <ul>
                 <li> <a href="#disk_model">Disk model</a></li>
-                <li> <a href="#">Record block structure</a></li>
-                <li> <a href="#">Index block structure</a></li>
+                <li> <a href="#record_blk">Record block structure</a></li>
+                <li> <a href="#index_blk">Index block structure</a></li>
             </ul>
         </div>
         
@@ -41,8 +41,29 @@
             <div id="disk_model" class="detail">
                 <h2>Disk Model</h2>
                 <p>Nitcbase assumes that disk is a sequence of blocks and a block is a sequence of bytes. The disk consists of 8192 blocks and a block is of 2048 bytes. Hence there is a total of 16MB of storage. Disk blocks are indexed from 0 to 8191. </p>
-                <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4 is for storing Database Catalog. Block allocation map tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p> <br>
-                <center><img src="img/disk_model.png" style="max-width:70%"></center>
+                <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4 is for storing Database Catalog. Block allocation map tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
+                <center><img src="img/disk_model.png"></center>
+                
+                <p> Based on type of information stored in a block, a block can be of two types- 1. Record block and 2. Index block.</p>
+            </div>
+            
+            <div id="record_blk" class="detail">
+                <h2>Record block structure</h2>
+                <p>A record block stores the actual data records. The record block is divided into slots of size 256 Bytes each. Each slot stores a single record. Each block can have a maximum of 7 slots/records. In addition to data records, each block also stores meta data in preamble/header which occupies first 256 Bytes of the record block.</p>
+                <center><img src="img/record_block.png"></center>
+                <p>First four bytes(0-3) of header are used to identify the type of block(REC/IND) where REC represents a record block. Next four bytes(4-7) are used for storing parent block which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block whose value can range from 0 to 7. Bytes 20-31 are reserved for future use.</p>
+                <p> Slotmap is used for knowing whether a slot is occupied or free. It is of 7 bytes, one for each slot. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap occupies 32-38 bytes of the header. Rest of the bytes in the header i.e., 39-255 are unallocated.</p>
+                <p>A Record can have a maximum of 16 attributes and an attribute can have a maximum of 16 Bytes. Each attribute is alloted a fixed size of 16 bytes and hence each record is alloted a fixed size of 256 bytes in disk.</p>
+                <center><img src="img/record_struct.png"></center>
+            </div>
+            
+            <div id="index_blk" class="detail">
+                <h2>Index block structure</h2>
+                <p>Nitcbase uses B-Tree for indexing records in a relation. Each node of a B-Tree corresponds to a block in disk. An index block has the following structure. Index block will have a maximum of 37 key values and 38 child pointers. Max degree of a block is decided based on the size of block and size of each entry. In our case it turns out to be 37.</p>
+                <center><img src="img/index_block.png"></center>
+                <p>Each index block has a header of 32 bytes which contain meta data similar to that of a record block. In the first four bytes IND represents an index block. PBlock is the Block# of parent block in the B-Tree. LBlock and RBlock have no significance for an index block. #Entries field stores the degree of the block. It can be used to check whether a block is completely filled/ half filled etc. while implementing B-Tree algorithms. Rest of the bytes in the header are left unused.</p>
+                <p>Each entry in the index block is a tuple of Attribute value, primary key, block number and slot number corresponding to that particular record. Block# and slot# occupy 4 bytes each and since each attribute occupies 16 bytes, including 8 bytes of unused space, a total of 48 bytes are required for a single entry in index block. Each child pointer is of 4 bytes and we have 38 pointers which turns out to be 38*4 = 152 bytes for storing child pointers. Rest of the space is left unused.</p>
+                <center><img src="img/index_struct.png"></center>
             </div>
             
         </div>

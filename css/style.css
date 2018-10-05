@@ -133,3 +133,8 @@ ul#menu li.currentpage a:hover
 .detail p{
     margin-bottom: 10px;
 }
+
+img{
+    margin: 10px 10px 10px 10px;
+    max-width: 70%;
+}
