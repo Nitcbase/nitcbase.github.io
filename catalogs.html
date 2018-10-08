@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Catalog structures</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+    
+    
+<body>
+    <div class="header" id="top">
+        <div id="title">
+            <h1> <a href="index.html">Nitcbase</a></h1>
+            <!--h3> Database Management System</h3-->
+        </div>
+        
+        <div id="menubar">
+            <ul id="menu">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="documentation.html"> Documentation</a></li>
+                <li> <a href="roadmap.html">Roadmap</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="content">
+        <div class="sidemenu">
+            <ul>
+                <li> <a href="#dbcat">Database Catalog</a></li>
+                <li> <a href="#relcat">Relation Catalog</a></li>
+                <li> <a href="#attrcat">Attribute Catalog</a></li>
+            </ul>
+        </div>
+        
+        <div id="main-content">
+            <div class="pagetitle"><h1>Catalog Structures</h1></div>
+            
+            <div class="detail" id="intro">
+                <p>A relational database has a number of catalogs for storing the meta data information about databases, relations, attributes, indexes etc. In addition to storing these catalogs in disk, a DBMS also caches some of them in memory for quick access. Such cache is called Catalog cache. Nitcbase uses three types of catalogs for storing the meta data. In Nitcbase these catalogs themselves are implemented as relations internally. </p>
+                <ol>
+                    <li>Database Catalog</li>
+                    <li>Relation Catalog</li>
+                    <li>Attribute Catalog</li>
+                </ol> 
+                <p>In an RDBMS, a relation refers to collection of records where each record is an n-tuple of attribute values. An attribute is a column or field in a relation. A database is a collection of relations.</p>
+                
+            </div>
+            
+            <div class="detail" id="dbcat">
+                <h2>Database Catalog</h2>
+                <p>Nitcbase stores database catalog in Block# 4 of the disk. Every database has an entry corresponding to itself in database cataog. Since there are only 7 slots in a block, a maimum of 7 databases are permitted in total. Database catalog has three attributes- DBName, RelCat_Index and #Relations, where DBName stores the name of the database, RelCat_Index stores first Block# of relation catalog for the database and #Realtions specify the current number of relations present in the database. The structure of each slot canbe inferred from the figure. </p>
+                <center><img src="img/db_cat.png"></center>
+                <p>NOTE: Though database catalog is also implemented as relation internally, there will not be entry corresponding to it in any of the relation/Attribute catalogs.</p>
+            </div>
+            
+            <div class="detail" id="relcat">
+                <h2>Relation Catalog</h2>
+                <p>Relation Catalog stores mata information regarding relations in a database. Each database has a relation catalog. Attributes of a relation catalog are RelName, #Attributes, AttrCat_Index, #Records and RecBlk_Index where RelName is name of the relation, #Attributes is number of attributes of the relation, AttrCat_Index is the first block number of Attribute Catalog of the relation, #Records is the number of records currently stored in the relation and RecBlk_Index is the first block number of the record blocks of the relation. Since record blocks are arranged as linked list, RecBlk_Index essentially stores head of the linked list. Nitcbase allocates two blocks for a relation catalog (arranged as a doubly linked list). Hence a database can have a maximum of 14 relations (including relation catalog).</p>
+                <center><img src="img/rel_cat.png"></center>
+                <p>Since relation catalog is also implemented as a relation internally, It has entry corresponding to itself, usually the first entry.</p>
+                <p></p>
+            </div>
+            
+        </div>
+    </div>
+    
+</body>
+
+</html>

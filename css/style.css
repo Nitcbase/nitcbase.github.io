@@ -136,5 +136,9 @@ ul#menu li.currentpage a:hover
 
 img{
     margin: 10px 10px 10px 10px;
-    max-width: 70%;
+   max-width: 100%;
+}
+
+.detail ol{
+    padding: 0 0 0 20px;
 }
