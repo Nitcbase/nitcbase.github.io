@@ -62,6 +62,11 @@
                 <p></p>
             </div>
             
+            <div class="detail" id="attrcat">
+                <h2>Attribute Catalog</h2>
+                <p>Attribute Catalog stores meta information regarding every attribute of a relation. There is an attribute catalog corresponding to every relation. Attributes of attribute catalog are AttrName, AttrType and RootBlk_Index where Attrname is name of the attribute and Attrtype is data type of the attribute. Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings(of maximum size 16). Nitcbase uses B-Tree for indexing. RootBlk_Index stores the root block number of the B-Tree if there is an index created on the attribute else it contains -1. Since Nitcbase permits a maximum of 16 attributes per relation and each block has 7 slots, attribute catalog can occupy a maximum of 3 blocks.</p>
+                <center><img src="img/attr_cat.png"></center>
+            </div>
         </div>
     </div>
     
