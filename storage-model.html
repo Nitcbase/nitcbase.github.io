@@ -31,6 +31,9 @@
                 <li> <a href="#disk_model">Disk model</a></li>
                 <li> <a href="#record_blk">Record block structure</a></li>
                 <li> <a href="#index_blk">Index block structure</a></li>
+                <li> <a href="#dbcat">Database Catalog</a></li>
+                <li> <a href="#relcat">Relation Catalog</a></li>
+                <li> <a href="#attrcat">Attribute Catalog</a></li>
             </ul>
         </div>
         
@@ -44,7 +47,7 @@
                 <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4 is for storing Database Catalog. Block allocation map tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
                 <center><img src="img/disk_model.png"></center>
                 
-                <p> Based on type of information stored in a block, a block can be of two types- 1. Record block and 2. Index block.</p>
+                <p> Based on type of information stored in a block, a block can be of 5 types- 1. Record block, 2. Index block, 3.Database Catalog block, 4.Relation Catalog block, 5.Attribute catalog block.</p>
             </div>
             
             <div id="record_blk" class="detail">
@@ -52,7 +55,7 @@
                 <p> A database in Nitcbase is a collection of relations, and each relation is a collection of records.  The DBMS must store relations in the disk and the strategy is to store each relation in a set of blocks in the disk, organized as a linked list. Each block in such a linked list will be called a record block and is designed to store a fixed number of records.  The block will also contains some meta data like indices of the left and right blocks in the linked list.  Nitcbase fixes the size of a record as 256 bytes. </p>
                 <p>A record block stores the actual data records. The record block is divided into slots of size 256 Bytes each. Each slot stores a single record. Each block can have a maximum of 7 slots/records. In addition to data records, each block also stores meta data in preamble/header which occupies the first 256 Bytes of the record block.</p>
                 <center><img src="img/record_block.png"></center>
-                <p>First four bytes(0-3) of header are used to identify the type of block(REC/IND) where REC represents a record block. Next four bytes(4-7) are used for storing parent block which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block whose value can range from 0 to 7. Bytes 20-31 are reserved for future use.</p>
+                <p>First four bytes(0-3) of header are used to identify the type of block(REC/IND/DBCAT/RELCAT/ATTRCAT) where REC represents a record block. Next four bytes(4-7) are used for storing parent block which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block whose value can range from 0 to 7. Bytes 20-31 are reserved for future use.</p>
                 <p> Slotmap is used for knowing whether a slot is occupied or free. It is of 7 bytes, one for each slot. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap occupies 32-38 bytes of the header. Rest of the bytes in the header i.e., 39-255 are unallocated.</p>
                 <p>A Record can have a maximum of 16 attributes and an attribute can have a maximum of 16 Bytes. Each attribute is alloted a fixed size of 16 bytes and hence each record is alloted a fixed size of 256 bytes in disk.</p>
                 <center><img src="img/record_struct.png"></center>
@@ -66,7 +69,61 @@
                  <center><img src="img/index_struct.png"></center>
                 <p>Each entry in the index block is a 3-tuple (attribute value, block number, slot number) corresponding to the particular record. Block# and slot# occupy 4 bytes each and any attribute occupies 16 bytes.  Thus each index requires 24 bytes.  Eight bytes of unused space is maintained for future use.  Thus a total of 32 bytes are allocated for a single index entry.  Since an index block can store upto 55 indices, the total space required for storing indices is 55*32=1760.  Each child pointer requires 4 bytes of storage and  the total space for storing 56 child pointers works out to 56*4 = 224.  The remaining space in the block (32 bytes) is left unused.</p>
                 <!--p> Note:  An index block has enough space to actually store 38 indices, but the number was limited to 37 because B-Tree algorithms are easier to implement when the maximum number of indices in a node is odd. </p-->  
+                
+                <p></p>
                
+            </div>
+            
+            <!-- priyatam -->
+            
+            <div class="pagetitle"><h1>Catalog structures</h1></div>
+            
+            <div class="detail" id="intro">
+                <p>A relational database has a number of catalogs for storing the meta data information about databases, relations, attributes, indexes etc. In addition to storing these catalogs in disk, a DBMS also caches some of them in memory for quick access. Such cache is called Catalog cache. Nitcbase uses three types of catalogs for storing the meta data.  </p>
+                <ol>
+                    <li>Database Catalog</li>
+                    <li>Relation Catalog</li>
+                    <li>Attribute Catalog</li>
+                </ol> 
+                <p>In an RDBMS, a relation refers to collection of records where each record is an n-tuple of attribute values. An attribute is a column or field in a relation. A database is a collection of relations.</p>
+                
+            </div>
+            
+            <div class="detail" id="dbcat">
+                <h2>Database Catalog</h2>
+                <p>Nitcbase stores database catalog in Block# 4 of the disk. Every database has an entry corresponding to itself in database cataog. Since there are 62 entries in Database Catalog block, a maximum of 62 databases are permitted in total. Database catalog has three attributes- DBName, RelCat_Index and #Relations, where DBName stores the name of the database, RelCat_Index stores the  Block# of relation catalog for the database and #Realtions specify the current number of relations present in the database. In addition to Database Catalog information, this block also stores meta data in preamble/header which occupies the first 256 Bytes of the Database Catalog block. The structure of which can be inferred from the figure. </p>
+                
+                <p>The first four bytes of the header stores the value DBCAT which represents, the block is currently storing Database Catalog. PBlock, LBlock and RBlock have no significance for a Database Catalog block. #Entries field stores the actual number of Database Catalog entries stored in the block. The remaining space in the header are left unused.
+
+ </p>
+                <center><img src="img/db_cat.png"></center>
+               
+            </div>
+            
+            <div class="detail" id="relcat">
+                <h2>Relation Catalog</h2>
+                <p>Relation Catalog stores meta information regarding relations in a database. Each database has a relation catalog. Each entry in Relation Catalog has fallowing attributes: RelName, #Attributes, AttrCat_Index, #Records and RecBlk_Index where RelName is name of the relation, #Attributes is number of attributes of the relation, AttrCat_Index is the block number of Attribute Catalog of the relation, #Records is the number of records currently stored in the relation and RecBlk_Index is the block number of the record blocks of the relation. Since record blocks are arranged as linked list, RecBlk_Index essentially stores head of the linked list. Nitcbase allocates one block for a relation catalog, which contains 30 entries, Hence a database can have a maximum of 30 relations.</p>
+                
+                <p>Relation Catalog block also stores the meta data about the block in preamble/header which occupies the first 128 Bytes of the Relation Catalog block.  The structure of which can be inferred from the figure. </p>
+                
+                <p>The first four bytes of the header stores the value RELCAT which represents the block is currently storing Relation Catalog. PBlock, LBlock and RBlock have no significance for a Relation Catalog block. #Entries field(byte# 16-19) stores the actual number of Relation Catalog entries stored in the block.byte# 20-31 are kept reserved for future use. The remaining space in the header are left unused.
+
+ </p>
+ 
+                <center><img src="img/rel_cat.png"></center>
+                
+                <p></p>
+            </div>
+            
+            <div class="detail" id="attrcat">
+                <h2>Attribute Catalog</h2>
+                <p>Attribute Catalog stores meta information regarding every attribute of a relation. There is an attribute catalog corresponding to every relation. Each entry of attribute catalog has fallowing attributes: AttrName, AttrType and RootBlk_Index where Attrname is name of the attribute and Attrtype is data type of the attribute, Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings(of maximum size 16). Nitcbase uses B-Tree for indexing. RootBlk_Index stores the root block number of the B-Tree if there is an index created on the attribute else it contains -1.size of Attribute Catalog is one block which contains 62 entries, so we can use maximum of 62 attributes for each relation, but effectively we use only 16 entries, as Nitcbase permits a maximum of 16 attributes per relation. details of same can be inferred from the figure. </p>
+                <p>just like all other block types, Attribute Catalog also stores the meta data about the block in preamble/header which occupies the first 64 Bytes of the Attribute Catalog block.  </p>
+                
+                <p>The first four bytes of the header stores the value ATTRCAT which represents the block is currently storing Attribute Catalog. PBlock, LBlock and RBlock have no significance for a Attribute Catalog block. #Entries field(byte# 16-19) stores the actual number of Attribute Catalog entries stored in the block.byte# 20-31 are kept reserved for future use. The remaining space(byte# ) are used to store slotmap representing the block.
+
+ </p>
+                <center><img src="img/attr_cat.png"></center>
             </div>
             
         </div>
