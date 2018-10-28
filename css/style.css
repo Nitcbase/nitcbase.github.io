@@ -7,7 +7,7 @@ html
 
 body
 { 
-    font: normal 0.95em 'trebuchet ms', arial, sans-serif;
+    font: normal 0.95em 'trebuchet ms', sans-serif, arial;
     background: #FFF;
     color: #555;
     line-height: 1.6;
