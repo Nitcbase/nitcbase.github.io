@@ -45,7 +45,7 @@
                 <h2>Disks Model</h2>
                 <p>Nitcbase assumes that disk is a sequence of blocks and a block is a sequence of bytes. The disk consists of 8192 blocks and a block is of 2048 bytes. Hence there is a total of 16MB of storage. Disk blocks are indexed from 0 to 8191. </p>
                 <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4 is for storing Database Catalog. Block allocation map tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
-                <center><img src="img/disk_model.png"></center>
+                <center><img src="img/disk_model1.png"></center>
                 
                 <p> Based on type of information stored in a block, a block can be of 5 types- 1. Record block, 2. Index block, 3.Database Catalog block, 4.Relation Catalog block, 5.Attribute catalog block.</p>
             </div>
@@ -54,7 +54,7 @@
                 <h2>Record block structure</h2>
                 <p> A database in Nitcbase is a collection of relations, and each relation is a collection of records.  The DBMS must store relations in the disk and the strategy is to store each relation in a set of blocks in the disk, organized as a linked list. Each block in such a linked list will be called a record block and is designed to store a fixed number of records.  The block will also contains some meta data like indices of the left and right blocks in the linked list.  Nitcbase fixes the size of a record as 256 bytes. </p>
                 <p>A record block stores the actual data records. The record block is divided into slots of size 256 Bytes each. Each slot stores a single record. Each block can have a maximum of 7 slots/records. In addition to data records, each block also stores meta data in preamble/header which occupies the first 256 Bytes of the record block.</p>
-                <center><img src="img/record_block.png"></center>
+                <center><img src="img/record_block1.png"></center>
                 <p>First four bytes(0-3) of header are used to identify the type of block(REC/IND/DBCAT/RELCAT/ATTRCAT) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block whose value can range from 0 to 7. Bytes 20-31 are reserved for future use.</p>
                 <p> Slotmap is used for knowing whether a slot is occupied or free. It is of 7 bytes, one for each slot. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap occupies 32-38 bytes of the header. Note that the number of non-zero entries in the slotmap must match with the value in the #Entries field.  
                 Rest of the bytes in the header i.e., 39-255 are unallocated.</p>
