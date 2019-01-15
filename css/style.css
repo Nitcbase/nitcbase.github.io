@@ -7,7 +7,7 @@ html
 
 body
 { 
-    font: normal 0.95em 'trebuchet ms', sans-serif, arial;
+    font: normal 1.5em 'trebuchet ms', sans-serif, arial;
     background: #FFF;
     color: #555;
     line-height: 1.6;
@@ -100,7 +100,7 @@ ul#menu li.currentpage a:hover
 .sidemenu{
     width: 15%;
     margin: 30px 0 0 10px;
-    padding: 40px 10px 20px 30px;
+    padding: 40px 0px 20px 30px;
     float: left;
    /* border: 1px solid #6B6969;*/
     border-radius: 15px;
@@ -123,7 +123,7 @@ ul#menu li.currentpage a:hover
 }
 
 #main-content{
-    width: 75%;
+    width: 80%;
     padding: 20px 50px 20px 0;
     float: right;
 }
@@ -154,4 +154,15 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.question a{
+    padding: 5px 0 0 15px;
+    text-decoration: none;
+    color: #555;
+}
+
+.question a:hover {
+    text-decoration: underline;
+    color: #555;
 }

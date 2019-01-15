@@ -4,6 +4,7 @@
 <head>
     <title>Storage Model</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     
     <script type="text/x-mathjax-config">
@@ -14,6 +15,8 @@
       });
     </script>
     <script type="text/javascript" src='/js/MathJax/MathJax.js' async></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     
 </head>
     
@@ -80,6 +83,48 @@
                 
                 <!--center><img class="formula" src="img/num_slots_formula.png" width="50%"></center-->
                 <p> The <b>slotmap</b>, which appears at the end of the header is used for indicating whether a slot is occupied or free. Size of the slotmap is equal to the number of slots, L, that fits in the block. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap starts from 32<sup>nd</sup>byte of the header followed by the slots which store actual records. Some amount of space may be left unused at the end whose size is less than the size of a record.</p>
+                <div class="question">
+                    <!--div class="panel panel-default"-->
+                        <a data-toggle="collapse" href="#collapse1">Q1. Calculate the number of slots and slotmap size for a relation with 5 attributes</a>
+
+                        <div id="collapse1" class="collapse">
+                            <div class="panel-body">
+                                <ul>
+                                    <li>$ \#Slots = \left \lfloor \frac{2016}{(16*5)+1} \right \rfloor = 24 \\ $ </li>
+                                    <li>Since the slotmap size is equal to the number of slots in a block, slotmap size = 24 bytes. </li>
+                                </ul>
+                            </div>
+                        </div>
+                    <!--/div-->
+                </div>
+                
+                <div class="question">
+                    <!--div class="panel panel-default"-->
+                        <a data-toggle="collapse" href="#collapse2">Q2. What is the maximum number of attributes possible for a relation in Nitcbase?</a>
+
+                        <div id="collapse2" class="collapse">
+                            <div class="panel-body">
+                                In Nitcbase, size of the record in any relation is bounded by the size of a block. Hence number of attributes is maximum when a record fits in a block. It is calculated as: <br>
+                                $ 16*K+1 \leq 2016 \\
+                                  K = \left \lfloor \frac{2015}{16} \right \rfloor \\
+                                  K = 125 \\
+                                $
+                            </div>
+                        </div>
+                    <!--/div-->
+                </div>
+                
+                <div class="question">
+                    <!--div class="panel panel-default"-->
+                        <a data-toggle="collapse" href="#collapse3">Q3. What is the maximum number of slots possible for a record block in Nitcbase?</a>
+
+                        <div id="collapse3" class="collapse">
+                            <div class="panel-body">
+                                A record block has maximum number of slots when number of attributes of the corresponding relation is 1. Hence maximum number of slots can be calculated as 118.
+                            </div>
+                        </div>
+                    <!--/div-->
+                </div>
                 
             </div>
             
@@ -128,7 +173,7 @@
                 
                 <p>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</p>
                 
-                <p>NOTE: Nitcbase doesnot create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</p>
+                <p><b>NOTE:</b> Nitcbase doesnot create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</p>
             </div>
             
         </div>
