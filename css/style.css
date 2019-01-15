@@ -139,6 +139,19 @@ img{
    max-width: 100%;
 }
 
+img .formula{
+    width: "100p";
+}
+ 
 .detail ol{
     padding: 0 0 0 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #8B4533;
+}
+
+a:hover {
+    text-decoration: underline;
 }
