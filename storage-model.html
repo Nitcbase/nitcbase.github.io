@@ -72,7 +72,7 @@
                 
                 <center><img src="img/record_block.png"></center>
                 
-                <p> First four bytes(0-3) of header are used to identify the type of block(REC/IND) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Bytes 20-31 are reserved for future use.</p>
+                <p> First four bytes(0-3) of header are used to identify the type of block(REC/IND) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 24-31 are reserved for future use.</p>
                 <p>  The record block is divided into <b>slots</b> of variable record size . Each slot stores a single record (and hence requires 16*K bytes for a relation with K attributes). Each block can have an arbitrary number of slots depending on the number of attributes in the relation. Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
                 
                 <b><p> \[ 
@@ -83,47 +83,49 @@
                 
                 <!--center><img class="formula" src="img/num_slots_formula.png" width="50%"></center-->
                 <p> The <b>slotmap</b>, which appears at the end of the header is used for indicating whether a slot is occupied or free. Size of the slotmap is equal to the number of slots, L, that fits in the block. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap starts from 32<sup>nd</sup>byte of the header followed by the slots which store actual records. Some amount of space may be left unused at the end whose size is less than the size of a record.</p>
-                <div class="question">
-                    <!--div class="panel panel-default"-->
-                        <a data-toggle="collapse" href="#collapse1">Q1. Calculate the number of slots and slotmap size for a relation with 5 attributes</a>
-
-                        <div id="collapse1" class="collapse">
-                            <div class="panel-body">
-                                <ul>
-                                    <li>$ \#Slots = \left \lfloor \frac{2016}{(16*5)+1} \right \rfloor = 24 \\ $ </li>
-                                    <li>Since the slotmap size is equal to the number of slots in a block, slotmap size = 24 bytes. </li>
-                                </ul>
-                            </div>
-                        </div>
-                    <!--/div-->
-                </div>
                 
                 <div class="question">
-                    <!--div class="panel panel-default"-->
-                        <a data-toggle="collapse" href="#collapse2">Q2. What is the maximum number of attributes possible for a relation in Nitcbase?</a>
-
-                        <div id="collapse2" class="collapse">
-                            <div class="panel-body">
-                                In Nitcbase, size of the record in any relation is bounded by the size of a block. Hence number of attributes is maximum when a record fits in a block. It is calculated as: <br>
-                                $ 16*K+1 \leq 2016 \\
-                                  K = \left \lfloor \frac{2015}{16} \right \rfloor \\
-                                  K = 125 \\
-                                $
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse1">
+                                <b>Q1.</b> Calculate the number of slots and slotmap size for a relation with 5 attributes
+                            </a>
+                            <div id="collapse1" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul>
+                                        <li>$ \#Slots = \left \lfloor \frac{2016}{(16*5)+1} \right \rfloor = 24 \\ $ </li>
+                                        <li>Since the slotmap size is equal to the number of slots in a block, slotmap size = 24 bytes. </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    <!--/div-->
-                </div>
-                
-                <div class="question">
-                    <!--div class="panel panel-default"-->
-                        <a data-toggle="collapse" href="#collapse3">Q3. What is the maximum number of slots possible for a record block in Nitcbase?</a>
-
-                        <div id="collapse3" class="collapse">
-                            <div class="panel-body">
-                                A record block has maximum number of slots when number of attributes of the corresponding relation is 1. Hence maximum number of slots can be calculated as 118.
+                        </li>
+                        
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse2">
+                                <b>Q2.</b> What is the maximum number of attributes possible for a relation in Nitcbase?
+                            </a>
+                            <div id="collapse2" class="collapse">
+                                <div class="panel-body">
+                                    In Nitcbase, size of the record in any relation is bounded by the size of a block. Hence number of attributes is maximum when a record fits in a block. It is calculated as: <br>
+                                    $ 16*K+1 \leq 2016 \\
+                                      K = \left \lfloor \frac{2015}{16} \right \rfloor \\
+                                      K = 125 \\
+                                    $
+                                </div>
                             </div>
-                        </div>
-                    <!--/div-->
+                        </li>
+                        
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse3">
+                                <b>Q3.</b> What is the maximum number of slots possible for a record block in Nitcbase?
+                            </a>
+                            <div id="collapse3" class="collapse">
+                                <div class="panel-body">
+                                    A record block has maximum number of slots when number of attributes of the corresponding relation is 1. Hence maximum number of slots can be calculated as 118.
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
                 
             </div>
@@ -132,10 +134,25 @@
                 <h2>Index block structure</h2>
                 <p> Nitcbase uses the <a href="https://en.wikipedia.org/wiki/B-tree">B-Tree</a> data structure for indexing records in a relation.  The DBMS may maintain zero or more <b>indices</b> per relation.  Corresponding to each index of a relation, the DBMS mantains a B-Tree to store the indices.  Each node of a B-Tree is stored into a block in the disk.  A disk block that stores a node of a B-Tree is called an <b>index block</b>.   Each index block in Nitcbase is designed to store a maximum of 55 indices.  An index is a 3-tuple (attribute value, block number, slot number).  Each index in a B-Tree node also has an associated pair of left and right child block pointers.  Hence, in addition to the indices, each index block is required to store a total of 56 child pointers. (Only 56 Child pointers are required because the right child of one index is the same as the left child of the next index).</p>
                 <center><img src="img/index_block.png"></center>
-                <p> An index block is divided into two parts.  The first 32 bytes contain a header followed by actual indices and child pointers.  The header contains meta data similar to that of a record block. The first four bytes of the header stores the value IND.  PBlock is the Block# of parent block in the B-Tree. LBlock and RBlock have no significance for an index block. #Entries field stores the actual number of indices stored in the block. The remaining space in the header are left unused.</p>
+                <p> An index block is divided into two parts.  The first 32 bytes contain a header followed by actual indices and child pointers.  The header contains meta data similar to that of a record block. The first four bytes of the header stores the value IND.  PBlock is the Block# of parent block in the B-Tree. LBlock and RBlock have no significance for an index block. #Entries field stores the actual number of indices stored in the block. #Attrs and #Slots fields also have no significance for an index block. The remaining space in the header are left unused.</p>
                 
                 <p> Each entry in the index block is a 3-tuple (attribute value, block number, slot number) corresponding to the particular record. Block# and slot# occupy 4 bytes each and any attribute occupies 16 bytes.  Thus each index requires 24 bytes.  Eight bytes of unused space is maintained for future use.  Thus a total of 32 bytes are allocated for a single index entry. Each child pointer requires 4 bytes of storage. Children and indices are stored alternatively in an index block in such a way that child pointer entry preceeding an index entry is its left child and child pointer entry succeding the index is its right child. The remaining space in the block (32 bytes) is left unused.</p>  
                 
+                <div class="question">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse7">
+                                <b>Q1.</b> Calculate the offset of "ChildPtr 31" with respect to the index block.
+                            </a>
+                            <div id="collapse7" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    There are a total of 30 ChildPtrs of 4 bytes each, 30 Index values of 32 bytes each and a header of 32 bytes preceeding ChildPtr 31. Hence its relative offset can be calculated as:<br>
+                                    $ Offset = 32+30*4+30*32 = 1112 $
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
                
             </div>
             <br>
@@ -158,11 +175,57 @@
             
             <div class="detail" id="relcat">
                 <h2>Relation Catalog</h2>
-                <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 80 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 24-27) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list, #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. This can be calculated from #Attributes</p>
+                <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 80 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list, #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. This can be calculated from #Attributes</p>
  
                 <center><img src="img/rel_cat.png"></center>
                 
-                <p>Since the Relation Catalog is also stored in the disk like any other relation, its block structure is identical to that of any record block with 5 attributes.</p>
+                <b>NOTE:</b>
+                    <ol>
+                        <li>Since the Relation Catalog is also stored in the disk like any other relation, its block structure is identical to that of any record block with 5 attributes.</li>
+                    </ol>
+                
+                <div class="question">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse4">
+                                <b>Q1.</b> What are the values of the header fields #Attrs, #Slots for a Relation Catalog block?
+                            </a>
+                            <div id="collapse4" class="collapse">
+                                <div class="panel-body">
+                                    <ul>
+                                        <li>
+                                            #Attrs = 5.
+                                        </li>
+                                        <li>
+                                            #Slots = $\left \lfloor \frac{2016}{(16*5)+1} \right \rfloor = 24 \\ $
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse5">
+                                <b>Q2.</b> What is the minimum number of entries in the relation catalog and what relations do they correspond to?
+                            </a>
+                            <div id="collapse5" class="collapse">
+                                <div class="panel-body">
+                                    Minimum number of entries in the relation catalog is 2 despite not creating any relation externally. They correspond to relation catalog and attribute catalog since they are also relations and should be in the disk all the time.
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse8">
+                                <b>Q3.</b> Relation catalog stores #Attributes and #Slots per block for every relation. These two fields are also stored in header of each record block. What is the advantage of this duplication?
+                            </a>
+                            <div id="collapse8" class="collapse">
+                                <div class="panel-body">
+                                    Answer
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
             </div>
             
             <div class="detail" id="attrcat">
@@ -171,9 +234,28 @@
 
                 <center><img src="img/attr_cat.png"></center>
                 
-                <p>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</p>
+                <b>NOTE:</b> 
+                    <ol>
+                        <li>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</li>
+                        <li>Nitcbase doesnot create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</li>
+                    </ol>
                 
-                <p><b>NOTE:</b> Nitcbase doesnot create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</p>
+                
+                <div class="question">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a data-toggle="collapse" href="#collapse6">
+                                <b>Q1.</b> What is the minimum number of entries in the attribute catalog and what relations/attributes do they correspond to?
+                            </a>
+                            <div id="collapse6" class="collapse">
+                                <div class="panel-body">
+                                    Minimum number of entries in the attribute catalog is 11 despite not creating any relation externally. 5 out of these 11 correspond to 5 attributes of relation catalog and the rest 6 corresponds to 6 attributes of attribute catalog since they are also relations and should be in the disk all the time.
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
             </div>
             
         </div>
