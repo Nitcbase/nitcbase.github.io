@@ -29,9 +29,10 @@
     <div id="content">
         <div class="sidemenu">
             <ul>
-                <li> <a href="#buffer">Buffer Structure</a></li>
-                <li> <a href="#recblk">Record Block Buffer Structure</a></li>
-                <li> <a href="#indblk">Index Block Buffer Structure</a></li>
+                <li> <a href="#bufferclass">Buffer class</a></li>
+                <li> <a href="#BlockBuffer_class">BlockBuffer class</a></li>
+                <li> <a href="#RecordBlockBuffer_class">RecordBlockBuffer class</a></li>
+                <li> <a href="#IndexBlockBuffer_class">IndexBlockBuffer class</a></li>
             </ul>
         </div>
         
@@ -40,9 +41,61 @@
             <!--div class="detail" id="intro">
                 <p></p>
             </div-->
-            
-            <div class="detail" id="buffer">
-                <h2>Buffer Structure</h2>
+            <div class="detail" id="BufferclsDiagram">
+                <p>According to Nitcbase Layered architecture, Buffer Layer comes above the Physical Layer,it is a run time object which gives 
+                    Disk abstraction to layers above the buffer layer by using the interfaces provided by the Buffer layer.
+                    Nitcbase follows object oriented programming(OOP) design for buffer management, following is the class diagram of Buffer Management</p>
+            </div>
+
+            <div class="detail" id="BufferClass">
+                
+                <h2>Buffer class</h2>
+                <p>Nitcbase assumes BufferClass to be a Singleton class, Buffer contains 32 blocks(char: blocks[32][1024]) which are used to load the blocks 
+                    from disk and also to commit the Buffer blocks back to disk.
+                    metainfo of these buffer blocks is stored at respective index in metainfo array. metainfo is a structure storing the metainfo of respective block with 
+                    fallowing fields in it 1.free: type bool, value 1 in free indicates fallowing block in buffer is free and 0 indicates the block
+                    is currently in use i.e loaded with some Disk block, 2.dirty: type bool, value 1 indicates respective page/block present in buffer is altered after loading from
+                    Disk whereas 0 indicates no change of page/block after loading it to buffer, 3.page_num:type int, which contains the disk block number of correspoding 
+                    buffer block.
+                    <br></br>
+                    buffer also stores block_alloc_map(unsigned char: block_alloc_map[DISK_BLOCKS]), an array where i'th element(byte) is 1 if i'th disk
+                     block is allocated/used and 0 if not allocated/free.
+
+                </p>
+
+                <p>
+                    Layers above Buffer, uses public interfaces/methods of Buffer class to access Disk blocks(or Disk abstraction).
+                    following are the public methods of Buffer class:
+                    <br></br>
+                    1. class RecBuffer *getFreeRecBlock(): searches for the free disk block in block_alloc_map, if no free entry is found returns null,
+                    else allocates the corresponding free disk block in block_alloc_map, searches for free Buffer block (out of 32 buffer blocks), if not 
+                    found, uses buffer replacement policy to get a free buffer block, after getting the free buffer block updates the buffer block with REC type
+                    and associate the respective metainfo of buffer block with free:false, dirty:true, block_num: free entry index found from block_alloc_map.
+                    and creates a RecBuffer object and associate it with corresponding disk #block and returns RecBuffer object pointer, psuedo code for the same
+                    can be seen in below snippet.
+                    <br></br>
+                    2. class IndBuffer *getFreeIndBlock(): searches for the free disk block in block_alloc_map, if no free entry is found returns null,
+                    else allocates the corresponding free disk block in block_alloc_map, searches for free Buffer block (out of 32 buffer blocks), if not 
+                    found, uses buffer replacement policy to get a free buffer block, after getting the free buffer block updates the buffer block with IND type
+                    and associate the respective metainfo of buffer block with free:false, dirty:true, block_num: free entry index found from block_alloc_map.
+                    and creates a IndBuffer object and associate it with corresponding disk #block and returns IndBuffer object pointer, psuedo code for the same
+                    can be seen in below snippet. 
+
+                    <br></br>
+                    3.class RecBuffer *getRecBlock(int block_num):Look ups the Buffer for the block with disk #block as block_num, if not present loads it to the buffer
+                    from disk( uses buffer replacement if all 32 blocks of buffer are full) and sets the respective meta_info(free:false,dirty:false,
+                     block_num: block_num(passed as argument)).
+                    checks whether the disk block #block_num, corresponds to REC block or not, if it is not returns NULL. creates a RecBuffer object and associate
+                    it with corresponding disk block #block_num and returns RecBuffer object pointer, psuedo code for the same can be seen in below snippet.
+
+                    <br></br>
+                    4.class IndBuffer *getRIndBlock(int block_num):Look ups the Buffer for the block with #disk_block as block_num, if not present loads it to the buffer
+                    from disk( uses buffer replacement if all 32 blocks of buffer are full) and sets the respective meta_info(free:false,dirty:false,
+                     block_num: block_num(passed as argument)).
+                    checks whether the disk block #block_num, corresponds to IND block or not, if it is not returns NULL. creates a IndBuffer object and associate
+                    it with corresponding disk block #block_num and returns RecBuffer object pointer, psuedo code for the same can be seen in below snippet.
+
+                </p>
                 
                 <script src="https://gist.github.com/rohithv/d0da8df802893bf990983e2437469996.js"></script>
             </div>
