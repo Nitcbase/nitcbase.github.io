@@ -1,0 +1,496 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Architecture</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+    
+    
+<body>
+    <div>
+    <div class="header" id="top">
+        <div id="title">
+            <h1> <a href="index.html">Nitcbase</a></h1>
+            <!--h3> Database Management System</h3-->
+        </div>
+        
+        <div id="menubar">
+            <ul id="menu">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="documentation.html"> Documentation</a></li>
+                <li> <a href="roadmap.html">Roadmap</a></li>
+            </ul>
+        </div>
+    </div>
+    </div>
+    
+    <div id="content">
+        <div class="sidemenu">
+            <ul>
+                <li> <a href="#layout">Layout</a></li>
+                <li> <a href="#frontend">Front End</a></li>
+                <li> <a href="#algebra">Algebra Layer</a></li>
+                <li> <a href="#schema">Schema Layer</a></li>
+                <li> <a href="#blockaccess">Block Access Layer</a></li>
+                <li> <a href="#cache">Cache Layer</a></li>
+                <li> <a href="#b+tree">B+ Tree Layer</a></li>
+                <li> <a href="#buffer">Buffer Layer</a></li>
+                <li> <a href="#disk">Disk</a></li>
+            </ul>
+        </div>
+        
+        <div id="main-content">
+            <div class="pagetitle"><h1>System Architecture</h1></div>
+            
+            <div id="layout" class="detail">
+                <h2>Layout</h2>
+                <p>Nitcbase follows layered architecture with each layer consisting of several modules. An user interacts with the system through command line interface provided by the frontend. User commands are translated to calls to lower layers(logical layer) which in turn use other layers finally fetching data from the disk. Each layer uses only the functionality of the layers below it as shown in the figure. The following figure summarizes the architecture of the system and interaction between different layers.</p>
+                <center><img src="img/design.png" width="50%"></center>
+                <i>Remark:
+                    <ol>
+                        <li>Solid arrow represents the work flow from a module to another</li>
+                        <li>Dashed arrow represents data access from cached metadata</li>
+                    </ol>
+                </i>
+                <p>The interfaces given by each layer to other layers is given below</p>
+            </div>
+            
+            <div id="frontend" class="detail">
+                <h2> Front End</h2>
+                <p>It is the command line interface provided by the system to the end user. User can enter any of the following types of SQL-like queries to talk to the system. </p>
+                <ol>
+                    <li>SELECT [AttrName]+ FROM RelName WHERE [AttrName=Value AND]*</li>
+                    <li></li>
+                </ol>
+                <p>
+                    <b>Note:</b>
+                    Front end calculates the number of arguments given by user in a command whenever required and passes it as an argument to the logical layer (algebra layer/ schema layer) functions.
+                </p>
+            </div>
+            
+            <div id="algebra" class="detail">
+                <h2>Algebra Layer </h2>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return Type</th>
+                        <th>Arguments</th>
+                        <th>Descripton</th>
+                    </tr>
+                    <tr>
+                        <td>insert</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>Relname, #Attributes, values[ ]<br><br>
+                            relName: Name of the relation<br>
+                            #Attributes: Number of attributes given <br>
+                            values[ ]: An array of size #Attributes*2 with entries ordered as given below <br>
+                            values[0] = Attribute Name 1 <br>
+                            values[1] = Attribute Value 1 <br>
+                            . . . . . . . . . . . . . . . <br>
+                            values[#Attributes*2 - 2] = Attribute Name (#Attributes) <br>
+                            values[#Attributes*2 - 1] = Attribute Value (#Attributes)
+                        </td>
+                        <td>Insert a record into a relation</td>
+                    </tr>
+                    <tr>
+                        <td>select</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>dstRelName, srcRelName, AttrName, op, value</td>
+                        <td>Selects records based on given condition and stores them in a new relation dstRelName</td>
+                    </tr>
+                    <tr>
+                        <td>project</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>dstRelName, srcRelName, #Attributes, AttrList <br><br>
+                            AttrList is an array of length #Attributes with each entry corresponding to an attribute name.
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>join</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>dstRelName, srcRelName1, srcRelName2, AttrName1, AttrName2</td>
+                        <td>Natural join of two relations with the coresponding attributes provided</td>
+                    </tr>
+                </table>
+                
+            </div>
+            
+            <div id="schema" class="detail">
+                <h2>Schema Layer </h2>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return Type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>createRel</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relName, #Attributes, attrs[] <br><br>
+                            relName: Name of the relation<br>
+                            #Attributes: Number of attributes given <br>
+                            attrs[ ]: An array of size #Attributes*2 with entries ordered as given below <br>
+                            attrs[0] = Attribute Name 1 <br>
+                            attrs[1] = Attribute Type 1 <br>
+                            . . . . . . . . . . . . . . . <br>
+                            attrs[#Attributes*2 - 2] = Attribute Name (#Attributes) <br>
+                            attrs[#Attributes*2 - 1] = Attribute Type (#Attributes)
+                        
+                        </td>
+                        <td>Creates a relation with given schema</td>
+                    </tr>
+                    <tr>
+                        <td>openRel</td>
+                        <td>relId(int)<br>(relation identifier)</td>
+                        <td>relName</td>
+                        <td>Opens a relation with name relName</td>
+                    </tr>
+                    <tr>
+                        <td>closeRel</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid</td>
+                        <td>Closes the relation with id relid if it is still open   </td>
+                    </tr>
+                    <tr>
+                        <td>deleteRel</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relName</td>
+                        <td>Deletes the relation with name relName</td>
+                    </tr>
+                    <tr>
+                        <td>renameRel</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>oldName, newName</td>
+                        <td>Changes the name of a relation from oldName to newName</td>
+                    </tr>
+                    <tr>
+                        <td>createIndex</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relName, attrName</td>
+                        <td>Creates a B+ Tree corresponding to the attribute attrName of the relation relName</td>
+                    </tr>
+                    <tr>
+                        <td>dropIndex</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relName, attrName</td>
+                        <td>Deletes the B+ Tree (if exists) corresponding to the attribute attrName of the relation relName</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="blockaccess" class="detail">
+                <h2>Block Access Layer</h2>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>insert</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, record[ ]<br><br>
+                            record[ ] is an array of length equal to the number of arguments of the relation
+                        </td>
+                        <td>Inserts the record pointed by record[ ] into an already opened relation having id 'relid'</td>
+                    </tr>
+                    <tr>
+                        <td>search</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, AttrName, op, value, buff<br><br>
+                            value is of type union Attribute<br>
+                            buff is pointer to the buffer where the record is to be copied</td>
+                        <td>serches for next hit in the relation based on AttrName</td>
+                    </tr>
+                    <tr>
+                        <td>linear_search</td>
+                        <td>SearchIndex<br>(block#, slot#)</td>
+                        <td>relid, AttrName, op, value</td>
+                        <td>Linearly searches through the records of the relation and returns block# and slot# of next hit</td>
+                    </tr>
+                    <tr>
+                        <td>delete</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relName</td>
+                        <td>Deletes all record blocks and catalog entries corresponding to the relation with name relName</td>
+                    </tr>
+                    <tr>
+                        <td>rename</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>oldName, newName</td>
+                        <td>Changes the name of relation in every entry of each catalog</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="cache" class="detail">
+                <h2>Cache Layer </h2>
+                <p>For detailed information go through <a href="cache.html">cache layer</a>.</p>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>openRel</td>
+                        <td>relId</td>
+                        <td>relName</td>
+                        <td>Fetches the metadata of the relation from catalogs and places them in cache</td>
+                    </tr>
+                    <tr>
+                        <td>closeRel</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid</td>
+                        <td>Closes the relation with id relid</td>
+                    </tr>
+                    <tr>
+                        <td>getRelId</td>
+                        <td>relId</td>
+                        <td>relName</td>
+                        <td>Returns relation id of the relation with name relName if it is open</td>
+                    </tr>
+                    <tr>
+                        <td>getRelCatEntry</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, relcatbuff<br><br>
+                            relcatbuff is pointer to buffer of type RelCatEntry</td>
+                        <td>Copies the relation catalog entry from cache to the buffer</td>
+                    </tr>
+                    <tr>
+                        <td>setRelCatEntry</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, relcatbuff<br><br>
+                        relcatbuff is pointer to the structure of type RelCatEntry</td>
+                        <td>Copies the relation catalog entry from the buffer to cache</td>
+                    </tr>
+                    <tr>
+                        <td>getAttrCatEntry</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, AttrName/Offset, attrcatbuff<br><br>
+                        attrcatbuff is pointer to the buffer of type AttrCatEntry</td>
+                        <td>Copies the Attribute catalog entry from cache to the buffer</td>
+                    </tr>
+                    <tr>
+                        <td>setAttrCatEntry</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, AttrName/Offset, attrcatbuff<br><br>
+                        attrcatbuff is pointer to the structure of type AttrCatEntry</td>
+                        <td>Copies the attribute catalog entry from the buffer to cache</td>
+                    </tr>
+                    <tr>
+                        <td>getSearchIndexId</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, AttrName/Offset, searchbuff</td>
+                        <td>Copies the previous search hit tuple into buffer pointed by searchbuff</td>
+                    </tr>
+                    <tr>
+                        <td>setSearchIndexId</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>relid, AttrName/Offset, searchbuff</td>
+                        <td>Updates the search hit tuple in cache from the buffer pointed by searchbuff</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="b+tree" class="detail">
+                <h2>B+ Tree Layer</h2>
+                <p>For detailed information go through <a href="b+tree.html">B+ tree layer</a>.</p>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>bplus_insert</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>root_blk, value, type<br><br>
+                            root_blk: pointer to the root block# of the tree<br>
+                            type: type of attribute on which B+ tree is created
+                        </td>
+                        <td>Inserts </td>
+                    </tr>
+                    <tr>
+                        <td>bplus_search</td>
+                        <td>SearchIndex<br>(block#, index#)</td>
+                        <td>relid, AttrName, op, value</td> 
+                        <td>Searches the B+ tree and returns block# and index# in the leaf node of the next hit </td>
+                    </tr>
+                    <tr>
+                        <td>bplus_create</td>
+                        <td>int<br>(Root block#)</td>
+                        <td>relid, AttrName</td>
+                        <td>Creates a B+ Tree for the given Attribute and returns root of the tree</td>
+                    </tr>
+                    <tr>
+                        <td>bplus_destroy</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>root_block#</td>
+                        <td>Deletes all nodes of the B+ Tree with given root block</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="buffer" class="detail">
+                <h2>Buffer Layer </h2>
+                <p>Brief interfaces provided by Buffer layer to other layers is summarized in the following table. For more details go through <a href="buffer.html">buffer management</a>.</p>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>getFreeRecBlock</td>
+                        <td>class RecBuffer*</td>
+                        <td>---</td>
+                        <td>Searches for a free disk blocks and formats it to the type recBlock</td>
+                    </tr>
+                    <tr>
+                        <td>getFreeIndIntBlock</td>
+                        <td>class IndBuffer*</td>
+                        <td>---</td>
+                        <td>Searches for a free disk blocks and formats it to the type Internal Index Block</td>
+                    </tr>
+                    <tr>
+                        <td>getFreeIndLeafBlock</td>
+                        <td>class IndBuffer*</td>
+                        <td>---</td>
+                        <td>Searches for a free disk blocks and formats it to the type Leaf Index Block</td>
+                    </tr>
+                    <tr>
+                        <td>getRecBlock</td>
+                        <td>class RecBuffer*</td>
+                        <td>block#</td>
+                        <td>Loads the block to buffer and returns an object of type RecBuffer</td>
+                    </tr>
+                    <tr>
+                        <td>getIndBlock</td>
+                        <td>class IndBuffer*</td>
+                        <td>block#</td>
+                        <td>Loads block to buffer and returns object of type IndBuffer which can either be an internal node or a leaf node</td>
+                    </tr>
+                    <tr>
+                        <td>deleteBlock</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>block#</td>
+                        <td>Free the block from in the disk</td>
+                    </tr>
+                    <tr>
+                        <td>releaseBlock</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>block#</td>
+                        <td>Release the block from the buffer</td>
+                    </tr>
+                    <tr>
+                        <td>get_buf_dataptr<span style="color: red">*</span></td>
+                        <td>unsigned char*</td>
+                        <td>block#</td>
+                        <td> Used by BlockBuffer methods to get pointer to the block in memory whwnever required<br>
+                        <span style="color: red">*</span>Not to be used by other layers</td>
+                    </tr>
+                    <tr>
+                        <td>getheader</td>
+                        <td>struct HeadInfo</td>
+                        <td>---</td>
+                        <td>Returns the header of the block object on which this method is called</td>
+                    </tr>
+                    <tr>
+                        <td>setheader</td>
+                        <td>void</td>
+                        <td>head (of type HeadInfo)</td>
+                        <td>Updates the header of the block on which this method is called</td>
+                    </tr>
+                    <tr>
+                        <td>getSlotmap</td>
+                        <td>void</td>
+                        <td>slotmap (char*)</td>
+                        <td>Copies slotmap of the record block to the memory pointed by head</td>
+                    </tr>
+                    <tr>
+                        <td>setSlotmap</td>
+                        <td>void</td>
+                        <td>slotmap (char*)</td>
+                        <td>Copies slotmap from the memory pointed by head to the record block </td>
+                    </tr>
+                    <tr>
+                        <td>getRecord</td>
+                        <td>void</td>
+                        <td>record, slot#<br><br>
+                        record: an array of type union Attribute</td>
+                        <td>Copies the record in given slot# to the memory pointed by record</td>
+                    </tr>
+                    <tr>
+                        <td>setRecord</td>
+                        <td>void</td>
+                        <td>record, slot#<br><br>
+                        record: an array of type union Attribute</td>
+                        <td>Copies the record from the memory pointed by record to given slot# in the block </td>
+                    </tr>
+                    <tr>
+                        <td>getInternalEntry</td>
+                        <td>InernalEntry</td>
+                        <td>#index</td>
+                        <td>Copies the entry of internal index block from block to a structure and returns it.</td>
+                    </tr>
+                    <tr>
+                        <td>setInternalEntry</td>
+                        <td>void</td>
+                        <td>entry, #index</td>
+                        <td>Copies the entry of internal index block from 'entry' to the block</td>
+                    </tr>
+                    <tr>
+                        <td>getIndexval</td>
+                        <td>Index</td>
+                        <td>#index</td>
+                        <td>Copies the index entry of leaf index block from block to a structure and returns it</td>
+                    </tr>
+                    <tr>
+                        <td>setIndexval</td>
+                        <td>void</td>
+                        <td>index_entry, #index</td>
+                        <td>Copies the index entry of leaf index block from 'entry' to the block</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="disk" class="detail">
+                <h2>Disk Simulator </h2>
+                <table>
+                    <tr>
+                        <th>Function name</th>
+                        <th>Return type</th>
+                        <th>Arguments</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>read</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>block#, buff</td>
+                        <td>Loads the block with block# into the memory region pointed by buff</td>
+                    </tr>
+                    <tr>
+                        <td>write</td>
+                        <td>int<br>(SUCCESS/FAILURE)</td>
+                        <td>block#, buff</td>
+                        <td>Stores the block with block# from the memory pointeb by buff to the disk</td>
+                    </tr>
+                </table>
+            </div>
+                        
+            
+        </div>
+    </div>
+</body>
+
+</html>
