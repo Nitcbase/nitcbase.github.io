@@ -175,3 +175,23 @@ table, th, td {
 th, td {
   padding: 15px;
 }
+
+.gist th, .gist td {
+    border: none;
+}
+
+.gist {
+    
+}
+
+.code {
+    display: block;
+    padding: 9.5px;
+    margin: 0px 0px 10px;
+    line-height: 1.8;
+    color: #444;
+    background-color: #F5F5F5;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    white-space: pre;
+}
