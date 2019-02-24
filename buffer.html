@@ -44,9 +44,11 @@
                 <p></p>
             </div-->
             <div class="detail" id="BufferclsDiagram">
-                <p>According to Nitcbase Layered architecture, Buffer Layer comes above the Physical Layer,Buffer is a run time object which gives 
-                    Disk abstraction to layers above the buffer layer by using the interfaces provided by the Buffer layer.
-                    Nitcbase follows object oriented programming(OOP) design for buffer management, following is the class diagram of Buffer Layer
+                <p>According to Nitcbase Layered architecture, Buffer Layer comes above the Physical Layer, whenever above layers
+                    need to work on disk blocks, Buffer Module loads the Disk block to Buffer, works on it and commits back the block to Disk when 
+                    needed. Buffer is a run time object which gives 
+                    Disk abstraction to layers above the buffer layer by using the interfaces provided by the Buffer layer. Nitcbase follows object 
+                    oriented programming(OOP) design for buffer management, following is the class diagram of Buffer Layer
                 </p>
                     <center><img src="img/buffer_class.png"></center>
             </div>
@@ -64,7 +66,7 @@
                 <br><br>
                 buffer also stores block_alloc_map(unsigned char: block_alloc_map[DISK_BLOCKS]), an array where i'th element(byte) is 1 if i'th block in disk 
                 is allocated/used and 0 if not allocated/free.
-                Layers above Buffer, uses public interfaces/methods of Buffer class to access Disk blocks(or Disk abstraction).
+                Layers above Buffer, uses public interfaces/methods of Buffer class to access Disk blocks(or to obtain Disk abstraction).
                 
                     
                 <br>
@@ -113,7 +115,11 @@
             </div>
             
             <div class="detail" id="#BlockBuffer_cls">
-                <h2>Public methods of BlockBuffer class:</h2>
+                <h2>BlockBuffer class</h2>
+                BlockBuffer class is a generic class for block of any type. The public Methods of this class deals with the information like Header 
+                info which is generic to all blocks of Disk. RecBuffer and IndBuffer classes will extend from BlockBuffer class.
+                <br>
+                <h2>Public methods:</h2>
                 1.struct HeadInfo getheader(): This method returns the header of buffer block correspoding to BlockBuffer object. gets the header 
                 fields from buffer block and puts them in a struct HeadInfo variable and returns the HeadInfo struct.
                     
@@ -124,8 +130,11 @@
             </div>
 
             <div class="detail" id="RecBlk_cls">
-                
-                <h2>Public methods of RecBuffer class</h2>
+                <h2>RecBuffer class:</h2>
+                The object of this class will be associated with the REC type buffer blocks, public Methods of this class deals with the records and slotmap of 
+                the buffer block.
+                <br>
+                <h2>Public methods:</h2>
                 1.void getSlotmap(unsigned char *slotmap): slotmap consists of #slots(present in header of corresponding block) number of bytes. This method
                 copies #slots sized slotmap from buffer block to memory pointed by slotmap variable(argument).
                 
@@ -150,7 +159,11 @@
             
             
             <div class="detail" id="IndInternal_cls">
-                <h2>Public methods of IndInternal class:</h2>
+                <h2>IndInternal class:</h2>
+                The object of this class will be associated with the INDINT type buffer blocks, public Methods of this class deals with the fields of 
+                Internal nodes of b+tree buffer block.
+                <br>
+                <h2>Public methods:</h2>
                 1.struct InternalEntry getInternalEntry(int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block, 
                 if yes, returns the index_num'th InternalEntry of buffer block.
                 <br><br>
@@ -160,7 +173,11 @@
             </div>
 
             <div class="detail" id="IndLeaf_cls">
-                <h2>Public methods of IndLeaf class:</h2>
+                <h2>IndInternal class:</h2>
+                The object of this class will be associated with the INDLEAF type buffer blocks, public Methods of this class deals with the indices of 
+                Leaf nodes of b+tree buffer block.
+                <br>
+                <h2>Public methods:</h2>
                 1.struct Index getIndexval(int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block,
                 if yes, returns the index_num'th Index of buffer block.
                 <br><br>
