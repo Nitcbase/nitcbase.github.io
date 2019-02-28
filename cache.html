@@ -129,26 +129,41 @@
                     <li>
                         int CloseRel(relId rel_id): This method closes the opened Relation correspoding to rel_id'th RelCache entry in openreltable, 
                         <br>
-                        In this method, if rel_id is not between 0 and 7, or rel_id'th relcache entry is found to be free, return FAILURE. else, if a RelCache 
-                        entry of target relation has the field dirty:true, then the correspoding relation catalog entry 
-                        should be updated before closing it, recid(#block,#slot) of target relation's relation catalog entry can be found in correspoding 
-                        RelCache, using the interfaces of buffer, relation catalog entry's record can be updated with the one as Relcat_entry in 
-                        openreltable. traverse the AttributeCache linked list corresponding to target RelCache entry. if any of the AttributeCache entry is 
-                        found to have dirty:true, update the corresponding attribute catalog entry(whose recid is stored in AttributeCache node) with 
-                        as that of attrcat_entry in AttributeCache. return SUCCESS.
+                        In this method, if rel_id is not between 0 and 7, or rel_id'th relcache entry is found to be free, return FAILURE. else, if a RelCache entry of target relation has the field dirty:true, then the correspoding relation catalog entry should be updated before closing it, recid(#block,#slot) of target relation's relation catalog entry can be found in correspoding RelCache, using the interfaces of buffer, relation catalog entry's record can be updated with the one as Relcat_entry inopenreltable. traverse the AttributeCache linked list corresponding to target RelCache entry. if any of the AttributeCache entry is found to have dirty:true, update the corresponding attribute catalog entry(whose recid is stored in AttributeCache node) with as that of attrcat_entry in AttributeCache. return SUCCESS.
                     </li>
                     <br>
                     <li>
-                            int setRelCatEntry(relId rel_id, RelCatEntry relcat_rec): if rel_id is not between 0 and 7 returns FAILURE. else updates the 
-                            Relcat_entry of rel_id'th relcache entry with relcat_rec(passed as argument) and updates the corresponding dirty field with true.
+                        int getRelCatEntry(relId rel_id, RelCatEntry *relcat_buf): if rel_id is not between 0 and 7 returns FAILURE. else, copies the RelCatEntry in rel_id'th relcache entry in openreltable to relcat_buf(passed as arg) memory address.
+                    </li>
+                    <li>
+                        int setRelCatEntry(relId rel_id, RelCatEntry *relcat_buf): if rel_id is not between 0 and 7 returns FAILURE. else, copies the RelCatEntry present at memory address relcat_buf(passed as arg) in to RelCatEntry of rel_id'th relcache entry(in openreltable).
                     </li>
                     <br>
                     <li>
                         relId getRelId(char rel_name[16]): Iterate through all the RelCache entries of openreltable, if Relcache entry correspoding to 
-                        rel_name(passed as argument) is found, returns the respective entry's index among the 8 entries of openreltable. if rel_name 
+                        rel_name(passed as arg) is found, returns the respective entry's index among the 8 entries of openreltable. if rel_name 
                         doesn't correspond to any of the entry in openreltable, returns FAILURE.
                     </li>
                     <br>
+                    <li>
+                        int getAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attr_name(passed as arg) is found, copies the attrcat_entry of found AttributeCache entry to memory address attrcat_buf(passed as arg) and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
+                    </li>
+                    <br>
+                    <li>
+                        int getAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attribute offset specified by attr_offset(passed as arg) is found, copies the attrcat_entry of found AttributeCache entry to memory address attrcat_buf(passed as arg) and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
+                    </li>
+                    <br>
+                    <li>
+                       int setAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attr_name(passed as arg) is found, copies the AttrCatEntry present at memory address attrcat_buf(passed as arg) to AttrCatEntry of found AttributeCache and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
+                    </li>
+                    <br>
+                    <li>
+                        int setAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attribute offset specified by attr_offset(passed as arg) is found, copies the AttrCatEntry present at memory address attrcat_buf(passed as arg) to AttrCatEntry of found AttributeCache and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
+                    </li>
+                    <br>
+                    <li>
+                    
+                    </li>
                     
                 </ol>
             </div>
