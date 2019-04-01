@@ -47,12 +47,12 @@
             
             <div id="layout" class="detail">
                 <h2>Layout</h2>
-                <p>Nitcbase follows layered architecture with each layer consisting of several modules. An user interacts with the system through command line interface provided by the frontend. User commands are translated to calls to lower layers(logical layer) which in turn use other layers finally fetching data from the disk. Each layer uses only the functionality of the layers below it as shown in the figure. The following figure summarizes the architecture of the system and interaction between different layers.</p>
+                <p>Nitcbase follows layered architecture with each layer consisting of several modules. A user interacts with the system through a command line interface provided by the front-end. User commands are translated into calls to the logical layer which in turn uses the remaining layers to finally fetch the data from the disk. Each layer uses only the functionality of the layers below it, as shown in the figure. The following figure summarizes the architecture of the system and interaction between different layers.</p>
                 <center><img src="img/design.png" width="50%"></center>
                 <i>Remark:
                     <ol>
-                        <li>Solid arrow represents the work flow from a module to another</li>
-                        <li>Dashed arrow represents data access from cached metadata</li>
+                        <li>Solid arrows represent the control flow between modules</li>
+                        <li>Dashed arrows represent data access from cached metadata maintained by cache layer</li>
                     </ol>
                 </i>
                 <p>The interfaces given by each layer to other layers is given below</p>
