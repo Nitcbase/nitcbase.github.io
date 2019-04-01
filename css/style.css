@@ -136,7 +136,7 @@ ul#menu li.currentpage a:hover
 
 img{
     margin: 10px 10px 10px 10px;
-   max-width: 100%;
+   /*max-width: 100%;*/
 }
 
 img .formula{
