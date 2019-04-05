@@ -34,7 +34,7 @@ h1{
 .pagetitle h1{
   font: bold 250% 'century gothic', 'arial';
   margin-bottom: 0;
-  padding: 5px 0 0 0;
+  padding: 5px 0 10px 0;
 }
 
 h2
@@ -128,7 +128,21 @@ ul#menu li.currentpage a:hover
     float: right;
 }
 
-.detail { margin-top: 30px; padding-top: 20px; border-top: 1px solid #DDD; }
+#design-content{
+    padding: 0px 0px 20px 50px;
+    margin-right: 40px;
+}
+
+.detail { margin-top: 20px; padding-top: 50px; border-top: 1px solid #DDD; }
+
+/*.detail:before{
+    display: block; 
+    content: " "; 
+    margin-top: -160px; 
+    height: 160px; 
+    visibility: hidden; 
+    pointer-events: none;
+}*/
 
 .detail p{
     margin-bottom: 10px;
@@ -136,7 +150,7 @@ ul#menu li.currentpage a:hover
 
 img{
     margin: 10px 10px 10px 10px;
-   /*max-width: 100%;*/
+    max-width: 100%;
 }
 
 img .formula{
@@ -167,12 +181,12 @@ a:hover {
     color: #555;
 }
 
-table, th, td {
+.detail table, .detail th, .detail td {
   border: 1px solid black;
   border-collapse: collapse;
 }
 
-th, td {
+.detail th, .detail td {
   padding: 15px;
 }
 
@@ -194,4 +208,48 @@ th, td {
     border: 1px solid #CCC;
     border-radius: 4px;
     white-space: pre;
+}
+
+.design-detail {
+    margin-top: 0; 
+    padding: 50px 0px 10px 0px; 
+    /*border-bottom: 1px solid #DDD; */
+}
+
+.design-detail h3 { 
+  font: bold 110% 'century gothic', 'arial';
+  margin: 5px 0 5px 0;
+  /*padding: 5px 0 5px 0;*/
+}
+
+.design-detail h2{
+    text-decoration-line: underline;
+}
+
+.retval table{
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.retval tr{
+    box-sizing: border-box;
+}
+
+.retval table, .retval th, .retval td{
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.algo {
+    margin: 0px 0px 10px 0px;
+}
+
+.algo table, .algo th, .algo td, .algo tr{
+    border: none;
+}
+
+.algo pre{
+    border: none;
+    padding-left: 0;
 }
