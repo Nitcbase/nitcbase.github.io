@@ -30,18 +30,18 @@
             <div id="id1" class="design-detail">
                 <h2>Insert (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relid (RelId -> int), record (union Attribute *)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful insert of given record</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_DISKFULL</td>
+                            <td>If disk space is not sufficient for inserting the record / index</td>
                         </tr>
                     </table>
                 </div>

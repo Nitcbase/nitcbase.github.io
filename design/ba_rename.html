@@ -30,18 +30,22 @@
             <div id="rel" class="design-detail">
                 <h2>Rename Relation (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>oldName (char[ATTR_SIZE]), newName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful renaming of the relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation with name oldName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELEXIST</td>
+                            <td>If the relation with name newName already exists</td>
                         </tr>
                     </table>
                 </div>
@@ -67,20 +71,28 @@
                 <a href="code/ba_renamerel.cpp" target="_blank" download>Click here</a> to download the code.
             </div>
             <div id="col" class="design-detail">
-                <h2>Rename Column (Block Access)</h2>
+                <h2>Rename Attribute (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE]), oldName (char[ATTR_SIZE]), newName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful renaming of the attribute</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation with name relName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If the attribute with name oldName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTREXIST</td>
+                            <td>If the relation with name newName already exists</td>
                         </tr>
                     </table>
                 </div>

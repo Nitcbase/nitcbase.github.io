@@ -30,18 +30,18 @@
             <div id="destroy" class="design-detail">
                 <h2>Destroy (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>block_num (int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful deletion of b+ tree</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_INVALIDBLOCK</td>
+                            <td>If the block is not an index block</td>
                         </tr>
                     </table>
                 </div>

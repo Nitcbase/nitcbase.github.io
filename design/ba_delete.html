@@ -30,18 +30,18 @@
             <div id="delete" class="design-detail">
                 <h2>Delete (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful deletion of the given relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation does not exist</td>
                         </tr>
                     </table>
                 </div>

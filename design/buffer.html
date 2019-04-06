@@ -30,18 +30,18 @@
             <div id="getfreerecblk" class="design-detail">
                 <h2>getFreeRecBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>NIL</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>RecBuffer *</td>
+                            <td>Returns a pointer to a new RecBuffer object</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>NULL</td>
+                            <td>If free disk block is not available. (disk full)</td>
                         </tr>
                     </table>
                 </div>
@@ -70,18 +70,18 @@
             <div id="getfreeindinternal" class="design-detail">
                 <h2>getFreeIndInternalBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>NIL</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>IndInternal *</td>
+                            <td>Returns a pointer to a new IndInternal object</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>NULL</td>
+                            <td>If free disk block is not available. (disk full)</td>
                         </tr>
                     </table>
                 </div>
@@ -110,18 +110,18 @@
             <div id="getfreeindleaf" class="design-detail">
                 <h2>getFreeIndLeafBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>NIL</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>IndLeaf *</td>
+                            <td>Returns a pointer to a new IndLeaf object</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>NULL</td>
+                            <td>If free disk block is not available. (disk full)</td>
                         </tr>
                     </table>
                 </div>
@@ -150,18 +150,22 @@
             <div id="getrecblk" class="design-detail">
                 <h2>getRecBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>block_num(int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>RecBuffer *</td>
+                            <td>Returns a pointer to the RecBuffer object corresponding to the block_num</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>NULL</td>
+                            <td>Provided block_num is not in the range of disk blocks.</td>
+                        </tr>
+                        <tr>
+                            <td>NULL</td>
+                            <td>If the requested block is not a valid Record Block (can be a free block or any Index Block)</td>
                         </tr>
                     </table>
                 </div>
@@ -190,18 +194,25 @@
             <div id="getindblk" class="design-detail">
                 <h2>getIndBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>block_num(int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>IndBuffer *</td>
+                            <td>Returns a pointer to the IndInternal/IndLeaf object corresponding to the block_num <br>
+                                (Returns an object of type IndInternal if the block is an internal Index block / returns an object of type IndLeaf if the block is a Leaf Index block). <br>
+                                <b>Note: </b>An object of child type can be assigned to a parent variable.
+                            </td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>NULL</td>
+                            <td>Provided block_num is not in the range of disk blocks.</td>
+                        </tr>
+                        <tr>
+                            <td>NULL</td>
+                            <td>If the requested block is not a valid Index Block (can be a free block or a Record Block)</td>
                         </tr>
                     </table>
                 </div>
@@ -230,20 +241,11 @@
             <div id="deleteblk" class="design-detail">
                 <h2>deleteBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>block_num</p>
                 
                 <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
-                        </tr>
-                        <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
-                        </tr>
-                    </table>
+                    <h3>Return type:</h3>
+                    <p>void</p>
                 </div>
                 
                 <h3>Description:</h3>
@@ -270,20 +272,11 @@
             <div id="releaseblk" class="design-detail">
                 <h2>releaseBlock</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>block_num</p>
                 
                 <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
-                        </tr>
-                        <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
-                        </tr>
-                    </table>
+                    <h3>Return type:</h3>
+                    void
                 </div>
                 
                 <h3>Description:</h3>

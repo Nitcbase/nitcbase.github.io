@@ -30,18 +30,18 @@
             <div id="create" class="design-detail">
                 <h2>Create (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relid (RelId -> int), attrName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successul creation of tree</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_DISKFULL</td>
+                            <td>If there is no enough space in disk to create the tree</td>
                         </tr>
                     </table>
                 </div>

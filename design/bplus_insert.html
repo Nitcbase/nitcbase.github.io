@@ -30,18 +30,22 @@
             <div id="insert" class="design-detail">
                 <h2>Insert (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relid (RelId -> int), attrName (char[ATTR_SIZE]), attrval (union Attribute), recid (RecId -> (int, int))</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful insert of the recid.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_NOINDEX</td>
+                            <td>If B+ tree has not been created on the given attribute.</td>
+                        </tr>
+                        <tr>
+                            <td>E_DISKFULL</td>
+                            <td>If disk space is not sufficient to insert into the B+ tree.</td>
                         </tr>
                     </table>
                 </div>

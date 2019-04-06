@@ -30,18 +30,19 @@
             <div id="internalgetentry" class="design-detail">
                 <h2>getEntry (Internal Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>entry_ptr (void *), index_num (int)<br>
+                where entry_ptr is assumed to be a pointer to type InternalEntry.</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful copy of the index entry</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If index_num is outside the range 0-99</td>
                         </tr>
                     </table>
                 </div>
@@ -70,18 +71,19 @@
             <div id="internalsetentry" class="design-detail">
                 <h2>setEntry (Internal Index Block)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>entry_ptr (void *), index_num (int)<br>
+                where entry_ptr is assumed to be a pointer to type InternalEntry.</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful copy of the index entry into the block</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If index_num is outside the range 0-99</td>
                         </tr>
                     </table>
                 </div>
@@ -110,18 +112,19 @@
             <div id="leafgetentry" class="design-detail">
                 <h2>getEntry (Leaf Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>entry_ptr (void *), index_num (int)<br>
+                where entry_ptr is assumed to be a pointer to type LeafEntry.</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful copy of the index entry</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If index_num is outside the range 0-62</td>
                         </tr>
                     </table>
                 </div>
@@ -150,18 +153,19 @@
             <div id="leafsetentry" class="design-detail">
                 <h2>setEntry (Leaf Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>entry_ptr (void *), index_num (int)<br>
+                where entry_ptr is assumed to be a pointer to type LeafEntry.</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful copy of the index entry into the block</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If index_num is outside the range 0-62</td>
                         </tr>
                     </table>
                 </div>

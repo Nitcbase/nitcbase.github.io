@@ -30,18 +30,18 @@
             <div id="search" class="design-detail">
                 <h2>Search (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relid (RelId -> int), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>RecId (block#, slot#)</td>
+                            <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>(-1, -1)</td>
+                            <td>If no valid next hit is found.</td>
                         </tr>
                     </table>
                 </div>
