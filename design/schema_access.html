@@ -30,18 +30,22 @@
             <div id="openrel" class="design-detail">
                 <h2>Open Relation</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
-                            <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>relId</td>
+                            <td>Returns the relId on succesful opening of the relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation with name relName does not exist in the disk</td>
+                        </tr>
+                        <tr>
+                            <td>E_CACHEFULL</td>
+                            <td>If there are no free slots in the Open Relation table.</td>
                         </tr>
                     </table>
                 </div>
@@ -70,18 +74,18 @@
             <div id="closerel" class="design-detail">
                 <h2>Close Relation</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName[ATTR_SIZE]</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful closing of the relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_NOTOPEN</td>
+                            <td>If relation with given name is not open</td>
                         </tr>
                     </table>
                 </div>
@@ -110,18 +114,18 @@
             <div id="getschema" class="design-detail">
                 <h2>Print Schema</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName[ATTR_SIZE]</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful fetching of the schema.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_NOTOPEN</td>
+                            <td>If relation with given name is not open</td>
                         </tr>
                     </table>
                 </div>

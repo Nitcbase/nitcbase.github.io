@@ -30,19 +30,28 @@
             <div id="createrel" class="design-detail">
                 <h2>Create Relation</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE]), nAttrs (int), attrs (char [ ][ATTR_SIZE]), attrtype (int [ ])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful creation of the relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELEXIST</td>
+                            <td>If the relation with name relName already exists.</td>
                         </tr>
+                        <tr>
+                            <td>E_DUPLICATEATTR</td>
+                            <td>If two any two of the given attributes have same name.</td>
+                        </tr>
+                        <tr>
+                            <td>E_DISKFULL</td>
+                            <td>If disk space is not sufficient for creating the new relation.</td>
+                        </tr>
+                        
                     </table>
                 </div>
                 
@@ -70,18 +79,22 @@
             <div id="deleterel" class="design-detail">
                 <h2>Delete Relation</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful deletion of the relation.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELOPEN</td>
+                            <td>If the relation is open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation does not exist</td>
                         </tr>
                     </table>
                 </div>
@@ -110,18 +123,26 @@
             <div id="createind" class="design-detail">
                 <h2>Create Index</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE]), attr (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful creation of B+ tree.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTOPEN</td>
+                            <td>If the relation is not open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If the attribute with name attr does not exist.</td>
+                        </tr>
+                        <tr>
+                            <td>E_DISKFULL</td>
+                            <td>If there is no enough space in the disk to create the tree</td>
                         </tr>
                     </table>
                 </div>
@@ -150,18 +171,22 @@
             <div id="dropind" class="design-detail">
                 <h2>Drop Index</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE]), attr (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful deletion of the B+ tree</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTOPEN</td>
+                            <td>If the relation is not open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If the attribute with name attr does not exist.</td>
                         </tr>
                     </table>
                 </div>
@@ -190,18 +215,26 @@
             <div id="renamerel" class="design-detail">
                 <h2>Rename Relation</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>oldRelName (char[ATTR_SIZE]), newRelName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful renaming of the relation</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELOPEN</td>
+                            <td>If the relation is open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation with name oldRelName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELEXIST</td>
+                            <td>If the relation with name newRelName already exists</td>
                         </tr>
                     </table>
                 </div>
@@ -230,18 +263,30 @@
             <div id="renameattr" class="design-detail">
                 <h2>Rename Attribute</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>relName (char[ATTR_SIZE]),oldAttrName (char[ATTR_SIZE]) ,newAttrName (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful renaming of the attribute</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELOPEN</td>
+                            <td>If the relation is open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELNOTEXIST</td>
+                            <td>If the relation with name relName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If the attribute with name oldAttrName does not exist</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTREXIST</td>
+                            <td>If the attribute with name newAttrName already exists</td>
                         </tr>
                     </table>
                 </div>
