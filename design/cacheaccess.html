@@ -1,0 +1,461 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Cache Access</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+    
+    
+<body>
+    <div class="header" id="top">
+        <div id="title">
+            <h1> <a href="/index.html">Nitcbase</a></h1>
+            <!--h3> Database Management System</h3-->
+        </div>
+        
+        <div id="menubar">
+            <ul id="menu">
+                <li> <a href="/index.html">Home</a></li>
+                <li> <a href="/documentation.html"> Documentation</a></li>
+                <li> <a href="/roadmap.html">Roadmap</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="content">
+        <div id="design-content">
+            <div id="getrelid" class="design-detail">
+                <h2>getRelId</h2>
+                <h3>Arguments:</h3>
+                <p>relName (char[ATTR_SIZE])</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>relId</td>
+                            <td>Returns the relId corresponding to the relation with name relName, if it is already open</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If the relation with name relName is not open</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_getrelid.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="getrelcatentry" class="design-detail">
+                <h2>getRelCatEntry</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), relcat_buf (RelCatEntry *)<br>
+                where relcat_buf is a pointer to the buffer of type RelCatEntry where the relation catalog entry is to be copied.</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_getrelcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="setrelcatentry" class="design-detail">
+                <h2>setRelCatEntry</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), relcat_buf (RelCatEntry *)<br>
+                where relcat_buf is a pointer to the buffer of type RelCatEntry from where the relation catalog entry is to be copied to the cache.</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_setrelcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="getprevrecid" class="design-detail">
+                <h2>getPrevRecId</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), recid (recId *)<br>
+                where recid is a pointer to buffer of type recId where the record id is to be copied</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>If record id of previous hit is copied to recid. It means that the id pointed by recid is valid.</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_getprevrecid.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="setprevrecid" class="design-detail">
+                <h2>setPrevRecId</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), recid (recId *)<br>
+                where recid is a pointer to buffer of type recId from where the record id is to be copied into the relation catalog cache</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>If the record id is successfully copied into the Relation Catalog Cache.</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_setprevrecid.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="getattrcatentry" class="design-detail">
+                <h2>getAttrCatEntry</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), attrcat_buf (AttrCatEntry *)<br>
+                where attrcat_buf is a pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.<br>
+                <b>Note:</b>This method is overloaded in type of the second argument</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>On successful copy of the attribute catalog entry corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_getattrcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="setattrcatentry" class="design-detail">
+                <h2>setAttrCatEntry</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), attrcat_buf (AttrCatEntry *)<br>
+                where attrcat_buf is a pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.<br>
+                <b>Note:</b>This method is overloaded in type of the second argument</p>
+                
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>On successful copy of the attribute catalog entry into the cache corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_setattrcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+             <div id="getprevindexid" class="design-detail">
+                <h2>getPrevIndexId</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), indid (IndexId *)<br>
+                where indid is a pointer to buffer of type IndexId where the index id is to be copied<br>
+                <b>Note:</b>This method is overloaded in type of the second argument</p>
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>If index id of previous hit is copied to indid. It means that the id pointed by indid is valid.</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_getprevindexid.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+            <div id="setprevindexid" class="design-detail">
+                <h2>setPrevIndexId</h2>
+                <h3>Arguments:</h3>
+                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), indid (IndexId *)<br>
+                where indid is a pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.<br>
+                <b>Note:</b>This method is overloaded in type of the second argument</p>
+                <div class=retval>
+                    <h3>Return value:</h3>
+                    <table>
+                        <tr>
+                            <td>SUCCESS</td>
+                            <td>If index id pointed by indid is successfully copied to the Attribute catalog cache.</td>
+                        </tr>
+                        <tr>
+                            <td>E_OUTOFBOUND</td>
+                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                        </tr>
+                        <tr>
+                            <td>E_NOTOPEN</td>
+                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                
+                <h3>Description:</h3>
+                <p>Description of the function/method</p>
+                
+                <h3>Algorithm:</h3>
+                <div class="algo">
+                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
+                        source code:    our code
+                        language:       C++
+                        style:          tango
+                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
+                        Line numbers:   checked (check box)
+                        finally clicking on highlight! ;-)
+                        Copy the code from HTML section and paste n this div. Simple :-).
+                    -->
+                   
+
+
+                </div> <!-- End of algo div -->
+                <a href="code/cache_setprevindexid.cpp" target="_blank" download>Click here</a> to download the code.
+            </div>
+            
+        </div>
+    </div>
+    
+</body>
+
+</html>
