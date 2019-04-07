@@ -30,18 +30,38 @@
             <div id="join" class="design-detail">
                 <h2>Join</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>srcrel1 (char[ATTR_SIZE]), srcrel2 (char[ATTR_SIZE]), targetrel (char[ATTR_SIZE]), attr1 (char[ATTR_SIZE]), attr2 (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful creation of new relation.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTOPEN</td>
+                            <td>If any of the source relations is not open.</td>
+                        </tr>
+                        <tr>
+                            <td>E_RELEXIST</td>
+                            <td>If a relation with name targetrel already exists.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If an attribute with name attr1 in srcrel1 or attr2 in srcrel2 does not exist.</td>
+                        </tr>
+                        <tr>
+                            <td>E_DISKFULL</td>
+                            <td>If disk space is not sufficient for creating the new relation.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRTYPEMISMATCH</td>
+                            <td>If the actual type of any of the attributes in the source relations is different from the type of provided attribute.</td>
+                        </tr>
+                        <tr>
+                            <td>E_CACHEFULL	</td>
+                            <td>If the openRel() fails because of no free slots in open relation table</td>
                         </tr>
                     </table>
                 </div>

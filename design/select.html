@@ -30,19 +30,40 @@
             <div id="select" class="design-detail">
                 <h2>Select</h2>
                 <h3>Arguments:</h3>
-                <p>Arguments list here</p>
+                <p>srcrel (char[ATTR_SIZE]), targetrel (char[ATTR_SIZE]), attr (char[ATTR_SIZE]), op (int), strval (char[ATTR_SIZE])</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On success</td>
+                            <td>On successful creation of new relation.</td>
                         </tr>
                         <tr>
-                            <td>FAILURE</td>
-                            <td>On failure</td>
+                            <td>E_RELNOTOPEN</td>
+                            <td>If the source relation is not open.</td>
                         </tr>
+                        <tr>
+                            <td>E_RELEXIST</td>
+                            <td>If a relation with name targetrel already exists.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRNOTEXIST</td>
+                            <td>If a attribute with name attr does not exist.</td>
+                        </tr>
+                        <tr>
+                            <td>E_DISKFULL</td>
+                            <td>If disk space is not sufficient for creating the new relation.</td>
+                        </tr>
+                        <tr>
+                            <td>E_ATTRTYPEMISMATCH</td>
+                            <td>If the actual type of the attribute in the relation is different from the type of provided attribute.</td>
+                        </tr>
+                        <tr>
+                            <td>E_CACHEFULL	</td>
+                            <td>If the openRel() fails because of no free slots in open relation table</td>
+                        </tr>
+                        
                     </table>
                 </div>
                 
