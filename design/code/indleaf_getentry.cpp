@@ -1,4 +1,4 @@
-int IndInternal::getEntry(void *ptr, int index_num){
+int IndLeaf::getEntry(void *ptr, int index_num){
 
     /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
     can be implemented and called for this purpose*/
