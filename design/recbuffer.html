@@ -52,6 +52,18 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getSlotmap</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">unsigned</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">slotmap</span><span style="color: #000000; font-weight: bold">){</span> 
+    <span style="color: #8f5902; font-style: italic">/* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() </span>
+<span style="color: #8f5902; font-style: italic">    can be implemented and called for this purpose*/</span>
+
+    <span style="color: #8f5902; font-style: italic">// copy the memory content in #slots sized slotmap from block to memory pointing by slotmap(as argument)</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -83,6 +95,18 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setSlotmap</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">unsigned</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">slotmap</span><span style="color: #000000; font-weight: bold">){</span> 
+    <span style="color: #8f5902; font-style: italic">/* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() </span>
+<span style="color: #8f5902; font-style: italic">    can be implemented and called for this purpose*/</span>
+
+    <span style="color: #8f5902; font-style: italic">// copy the memory content in #slots sized slotmap from memory pointing by slotmap(as argument) to SlotMap in block.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -128,6 +152,34 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">rec</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">slot_num</span><span style="color: #000000; font-weight: bold">){</span> 
+    <span style="color: #8f5902; font-style: italic">/* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() </span>
+<span style="color: #8f5902; font-style: italic">    can be implemented and called for this purpose*/</span>
+
+    <span style="color: #8f5902; font-style: italic">// get number of attributes(in corresponding relation) from the block.(obtained directly from correspoding offset in block)</span>
+    <span style="color: #8f5902; font-style: italic">// get number of slots from the block, which is present header.</span>
+
+    <span style="color: #8f5902; font-style: italic">// if slotnum is out of size of slot map or slot corresponding to slot_num is free return FAILURE</span>
+
+    <span style="color: #8f5902; font-style: italic">// copy the memory contents of slot_num&#39;th record block to memory pointing by rec.</span>
+
+    <span style="color: #8f5902; font-style: italic">// return SUCCESS</span>
+	
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -169,6 +221,34 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">rec</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">slot_num</span><span style="color: #000000; font-weight: bold">){</span> 
+    <span style="color: #8f5902; font-style: italic">/* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() </span>
+<span style="color: #8f5902; font-style: italic">    can be implemented and called for this purpose*/</span>
+
+    <span style="color: #8f5902; font-style: italic">// get number of attributes(in corresponding relation) from the block.(obtained directly from correspoding offset in block)</span>
+    <span style="color: #8f5902; font-style: italic">// get number of slots from the block, which is present header.</span>
+
+    <span style="color: #8f5902; font-style: italic">// if slotnum is out of size of slot map or slot corresponding to slot_num is free return FAILURE</span>
+
+    <span style="color: #8f5902; font-style: italic">// copy the memory contents of memory pointing by rec to slot_num&#39;th record block.</span>
+
+    <span style="color: #8f5902; font-style: italic">// return SUCCESS</span>
+	
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
