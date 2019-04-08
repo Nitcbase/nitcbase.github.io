@@ -60,7 +60,39 @@
                         finally clicking on highlight! ;-)
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
-                   
+                  <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">RecBuffer</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">getFreeRecBlock</span><span style="color: #000000; font-weight: bold">(){</span>
+
+    <span style="color: #8f5902; font-style: italic">// search for the free block in disk iterating through block_alloc_map array.</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no disk block is free return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no free buffer block in memory return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.</span>
+
+    <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #000000">newRecBuffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">new</span> <span style="color: #000000">RecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">disk_free_block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//disk_free_block is the free disk block obtained from block_alloc_map.</span>
+
+    <span style="color: #8f5902; font-style: italic">// return the RecBuffer object pointer.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+ 
 
 
                 </div> <!-- End of algo div -->
@@ -101,6 +133,39 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndInternal</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">getFreeIndInternal</span><span style="color: #000000; font-weight: bold">(){</span>
+
+    <span style="color: #8f5902; font-style: italic">// search for the free block in disk iterating through block_alloc_map array.</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no disk block is free return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no free buffer block in memory return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.</span>
+
+    <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndInternal</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #000000">newIndBuffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">new</span> <span style="color: #000000">IndInternal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">disk_free_block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//disk_free_block is the free disk block obtained from block_alloc_map.</span>
+
+    <span style="color: #8f5902; font-style: italic">// return the IndBuffer object pointer.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+
 
 
                 </div> <!-- End of algo div -->
@@ -141,6 +206,39 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndLeaf</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">getFreeIndLeaf</span><span style="color: #000000; font-weight: bold">(){</span>
+
+    <span style="color: #8f5902; font-style: italic">// search for the free block in disk iterating through block_alloc_map array.</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no disk block is free return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)</span>
+
+    <span style="color: #8f5902; font-style: italic">//if no free buffer block in memory return NULL</span>
+
+    <span style="color: #8f5902; font-style: italic">//update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.</span>
+
+    <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndLeaf</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #000000">newIndBuffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">new</span> <span style="color: #000000">IndLeaf</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">disk_free_block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//disk_free_block is the free disk block obtained from block_alloc_map.</span>
+
+    <span style="color: #8f5902; font-style: italic">// return the IndBuffer object pointer.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+
 
 
                 </div> <!-- End of algo div -->
@@ -184,7 +282,39 @@
                         finally clicking on highlight! ;-)
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
-                   
+                  <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">RecBuffer</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">getRecBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">){</span>
+    <span style="color: #8f5902; font-style: italic">/*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,</span>
+<span style="color: #8f5902; font-style: italic">     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond</span>
+<span style="color: #8f5902; font-style: italic">      to #block_num).</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+
+	<span style="color: #8f5902; font-style: italic">/* if buffer doesn&#39;t conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info</span>
+<span style="color: #8f5902; font-style: italic">    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in </span>
+<span style="color: #8f5902; font-style: italic">    buffer and do necessary initialisations in buffer meta info)*/</span>
+
+    <span style="color: #8f5902; font-style: italic">//if the block corresponding to #block_num is not a REC block return NULL</span>
+
+    <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">RecBuffer</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #000000">newRecBuffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">new</span> <span style="color: #000000">RecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">);</span>
+
+    <span style="color: #8f5902; font-style: italic">// return the RecBuffer object pointer.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+ 
 
 
                 </div> <!-- End of algo div -->
@@ -232,6 +362,38 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                   <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndBuffer</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">getIndBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">){</span>
+    <span style="color: #8f5902; font-style: italic">/*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,</span>
+<span style="color: #8f5902; font-style: italic">     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond</span>
+<span style="color: #8f5902; font-style: italic">      to #block_num).</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+
+    <span style="color: #8f5902; font-style: italic">/* if buffer doesn&#39;t conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info</span>
+<span style="color: #8f5902; font-style: italic">    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in </span>
+<span style="color: #8f5902; font-style: italic">    buffer and do necessary initialisations in buffer meta info)*/</span>
+
+    <span style="color: #8f5902; font-style: italic">//if the block corresponding to #block_num is not a INDLEAF/INDINTERNAL block return NULL</span>
+
+    <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">IndBuffer</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #000000">newIndBuffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">new</span> <span style="color: #000000">IndBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">);</span>
+
+    <span style="color: #8f5902; font-style: italic">// return the IndBuffer object pointer.</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -263,6 +425,27 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">deleteBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">){</span>
+    <span style="color: #8f5902; font-style: italic">// if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return</span>
+
+    <span style="color: #8f5902; font-style: italic">/* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can</span>
+<span style="color: #8f5902; font-style: italic">    be used for the same).*/</span>
+
+    <span style="color: #8f5902; font-style: italic">//if buffer does not contain disk block #block_num release the buffer block using releaseBlock(int block_num) method call</span>
+
+    <span style="color: #8f5902; font-style: italic">//set the block_alloc_map array element correspond to block_num as UNUSED</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+
 
 
                 </div> <!-- End of algo div -->
@@ -293,7 +476,33 @@
                         finally clicking on highlight! ;-)
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
-                   
+                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">void</span> <span style="color: #000000">releaseBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">){</span>
+    <span style="color: #8f5902; font-style: italic">// if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return </span>
+
+    <span style="color: #8f5902; font-style: italic">/* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can</span>
+<span style="color: #8f5902; font-style: italic">    be used for the same).*/</span>
+
+    <span style="color: #8f5902; font-style: italic">//if buffer does not contain disk block #block_num return </span>
+
+    <span style="color: #8f5902; font-style: italic">// if the dirty field in metainfo of buffer block correspond to #block_num is set to true, commit the block back to disk.</span>
+
+    <span style="color: #8f5902; font-style: italic">// free the buffer block correspond to #block_num in metainfo array.</span>
+
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

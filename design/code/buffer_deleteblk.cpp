@@ -1,5 +1,5 @@
 void deleteBlock(int block_num){
-    // if block_num < 0 OR block_num >= DISK_BLOCKS return FAILURE
+    // if block_num < 0 OR block_num >= DISK_BLOCKS return
 
     /* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can
     be used for the same).*/

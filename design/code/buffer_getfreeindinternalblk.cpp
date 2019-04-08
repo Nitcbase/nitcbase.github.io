@@ -1,4 +1,4 @@
-static class RecBuffer *getFreeIndBlock(){
+static class IndInternal *getFreeIndInternal(){
 
     // search for the free block in disk iterating through block_alloc_map array.
 
@@ -10,7 +10,7 @@ static class RecBuffer *getFreeIndBlock(){
 
     //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
 
-    class IndBuffer* newIndBuffer= new IndInternal(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
+    class IndInternal* newIndBuffer= new IndInternal(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
 
     // return the IndBuffer object pointer.
 }

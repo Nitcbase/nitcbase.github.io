@@ -1,4 +1,4 @@
-static class RecBuffer *getFreeLeafBlock(){
+static class IndLeaf *getFreeIndLeaf(){
 
     // search for the free block in disk iterating through block_alloc_map array.
 
@@ -10,7 +10,7 @@ static class RecBuffer *getFreeLeafBlock(){
 
     //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
 
-    class IndBuffer* newIndBuffer= new IndLeaf(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
+    class IndLeaf* newIndBuffer= new IndLeaf(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
 
     // return the IndBuffer object pointer.
 }
