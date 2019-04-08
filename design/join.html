@@ -81,6 +81,114 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">join</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel1</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel2</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr1</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr2</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">// get the srcrel1&#39;s open relation id(let it be srcrelid1), using getRelid() method of Openreltable</span>
+    <span style="color: #8f5902; font-style: italic">// if srcrel1 is not opened in open relation table, return E_RELNOTOPEN</span>
+
+	<span style="color: #8f5902; font-style: italic">// get the srcrel2&#39;s open relation id(let it be srcrelid2), using getRelid() method of Openreltable</span>
+    <span style="color: #8f5902; font-style: italic">// if srcrel2 is not opened in open relation table, return E_RELNOTOPEN</span>
+    
+    <span style="color: #8f5902; font-style: italic">//get the AttrCatEntry of attr1 in rel1 and attr2 in rel2 from Openreltable.</span>
+    
+    <span style="color: #8f5902; font-style: italic">// if attr1 is not present in rel1 or attr2 not present in rel2 (failure of call to Openreltable) return E_ATTRNOTEXIST.</span>
+    
+    <span style="color: #8f5902; font-style: italic">// if attr1 and attr2 are of different types return E_ATTRTYPEMISMATCH</span>
+    
+    <span style="color: #8f5902; font-style: italic">// let nAttrs1 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable).</span>
+    <span style="color: #8f5902; font-style: italic">// let nAttrs2 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable). </span>
+    
+    <span style="color: #8f5902; font-style: italic">/* if both the attributes of src rels have bplus tree:</span>
+<span style="color: #8f5902; font-style: italic">    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)  </span>
+<span style="color: #8f5902; font-style: italic">    	else if none of target attrs has bplus tree:</span>
+<span style="color: #8f5902; font-style: italic">    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)</span>
+<span style="color: #8f5902; font-style: italic">    	  create bplus tree on attr2 in rel2 (using create_bplus() method of bplus layer)</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+    
+    <span style="color: #8f5902; font-style: italic">//let tar_attrs[nAttrs1+nAttrs2-1][ATTR_SIZE] be an array of type char</span>
+    <span style="color: #8f5902; font-style: italic">//let tar_attrtypes[nAttrs1+nAttrs2-1] be an array of type;</span>
+    
+    <span style="color: #8f5902; font-style: italic">/* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in srcrel2),</span>
+<span style="color: #8f5902; font-style: italic">     by getting attribute catalog of each attribute from Openreltable(using method getattrcat()) */</span>  
+       
+	<span style="color: #8f5902; font-style: italic">// retval= createrel(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);</span>
+    <span style="color: #8f5902; font-style: italic">// if create fails return retval</span>
+    
+    <span style="color: #8f5902; font-style: italic">//int targetrelid = call openRel(targetrel) </span>
+    <span style="color: #8f5902; font-style: italic">/* if open fails</span>
+<span style="color: #8f5902; font-style: italic">        delete targetrelation by calling deleterel(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">        return targetrelid(an error)</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+    
+    <span style="color: #8f5902; font-style: italic">//var: Union Attribute rec1[nAttrs1]</span>
+    <span style="color: #8f5902; font-style: italic">/* iterate through each record of rel1(using ba_search(srcrelid1,rec1, ,oper=PROJ, no_val)</span>
+<span style="color: #8f5902; font-style: italic">    		var: union Attribute Record[nAttrs2]</span>
+<span style="color: #8f5902; font-style: italic">     		while call ba_search(srcrelid2,Record, attr2, oper=EQ, rel1 record&#39;s attr1 value) returns SUCCESS:</span>
+<span style="color: #8f5902; font-style: italic">     			 var: union Attribute tar_record[nAttrs1+nAttrs2-1]</span>
+<span style="color: #8f5902; font-style: italic">     			 copy the rel1&#39;s, rel2&#39;s record to tar_record[] (except for attr2 offset in rel2)</span>
+<span style="color: #8f5902; font-style: italic">     			 call ba_insert(targetrelid,tar_record);</span>
+<span style="color: #8f5902; font-style: italic">     			 if insert fails:</span>
+<span style="color: #8f5902; font-style: italic">     			 	 delete targetrelation by calling deleterel(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">        			 return E_DISKFULL</span>
+<span style="color: #8f5902; font-style: italic">     		</span>
+<span style="color: #8f5902; font-style: italic">     */</span>
+     
+     <span style="color: #8f5902; font-style: italic">//return SUCCESS;</span>
+    
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

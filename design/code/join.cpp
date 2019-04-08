@@ -24,7 +24,8 @@ int join(char srcrel1[ATTR_SIZE],char srcrel2[ATTR_SIZE],char targetrel[ATTR_SIZ
     //let tar_attrs[nAttrs1+nAttrs2-1][ATTR_SIZE] be an array of type char
     //let tar_attrtypes[nAttrs1+nAttrs2-1] be an array of type;
     
-    /* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in 		     srcrel2), by getting attribute catalog of each attribute from Openreltable(using method getattrcat()) */  
+    /* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in srcrel2),
+     by getting attribute catalog of each attribute from Openreltable(using method getattrcat()) */  
        
 	// retval= createrel(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);
     // if create fails return retval

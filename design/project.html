@@ -81,6 +81,82 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">project</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">tar_nAttrs</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">tar_attrs</span><span style="color: #000000; font-weight: bold">[][</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+    <span style="color: #8f5902; font-style: italic">// get the src relation&#39;s open relation id, using getRelid() method of Openreltable.</span>
+    <span style="color: #8f5902; font-style: italic">// if source not opened in open relation table, return E_RELNOTOPEN</span>
+
+    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).</span>
+    <span style="color: #8f5902; font-style: italic">//if tar_nAttrs &gt; no_of_attrs in relation, return FAILURE(unequal no.of attrs).</span>
+
+    <span style="color: #8f5902; font-style: italic">// let attr_offset[tar_nAttrs] be an array of type int.(attr_offset[i]=offset of i&#39;th tar. rel&#39;s attribute in src rel&#39;s attributes)</span>
+    <span style="color: #8f5902; font-style: italic">// let attr_types[tar_nAttrs] be an array of type int.</span>
+
+    <span style="color: #8f5902; font-style: italic">/*iterate through 0:nAttrs :</span>
+<span style="color: #8f5902; font-style: italic">        get the AttributeCat entry (using getAttrcatEntry() of Openreltable) of attribute with name tar_attrs[i]</span>
+<span style="color: #8f5902; font-style: italic">        fill the attr_offset,attr_types arrays of target relation from the corresonding Attribute catalog entries</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+
+    <span style="color: #8f5902; font-style: italic">// retval= createrel(targetrel,tar_nAttrs,tar_attrs,attr_types);</span>
+    <span style="color: #8f5902; font-style: italic">// if create fails return retval.</span>
+
+    <span style="color: #8f5902; font-style: italic">//open targetrel (using retval=openRel() in Openreltable)</span>
+    <span style="color: #8f5902; font-style: italic">// if open fails return retval.</span>
+
+    <span style="color: #8f5902; font-style: italic">/*</span>
+<span style="color: #8f5902; font-style: italic">    while (1):</span>
+<span style="color: #8f5902; font-style: italic">        var: union Attribute record[no_of_attrs_srcrel];</span>
+<span style="color: #8f5902; font-style: italic">        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS:</span>
+<span style="color: #8f5902; font-style: italic">            union Attribute proj_record[tar_nAttrs] (record which need to be inserted into target rel)</span>
+<span style="color: #8f5902; font-style: italic">            fill proj_record with respect to attr_offset array from record of src rel.</span>
+<span style="color: #8f5902; font-style: italic">            retval= ba_insert(targetrelid,proj_record);</span>
+<span style="color: #8f5902; font-style: italic">            if(insert fails):</span>
+<span style="color: #8f5902; font-style: italic">                close the target rel(call closerel() method of Openreltable)</span>
+<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling ba_delete(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">                return retval</span>
+<span style="color: #8f5902; font-style: italic">        else: stop</span>
+<span style="color: #8f5902; font-style: italic">    */</span>
+
+    <span style="color: #8f5902; font-style: italic">// return SUCCESS.</span>
+
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

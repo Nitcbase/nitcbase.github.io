@@ -73,6 +73,46 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relname</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">nAttrs</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[][</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+
+    <span style="color: #8f5902; font-style: italic">// get the relation&#39;s open relation id(let it be rel_id), using getRelid() method of Openreltable</span>
+    <span style="color: #8f5902; font-style: italic">// if relation is not opened in Openreltable, return E_RELNOTOPEN</span>
+
+    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).</span>
+    <span style="color: #8f5902; font-style: italic">//if nAttrs!=no_of_attrs in relation, return E_NATTRMISMATCH</span>
+
+    <span style="color: #8f5902; font-style: italic">// let attrval[nAttrs] be an array of type union Attribute</span>
+
+    <span style="color: #8f5902; font-style: italic">/*iterate through 0:nAttrs :</span>
+<span style="color: #8f5902; font-style: italic">        get the i&#39;th attribute&#39;s AttrCatEntry (using getAttrcatEntry() of Openreltable )</span>
+<span style="color: #8f5902; font-style: italic">        fill attrval array respectively.(using type of ith attribute found)</span>
+<span style="color: #8f5902; font-style: italic">        if type of ith attribute mismatches converting from string(attr[i]) to corresponding type(ex:string to int ) return E_ATTRTYPEMISMATCH.</span>
+<span style="color: #8f5902; font-style: italic">    */</span> 
+
+    <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">retval</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">ba_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">)</span>
+
+    <span style="color: #8f5902; font-style: italic">//return retval        </span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
