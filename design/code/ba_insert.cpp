@@ -25,8 +25,8 @@ int ba_insert(relId relid, union Attribute *record){
 		OpenRelTable::getAttrCatEntry(relid, attr_offset, &attrcat_entry);
 		//get the root block from the attribute catalog entry
 		if(root_block != -1){ //if index exists for the attribute
-			bplus_insert(relid, attrcat_entry.attrName, attrval, recid); //where recid is the recid where record
-																		 //is inserted in record block
+			bplus_insert(relid, attrcat_entry.attrName, attrval, recid); 
+			       //where recid is the recid where record is inserted in record block
 		}
 	//}
 	

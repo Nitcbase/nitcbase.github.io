@@ -37,5 +37,3 @@ int ba_search(relId relid, union Attribute *record, char attrName[ATTR_SIZE], un
 	
 	return SUCCESS;
 }
-	
-	ret

@@ -65,6 +65,56 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_renamerel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">oldName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">newName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">//search for the relation with name newName in relation catalog </span>
+	<span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">RELCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">newName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//If relation with name newName already exits</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//search for the relation with name oldName in relation catalog </span>
+	<span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">RELCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">oldName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//If relation with name relName does not exits</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//get the relation catalog record from the relation catalog (recid of the relation catalog record = relcat_recid)</span>
+	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #8f5902; font-style: italic">//update the relation catalog record in the relation catalog with relation name newName</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #8f5902; font-style: italic">/*update all the attribute catalog entries in the attribute catalog corresponding to the </span>
+<span style="color: #8f5902; font-style: italic">	  relation with relation name oldName to the relation name newName*/</span>
+	
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -112,6 +162,84 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_renameattr</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">oldName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">newName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">//search for the relation with name relName in relation catalog </span>
+	<span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">RELCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//If relation with name relName does not exits</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation{</span>
+		<span style="color: #8f5902; font-style: italic">//search for the attributes with relation name relName in attribute catalog </span>
+		<span style="color: #000000">attrcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ATTRCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//get the attribute catalog record from the attribute catalog (recid of the attribute catalog record = attrcat_recid)</span>
+		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//get attrName from attrcat_record</span>
+		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrName</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000">newName</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//if the attribute with name newName already exists</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTREXIST</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #000000; font-weight: bold">}</span>	
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation{</span>
+		<span style="color: #8f5902; font-style: italic">//search for the attributes with relation name relName in attribute catalog </span>
+		<span style="color: #000000">attrcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ATTRCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//get the attribute catalog record from the attribute catalog (recid of the attribute record = attrcat_recid)</span>
+		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//get attrName from attrcat_record</span>
+		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrName</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000">oldName</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//if the attribute is attribute with oldName</span>
+			<span style="color: #8f5902; font-style: italic">//update the attribute catalog record in the attribute catalog with attribute name newName</span>
+			<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #8f5902; font-style: italic">//}	</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTRNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>		 
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

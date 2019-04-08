@@ -61,6 +61,75 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #8f5902; font-style: italic">//get the relaction catalog entry from relation cache</span>
+	<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #8f5902; font-style: italic">//get the free slot from the existing record blocks of the relation with Id relid</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">no</span> <span style="color: #000000">free</span> <span style="color: #000000">slot</span> <span style="color: #000000">is</span> <span style="color: #000000">found</span> <span style="color: #000000">in</span> <span style="color: #000000">existing</span> <span style="color: #000000">record</span> <span style="color: #000000">blocks</span><span style="color: #000000; font-weight: bold">){</span>
+		<span style="color: #8f5902; font-style: italic">//get the new record block and free slot of the new record from disk by calling</span>
+		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getFreeRecBuffer</span><span style="color: #000000; font-weight: bold">();</span>
+		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #204a87">NULL</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//disk is full (i.e unable to get new record block from the disk)</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_DISKFULL</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #000000; font-weight: bold">}</span>
+		<span style="color: #8f5902; font-style: italic">//Update the header of the new record block such that it links with existing record blocks of the relation </span>
+	<span style="color: #000000; font-weight: bold">}</span> 
+	
+	<span style="color: #8f5902; font-style: italic">//insert the record into free slot by calling</span>
+	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//block corresponds to the free slot</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #000000">free_slot</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #8f5902; font-style: italic">//update the slotmap of the block (contains free slot)</span>
+	
+	<span style="color: #8f5902; font-style: italic">//update the header (i.e num_entries) of the block (contains free slot) by increasing the number of entries by 1</span>
+	<span style="color: #8f5902; font-style: italic">//update the number of records (i.e increased by 1) corresponding to the relation with Id relid in relation cache</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//get the attribute catalog entry for the attribute from attribute cache</span>
+		<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getAttrCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attr_offset</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">attrcat_entry</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #8f5902; font-style: italic">//get the root block from the attribute catalog entry</span>
+		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">root_block</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//if index exists for the attribute</span>
+			<span style="color: #000000">bplus_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_entry</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">recid</span><span style="color: #000000; font-weight: bold">);</span> 
+			       <span style="color: #8f5902; font-style: italic">//where recid is the recid where record is inserted in record block</span>
+		<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+
 
 
                 </div> <!-- End of algo div -->

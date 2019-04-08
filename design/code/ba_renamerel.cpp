@@ -23,5 +23,3 @@ int ba_renamerel(char oldName[ATTR_SIZE], char newName[ATTR_SIZE]){
 	
 	return SUCCESS;
 }
-	  
-	

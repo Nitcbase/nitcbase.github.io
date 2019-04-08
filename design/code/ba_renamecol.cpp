@@ -18,7 +18,8 @@ int ba_renameattr(char relName[ATTR_SIZE], char oldName[ATTR_SIZE], char newName
 		if(attrName == newName){ //if the attribute with name newName already exists
 			return E_ATTREXIST;
 		}	
-	}
+	//}
+	
 	//Iterate over all the attributes corresponding to the relation{
 		//search for the attributes with relation name relName in attribute catalog 
 		attrcat_recid = linear_search(ATTRCAT_RELID, "RelName", relName, EQ);

@@ -61,6 +61,84 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_delete</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">/* search for relation with name relName in relation catalog */</span>
+	<span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">RELCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//If relation with relName does not exits</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">/*getting the relation catalog entry corresponding to relation with relName*/</span>
+	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_rec</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	<span style="color: #8f5902; font-style: italic">//get the first record block of the relation (first_block)</span>
+	<span style="color: #8f5902; font-style: italic">//get the number of attributes corresponding to the relation (num_attrs)</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Delete all the record blocks of the relation by getting the next record blocks (rblock) from header and by calling</span>
+	<span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">deleteBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">);</span>
+	
+	
+	<span style="color: #8f5902; font-style: italic">/*deleting index blocks corresponding to the the relation with relName and </span>
+<span style="color: #8f5902; font-style: italic">	attribute catalog entries corresponding the relation*/</span>
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation{</span>
+		<span style="color: #8f5902; font-style: italic">//search for all the attributes corresponding to the relation with relName in attribute catalog</span>
+		<span style="color: #8f5902; font-style: italic">//delete the attribute catalog entry corresponding to the attribute from attribute catalog</span>
+		<span style="color: #8f5902; font-style: italic">//Adjusting the number of entries in the block (decrease by 1) corresponding to the attribute catalog entry</span>
+	
+		<span style="color: #8f5902; font-style: italic">//get the root_block from attribute catalog </span>
+		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">root_block</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//index exists for the attribute</span>
+			<span style="color: #000000">bplus_destrot</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">root_block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//delete the index blocks corresponding to the attribute</span>
+		<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//delete the relation catalog entry corresponding to the relation from relation catalog</span>
+	<span style="color: #8f5902; font-style: italic">//Adjusting the number of entries in the block (decrease by 1) corresponding to the relation catalog entry</span>
+	
+	<span style="color: #8f5902; font-style: italic">//update relation catalog (i.e number of records in relation catalog is decreased by 1)</span>
+	<span style="color: #8f5902; font-style: italic">//update attribute catalog (i.e number of records in attribute catalog is decreased by num_attrs)</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
