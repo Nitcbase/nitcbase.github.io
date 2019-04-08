@@ -61,6 +61,20 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #000000">relId</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">//Iterate over the relation cache{</span>
+		<span style="color: #8f5902; font-style: italic">//if relation with relation name relName is opened in the relation cache</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">relid</span> <span style="color: #8f5902; font-style: italic">//return corresponding relid</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span> 
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -107,6 +121,28 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">RelCatEntry</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">relcat_buf</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//copy the relation catalog in the relation cache to the relcat_buf</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -153,6 +189,30 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setRelCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">RelCatEntry</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">relcat_buf</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//copy the relcat_buf to the relation catalog in the relation cache</span>
+	<span style="color: #8f5902; font-style: italic">//set the dirty flag corresponding to the relation with Id relid in the relation cache</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -199,6 +259,30 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getPrevRecId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">rel_id</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">recId</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">recid</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">/*copy the previous record id (in meta informatiom) corresponding to the</span>
+<span style="color: #8f5902; font-style: italic">	  relation with Id relid in the relation cache to the recid*/</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -245,6 +329,30 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setPrevRecId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">rel_id</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">recId</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">recid</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">/*copy the recid to the previous record id (in meta informatiom) corresponding</span>
+<span style="color: #8f5902; font-style: italic">	  to the relation with Id relid in the relation cache*/</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -296,6 +404,38 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getAttrCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr_name</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #ce5c00; font-weight: bold">/</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">attr_offset</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">AttrCatEntry</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">attrcat_buf</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{</span>
+			<span style="color: #8f5902; font-style: italic">//copy the attribute catalog in the attribute cache to the attrcat_buf</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTRNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -347,6 +487,40 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setAttrCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr_name</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #ce5c00; font-weight: bold">/</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">attr_offset</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">AttrCatEntry</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">attrcat_buf</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{</span>
+			<span style="color: #8f5902; font-style: italic">//copy the attrcat_buf to the corresponding attibute node in the attribute cache</span>
+			<span style="color: #8f5902; font-style: italic">//set the dirty flag corresponding to the attribute in the attribute cache</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTRNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -397,6 +571,40 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getPrevIndexId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr_name</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #ce5c00; font-weight: bold">/</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">attr_offset</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">IndexId</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">indid</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{</span>
+			<span style="color: #8f5902; font-style: italic">/*copy the previous index id (in meta informatiom) corresponding to </span>
+<span style="color: #8f5902; font-style: italic">			  the attribute in the attribute cache to the indid*/</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTRNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->
@@ -447,6 +655,40 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setPrevIndexId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr_name</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #ce5c00; font-weight: bold">/</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">attr_offset</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">IndexId</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">indid</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{</span>
+			<span style="color: #8f5902; font-style: italic">/*copy the indid to the previous index id (in meta informatiom)</span>
+<span style="color: #8f5902; font-style: italic">			  corresponding to the attribute in the attribute cache*/</span>
+			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+		<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_ATTRNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

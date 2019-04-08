@@ -65,6 +65,63 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">CloseRel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000">rel_id</span><span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #000000">MAXOPEN</span><span style="color: #000000; font-weight: bold">){</span>	<span style="color: #8f5902; font-style: italic">//check relation id (relid) lies in the range</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_OUTOFBOUND</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Rel_Table</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">].</span><span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//slot corresponding to the relid in the relation is free</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{</span>
+		<span style="color: #8f5902; font-style: italic">//if the attribute catalog entry is modified (i.e, dirty flag is set){</span>
+			<span style="color: #8f5902; font-style: italic">//commit the attribute catalog entry in the attribute cache to the disk</span>
+			<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">);</span>	<span style="color: #8f5902; font-style: italic">/*block_num corrsponding to the record of the attribute catalog entry</span>
+<span style="color: #8f5902; font-style: italic">														  in the attribute catalog, we will get block_num from meta informatiom*/</span>
+			<span style="color: #8f5902; font-style: italic">//copy the attribute catalog entry to the record</span>
+			<span style="color: #000000">buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">slot_num</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//commit the attribute catalog entry in the attribute catalog</span>
+		<span style="color: #8f5902; font-style: italic">//}</span>
+		<span style="color: #8f5902; font-style: italic">//free the attribute catlog node in the attribute cache since attribute cache is organised as linked list</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//if the relation catalog entry in the relation cache corresponding to the relation with Id relid is modified{</span>
+		<span style="color: #8f5902; font-style: italic">//commit the relation catalog entry to the disk</span>
+		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBlock</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block_num</span><span style="color: #000000; font-weight: bold">);</span>	<span style="color: #8f5902; font-style: italic">/*block_num corrsponding to the record of the relatiom catalog entry</span>
+<span style="color: #8f5902; font-style: italic">													  in the relation catalog, we will get the block_num from meta informatiom*/</span>
+		<span style="color: #8f5902; font-style: italic">//copy the relation catalog entry to the record</span>
+		<span style="color: #000000">buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">slot_num</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//commit the relation catalog entry in the relation catalog</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
+
 
 
                 </div> <!-- End of algo div -->

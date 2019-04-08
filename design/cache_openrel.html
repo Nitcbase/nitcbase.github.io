@@ -65,6 +65,86 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
+                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #000000">relId</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">OpenRel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+	<span style="color: #8f5902; font-style: italic">//check if the relation with relation name relName already opened</span>
+	<span style="color: #000000">relid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">){</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//find the free slot in the relation cache</span>
+	<span style="color: #8f5902; font-style: italic">//if free slot is not found in the relation cache</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_CACHEFULL</span><span style="color: #000000; font-weight: bold">;</span>
+	
+	<span style="color: #8f5902; font-style: italic">//search for the relation catalog entry with relation name relName in the relation catalog </span>
+	<span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">RELCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//if relation is not found in the relation catalog</span>
+		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
+	<span style="color: #000000; font-weight: bold">}</span>
+	
+	<span style="color: #8f5902; font-style: italic">//get the relation catalog entry with relation name relName from the relation catalog</span>
+	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//(recid of the relation record = relcat_recid)</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span> 
+													    
+	<span style="color: #8f5902; font-style: italic">//update the free slot of the relation cache with the relation catalog entry (relac_entry)</span>
+	<span style="color: #8f5902; font-style: italic">//update the corresponding meta information corresponding to the free slot in the relation cache</span>
+	
+	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation with relation name relName{</span>
+		<span style="color: #8f5902; font-style: italic">//search for the attributes with relation name relName in the attribute catalog </span>
+		<span style="color: #000000">attrcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ATTRCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//get the attribute catalog record from the attribute catalog (recid of the attribute record = attrcat_recid)</span>
+		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+		
+		<span style="color: #8f5902; font-style: italic">//since attribute cache is implemented as linked list, create separate new node of type Attribute Cache</span>
+		<span style="color: #8f5902; font-style: italic">//update the new node of the attribute cache with the attribute catalog entry</span>
+		<span style="color: #8f5902; font-style: italic">//update the corresponding meta information in the new node of the attribute cache</span>
+		<span style="color: #8f5902; font-style: italic">//update Attribute Cache head in the relation cache as the new node</span>
+	<span style="color: #8f5902; font-style: italic">//}</span>
+	
+	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">;</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></td></tr></table></div>
 
 
                 </div> <!-- End of algo div -->

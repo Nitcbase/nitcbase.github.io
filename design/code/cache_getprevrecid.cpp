@@ -1,4 +1,4 @@
-int OpenRelTable::setPrevRecId(relId rel_id, recId *recid){
+int OpenRelTable::getPrevRecId(relId rel_id, recId *recid){
 	if(rel_id< 0 || rel_id>= MAXOPEN){	//check relation id (relid) lies in the range
 		return E_OUTOFBOUND;
 	}

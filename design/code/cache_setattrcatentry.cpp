@@ -1,4 +1,4 @@
-int OpenRelTable::setRelCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
+int OpenRelTable::setAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
 	if(rel_id< 0 || rel_id>= MAXOPEN){	//check relation id (relid) lies in the range
 		return E_OUTOFBOUND;
 	}
