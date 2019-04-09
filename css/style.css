@@ -243,6 +243,7 @@ a:hover {
 
 .algo {
     margin: 0px 0px 10px 0px;
+    
 }
 
 .algo table, .algo th, .algo td, .algo tr{
@@ -250,7 +251,8 @@ a:hover {
 }
 
 .algo pre{
-    border: none;
-    padding-left: 0;
+    /*border:solid gray;
+    border-width:.1em .1em .1em .5em;
+    border-radius:4px;*/
     tab-size: 4;
 }

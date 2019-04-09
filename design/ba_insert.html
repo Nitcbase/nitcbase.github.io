@@ -28,16 +28,16 @@
     <div id="content">
         <div id="design-content">
             <div id="id1" class="design-detail">
-                <h2>Insert (Block Access)</h2>
+                <h2>Insert (Block Access Layer)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (RelId -> int), record (union Attribute *)</p>
+                <p>relid (int), record (union Attribute *)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
                         <tr>
                             <td>SUCCESS</td>
-                            <td>On successful insert of given record</td>
+                            <td>On successful insert of the given record</td>
                         </tr>
                         <tr>
                             <td>E_DISKFULL</td>
@@ -94,11 +94,16 @@
 31
 32
 33
-34</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">){</span>
+34
+35
+36
+37</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">){</span>
 	<span style="color: #8f5902; font-style: italic">//get the relaction catalog entry from relation cache</span>
+	<span style="color: #000000">RelCatEntry</span> <span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">;</span>
 	<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">);</span>
 	
-	<span style="color: #8f5902; font-style: italic">//get the free slot from the existing record blocks of the relation with Id relid</span>
+	<span style="color: #8f5902; font-style: italic">//get a free slot from the existing record blocks of the relation with Id relid
+	//This can be done by performing a linear search on the linked list of records and checking slotmap.</span>
 	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">no</span> <span style="color: #000000">free</span> <span style="color: #000000">slot</span> <span style="color: #000000">is</span> <span style="color: #000000">found</span> <span style="color: #000000">in</span> <span style="color: #000000">existing</span> <span style="color: #000000">record</span> <span style="color: #000000">blocks</span><span style="color: #000000; font-weight: bold">){</span>
 		<span style="color: #8f5902; font-style: italic">//get the new record block and free slot of the new record from disk by calling</span>
 		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getFreeRecBuffer</span><span style="color: #000000; font-weight: bold">();</span>
@@ -109,7 +114,9 @@
 	<span style="color: #000000; font-weight: bold">}</span> 
 	
 	<span style="color: #8f5902; font-style: italic">//insert the record into free slot by calling</span>
-	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//block corresponds to the free slot</span>
+	<span style="color: #8f5902; font-style: italic">// The next action is to get the pointer to the RecBuffer object containing the free slot</span>
+	<span style="color: #8f5902; font-style: italic">// into rec_buffer using getRecBuffer() method of the class Buffer.</span>
+
 	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">setRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #000000">free_slot</span><span style="color: #000000; font-weight: bold">);</span>
 	<span style="color: #8f5902; font-style: italic">//update the slotmap of the block (contains free slot)</span>
 	

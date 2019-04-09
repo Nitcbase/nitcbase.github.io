@@ -5,7 +5,10 @@
     <title>Insert</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="/css/prism.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/prism.js"></script>
 </head>
     
     
@@ -45,11 +48,11 @@
                         </tr>
                         <tr>
                             <td>E_NATTRMISMATCH</td>
-                            <td>If the actual number of attribute in the relation is different from the provided number of attributes</td>
+                            <td>If the actual number of attributes in the relation is different from the provided number of attributes</td>
                         </tr>
                         <tr>
                             <td>E_ATTRTYPEMISMATCH</td>
-                            <td>If the actual type of the attribute in the relation is different from the type of provided ttribute in the record.</td>
+                            <td>If the actual type of the attribute in the relation is different from the type of provided attribute in the record.</td>
                         </tr>
                         <tr>
                             <td>E_DISKFULL</td>
@@ -59,69 +62,50 @@
                 </div>
                 
                 <h3>Description:</h3>
-                <p>Description of the function/method</p>
+                <p>This function inserts </p>
                 
                 <h3>Algorithm:</h3>
                 <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relname</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">nAttrs</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[][</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+                    <pre class="line-numbers"><code class="lang-cpp">int insert(char relname[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
 
-    <span style="color: #8f5902; font-style: italic">// get the relation&#39;s open relation id(let it be rel_id), using getRelid() method of Openreltable</span>
-    <span style="color: #8f5902; font-style: italic">// if relation is not opened in Openreltable, return E_RELNOTOPEN</span>
+    // get the relation's open relation id(let it be rel_id), using getRelid() method of Openreltable
+    // if relation is not opened in Openreltable, return E_RELNOTOPEN
 
-    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).</span>
-    <span style="color: #8f5902; font-style: italic">//if nAttrs!=no_of_attrs in relation, return E_NATTRMISMATCH</span>
+    //get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).
+    //if nAttrs!=no_of_attrs in relation, return E_NATTRMISMATCH
 
-    <span style="color: #8f5902; font-style: italic">// let attrval[nAttrs] be an array of type union Attribute</span>
+    // let recval[nAttrs] be an array of type union Attribute
 
-    <span style="color: #8f5902; font-style: italic">/*iterate through 0:nAttrs :</span>
-<span style="color: #8f5902; font-style: italic">        get the i&#39;th attribute&#39;s AttrCatEntry (using getAttrcatEntry() of Openreltable )</span>
-<span style="color: #8f5902; font-style: italic">        fill attrval array respectively.(using type of ith attribute found)</span>
-<span style="color: #8f5902; font-style: italic">        if type of ith attribute mismatches converting from string(attr[i]) to corresponding type(ex:string to int ) return E_ATTRTYPEMISMATCH.</span>
-<span style="color: #8f5902; font-style: italic">    */</span> 
+    /*iterate through 0 to nAttrs-1 :
+        get the i'th attribute's AttrCatEntry (using getAttrcatEntry() of Openreltable )
+    */
+    // let type=attrcatentry.attr_type;
 
-    <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">retval</span><span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">ba_insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rel_id</span><span style="color: #000000; font-weight: bold">,</span><span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">)</span>
+    if(type==INT){  
+        //The input contains a string representation of the integer attribute value.
+        attrval[iter].ival=atoi(attr[iter]);
+        //if conversion fails(i.e string can not be converted to integer) return E_ATTRTYPEMISMATCH. 
 
-    <span style="color: #8f5902; font-style: italic">//return retval        </span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></td></tr></table></div>
+    }else if(type==FLOAT){
+        //do accordingly to float
+    }else if(type==STRING){
+        //No type conversion needed here.
+    }
 
 
-                </div> <!-- End of algo div -->
+    int retval= ba_insert(rel_id,attrval)
+
+    //return retval        
+}
+
+</code></pre>
+                </div>
                 <a href="code/insert.cpp" target="_blank" download>Click here</a> to download the code.
             </div>
-            
         </div>
     </div>
     
 </body>
+
 
 </html>
