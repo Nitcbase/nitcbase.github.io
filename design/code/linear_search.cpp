@@ -1,26 +1,30 @@
 struct recId linear_search(relId relid, char attrName[ATTR_SIZE], union Attribute attrval, int op){
-	//get the previous record id from the relation cache corresponding to the relation with Id relid
+	//get the previous record id from the relation cache corresponding to the relation with Id=relid
 	OpenRelTabel::getPrevRecId(relid, prev_recid);
 	if(prev_recid == {-1, -1}){ //It is the first time that linear search search for the record with the attribute value attrval
 		//get the first record block of the relation from the relation cache 
-		//assign block as the first record block of the relation
-		//assign slot as 0
+		//using getRelCatEntry() method of OpenRelTable in cache layer
+		//block = the first record block of the relation
+		//slot = 0
 	}
-	else{ //if the linear search knows the previous hit search from the previous hit
-		//assign block as the previous record id block
-		//assign slot as the previous record id slot
+	else{ //if the linear search knows the  hit from previous search
+		// block = the previous record id block
+		// slot = the previous record id slot
 	}
 	
-	//search for the record in the relation that satisfies the given condition
-	//Start from the assigned block and iterate over the records of the relation from the assigned block{
-		//get the record of the relation
+	//The following code searches for the next record in the relation that satisfies the given condition
+	//Start from block and iterate over the records of the relation{
+		//get the record of the relation using the following buffer layer functions
 		rec_buffer = Buffer::getRecBuffer(block);
-		rec_buffer->getRecord(record, slot); //where slot is not free
+		rec_buffer->getRecord(record, slot);
+		//If slot is free skip the loop and continue to the next record slot
 		
 		//compare the record's attribute value to the given attrval corresponding to the attribute name attrName
-		//assign the compared value to the flag variable
+		// Compare the record
+		// 
+		//flag = compare(AttrVal, record[attr_offset], attr_type);
 		
-		//assign the cond variable as UNSET
+		//cond = UNSET
 		
 		//Set the cond variable as per the op and the flag variable
 		switch(op){

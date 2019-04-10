@@ -81,7 +81,7 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
-                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+             <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
  2
  3
  4
@@ -118,18 +118,34 @@
 35
 36
 37
-38</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">project</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">tar_nAttrs</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">tar_attrs</span><span style="color: #000000; font-weight: bold">[][</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
-    <span style="color: #8f5902; font-style: italic">// get the src relation&#39;s open relation id, using getRelid() method of Openreltable.</span>
-    <span style="color: #8f5902; font-style: italic">// if source not opened in open relation table, return E_RELNOTOPEN</span>
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">project</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">tar_nAttrs</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">tar_attrs</span><span style="color: #000000; font-weight: bold">[][</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+    
+    <span style="color: #8f5902; font-style: italic">// get the srcrel&#39;s open relation id(let it be srcrelid), using getRelid() method of cache layer</span>
+    <span style="color: #8f5902; font-style: italic">// if srcrel is not open in open relation table, return E_RELNOTOPEN</span>
 
-    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).</span>
-    <span style="color: #8f5902; font-style: italic">//if tar_nAttrs &gt; no_of_attrs in relation, return FAILURE(unequal no.of attrs).</span>
+    <span style="color: #8f5902; font-style: italic">//get RelCatEntry of srcrel using getRelCatEntry() of OpenRelTable in cache layer</span>
+    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in relation from the fetched RelcatEntry.</span>
 
-    <span style="color: #8f5902; font-style: italic">// let attr_offset[tar_nAttrs] be an array of type int.(attr_offset[i]=offset of i&#39;th tar. rel&#39;s attribute in src rel&#39;s attributes)</span>
+    <span style="color: #8f5902; font-style: italic">// let attr_offset[tar_nAttrs] be an array of type int.</span>
+    <span style="color: #8f5902; font-style: italic">// where ith entry corresponds to the offset in the srcrel of ith attribute in the target relation.</span>
     <span style="color: #8f5902; font-style: italic">// let attr_types[tar_nAttrs] be an array of type int.</span>
+    <span style="color: #8f5902; font-style: italic">// where ith entry corresponds to the type ith attribute in the target relation.</span>
+    <span style="color: #8f5902; font-style: italic">//(type can be one of INT, FLOAT or STRING)</span>
 
-    <span style="color: #8f5902; font-style: italic">/*iterate through 0:nAttrs :</span>
-<span style="color: #8f5902; font-style: italic">        get the AttributeCat entry (using getAttrcatEntry() of Openreltable) of attribute with name tar_attrs[i]</span>
+    <span style="color: #8f5902; font-style: italic">/*iterate through 0 to nAttrs-1 :</span>
+<span style="color: #8f5902; font-style: italic">        get the AttributeCat entry (using getAttrcatEntry() of Openreltable in cache layer)</span>
+<span style="color: #8f5902; font-style: italic">        of the attribute with name tar_attrs[i]</span>
 <span style="color: #8f5902; font-style: italic">        fill the attr_offset,attr_types arrays of target relation from the corresonding Attribute catalog entries</span>
 <span style="color: #8f5902; font-style: italic">    */</span>
 
@@ -137,26 +153,35 @@
     <span style="color: #8f5902; font-style: italic">// if create fails return retval.</span>
 
     <span style="color: #8f5902; font-style: italic">//open targetrel (using retval=openRel() in Openreltable)</span>
-    <span style="color: #8f5902; font-style: italic">// if open fails return retval.</span>
+    <span style="color: #8f5902; font-style: italic">/* if open fails </span>
+<span style="color: #8f5902; font-style: italic">    delete target relation by calling deleterel(targetrel) of schema layer</span>
+<span style="color: #8f5902; font-style: italic">    return retval. */</span>
 
     <span style="color: #8f5902; font-style: italic">/*</span>
 <span style="color: #8f5902; font-style: italic">    while (1):</span>
 <span style="color: #8f5902; font-style: italic">        var: union Attribute record[no_of_attrs_srcrel];</span>
-<span style="color: #8f5902; font-style: italic">        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS:</span>
-<span style="color: #8f5902; font-style: italic">            union Attribute proj_record[tar_nAttrs] (record which need to be inserted into target rel)</span>
-<span style="color: #8f5902; font-style: italic">            fill proj_record with respect to attr_offset array from record of src rel.</span>
+<span style="color: #8f5902; font-style: italic">        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS{</span>
+<span style="color: #8f5902; font-style: italic">            declare: union Attribute proj_record[tar_nAttrs] (buffer for record which need to be inserted into target rel)</span>
+<span style="color: #8f5902; font-style: italic">            iterate through 0 to tar_attrs-1:</span>
+<span style="color: #8f5902; font-style: italic">                proj_record[i]=record[attr_offset[i]]</span>
 <span style="color: #8f5902; font-style: italic">            retval= ba_insert(targetrelid,proj_record);</span>
-<span style="color: #8f5902; font-style: italic">            if(insert fails):</span>
+<span style="color: #8f5902; font-style: italic">            if(insert fails){</span>
 <span style="color: #8f5902; font-style: italic">                close the target rel(call closerel() method of Openreltable)</span>
-<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling ba_delete(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling delete(targetrel) of schema layer</span>
 <span style="color: #8f5902; font-style: italic">                return retval</span>
-<span style="color: #8f5902; font-style: italic">        else: stop</span>
+<span style="color: #8f5902; font-style: italic">            }</span>
+<span style="color: #8f5902; font-style: italic">        }</span>
+<span style="color: #8f5902; font-style: italic">        else: break</span>
 <span style="color: #8f5902; font-style: italic">    */</span>
 
+    <span style="color: #8f5902; font-style: italic">//Close the target relation (call closerel() method of Openreltable in cache layer)</span>
     <span style="color: #8f5902; font-style: italic">// return SUCCESS.</span>
 
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></td></tr></table></div>
+
+
+
 
 
                 </div> <!-- End of algo div -->

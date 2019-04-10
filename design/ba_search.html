@@ -30,7 +30,7 @@
             <div id="search" class="design-detail">
                 <h2>Search (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (RelId -> int), record (union Attribute *), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
+                <p>relid (int), record (union Attribute *), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -61,7 +61,7 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
-                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+                   <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
  2
  3
  4
@@ -99,17 +99,20 @@
 36
 37
 38
-39</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
+39
+40
+41</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">ba_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
+	
 	<span style="color: #8f5902; font-style: italic">/*get the attribute catalog entry from the attribute cache corresponding </span>
-<span style="color: #8f5902; font-style: italic">	  to the relation with Id relid and with attribute name attrName*/</span>
-	<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getAttrCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">attrcat_entry</span><span style="color: #000000; font-weight: bold">);</span>
+<span style="color: #8f5902; font-style: italic">	  to the relation with Id=relid and with attribute_name=attrName using</span>
+<span style="color: #8f5902; font-style: italic">	  OpenRelTable::getAttrCatEntry(relid, attrName, &amp;attrcat_entry); of cache layer */</span>
 	<span style="color: #8f5902; font-style: italic">//get root_block from the attribute catalog entry (attrcat_entry)</span>
 	
 	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">root_block</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//if Index does not exist for the attribute</span>
 		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">op</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000">RST</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//the op is reset</span>
-			<span style="color: #8f5902; font-style: italic">//assign the previous record id (prev_recid) to {-1, -1}</span>
-			<span style="color: #8f5902; font-style: italic">//update the previous record id (prev_recid) in the relation cache corresponding to the relation with Id relid</span>
-			<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setPrevRecId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">prev_recid</span><span style="color: #000000; font-weight: bold">);</span>
+			<span style="color: #8f5902; font-style: italic">//assign the previous record id (prev_recid) to {block_num=-1, slot_num=-1}</span>
+			<span style="color: #8f5902; font-style: italic">/*update the previous record id (prev_recid) in the relation cache corresponding to the relation with Id=relid</span>
+<span style="color: #8f5902; font-style: italic">			 using OpenRelTable::setPrevRecId(relid, prev_recid); of cache layer */</span>
 			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
 		<span style="color: #000000; font-weight: bold">}</span>
 		
@@ -118,10 +121,10 @@
 	<span style="color: #000000; font-weight: bold">}</span>
 	<span style="color: #204a87; font-weight: bold">else</span><span style="color: #000000; font-weight: bold">{</span> <span style="color: #8f5902; font-style: italic">//if Index exists for the attribute</span>
 		<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">op</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000">RST</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">// the op is reset</span>
-			<span style="color: #8f5902; font-style: italic">//assign the previous index id (prev_indexid) to {-1, -1}</span>
+			<span style="color: #8f5902; font-style: italic">//assign the previous index id (prev_indexid) to {block_num=-1, index_num=-1}</span>
 			<span style="color: #8f5902; font-style: italic">/*update the previous index id (prev_recid) in the attribute cache corresponding </span>
-<span style="color: #8f5902; font-style: italic">			  to the relation with Id relid and attribute name with attrName*/</span>
-			<span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">setSearchIndexId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">prev_indexid</span><span style="color: #000000; font-weight: bold">);</span>
+<span style="color: #8f5902; font-style: italic">			  to the relation with Id relid and attribute name with attrName</span>
+<span style="color: #8f5902; font-style: italic">			  using OpenRelTable::setPrevIndexId(relid, attrName, prev_indexid); of cache layer */</span>
 			<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
 		<span style="color: #000000; font-weight: bold">}</span>
 		<span style="color: #8f5902; font-style: italic">//search for the record id (recid) correspoding to the attribute with attribute name attrName and with value attrval</span>
@@ -135,10 +138,12 @@
 	<span style="color: #8f5902; font-style: italic">//copying the record with record id (recid) to the record (buffer)</span>
 	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//recid.block is the block that contains record</span>
 	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//recid.slot is the slot that contains record</span>
+	<span style="color: #000000">free</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">rec_buffer</span><span style="color: #000000; font-weight: bold">);</span>
 	
 	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">SUCCESS</span><span style="color: #000000; font-weight: bold">;</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></td></tr></table></div>
+
 
 
 
@@ -149,7 +154,7 @@
             <div id="linear_search" class="design-detail">
                 <h2>Linear Search (Block Access)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (RelId -> int), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
+                <p>relid (int), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -256,29 +261,37 @@
 74
 75
 76
-77</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">recId</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
-	<span style="color: #8f5902; font-style: italic">//get the previous record id from the relation cache corresponding to the relation with Id relid</span>
+77
+78
+79
+80
+81</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">recId</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
+	<span style="color: #8f5902; font-style: italic">//get the previous record id from the relation cache corresponding to the relation with Id=relid</span>
 	<span style="color: #000000">OpenRelTabel</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getPrevRecId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">prev_recid</span><span style="color: #000000; font-weight: bold">);</span>
 	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">prev_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//It is the first time that linear search search for the record with the attribute value attrval</span>
 		<span style="color: #8f5902; font-style: italic">//get the first record block of the relation from the relation cache </span>
-		<span style="color: #8f5902; font-style: italic">//assign block as the first record block of the relation</span>
-		<span style="color: #8f5902; font-style: italic">//assign slot as 0</span>
+		<span style="color: #8f5902; font-style: italic">//using getRelCatEntry() method of OpenRelTable in cache layer</span>
+		<span style="color: #8f5902; font-style: italic">//block = the first record block of the relation</span>
+		<span style="color: #8f5902; font-style: italic">//slot = 0</span>
 	<span style="color: #000000; font-weight: bold">}</span>
-	<span style="color: #204a87; font-weight: bold">else</span><span style="color: #000000; font-weight: bold">{</span> <span style="color: #8f5902; font-style: italic">//if the linear search knows the previous hit search from the previous hit</span>
-		<span style="color: #8f5902; font-style: italic">//assign block as the previous record id block</span>
-		<span style="color: #8f5902; font-style: italic">//assign slot as the previous record id slot</span>
+	<span style="color: #204a87; font-weight: bold">else</span><span style="color: #000000; font-weight: bold">{</span> <span style="color: #8f5902; font-style: italic">//if the linear search knows the  hit from previous search</span>
+		<span style="color: #8f5902; font-style: italic">// block = the previous record id block</span>
+		<span style="color: #8f5902; font-style: italic">// slot = the previous record id slot</span>
 	<span style="color: #000000; font-weight: bold">}</span>
 	
-	<span style="color: #8f5902; font-style: italic">//search for the record in the relation that satisfies the given condition</span>
-	<span style="color: #8f5902; font-style: italic">//Start from the assigned block and iterate over the records of the relation from the assigned block{</span>
-		<span style="color: #8f5902; font-style: italic">//get the record of the relation</span>
+	<span style="color: #8f5902; font-style: italic">//The following code searches for the next record in the relation that satisfies the given condition</span>
+	<span style="color: #8f5902; font-style: italic">//Start from block and iterate over the records of the relation{</span>
+		<span style="color: #8f5902; font-style: italic">//get the record of the relation using the following buffer layer functions</span>
 		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
-		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//where slot is not free</span>
+		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #8f5902; font-style: italic">//If slot is free skip the loop and continue to the next record slot</span>
 		
 		<span style="color: #8f5902; font-style: italic">//compare the record&#39;s attribute value to the given attrval corresponding to the attribute name attrName</span>
-		<span style="color: #8f5902; font-style: italic">//assign the compared value to the flag variable</span>
+		<span style="color: #8f5902; font-style: italic">// Compare the record</span>
+		<span style="color: #8f5902; font-style: italic">// </span>
+		<span style="color: #8f5902; font-style: italic">//flag = compare(AttrVal, record[attr_offset], attr_type);</span>
 		
-		<span style="color: #8f5902; font-style: italic">//assign the cond variable as UNSET</span>
+		<span style="color: #8f5902; font-style: italic">//cond = UNSET</span>
 		
 		<span style="color: #8f5902; font-style: italic">//Set the cond variable as per the op and the flag variable</span>
 		<span style="color: #204a87; font-weight: bold">switch</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
@@ -334,6 +347,7 @@
 	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">};</span> <span style="color: #8f5902; font-style: italic">//i.e., no record in the relation with Id relid satisfies the given condition</span>
 <span style="color: #000000; font-weight: bold">}</span>			
 </pre></td></tr></table></div>
+
 
                     
                 </div> <!-- End of algo div -->

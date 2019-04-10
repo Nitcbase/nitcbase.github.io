@@ -82,7 +82,7 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
-                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+                  <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
  2
  3
  4
@@ -127,56 +127,90 @@
 43
 44
 45
-46</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">select</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">strval</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">select</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">strval</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
 
-    <span style="color: #8f5902; font-style: italic">// get the srcrel&#39;s open relation id(let it be srcrelid), using getRelid() method of Openreltable</span>
-    <span style="color: #8f5902; font-style: italic">// if srcrel is not opened in open relation table, return E_RELNOTOPEN</span>
+    <span style="color: #8f5902; font-style: italic">// get the srcrel&#39;s open relation id(let it be srcrelid), using getRelid() method of cache layer</span>
+    <span style="color: #8f5902; font-style: italic">// if srcrel is not open in open relation table, return E_RELNOTOPEN</span>
 
-    <span style="color: #8f5902; font-style: italic">// get the attribute catalog entry of attribute correspoding to attr(as argument), from Openreltable(using getAttrcatEntry() method).</span>
-    <span style="color: #8f5902; font-style: italic">// if gatAttrcatEntry() call fails return E_ATTRNOTEXIST</span>
+    <span style="color: #8f5902; font-style: italic">// get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer.</span>
+    <span style="color: #8f5902; font-style: italic">// if getAttrcatEntry() call fails return E_ATTRNOTEXIST</span>
 
-    <span style="color: #8f5902; font-style: italic">//convert strval in to union Attribute (let the var. name be val)(using type found from attribute catalog entry)</span>
+    <span style="color: #8f5902; font-style: italic">//convert strval into union Attribute (let it be val) as shown in the following code:</span>
+    <span style="color: #8f5902; font-style: italic">// let type=attrcatentry.attr_type;</span>
+
+    <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">INT</span><span style="color: #000000; font-weight: bold">){</span>  
+        <span style="color: #8f5902; font-style: italic">//The input contains a string representation of the integer attribute value.</span>
+        <span style="color: #000000">val</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ival</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #000000">atoi</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">iter</span><span style="color: #000000; font-weight: bold">]);</span>
+        <span style="color: #8f5902; font-style: italic">//if conversion fails(i.e string can not be converted to integer) return E_ATTRTYPEMISMATCH. </span>
+
+    <span style="color: #000000; font-weight: bold">}</span><span style="color: #204a87; font-weight: bold">else</span> <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">FLOAT</span><span style="color: #000000; font-weight: bold">){</span>
+        <span style="color: #8f5902; font-style: italic">//do accordingly to float</span>
+    <span style="color: #000000; font-weight: bold">}</span><span style="color: #204a87; font-weight: bold">else</span> <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">STRING</span><span style="color: #000000; font-weight: bold">){</span>
+        <span style="color: #8f5902; font-style: italic">//No type conversion needed here.</span>
+    <span style="color: #000000; font-weight: bold">}</span>
     <span style="color: #8f5902; font-style: italic">//if convert fails, return E_ATTRTYPEMISMATCH</span>
 
-    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in src relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).</span>
+    <span style="color: #8f5902; font-style: italic">//Next task is to create the destination relation.</span>
+    <span style="color: #8f5902; font-style: italic">//Prepare arguments for createrel() in the following way:</span>
+    <span style="color: #8f5902; font-style: italic">//get RelcatEntry of srcrel from cache using getRelCatEntry() method).</span>
+    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in src relation, from RelcatEntry.(let it be nAttrs)</span>
 
-    <span style="color: #8f5902; font-style: italic">// let attr_name[nAttrs][ATTR_SIZE] be a 2d array of type char</span>
-    <span style="color: #8f5902; font-style: italic">// let attr_types[tar_nAttrs] be an array of type int</span>
+    <span style="color: #8f5902; font-style: italic">// let attr_name[nAttrs][ATTR_SIZE] be a 2D array of type char(attribute names of rel).</span>
+    <span style="color: #8f5902; font-style: italic">// let attr_types[nAttrs] be an array of type int</span>
 
-    <span style="color: #8f5902; font-style: italic">/*iterate through 0:nAttrs :</span>
-<span style="color: #8f5902; font-style: italic">        get the i&#39;th attribute&#39;s AttrCatEntry (using getAttrcatEntry() of Openreltable )</span>
+    <span style="color: #8f5902; font-style: italic">/*iterate through 0 to nAttrs-1 :</span>
+<span style="color: #8f5902; font-style: italic">        get the i&#39;th attribute&#39;s AttrCatEntry (using getAttrcatEntry() of cache layer )</span>
 <span style="color: #8f5902; font-style: italic">        fill attr_name, attr_types of corresponding attributes using Attribute catalog found.</span>
 <span style="color: #8f5902; font-style: italic">    */</span>
 
     <span style="color: #8f5902; font-style: italic">// let retval= createrel(targetrel,no_of_attrs_srcrel,attr_name,attr_type)</span>
     <span style="color: #8f5902; font-style: italic">// if create fails return retval</span>
 
-    <span style="color: #8f5902; font-style: italic">//open targetrel (using retval=openRel() in Openreltable)</span>
+    <span style="color: #8f5902; font-style: italic">//open targetrel (using retval=openRel() of OpenRelTable class in cache layer)</span>
     <span style="color: #8f5902; font-style: italic">/* if open fails</span>
-<span style="color: #8f5902; font-style: italic">        delete targetrelation by calling deleterel(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">        delete target relation by calling deleterel(targetrel) of schema layer</span>
 <span style="color: #8f5902; font-style: italic">        return retval</span>
 <span style="color: #8f5902; font-style: italic">    */</span>
-   
+    
+    <span style="color: #8f5902; font-style: italic">//Note: Before calling the search function, reset the search to start from the first hit</span>
+    <span style="color: #8f5902; font-style: italic">// by calling ba_search of block access layer with op=RST.</span>
     <span style="color: #8f5902; font-style: italic">/*</span>
 <span style="color: #8f5902; font-style: italic">    while (1):</span>
 <span style="color: #8f5902; font-style: italic">        var: union Attribute record[no_of_attrs_srcrel];</span>
 <span style="color: #8f5902; font-style: italic">        if ba_search(srcrelid,record,attr,val,op) returns SUCCESS:</span>
 <span style="color: #8f5902; font-style: italic">            retval = ba_insert(targetrelid,record);</span>
 <span style="color: #8f5902; font-style: italic">            if(insert fails):</span>
-<span style="color: #8f5902; font-style: italic">                close the target rel(call closerel() method of Openreltable class)</span>
-<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling deleterel(targetrel)</span>
+<span style="color: #8f5902; font-style: italic">                close the target rel(call closerel() method of OpenRelTable class in cache layer)</span>
+<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling deleterel(targetrel) of schema layer</span>
 <span style="color: #8f5902; font-style: italic">                return retval</span>
 
-<span style="color: #8f5902; font-style: italic">        else: stop</span>
+<span style="color: #8f5902; font-style: italic">        else: break</span>
 <span style="color: #8f5902; font-style: italic">    */</span>
 
     <span style="color: #8f5902; font-style: italic">// return SUCCESS;</span>
     
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></td></tr></table></div>
+  
 
-
-                </div> <!-- End of algo div -->
+                </div>
                 <a href="code/select.cpp" target="_blank" download>Click here</a> to download the code.
             </div>
             

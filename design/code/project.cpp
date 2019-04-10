@@ -1,16 +1,21 @@
 
 int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, char tar_attrs[][ATTR_SIZE]){
-    // get the src relation's open relation id, using getRelid() method of Openreltable.
-    // if source not opened in open relation table, return E_RELNOTOPEN
+    
+    // get the srcrel's open relation id(let it be srcrelid), using getRelid() method of cache layer
+    // if srcrel is not open in open relation table, return E_RELNOTOPEN
 
-    //get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).
-    //if tar_nAttrs > no_of_attrs in relation, return FAILURE(unequal no.of attrs).
+    //get RelCatEntry of srcrel using getRelCatEntry() of OpenRelTable in cache layer
+    //get the no. of attributes present in relation from the fetched RelcatEntry.
 
-    // let attr_offset[tar_nAttrs] be an array of type int.(attr_offset[i]=offset of i'th tar. rel's attribute in src rel's attributes)
+    // let attr_offset[tar_nAttrs] be an array of type int.
+    // where ith entry corresponds to the offset in the srcrel of ith attribute in the target relation.
     // let attr_types[tar_nAttrs] be an array of type int.
+    // where ith entry corresponds to the type ith attribute in the target relation.
+    //(type can be one of INT, FLOAT or STRING)
 
-    /*iterate through 0:nAttrs :
-        get the AttributeCat entry (using getAttrcatEntry() of Openreltable) of attribute with name tar_attrs[i]
+    /*iterate through 0 to nAttrs-1 :
+        get the AttributeCat entry (using getAttrcatEntry() of Openreltable in cache layer)
+        of the attribute with name tar_attrs[i]
         fill the attr_offset,attr_types arrays of target relation from the corresonding Attribute catalog entries
     */
 
@@ -18,22 +23,28 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
     // if create fails return retval.
 
     //open targetrel (using retval=openRel() in Openreltable)
-    // if open fails return retval.
+    /* if open fails 
+    delete target relation by calling deleterel(targetrel) of schema layer
+    return retval. */
 
     /*
     while (1):
         var: union Attribute record[no_of_attrs_srcrel];
-        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS:
-            union Attribute proj_record[tar_nAttrs] (record which need to be inserted into target rel)
-            fill proj_record with respect to attr_offset array from record of src rel.
+        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS{
+            declare: union Attribute proj_record[tar_nAttrs] (buffer for record which need to be inserted into target rel)
+            iterate through 0 to tar_attrs-1:
+                proj_record[i]=record[attr_offset[i]]
             retval= ba_insert(targetrelid,proj_record);
-            if(insert fails):
-                close the target rel(call closerel() method of Openreltable)
-                delete targetrelation by calling ba_delete(targetrel)
+            if(insert fails){
+                close the target rel(call closerel() method of Openreltable in cache layer)
+                delete targetrelation by calling delete(targetrel) of schema layer
                 return retval
-        else: stop
+            }
+        }
+        else: break
     */
 
+    //Close the target relation (call closerel() method of Openreltable in cache layer)
     // return SUCCESS.
 
 }
