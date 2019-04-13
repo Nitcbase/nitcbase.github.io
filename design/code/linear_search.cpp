@@ -19,47 +19,48 @@ struct recId linear_search(relId relid, char attrName[ATTR_SIZE], union Attribut
 		rec_buffer->getRecord(record, slot);
 		//If slot is free skip the loop and continue to the next record slot
 		
-		//compare the record's attribute value to the given attrval corresponding to the attribute name attrName
-		// Compare the record
-		// 
+		//compare record's attribute value to the the given attrval as below:
+		//storing the outcome of comparision in the variable flag
 		//flag = compare(AttrVal, record[attr_offset], attr_type);
 		
 		//cond = UNSET
 		
-		//Set the cond variable as per the op and the flag variable
+		//Next task is to check whether this record satisfies the given condition.
+		//It is determined based on the output of previous comparision and the op value received.
+		//The following code sets the cond variable if the condition is satisfied.
 		switch(op){
 		
-			case NE: //if op is not equal to
+			case NE: //if op is "not equal to"
 				if(flag != 0){ //i.e if the record's attribute value is not equal to the given attrval
 					//SET the cond variable
 				}
 				break;
 				
-			case LT: //if op is less than
+			case LT: //if op is "less than"
 				if(flag < 0){ //i.e if the record's attribute value is less than the given attrval
 					//SET the cond variable 
 				}
 				break;
 			
-			case LE: //if op is less than or equal to
+			case LE: //if op is "less than or equal to"
 				if(flag <= 0){ //i.e if the record's attribute value is less than or equal to the given attrval
 					//SET the cond variable 
 				}
 				break;
 			
-			case EQ: //if op is equal to
+			case EQ: //if op is "equal to"
 				if(flag == 0){ //i.e if the record's attribute value is equal to the given attrval
 					//SET the cond variable 
 				}
 				break;
 			
-			case GT: //if op is greater than
+			case GT: //if op is "greater than"
 				if(flag > 0){ //i.e if the record's attribute value is greater than the given attrval
 					//SET the cond variable 
 				}
 				break;
 			
-			case GE: //if op is greater than or equal to
+			case GE: //if op is "greater than or equal to"
 				if(flag >= 0){ //i.e if the record's attribute value is greater than or equal to the given attrval
 					//SET the cond variable 
 				}

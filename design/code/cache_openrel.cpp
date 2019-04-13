@@ -1,4 +1,5 @@
 relId OpenRelTable::OpenRel(char relName[ATTR_SIZE]){
+
 	//check if the relation with relation name relName already opened
 	relid = OpenRelTable::getRelId(relName);
 	if(relid != E_NOTOPEN){
@@ -15,26 +16,31 @@ relId OpenRelTable::OpenRel(char relName[ATTR_SIZE]){
 		return E_RELNOTEXIST;
 	}
 	
-	//get the relation catalog entry with relation name relName from the relation catalog
-	rec_buffer = Buffer::getRecBuffer(relcat_recid.block); //(recid of the relation record = relcat_recid)
-	rec_buffer->getRecord(&relcat_entry, relcat_recid.slot); 
-													    
-	//update the free slot of the relation cache with the relation catalog entry (relac_entry)
-	//update the corresponding meta information corresponding to the free slot in the relation cache
-	
 	//Iterate over all the attributes corresponding to the relation with relation name relName{
 		//search for the attributes with relation name relName in the attribute catalog 
 		attrcat_recid = linear_search(ATTRCAT_RELID, "RelName", relName, EQ);
 		
-		//get the attribute catalog record from the attribute catalog (recid of the attribute record = attrcat_recid)
+		//get the attribute catalog record corresponding to attrcat_recid from the attribute catalog
 		rec_buffer = Buffer::getRecBuffer(attrcat_recid.block);
 		rec_buffer->getRecord(attrcat_record, attrcat_recid.slot);
 		
-		//since attribute cache is implemented as linked list, create separate new node of type Attribute Cache
-		//update the new node of the attribute cache with the attribute catalog entry
-		//update the corresponding meta information in the new node of the attribute cache
-		//update Attribute Cache head in the relation cache as the new node
+		//since attribute cache is implemented as a linked list
+		//For each attribute create separate new node of type Attribute Cache
+		/*Convert the attribute catalog entry from the record structure
+		  to the structure AttrCatEntry */
+		new_node.attrcat_entry = RecordtoAttrCatEntry(record);
+		//initialize the meta information of the attribute cache node
+		initializeAttrCacheNode(new_node);
+		//Add the node to the attribute cache linked list.
 	//}
+	AttrCacheEntry *attrlist_head = head of the linked list of Attribute Cache entries.
+
+	//get the relation catalog entry with relation name relName from the relation catalog
+	rec_buffer = Buffer::getRecBuffer(relcat_recid.block); //(recid of the relation record = relcat_recid)
+	rec_buffer->getRecord(&relcat_entry, relcat_recid.slot); 
+													    
+	//initialize the meta information of the relation cache node
+	initializeRelCacheNode(relid, attrlist_head);
 	
 	return relid;
 }

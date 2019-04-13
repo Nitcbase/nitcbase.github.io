@@ -65,7 +65,7 @@
                         Copy the code from HTML section and paste n this div. Simple :-).
                     -->
                    
-                    <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+                  <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
  2
  3
  4
@@ -104,7 +104,14 @@
 37
 38
 39
-40</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #000000">relId</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">OpenRel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+40
+41
+42
+43
+44
+45
+46</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #000000">relId</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">OpenRel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
+
 	<span style="color: #8f5902; font-style: italic">//check if the relation with relation name relName already opened</span>
 	<span style="color: #000000">relid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">OpenRelTable</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRelId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">);</span>
 	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #000000">E_NOTOPEN</span><span style="color: #000000; font-weight: bold">){</span>
@@ -121,26 +128,31 @@
 		<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">E_RELNOTEXIST</span><span style="color: #000000; font-weight: bold">;</span>
 	<span style="color: #000000; font-weight: bold">}</span>
 	
-	<span style="color: #8f5902; font-style: italic">//get the relation catalog entry with relation name relName from the relation catalog</span>
-	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//(recid of the relation record = relcat_recid)</span>
-	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span> 
-													    
-	<span style="color: #8f5902; font-style: italic">//update the free slot of the relation cache with the relation catalog entry (relac_entry)</span>
-	<span style="color: #8f5902; font-style: italic">//update the corresponding meta information corresponding to the free slot in the relation cache</span>
-	
 	<span style="color: #8f5902; font-style: italic">//Iterate over all the attributes corresponding to the relation with relation name relName{</span>
 		<span style="color: #8f5902; font-style: italic">//search for the attributes with relation name relName in the attribute catalog </span>
 		<span style="color: #000000">attrcat_recid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ATTRCAT_RELID</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&quot;RelName&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">EQ</span><span style="color: #000000; font-weight: bold">);</span>
 		
-		<span style="color: #8f5902; font-style: italic">//get the attribute catalog record from the attribute catalog (recid of the attribute record = attrcat_recid)</span>
+		<span style="color: #8f5902; font-style: italic">//get the attribute catalog record corresponding to attrcat_recid from the attribute catalog</span>
 		<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span>
 		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attrcat_record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
 		
-		<span style="color: #8f5902; font-style: italic">//since attribute cache is implemented as linked list, create separate new node of type Attribute Cache</span>
-		<span style="color: #8f5902; font-style: italic">//update the new node of the attribute cache with the attribute catalog entry</span>
-		<span style="color: #8f5902; font-style: italic">//update the corresponding meta information in the new node of the attribute cache</span>
-		<span style="color: #8f5902; font-style: italic">//update Attribute Cache head in the relation cache as the new node</span>
+		<span style="color: #8f5902; font-style: italic">//since attribute cache is implemented as a linked list</span>
+		<span style="color: #8f5902; font-style: italic">//For each attribute create separate new node of type Attribute Cache</span>
+		<span style="color: #8f5902; font-style: italic">/*Convert the attribute catalog entry from the record structure</span>
+<span style="color: #8f5902; font-style: italic">		  to the structure AttrCatEntry */</span>
+		<span style="color: #000000">new_node</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">attrcat_entry</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">RecordtoAttrCatEntry</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #8f5902; font-style: italic">//initialize the meta information of the attribute cache node</span>
+		<span style="color: #000000">initializeAttrCacheNode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">new_node</span><span style="color: #000000; font-weight: bold">);</span>
+		<span style="color: #8f5902; font-style: italic">//Add the node to the attribute cache linked list.</span>
 	<span style="color: #8f5902; font-style: italic">//}</span>
+	<span style="color: #000000">AttrCacheEntry</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">attrlist_head</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">head</span> <span style="color: #000000">of</span> <span style="color: #000000">the</span> <span style="color: #000000">linked</span> <span style="color: #000000">list</span> <span style="color: #000000">of</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">Cache</span> <span style="color: #000000">entries</span><span style="color: #000000; font-weight: bold">.</span>
+
+	<span style="color: #8f5902; font-style: italic">//get the relation catalog entry with relation name relName from the relation catalog</span>
+	<span style="color: #000000">rec_buffer</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">Buffer</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getRecBuffer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">block</span><span style="color: #000000; font-weight: bold">);</span> <span style="color: #8f5902; font-style: italic">//(recid of the relation record = relcat_recid)</span>
+	<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #ce5c00; font-weight: bold">&amp;</span><span style="color: #000000">relcat_entry</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">relcat_recid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span> 
+													    
+	<span style="color: #8f5902; font-style: italic">//initialize the meta information of the relation cache node</span>
+	<span style="color: #000000">initializeRelCacheNode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">attrlist_head</span><span style="color: #000000; font-weight: bold">);</span>
 	
 	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">;</span>
 <span style="color: #000000; font-weight: bold">}</span>

@@ -265,7 +265,8 @@
 78
 79
 80
-81</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">recId</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
+81
+82</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">recId</span> <span style="color: #000000">linear_search</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relId</span> <span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attrName</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">union</span> <span style="color: #000000">Attribute</span> <span style="color: #000000">attrval</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
 	<span style="color: #8f5902; font-style: italic">//get the previous record id from the relation cache corresponding to the relation with Id=relid</span>
 	<span style="color: #000000">OpenRelTabel</span><span style="color: #ce5c00; font-weight: bold">::</span><span style="color: #000000">getPrevRecId</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">relid</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">prev_recid</span><span style="color: #000000; font-weight: bold">);</span>
 	<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">prev_recid</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">}){</span> <span style="color: #8f5902; font-style: italic">//It is the first time that linear search search for the record with the attribute value attrval</span>
@@ -286,47 +287,48 @@
 		<span style="color: #000000">rec_buffer</span><span style="color: #ce5c00; font-weight: bold">-&gt;</span><span style="color: #000000">getRecord</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">record</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">slot</span><span style="color: #000000; font-weight: bold">);</span>
 		<span style="color: #8f5902; font-style: italic">//If slot is free skip the loop and continue to the next record slot</span>
 		
-		<span style="color: #8f5902; font-style: italic">//compare the record&#39;s attribute value to the given attrval corresponding to the attribute name attrName</span>
-		<span style="color: #8f5902; font-style: italic">// Compare the record</span>
-		<span style="color: #8f5902; font-style: italic">// </span>
+		<span style="color: #8f5902; font-style: italic">//compare record&#39;s attribute value to the the given attrval as below:</span>
+		<span style="color: #8f5902; font-style: italic">//storing the outcome of comparision in the variable flag</span>
 		<span style="color: #8f5902; font-style: italic">//flag = compare(AttrVal, record[attr_offset], attr_type);</span>
 		
 		<span style="color: #8f5902; font-style: italic">//cond = UNSET</span>
 		
-		<span style="color: #8f5902; font-style: italic">//Set the cond variable as per the op and the flag variable</span>
+		<span style="color: #8f5902; font-style: italic">//Next task is to check whether this record satisfies the given condition.</span>
+		<span style="color: #8f5902; font-style: italic">//It is determined based on the output of previous comparision and the op value received.</span>
+		<span style="color: #8f5902; font-style: italic">//The following code sets the cond variable if the condition is satisfied.</span>
 		<span style="color: #204a87; font-weight: bold">switch</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">){</span>
 		
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">NE</span>: <span style="color: #8f5902; font-style: italic">//if op is not equal to</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">NE</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;not equal to&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">!=</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is not equal to the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable</span>
 				<span style="color: #000000; font-weight: bold">}</span>
 				<span style="color: #204a87; font-weight: bold">break</span><span style="color: #000000; font-weight: bold">;</span>
 				
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">LT</span>: <span style="color: #8f5902; font-style: italic">//if op is less than</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">LT</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;less than&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is less than the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable </span>
 				<span style="color: #000000; font-weight: bold">}</span>
 				<span style="color: #204a87; font-weight: bold">break</span><span style="color: #000000; font-weight: bold">;</span>
 			
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">LE</span>: <span style="color: #8f5902; font-style: italic">//if op is less than or equal to</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">LE</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;less than or equal to&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">&lt;=</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is less than or equal to the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable </span>
 				<span style="color: #000000; font-weight: bold">}</span>
 				<span style="color: #204a87; font-weight: bold">break</span><span style="color: #000000; font-weight: bold">;</span>
 			
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">EQ</span>: <span style="color: #8f5902; font-style: italic">//if op is equal to</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">EQ</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;equal to&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">==</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is equal to the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable </span>
 				<span style="color: #000000; font-weight: bold">}</span>
 				<span style="color: #204a87; font-weight: bold">break</span><span style="color: #000000; font-weight: bold">;</span>
 			
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">GT</span>: <span style="color: #8f5902; font-style: italic">//if op is greater than</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">GT</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;greater than&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is greater than the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable </span>
 				<span style="color: #000000; font-weight: bold">}</span>
 				<span style="color: #204a87; font-weight: bold">break</span><span style="color: #000000; font-weight: bold">;</span>
 			
-			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">GE</span>: <span style="color: #8f5902; font-style: italic">//if op is greater than or equal to</span>
+			<span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">GE</span>: <span style="color: #8f5902; font-style: italic">//if op is &quot;greater than or equal to&quot;</span>
 				<span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">flag</span> <span style="color: #ce5c00; font-weight: bold">&gt;=</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">){</span> <span style="color: #8f5902; font-style: italic">//i.e if the record&#39;s attribute value is greater than or equal to the given attrval</span>
 					<span style="color: #8f5902; font-style: italic">//SET the cond variable </span>
 				<span style="color: #000000; font-weight: bold">}</span>
@@ -347,7 +349,6 @@
 	<span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000; font-weight: bold">{</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">};</span> <span style="color: #8f5902; font-style: italic">//i.e., no record in the relation with Id relid satisfies the given condition</span>
 <span style="color: #000000; font-weight: bold">}</span>			
 </pre></td></tr></table></div>
-
 
                     
                 </div> <!-- End of algo div -->

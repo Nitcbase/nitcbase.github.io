@@ -1,4 +1,4 @@
-int OpenRelTable::setPrevRecId(relId rel_id, recId *recid){
+int OpenRelTable::setPrevRecId(relId rel_id, recId *recidbuff_ptr){
 	if(rel_id< 0 || rel_id>= MAXOPEN){	//check relation id (relid) lies in the range
 		return E_OUTOFBOUND;
 	}
@@ -6,7 +6,6 @@ int OpenRelTable::setPrevRecId(relId rel_id, recId *recid){
 		return E_NOTOPEN;
 	}
 	
-	/*copy the recid to the previous record id (in meta informatiom) corresponding
-	  to the relation with Id relid in the relation cache*/
+	/*copy the previous record id of the relation from the recidbuff_ptr to the relation cache*/
 	return SUCCESS;
 }
