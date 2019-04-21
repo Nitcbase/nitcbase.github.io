@@ -4,238 +4,202 @@
 <head>
     <title>Join</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div id="join" class="design-detail">
+                            <div class="pagetitle">
+                                <h1>Join</h1>
+                            </div>
+                            <h3>Arguments:</h3>
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                                    <td>srcrel1</td>
+                                    <td>char[ATTR_SIZE]</td>
+                                    <td>Name of 1st Source Relation.</td>
+                                </tr>
+                                <tr>
+                                    <td>srcrel2</td>
+                                    <td>char[ATTR_SIZE]</td>
+                                    <td>Name of 2nd Source Relation.</td>
+                                </tr>
+                                <tr>
+                                    <td>targetrel</td>
+                                    <td>char [ATTR_SIZE]</td>
+                                    <td>Name of the target Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>attr1</td>
+                                    <td>char [ATTR_SIZE]</td>
+                                    <td>Attribute/column name in srcrel1.</td>
+                                </tr>
+                                <tr>
+                                    <td>attr2</td>
+                                    <td>char [ATTR_SIZE]</td>
+                                    <td>Attribute/column name in srcrel2.</td>
+                                </tr>
+                            </table>
+                            <div class=retval>
+                                <h3>Return value:</h3>
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful creation of new relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_RELNOTOPEN</td>
+                                        <td>If any of the source relations is not open.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_RELEXIST</td>
+                                        <td>If a relation with name targetrel already exists.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRNOTEXIST</td>
+                                        <td>If an attribute with name attr1 in srcrel1 or attr2 in srcrel2 does not exist.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_DISKFULL</td>
+                                        <td>If disk space is not sufficient for creating the new relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRTYPEMISMATCH</td>
+                                        <td>If the actual type of any of the attributes in the source relations is different from the type of provided attribute.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_CACHEFULL	</td>
+                                        <td>If the openRel() fails because of no free slots in open relation table</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <h3>Description:</h3>
+                            <p>Description of the function/method</p>
+
+                            <h3>Algorithm:</h3>
+                            <div class="code"><pre><code>int join(char srcrel1[ATTR_SIZE],char srcrel2[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr1[ATTR_SIZE], char attr2[ATTR_SIZE]){
+	
+    // get the srcrel1's open relation id(let it be srcrelid1), using getRelid() method of Openreltable in cache layer
+    // if srcrel1 is not opened in open relation table, return E_RELNOTOPEN
+
+	// get the srcrel2's open relation id(let it be srcrelid2), using getRelid() method of Openreltable in cache layer
+    // if srcrel2 is not opened in open relation table, return E_RELNOTOPEN
+    
+    //get the AttrCatEntry of attr1 in rel1 and attr2 in rel2 using getAttrCatEntry() method of Openreltable in cache layer.
+    
+    // if attr1 is not present in rel1 or attr2 not present in rel2 (failure of call to Openreltable) return E_ATTRNOTEXIST.
+    
+    // if attr1 and attr2 are of different types return E_ATTRTYPEMISMATCH
+    
+    // let nAttrs1 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer).
+    // let nAttrs2 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer). 
+    
+    //Next step ensures that an index exists for atleast one of the relations
+    /* if both the attributes of src rels have B+ tree:
+    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)  
+    	else if none of target attrs has bplus tree:
+    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)
+    	  create bplus tree on attr2 in rel2 (using create_bplus() method of bplus layer)
+          If create fails return E_DISKFULL
+    */
+    
+    //let tar_attrs[nAttrs1+nAttrs2-1][ATTR_SIZE] be an array of type char
+    //let tar_attrtypes[nAttrs1+nAttrs2-1] be an array of type int
+    //Note: The target relation has number of attributes less than nAttrs1+nAttrs2 (Why?)
+    
+    /* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in srcrel2),
+     by getting attribute catalog of each attribute from Openreltable(using method getattrcat() in cache layer) */  
+       
+	// retval= createrel(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);
+    // where createrel is a function in schema layer
+    // if create fails return retval
+    
+    //int targetrelid = openRel(targetrel) 
+    //where openrel is a function in schema layer
+    /* if open fails
+        delete targetrelation by calling deleterel(targetrel) in schema layer
+        return error value targetrelid
+    */
+    
+    //var: Union Attribute rec1[nAttrs1]
+    /* while ba_search(srcrelid1,rec1, ,oper=PROJ, no_val) returns success:
+    		var: union Attribute Record[nAttrs2]
+     		while ba_search(srcrelid2,Record, attr2, oper=EQ, rel1 record's attr1 value) returns SUCCESS:
+     			 var: union Attribute tar_record[nAttrs1+nAttrs2-1]
+     			 copy the rel1's, rel2's record to tar_record[] (except for attr2 offset in rel2)
+     			 call ba_insert(targetrelid,tar_record);
+     			 if insert fails:
+     			 	 delete targetrelation by calling deleterel(targetrel) of schema layer
+        			 return E_DISKFULL
+     		
+     */
+     
+     //return SUCCESS;
+    
+}</code></pre></div>
+
+                            <a href="code/join.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
         </div>
         
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
     </div>
-    
-    <div id="content">
-        <div id="design-content">
-            <div id="join" class="design-detail">
-                <h2>Join</h2>
-                <h3>Arguments:</h3>
-                <table>
-                    <tr>
-                        <td>srcrel1</td>
-                        <td>char[ATTR_SIZE]</td>
-                        <td>Name of 1st Source Relation.</td>
-                    </tr>
-                    <tr>
-                        <td>srcrel2</td>
-                        <td>char[ATTR_SIZE]</td>
-                        <td>Name of 2nd Source Relation.</td>
-                    </tr>
-                    <tr>
-                        <td>targetrel</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>Name of the target Relation</td>
-                    </tr>
-                    <tr>
-                        <td>attr1</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>Attribute/column name in srcrel1.</td>
-                    </tr>
-                    <tr>
-                        <td>attr2</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>Attribute/column name in srcrel2.</td>
-                    </tr>
-                </table>
-                <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On successful creation of new relation.</td>
-                        </tr>
-                        <tr>
-                            <td>E_RELNOTOPEN</td>
-                            <td>If any of the source relations is not open.</td>
-                        </tr>
-                        <tr>
-                            <td>E_RELEXIST</td>
-                            <td>If a relation with name targetrel already exists.</td>
-                        </tr>
-                        <tr>
-                            <td>E_ATTRNOTEXIST</td>
-                            <td>If an attribute with name attr1 in srcrel1 or attr2 in srcrel2 does not exist.</td>
-                        </tr>
-                        <tr>
-                            <td>E_DISKFULL</td>
-                            <td>If disk space is not sufficient for creating the new relation.</td>
-                        </tr>
-                        <tr>
-                            <td>E_ATTRTYPEMISMATCH</td>
-                            <td>If the actual type of any of the attributes in the source relations is different from the type of provided attribute.</td>
-                        </tr>
-                        <tr>
-                            <td>E_CACHEFULL	</td>
-                            <td>If the openRel() fails because of no free slots in open relation table</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <h3>Description:</h3>
-                <p>Description of the function/method</p>
-                
-                <h3>Algorithm:</h3>
-                <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-                 <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">join</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel1</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel2</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr1</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr2</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
-	
-    <span style="color: #8f5902; font-style: italic">// get the srcrel1&#39;s open relation id(let it be srcrelid1), using getRelid() method of Openreltable in cache layer</span>
-    <span style="color: #8f5902; font-style: italic">// if srcrel1 is not opened in open relation table, return E_RELNOTOPEN</span>
-
-	<span style="color: #8f5902; font-style: italic">// get the srcrel2&#39;s open relation id(let it be srcrelid2), using getRelid() method of Openreltable in cache layer</span>
-    <span style="color: #8f5902; font-style: italic">// if srcrel2 is not opened in open relation table, return E_RELNOTOPEN</span>
-    
-    <span style="color: #8f5902; font-style: italic">//get the AttrCatEntry of attr1 in rel1 and attr2 in rel2 using getAttrCatEntry() method of Openreltable in cache layer.</span>
-    
-    <span style="color: #8f5902; font-style: italic">// if attr1 is not present in rel1 or attr2 not present in rel2 (failure of call to Openreltable) return E_ATTRNOTEXIST.</span>
-    
-    <span style="color: #8f5902; font-style: italic">// if attr1 and attr2 are of different types return E_ATTRTYPEMISMATCH</span>
-    
-    <span style="color: #8f5902; font-style: italic">// let nAttrs1 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer).</span>
-    <span style="color: #8f5902; font-style: italic">// let nAttrs2 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer). </span>
-    
-    <span style="color: #8f5902; font-style: italic">//Next step ensures that an index exists for atleast one of the relations</span>
-    <span style="color: #8f5902; font-style: italic">/* if both the attributes of src rels have B+ tree:</span>
-<span style="color: #8f5902; font-style: italic">    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)  </span>
-<span style="color: #8f5902; font-style: italic">    	else if none of target attrs has bplus tree:</span>
-<span style="color: #8f5902; font-style: italic">    	  if rel1 has more records than rel2 swap srcrel1, srcrel2(swap srcrelname, relid, target attribute names)</span>
-<span style="color: #8f5902; font-style: italic">    	  create bplus tree on attr2 in rel2 (using create_bplus() method of bplus layer)</span>
-<span style="color: #8f5902; font-style: italic">          If create fails return E_DISKFULL</span>
-<span style="color: #8f5902; font-style: italic">    */</span>
-    
-    <span style="color: #8f5902; font-style: italic">//let tar_attrs[nAttrs1+nAttrs2-1][ATTR_SIZE] be an array of type char</span>
-    <span style="color: #8f5902; font-style: italic">//let tar_attrtypes[nAttrs1+nAttrs2-1] be an array of type int</span>
-    <span style="color: #8f5902; font-style: italic">//Note: The target relation has number of attributes less than nAttrs1+nAttrs2 (Why?)</span>
-    
-    <span style="color: #8f5902; font-style: italic">/* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in srcrel2),</span>
-<span style="color: #8f5902; font-style: italic">     by getting attribute catalog of each attribute from Openreltable(using method getattrcat() in cache layer) */</span>  
-       
-	<span style="color: #8f5902; font-style: italic">// retval= createrel(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);</span>
-    <span style="color: #8f5902; font-style: italic">// where createrel is a function in schema layer</span>
-    <span style="color: #8f5902; font-style: italic">// if create fails return retval</span>
-    
-    <span style="color: #8f5902; font-style: italic">//int targetrelid = openRel(targetrel) </span>
-    <span style="color: #8f5902; font-style: italic">//where openrel is a function in schema layer</span>
-    <span style="color: #8f5902; font-style: italic">/* if open fails</span>
-<span style="color: #8f5902; font-style: italic">        delete targetrelation by calling deleterel(targetrel) in schema layer</span>
-<span style="color: #8f5902; font-style: italic">        return error value targetrelid</span>
-<span style="color: #8f5902; font-style: italic">    */</span>
-    
-    <span style="color: #8f5902; font-style: italic">//var: Union Attribute rec1[nAttrs1]</span>
-    <span style="color: #8f5902; font-style: italic">/* while ba_search(srcrelid1,rec1, ,oper=PROJ, no_val) returns success:</span>
-<span style="color: #8f5902; font-style: italic">    		var: union Attribute Record[nAttrs2]</span>
-<span style="color: #8f5902; font-style: italic">     		while ba_search(srcrelid2,Record, attr2, oper=EQ, rel1 record&#39;s attr1 value) returns SUCCESS:</span>
-<span style="color: #8f5902; font-style: italic">     			 var: union Attribute tar_record[nAttrs1+nAttrs2-1]</span>
-<span style="color: #8f5902; font-style: italic">     			 copy the rel1&#39;s, rel2&#39;s record to tar_record[] (except for attr2 offset in rel2)</span>
-<span style="color: #8f5902; font-style: italic">     			 call ba_insert(targetrelid,tar_record);</span>
-<span style="color: #8f5902; font-style: italic">     			 if insert fails:</span>
-<span style="color: #8f5902; font-style: italic">     			 	 delete targetrelation by calling deleterel(targetrel) of schema layer</span>
-<span style="color: #8f5902; font-style: italic">        			 return E_DISKFULL</span>
-<span style="color: #8f5902; font-style: italic">     		</span>
-<span style="color: #8f5902; font-style: italic">     */</span>
-     
-     <span style="color: #8f5902; font-style: italic">//return SUCCESS;</span>
-    
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></td></tr></table></div>
-
-
-
-                </div> <!-- End of algo div -->
-                <a href="code/join.cpp" target="_blank" download>Click here</a> to download the code.
-            </div>
-            
-        </div>
-    </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
