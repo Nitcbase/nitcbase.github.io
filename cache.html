@@ -2,68 +2,112 @@
 <html>
 
 <head>
-    <title>Cache</title>
+    <title>Cache Layer</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
-        </div>
-        
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="index.html">Home</a></li>
-                <li> <a href="documentation.html"> Documentation</a></li>
-                <li> <a href="roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
-    </div>
     
-    <div id="content">
-        <div class="sidemenu">
-            <ul>
-                <li> <a href="#layout">Layout</a></li>
-                <li> <a href="#relcache">Relation Cache</a></li>
-                <li> <a href="#attrcache">Attribute Cache</a></li>
-                <li> <a href="#openreltable">Open Relation Table</a></li>
-                <li> <a href="#"></a></li>
-            </ul>
-        </div>
-        
-        <div id="main-content">
-            <div class="pagetitle"><h1>Cache Layer</h1></div>
-            
-            <div id="layout" class="detail">
-                <h2> Layout</h2>
-                <p>The job of this module is to cache the catalog information of 'opened' relations in memory. Some meta data related to open relations is also managed by the cache layer. thereby providing immediate access to this information whenever required by any other layer. Since catalog information is frequently required by any query processing module, this layer of caching reduces the number of disk accesses for those catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module with public interfaces provided.</p>
-                <center><img src="img/cache_class.png"></center>
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
             </div>
-            
-            <div id="relcache" class="detail">
-                <h2> Relation Cache</h2>
-                <p>Relation catalog stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, a set of relation catalog entries of open relations are cached in the main memory for easy access to this information and to achieve a good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Relation Cache contains all entries of the correspondig relation catalog entry.  Each cache entry is stored as a 'RelCatEntry' structure as shown below:</p>
-                <div class="code">
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-sm-3">
+                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+                            <li> <a href="#layout">Layout</a></li>
+                            <li> <a href="#relation_cache">Relation Cache</a></li>
+                            <li> <a href="#attribute_cache">Attribute Cache</a></li>
+                            <li> <a href="#openrel_table">Open Relation Table</a></li>
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-sm-9">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>Cache Layer</h1>
+                        </div>
+                        
+                         <div id="layout" class="detail">
+                            <h2>Layout</h2>
+                            <p> The job of this module is to cache the catalog information of 'opened' relations in memory. Some meta data related to open relations is also managed by the cache layer. thereby providing immediate access to this information whenever required by any other layer. Since catalog information is frequently required by any query processing module, this layer of caching reduces the number of disk accesses for those catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module with public interfaces provided. </p>
+                            <center><img class="img-fluid" src="img/cache_class.png"></center>
+                        </div>
+                        
+                        <div id="relation_cache" class="detail">
+                        <h2>Relation Cache</h2>
+                        <p>Relation catalog stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, a set of relation catalog entries of open relations are cached in the main memory for easy access to this information and to achieve a good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Relation Cache contains all entries of the correspondig relation catalog entry.  Each cache entry is stored as a 'RelCatEntry' structure as shown below:</p>
+                		<div class="code">
     typedef struct RelCatEntry {
         char rel_name[ATTR_SIZE];
         int num_attr;
         int num_rec;
         int first_blk;          //Head of linked list of blocks
         int num_slots_blk;      //Number of slots in a block
-    } RelCatEntry ;</div>
-                In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openreltable">open relation table</a>. Relation cache entry for an open relation is part of open relation table entry for the relation.
-            </div>
-            
-            <div id="attrcache" class="detail">
-                <h2> Attribute Cache</h2>
-                <p>The Attribute catalog, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information for a set of open relations is also cached in the main memory for performance reasons and  easy access. The attribute catalog cache for opened relations is called the Attribute Cache. An Attribute cache entry will be created for every open relation. (Each relation whose relation catalog entry is cached in the relation cache will also have its attribute catalog entries cached in the attribute cache.) Hence the attribute catalog information for atmost MAXOPEN=12 relations are cached. Each Attribute Cache entry contains all the fields from attribute catalog and some extra fields for storing meta-data as explained below. Type of memory cached attribute catalog entry is defined as 'AttrCatEntry' and that of Attribute Cache entry is defined as 'AttributeCache'. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - why?), Attribute cache is stored in memory as a linked list of Attribute Cache entries.</p>
-                <div class="code">
-    typedef struct AttrCatEntry {
+    } RelCatEntry ;
+    					</div>
+                		<p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openreltable">open relation table</a>. Relation cache entry for an open relation is part of open relation table entry for the relation.</p>
+                		<div>
+                        
+                        <div id="attribute_cache" class="detail">
+                            <h2>Attribute Cache</h2>
+                            <p>The Attribute catalog, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information for a set of open relations is also cached in the main memory for performance reasons and  easy access. The attribute catalog cache for opened relations is called the Attribute Cache. An Attribute cache entry will be created for every open relation. (Each relation whose relation catalog entry is cached in the relation cache will also have its attribute catalog entries cached in the attribute cache.) Hence the attribute catalog information for atmost MAXOPEN=12 relations are cached. Each Attribute Cache entry contains all the fields from attribute catalog and some extra fields for storing meta-data as explained below. Type of memory cached attribute catalog entry is defined as 'AttrCatEntry' and that of Attribute Cache entry is defined as 'AttributeCache'. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - why?), Attribute cache is stored in memory as a linked list of Attribute Cache entries.</p>
+                            
+                            <div class="code">
+     typedef struct AttrCatEntry {
         char rel_name[ATTR_SIZE];
         char attr_name[ATTR_SIZE];
         int attr_type;
@@ -80,97 +124,40 @@
                                                 which will be used for getting next hit. */
         struct AttributeCache *next;
     } AttributeCache;
+                			</div>
+                          	<p>As already stated, Attribute cache also stores some in memory information which will not be committed back to disk. They are:</p>
+                           	<ol>
+                           		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
+                    			<li><i>recid</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
+                    			<li><i>prev_recid</i>: This is used to store state of any search operation. It essentially stores information regardng last/previous hit. Search interfaces uses this information to know where previous search call returned and to quickly search for the next hit.</li>
+                    		</ol> 
+                        </div>
+                        
+                        <div id = "openrel_table" class="detail">
+                        	<h2>Open Relation Table</h2>
+                        	<p>Cache layer stores the catalog cache in a tablular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in open relation table is considered as the relation identifier (relId). Any layer that wishes to access the meta information of an open relation need to access it using its relId. Each row in the Open Relation Table has the following fields:</p>
+                        	<ol>
+                        		<li>relcat_entry: cached relation catalog entry of the relation</li>
+                    			<li>free: Indicates whether the row is free or occupied.</li>
+                    			<li>dirty: Indicates whether relation catalog entry is modified.</li>
+                    			<li>rec_id: Stores the record id (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
+                    			<li>attr_list: Head of the linked list storing attribute catalog cache whose length is equal to number of attributes in the relation.</li>
+                			</ol>
+                        	<center><img class="img-fluid" src="img/openreltable.png" style="width: 80%"></center>
+                        	<p>The above figure shows the structure of Open relation table.</p>
+                			<p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase.  (The catalogs which store meta-information about other relations are themselves treated as relations by Nitcbase).  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for the relation catalog has Relname set to the default name "relcat".   The relation catalog entry for the attribute catalog has Relname set to the default name "attrcat".  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
+                			<p>Open Relation Table is a static class (<b>Note:</b> In C++ static classes can be implemented by declaring each field and member function as static explicitly). <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table(data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an an instance (as the object is allocated statically).</p>
+                        </div>
+                       
+                        <!-- PAGE ENDS -->
+                    </div>
                 </div>
-                <p>As already stated, Attribute cache also stores some in memory information which will not be committed back to disk. They are:</p>
-                <ol>
-                    <li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
-                    <li><i>rec_id</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                    <li><i>sid</i>: This is used to store state of any search operation. It essentially stores information regardng last/previous hit. Search interfaces uses this information to know where previous search call returned and to quickly search for the next hit.</li>
-                </ol>
+                <!-- END OF MAIN CONTENT -->
             </div>
-
-            <div id="openreltable" class="detail">
-                <h2>Open Relation Table</h2>
-                <p>Cache layer stores the catalog cache in a tablular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in open relation table is considered as the relation identifier (relId). Any layer that wishes to access the meta information of an open relation need to access it using its relId. Each row in the Open Relation Table has the following fields:</p>
-                <ol>
-                    <li>relcat_entry: cached relation catalog entry of the relation</li>
-                    <li>free: Indicates whether the row is free or occupied.</li>
-                    <li>dirty: Indicates whether relation catalog entry is modified.</li>
-                    <li>rec_id: Stores the record id (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                    <li>attr_list: Head of the linked list storing attribute catalog cache whose length is equal to number of attributes in the relation.</li>
-                </ol>
-                <center><img src="img/openreltable.png" style="width: 80%"></center>
-                <p>The above figure shows the structure of Open relation table.</p>
-                <p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase.  (The catalogs which store meta-information about other relations are themselves treated as relations by Nitcbase).  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for the relation catalog has Relname set to the default name "relcat".   The relation catalog entry for the attribute catalog has Relname set to the default name "attrcat".  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
-                <p>Open Relation Table is a static class (<b>Note:</b> In C++ static classes can be implemented by declaring each field and member function as static explicitly). <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table(data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an an instance (as the object is allocated statically). The Class structure of the open relation table showing its public interfaces is shown below:</p>
-                <div class="gist">
-                    <script src="https://gist.github.com/rohithv/bfd38d0c6757a5058cb70e709ff0c0ac.js"></script>
-                </div>
-                <p>The interfaces given by cache layer to other layers are:</p>
-                <ol>
-                    <li>relId OpenRel(char rel_name[16]): In order to work with any relation, above layers should open the relation in to memory before 
-                        they access the relation(as like opening a file before working on it). This method loads the metadata of specified relation 
-                        into one of the free entry in OpenReltable. using this interface above layers can Open the specified relation.
-                        <br>
-                        this method checks for a free entry in openreltable, if there is no free entry(among 8 relcache entries), returns FALILURE. else,  
-                        goes through all the relations that are present in the relation catalog of disk, if specefied relation is not found in Relation catalog, 
-                        returns FAILURE. else , updates the relcat_entry of free relcache entry in openreltable with the fields of specified relation 
-                        in relation catalog, Nitcbase stores metadata about attributes of opened relation, in Linked list of AttributeCache, where each entry in 
-                        Linked list stores metadata about one of the attributes of corresponding relation and stores head of linked list in relcache entry of free relcache 
-                        entry found. by going through all the blocks of attribute catalog in disk, whenever we find a entry corresponding to specified relation, update the 
-                        Linked list by adding a new node(attributecache_entry) with the fields: attrcat_entry:fields of found attribute catalog entry, dirty:false, recid: 
-                        recid of found attribute catalog entry, sid: (sblock=-1,sindex=-1). update the rest of fields in free openreltable_entry to free: false, dirty: false
-                        <br>
-                        after updating all the fields in free relcache entry found, returns the relid(index of relcache among 8 entries in openreltable).
-                        <br>
-                        NOTE: The layers above bufffer uses interfaces of buffer layer in order to access the disk blocks(here relation catalog, attribute 
-                        catalog blocks in disk).
-                    </li>
-                    <br>
-                    <li>
-                        int CloseRel(relId rel_id): This method closes the opened Relation correspoding to rel_id'th RelCache entry in openreltable, 
-                        <br>
-                        In this method, if rel_id is not between 0 and 7, or rel_id'th relcache entry is found to be free, return FAILURE. else, if a RelCache entry of target relation has the field dirty:true, then the correspoding relation catalog entry should be updated before closing it, recid(#block,#slot) of target relation's relation catalog entry can be found in correspoding RelCache, using the interfaces of buffer, relation catalog entry's record can be updated with the one as Relcat_entry inopenreltable. traverse the AttributeCache linked list corresponding to target RelCache entry. if any of the AttributeCache entry is found to have dirty:true, update the corresponding attribute catalog entry(whose recid is stored in AttributeCache node) with as that of attrcat_entry in AttributeCache. return SUCCESS.
-                    </li>
-                    <br>
-                    <li>
-                        int getRelCatEntry(relId rel_id, RelCatEntry *relcat_buf): if rel_id is not between 0 and 7 returns FAILURE. else, copies the RelCatEntry in rel_id'th relcache entry in openreltable to relcat_buf(passed as arg) memory address.
-                    </li>
-                    <li>
-                        int setRelCatEntry(relId rel_id, RelCatEntry *relcat_buf): if rel_id is not between 0 and 7 returns FAILURE. else, copies the RelCatEntry present at memory address relcat_buf(passed as arg) in to RelCatEntry of rel_id'th relcache entry(in openreltable).
-                    </li>
-                    <br>
-                    <li>
-                        relId getRelId(char rel_name[16]): Iterate through all the RelCache entries of openreltable, if Relcache entry correspoding to 
-                        rel_name(passed as arg) is found, returns the respective entry's index among the 8 entries of openreltable. if rel_name 
-                        doesn't correspond to any of the entry in openreltable, returns FAILURE.
-                    </li>
-                    <br>
-                    <li>
-                        int getAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attr_name(passed as arg) is found, copies the attrcat_entry of found AttributeCache entry to memory address attrcat_buf(passed as arg) and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
-                    </li>
-                    <br>
-                    <li>
-                        int getAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attribute offset specified by attr_offset(passed as arg) is found, copies the attrcat_entry of found AttributeCache entry to memory address attrcat_buf(passed as arg) and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
-                    </li>
-                    <br>
-                    <li>
-                       int setAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attr_name(passed as arg) is found, copies the AttrCatEntry present at memory address attrcat_buf(passed as arg) to AttrCatEntry of found AttributeCache and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
-                    </li>
-                    <br>
-                    <li>
-                        int setAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf): if rel_id is not between 0 and 7 or rel_id'th relcache entry is free returns FAILURE. else, Iterates through AttributeCache linkedlist corresponding to rel_id'th relcache entry, if AttributeCache corresponds to attribute offset specified by attr_offset(passed as arg) is found, copies the AttrCatEntry present at memory address attrcat_buf(passed as arg) to AttrCatEntry of found AttributeCache and returns SUCCESS, if no attributecache entry in linkedlist corresponds to target attribute, returns FAILURE.
-                    </li>
-                    <br>
-                    <li>
-                    
-                    </li>
-                    
-                </ol>
-            </div>
-            
         </div>
+        
     </div>
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
