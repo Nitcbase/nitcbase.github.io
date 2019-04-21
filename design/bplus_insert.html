@@ -30,7 +30,28 @@
             <div id="insert" class="design-detail">
                 <h2>Insert (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (int), attrName (char[ATTR_SIZE]), attrval (union Attribute), recid (RecId -> (int, int))</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of Relation containing the target bplus tree.</td>
+                    </tr>
+                    <tr>
+                        <td>attrName</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>Name of attribute corresponding to target bplus tree.</td>
+                    </tr>
+                    <tr>
+                        <td>attrval</td>
+                        <td>union Attribute</td>
+                        <td>value corresponding to attrName attribute of target record that need to be inserted in to bplus tree.</td>
+                    </tr>
+                    <tr>
+                        <td>recid</td>
+                        <td>RecId</td>
+                        <td>RecId of target record that need to be inserted in to bplus tree.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

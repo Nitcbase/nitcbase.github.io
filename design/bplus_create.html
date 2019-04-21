@@ -30,7 +30,18 @@
             <div id="create" class="design-detail">
                 <h2>Create (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (RelId -> int), attrName (char[ATTR_SIZE])</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of Relation in which target attribute is contained.</td>
+                    </tr>
+                    <tr>
+                        <td>attrname</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>name of attribute to which bplus tree has to be created.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

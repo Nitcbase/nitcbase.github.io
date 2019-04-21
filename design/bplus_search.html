@@ -30,7 +30,28 @@
             <div id="search" class="design-detail">
                 <h2>Search (B+ tree)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (RelId -> int), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of Relation in which target attribute is contained.</td>
+					</tr>
+					<tr>
+                        <td>attrname</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>name of colomumn/attribute(containing b+ tree) to which search has to be made.</td>
+					</tr>
+					<tr>
+                        <td>attrval</td>
+                        <td>union Attribute</td>
+                        <td>value of attribute that to be checked against the operater.</td>
+                    </tr>
+					<tr>
+                        <td>op</td>
+                        <td>int</td>
+                        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal operators respectively).</td>
+					</tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

@@ -30,7 +30,18 @@
             <div id="id1" class="design-detail">
                 <h2>Insert (Block Access Layer)</h2>
                 <h3>Arguments:</h3>
-                <p>relid (int), record (union Attribute *)</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of Relation to which record is to be inserted.</td>
+                    </tr>
+                    <tr>
+                        <td>record</td>
+                        <td>union Attribute*</td>
+                        <td>Pointer to Record(containing values for all the attributes), Record is an array of Attribute type</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

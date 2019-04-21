@@ -30,7 +30,13 @@
             <div id="getrelid" class="design-detail">
                 <h2>getRelId</h2>
                 <h3>Arguments:</h3>
-                <p>relName (char[ATTR_SIZE])</p>
+                <table>
+                    <tr>
+                        <td>relName</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>Name of the Relation.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -84,8 +90,18 @@
             <div id="getrelcatentry" class="design-detail">
                 <h2>getRelCatEntry</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), relcat_buf (RelCatEntry *)<br>
-                where relcat_buf is a pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation.</td>
+                    </tr>
+                    <tr>
+                        <td>relcat_buf</td>
+                        <td>RelCatEntry *</td>
+                        <td>pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -152,8 +168,18 @@
             <div id="setrelcatentry" class="design-detail">
                 <h2>setRelCatEntry</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), relcat_buf (RelCatEntry *)<br>
-                where relcat_buf is a pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache.</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation.</td>
+                    </tr>
+                    <tr>
+                        <td>relcat_buf</td>
+                        <td>RelCatEntry *</td>
+                        <td>pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -222,9 +248,18 @@
             <div id="getprevrecid" class="design-detail">
                 <h2>getPrevRecId</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), recidbuff_ptr (recId *)<br>
-                where recidbuff_ptr is a pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit stored in the meta information of the relation cache is to be copied into recid_ptr. <br>
-                </p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>recidbuff_ptr</td>
+                        <td>recId *</td>
+                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit stored in the meta information of the relation cache is to be copied into recid_ptr.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -291,8 +326,19 @@
             <div id="setprevrecid" class="design-detail">
                 <h2>setPrevRecId</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), recidbuff_ptr (recId *)<br>
-                where recidbuff_ptr is a pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit is to be stored to the meta information of the relation cache from  recid_ptr. <br>                
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>recidbuff_ptr</td>
+                        <td>recId *</td>
+                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit is to be stored to the meta information of the relation cache from  recid_ptr.</td>
+                    </tr>
+                </table>
+                              
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
@@ -358,8 +404,23 @@
             <div id="getattrcatentry" class="design-detail">
                 <h2>getAttrCatEntry</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), attrcat_buf (AttrCatEntry *)<br>
-                where attrcat_buf is a pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.<br>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>attrName/attr_offset</td>
+                        <td>char[ATTR_SIZE] / int</td>
+                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                    </tr>
+                    <tr>
+                        <td>attrcat_buf</td>
+                        <td>AttrCatEntry *</td>
+                        <td>pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.</td>
+                    </tr>
+                </table>
                 <b>Note:</b>This method is overloaded in type of the second argument</p>
                 
                 <div class=retval>
@@ -441,8 +502,23 @@
             <div id="setattrcatentry" class="design-detail">
                 <h2>setAttrCatEntry</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), attrcat_buf (AttrCatEntry *)<br>
-                where attrcat_buf is a pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.<br>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>attrName/attr_offset</td>
+                        <td>char[ATTR_SIZE] / int</td>
+                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                    </tr>
+                    <tr>
+                        <td>attrcat_buf</td>
+                        <td>AttrCatEntry *</td>
+                        <td>pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.</td>
+                    </tr>
+                </table>
                 <b>Note:</b>This method is overloaded in type of the second argument</p>
                 
                 <div class=retval>
@@ -526,8 +602,23 @@
              <div id="getprevindexid" class="design-detail">
                 <h2>getPrevIndexId</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), indid (IndexId *)<br>
-                where indid is a pointer to buffer of type IndexId where the index id is to be copied<br>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>attrName/attr_offset</td>
+                        <td>char[ATTR_SIZE] / int</td>
+                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                    </tr>
+                    <tr>
+                        <td>indid</td>
+                        <td>IndexId *</td>
+                        <td>pointer to buffer of type IndexId where the index id is to be copied.</td>
+                    </tr>
+                </table>
                 <b>Note:</b>This method is overloaded in type of the second argument</p>
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -610,8 +701,23 @@
             <div id="setprevindexid" class="design-detail">
                 <h2>setPrevIndexId</h2>
                 <h3>Arguments:</h3>
-                <p>relid (relId -> int), attrName (char[ATTR_SIZE]) <b>/</b> attr_offset (int), indid (IndexId *)<br>
-                where indid is a pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.<br>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of the Relation</td>
+                    </tr>
+                    <tr>
+                        <td>attrName/attr_offset</td>
+                        <td>char[ATTR_SIZE] / int</td>
+                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                    </tr>
+                    <tr>
+                        <td>indid</td>
+                        <td>IndexId *</td>
+                        <td>pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.</td>
+                    </tr>
+                </table>
                 <b>Note:</b>This method is overloaded in type of the second argument</p>
                 <div class=retval>
                     <h3>Return value:</h3>
