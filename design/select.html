@@ -30,7 +30,34 @@
             <div id="select" class="design-detail">
                 <h2>Select</h2>
                 <h3>Arguments:</h3>
-                <p>srcrel (char[ATTR_SIZE]), targetrel (char[ATTR_SIZE]), attr (char[ATTR_SIZE]), op (int), strval (char[ATTR_SIZE])</p>
+                <table>
+                    <tr>
+                        <td>srcrel</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>Name of Source Relation.</td>
+                    </tr>
+                    <tr>
+                        <td>targetrel</td>
+                        <td>char [ATTR_SIZE]</td>
+                        <td>Name of the target Relation</td>
+                    </tr>
+                    <tr>
+                        <td>attr</td>
+                        <td>char [ATTR_SIZE]</td>
+                        <td>Attribute/column name to which 'select' condition need to be checked with.</td>
+                    </tr>
+                    <tr>
+                        <td>op</td>
+                        <td>int</td>
+                        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal respectively).</td>
+					</tr>
+                    <tr>
+                        <td>strval</td>
+                        <td>char [ATTR_SIZE]</td>
+                        <td>value of attribute.</td>
+                    </tr>
+					
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

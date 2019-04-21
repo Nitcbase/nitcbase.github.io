@@ -30,8 +30,15 @@
             <div id="getslotmap" class="design-detail">
                 <h2>getSlotmap</h2>
                 <h3>Arguments:</h3>
-                <p>slotmap (unsigned char *)<br>where slotmap is a pointer(reference) to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</p>
-                
+                <p>slotmap (unsigned char *)<br>where slotmap is a </p>
+                <table>
+                    <tr>
+                        <td>slotmap</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>pointer to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</td>
+                    </tr>
+                </table>
+
                 <div class=retval>
                     <h3>Return type:</h3>
                     void
@@ -73,8 +80,14 @@
             <div id="setslotmap" class="design-detail">
                 <h2>setSlotmap</h2>
                 <h3>Arguments:</h3>
-                <p>slotmap (unsigned char *)<br>where slotmap is a pointer(reference) to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</p>
-                
+                <table>
+                    <tr>
+                        <td>slotmap</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>pointer to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</td>
+                    </tr>
+                </table>
+
                 <div class=retval>
                     <h3>Return type:</h3>
                     void
@@ -116,9 +129,19 @@
             <div id="getrecord" class="design-detail">
                 <h2>getRecord</h2>
                 <h3>Arguments:</h3>
-                <p>record (union Attribute *), slot_num (int) <br>
-                where record is a pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</p>
-                
+                <table>
+                    <tr>
+                        <td>record</td>
+                        <td>union Attribute *</td>
+                        <td>pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</td>
+                    </tr>
+                    <tr>
+                        <td>slot_num</td>
+                        <td>int</td>
+                        <td>slot no. of record in block.</td>
+                    </tr>
+                </table>
+
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>
@@ -189,9 +212,19 @@
             <div id="setrecord" class="design-detail">
                 <h2>setRecord</h2>
                 <h3>Arguments:</h3>
-                 <p>record (union Attribute *), slot_num (int) <br>
-                where record is a pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</p>
-                
+                <table>
+                    <tr>
+                        <td>record</td>
+                        <td>union Attribute *</td>
+                        <td>pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</td>
+                    </tr>
+                    <tr>
+                        <td>slot_num</td>
+                        <td>int</td>
+                        <td>slot no. of record in block.</td>
+                    </tr>
+                </table>
+
                 <div class=retval>
                     <h3>Return value:</h3>
                     <table>

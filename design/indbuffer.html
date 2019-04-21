@@ -30,8 +30,18 @@
             <div id="internalgetentry" class="design-detail">
                 <h2>getEntry (Internal Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>entry_ptr (void *), index_num (int)<br>
-                where entry_ptr is assumed to be a pointer to type InternalEntry.</p>
+                <table>
+                    <tr>
+                        <td>entry_ptr</td>
+                        <td>void *</td>
+                        <td>entry_ptr is assumed to be a pointer to type InternalEntry.</td>
+                    </tr>
+                    <tr>
+                        <td>index_num</td>
+                        <td>int</td>
+                        <td>index no. of entry in Internal index block.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -93,8 +103,18 @@
             <div id="internalsetentry" class="design-detail">
                 <h2>setEntry (Internal Index Block)</h2>
                 <h3>Arguments:</h3>
-                <p>entry_ptr (void *), index_num (int)<br>
-                where entry_ptr is assumed to be a pointer to type InternalEntry.</p>
+                <table>
+                    <tr>
+                        <td>entry_ptr</td>
+                        <td>void *</td>
+                        <td>entry_ptr is assumed to be a pointer to type InternalEntry.</td>
+                    </tr>
+                    <tr>
+                        <td>index_num</td>
+                        <td>int</td>
+                        <td>index no. of entry in Internal index block.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -152,8 +172,18 @@
             <div id="leafgetentry" class="design-detail">
                 <h2>getEntry (Leaf Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>entry_ptr (void *), index_num (int)<br>
-                where entry_ptr is assumed to be a pointer to type LeafEntry.</p>
+                <table>
+                    <tr>
+                        <td>entry_ptr</td>
+                        <td>void *</td>
+                        <td>entry_ptr is assumed to be a pointer to type Index.</td>
+                    </tr>
+                    <tr>
+                        <td>index_num</td>
+                        <td>int</td>
+                        <td>index no. of entry in Leaf index block.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
@@ -215,8 +245,18 @@
             <div id="leafsetentry" class="design-detail">
                 <h2>setEntry (Leaf Index Buffer)</h2>
                 <h3>Arguments:</h3>
-                <p>entry_ptr (void *), index_num (int)<br>
-                where entry_ptr is assumed to be a pointer to type LeafEntry.</p>
+                <table>
+                    <tr>
+                        <td>entry_ptr</td>
+                        <td>void *</td>
+                        <td>entry_ptr is assumed to be a pointer to type Index.</td>
+                    </tr>
+                    <tr>
+                        <td>index_num</td>
+                        <td>int</td>
+                        <td>index no. of entry in Leaf index block.</td>
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>

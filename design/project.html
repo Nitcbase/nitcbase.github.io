@@ -30,7 +30,28 @@
             <div id="project" class="design-detail">
                 <h2>Project</h2>
                 <h3>Arguments:</h3>
-                <p>srcrel (char[ATTR_SIZE]), targetrel (char[ATTR_SIZE]), tar_nAttrs (int), tar_attrs (char[ ][ATTR_SIZE])</p>
+                <table>
+                    <tr>
+                        <td>srcrel</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>Name of Source Relation.</td>
+                    </tr>
+                    <tr>
+                        <td>targetrel</td>
+                        <td>char [ATTR_SIZE]</td>
+                        <td>Name of the target Relation(target relation is the Project of source Relation)</td>
+                    </tr>
+                    <tr>
+                        <td>tar_nAttrs</td>
+                        <td>int</td>
+                        <td>No. of attributes that have to be projected from source relation to target relation.</td>
+                    </tr>
+                    <tr>
+                        <td>tar_attrs</td>
+                        <td>char[][ATTR_SIZE]</td>
+                        <td>Pointer to attribute names array, (array of attributes that have to be projected from source relation to target relation.)
+                    </tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
