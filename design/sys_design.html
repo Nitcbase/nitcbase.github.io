@@ -2,70 +2,115 @@
 <html>
 
 <head>
-    <title>Design</title>
+    <title>System Design</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
-        </div>
-        
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
-    </div>
     
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
     <div id="content">
-        <div id="design-content">
-            <!--img src="/img/design/design.png"-->
-            <div style="background: url(/img/design/design.png); height: 1053px; width: 1243px; padding-right: 50px;">
-                <a target="_blank" href="insert.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 12px;"></a>
-                <a target="_blank" href="select.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 102px;"></a>
-                <a target="_blank" href="project.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 192px;"></a>
-                <a target="_blank" href="join.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 282px;"></a>
-                <a target="_blank" href="schema_ddl.html#createrel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 432px;"></a>
-                <a target="_blank" href="schema_ddl.html#createind" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 522px;"></a>
-                <a target="_blank" href="schema_ddl.html#dropind" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 612px;"></a>
-                <a target="_blank" href="schema_ddl.html#deleterel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 702px;"></a>
-                <a target="_blank" href="schema_ddl.html#renamerel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 792px;"></a>
-                <a target="_blank" href="schema_ddl.html#renameattr" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 882px;"></a>
-                <a target="_blank" href="schema_access.html#openrel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 972px;"></a>
-                <a target="_blank" href="schema_access.html#closerel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 1062px;"></a>
-                <a target="_blank" href="schema_access.html#getschema" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 1152px;"></a>
-                <a target="_blank" href="ba_search.html#linear_search" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 12px;"></a>
-                <a target="_blank" href="ba_search.html#search" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 102px;"></a>
-                <a target="_blank" href="ba_insert.html" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 192px;"></a>
-                <a target="_blank" href="ba_delete.html" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 282px;"></a>
-                <a target="_blank" href="ba_rename.html#rel" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 372px;"></a>
-                <a target="_blank" href="ba_rename.html#col" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 462px;"></a>
-                <a target="_blank" href="cacheaccess.html#getrelid" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 942px;"></a>
-                <a target="_blank" href="cache_openrel.html" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 1042px;"></a>
-                <a target="_blank" href="cache_closerel.html" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 1132px;"></a>
-                <a target="_blank" href="cacheaccess.html" style="position: absolute; height: 105px; width: 74px; margin: 472px 0px 0px 852px;"></a>
-                <a target="_blank" href="cacheaccess.html" style="position: absolute; height: 71px; width: 360px; margin: 576px 0px 0px 852px;"></a>
-                <a target="_blank" href="bplus_search.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 342px;"></a>
-                <a target="_blank" href="bplus_insert.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 432px;"></a>
-                <a target="_blank" href="bplus_create.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 522px;"></a>
-                <a target="_blank" href="bplus_destroy.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 612px;"></a>
-                <a target="_blank" href="recbuffer.html" style="position: absolute; height: 40px; width: 100px; margin: 802px 0px 0px 292px;"></a>
-                <a target="_blank" href="indbuffer.html" style="position: absolute; height: 40px; width: 100px; margin: 802px 0px 0px 752px;"></a>
-                <a target="_blank" href="buffer.html" style="position: absolute; height: 40px; width: 100px; margin: 842px 0px 0px 542px;"></a>
-                <a target="_blank" href="disk.html#read" style="position: absolute; height: 25px; width: 80px; margin: 992px 0px 0px 552px;"></a>
-                <a target="_blank" href="disk.html#write" style="position: absolute; height: 25px; width: 80px; margin: 1022px 0px 0px 552px;"></a>
+        <div class="container-fluid">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>High Level Design</h1>
+                        </div>
+                        <div class="alert alert-info alert-dismissible">
+                          <button type="button" class="close" data-dismiss="alert">&times;</button>
+                          <strong>Note:</strong> Please click on the image to go to respetive specification of functions.
+                        </div>
+                        <div>
+                            <div style="background: url(/img/design/design.png); height: 1053px; width: 1243px; padding-right: 50px;">
+                                <a target="_blank" href="insert.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 12px;"></a>
+                                <a target="_blank" href="select.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 102px;"></a>
+                                <a target="_blank" href="project.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 192px;"></a>
+                                <a target="_blank" href="join.html" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 282px;"></a>
+                                <a target="_blank" href="schema_ddl.html#createrel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 432px;"></a>
+                                <a target="_blank" href="schema_ddl.html#createind" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 522px;"></a>
+                                <a target="_blank" href="schema_ddl.html#dropind" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 612px;"></a>
+                                <a target="_blank" href="schema_ddl.html#deleterel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 702px;"></a>
+                                <a target="_blank" href="schema_ddl.html#renamerel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 792px;"></a>
+                                <a target="_blank" href="schema_ddl.html#renameattr" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 882px;"></a>
+                                <a target="_blank" href="schema_access.html#openrel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 972px;"></a>
+                                <a target="_blank" href="schema_access.html#closerel" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 1062px;"></a>
+                                <a target="_blank" href="schema_access.html#getschema" style="position: absolute; height: 30px; width: 80px; margin: 277px 0px 0px 1152px;"></a>
+                                <a target="_blank" href="ba_search.html#linear_search" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 12px;"></a>
+                                <a target="_blank" href="ba_search.html#search" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 102px;"></a>
+                                <a target="_blank" href="ba_insert.html" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 192px;"></a>
+                                <a target="_blank" href="ba_delete.html" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 282px;"></a>
+                                <a target="_blank" href="ba_rename.html#rel" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 372px;"></a>
+                                <a target="_blank" href="ba_rename.html#col" style="position: absolute; height: 30px; width: 80px; margin: 442px 0px 0px 462px;"></a>
+                                <a target="_blank" href="cacheaccess.html#getrelid" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 942px;"></a>
+                                <a target="_blank" href="cache_openrel.html" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 1042px;"></a>
+                                <a target="_blank" href="cache_closerel.html" style="position: absolute; height: 40px; width: 80px; margin: 472px 0px 0px 1132px;"></a>
+                                <a target="_blank" href="cacheaccess.html" style="position: absolute; height: 105px; width: 74px; margin: 472px 0px 0px 852px;"></a>
+                                <a target="_blank" href="cacheaccess.html" style="position: absolute; height: 71px; width: 360px; margin: 576px 0px 0px 852px;"></a>
+                                <a target="_blank" href="bplus_search.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 342px;"></a>
+                                <a target="_blank" href="bplus_insert.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 432px;"></a>
+                                <a target="_blank" href="bplus_create.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 522px;"></a>
+                                <a target="_blank" href="bplus_destroy.html" style="position: absolute; height: 30px; width: 80px; margin: 642px 0px 0px 612px;"></a>
+                                <a target="_blank" href="recbuffer.html" style="position: absolute; height: 40px; width: 100px; margin: 802px 0px 0px 292px;"></a>
+                                <a target="_blank" href="indbuffer.html" style="position: absolute; height: 40px; width: 100px; margin: 802px 0px 0px 752px;"></a>
+                                <a target="_blank" href="buffer.html" style="position: absolute; height: 40px; width: 100px; margin: 842px 0px 0px 542px;"></a>
+                                <a target="_blank" href="disk.html#read" style="position: absolute; height: 25px; width: 80px; margin: 992px 0px 0px 552px;"></a>
+                                <a target="_blank" href="disk.html#write" style="position: absolute; height: 25px; width: 80px; margin: 1022px 0px 0px 552px;"></a>
+                            </div>
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
             </div>
         </div>
+        
     </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
