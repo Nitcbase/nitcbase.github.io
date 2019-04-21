@@ -1,260 +1,79 @@
-html
-{ height: 100%;}
+@font-face {
+    font-family: 'trebuchet ms';
+    src: url(font/trebuc.ttf);
+}
 
-*
-{ margin: 0;
-  padding: 0;}
+@font-face {
+    font-family: 'trebuchet ms';
+    src: url(font/trebucit.ttf);
+    font-style: italic;
+}
 
-body
-{ 
-    font: normal 1.5em 'trebuchet ms', sans-serif, arial;
-    background: #FFF;
+@font-face {
+    font-family: 'trebuchet ms';
+    src: url(font/trebucbi.ttf);
+    font-style: italic;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'trebuchet ms';
+    src: url(font/trebucbd.ttf);
+    font-style: bold;
+    font-weight: bold;
+}
+
+
+body {
+    font-family: 'trebuchet ms', sans-serif;
     color: #555;
-    line-height: 1.6;
+    background: #FFF;
 }
 
-.header
-{
-    background: #333333;
-    border-bottom: 1px solid #3d3d3d;
-    height: 59px;
-    color: white;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-h1{
-  font: bold 200% 'century gothic', 'arial';
-  margin: 0 0 5px 0;
-  padding: 5px 0 5px 0;
-}
-
-.pagetitle h1{
-  font: bold 250% 'century gothic', 'arial';
-  margin-bottom: 0;
-  padding: 5px 0 10px 0;
-}
-
-h2
-{ font: bold 170% 'century gothic', 'arial';
-  margin: 0 0 5px 0;
-  padding: 5px 0 5px 0;
-}
-
-#title{
-    float: left;
-}
-
-#title h1, #title h1 a
-{
-  font: normal 160% 'century gothic', arial;
-  padding: 10px 0 5px 15px;
-  color: #FFF;
-  letter-spacing: 0.1em;
-  text-decoration: none;
-}
-
-#menubar
-{ padding-right: 8px;
-  background: #333333;
-  height: inherit;
-} 
-
-ul#menu
-{ float: right;
-  list-style-type: none;
-  margin: 0;}
-
-ul#menu li
-{ float: left;
-  /*padding: 0 0 0 9px;
-  list-style: none;
-  margin: 15px 4px 0 4px;*/}
-
-ul#menu li a
-{ font: normal 100% 'trebuchet ms', sans-serif;
-  font-size: 17px;
-  display: block; 
-  float: left; 
-  padding: 20px 20px 20px 20px;
-  text-align: center;
-  color: #FFF;
-  text-decoration: none;
-} 
-
-ul#menu li.currentpage
-{  background: #5E4238;}
-
-ul#menu li a:hover
-{ color: #B48A7C;}
-
-ul#menu li.currentpage a:hover
-{ color: #FFF;}
-
-#content{
-    margin: 60px 0 0 0;
-}
-
-.sidemenu{
-    width: 15%;
-    margin: 30px 0 0 10px;
-    padding: 40px 0px 20px 30px;
-    float: left;
-   /* border: 1px solid #6B6969;*/
-    border-radius: 15px;
-    position: fixed;
-}
-
-.sidemenu ul li{
-    list-style-type: none;
-    
-}
-
-.sidemenu ul li a{
-    text-decoration: none;
-    color: #6B6969;
-}
-
-.sidemenu ul li a:hover{
-    text-decoration: underline;
-    color: #B48A7C;
-}
-
-#main-content{
-    width: 80%;
-    padding: 20px 50px 20px 0;
-    float: right;
-}
-
-#design-content{
-    padding: 0px 0px 20px 50px;
-    margin-right: 40px;
-}
-
-.detail { margin-top: 20px; padding-top: 50px; border-top: 1px solid #DDD; }
-
-/*.detail:before{
-    display: block; 
-    content: " "; 
-    margin-top: -160px; 
-    height: 160px; 
-    visibility: hidden; 
-    pointer-events: none;
-}*/
-
-.detail p{
-    margin-bottom: 10px;
-}
-
-img{
-    margin: 10px 10px 10px 10px;
-    max-width: 100%;
-}
-
-img .formula{
-    width: "100p";
-}
- 
-.detail ol{
-    padding: 0 0 0 20px;
+p {
+    font-family: 'trebuchet ms', sans-serif;
 }
 
 a {
-    text-decoration: none;
-    color: #8B4533;
+    color: dodgerblue;
 }
 
-a:hover {
-    text-decoration: underline;
+
+header h3 {
+    font-family: 'century gothic', 'arial', sans-serif;
+    margin-bottom: 0;
 }
 
-.question a{
-    padding: 5px 0 0 15px;
-    text-decoration: none;
-    color: #555;
+#content{
+    margin: 60px 0 0 0;
+    padding-right: 1em;
 }
 
-.question a:hover {
-    text-decoration: underline;
-    color: #555;
+.sidemenu{
+    padding-top: 30px;
 }
 
-.detail table, .detail th, .detail td {
-  border: 1px solid black;
-  border-collapse: collapse;
+.sidemenu a {
+    color: inherit;
 }
 
-.detail th, .detail td {
-  padding: 15px;
+.sidemenu a:hover {
+    color: dodgerblue;
 }
 
-.gist th, .gist td {
-    border: none;
+.sticky-offset{
+    top: 60px;
 }
 
-.gist {
-    
+.pagetitle h1{
+    display: inline-block;
+    padding: 0 30px 10px 0;
+    border-bottom: 7px solid;
+    border-bottom-color: dodgerblue;
 }
 
-.code {
-    display: block;
-    padding: 9.5px;
-    margin: 0px 0px 10px;
-    line-height: 1.8;
-    color: #444;
-    background-color: #F5F5F5;
-    border: 1px solid #CCC;
-    border-radius: 4px;
-    white-space: pre;
-}
-
-.design-detail {
-    margin-top: 0; 
-    padding: 50px 0px 10px 0px; 
-    /*border-bottom: 1px solid #DDD; */
-}
-
-.design-detail h3 { 
-  font: bold 110% 'century gothic', 'arial';
-  margin: 5px 0 5px 0;
-  /*padding: 5px 0 5px 0;*/
-}
-
-.design-detail h2{
-    text-decoration-line: underline;
-}
-
-.retval table{
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px;
-}
-
-.retval tr{
-    box-sizing: border-box;
-}
-
-.retval table, .retval th, .retval td{
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.algo {
-    margin: 0px 0px 10px 0px;
-    
-}
-
-.algo table, .algo th, .algo td, .algo tr{
-    border: none;
-}
-
-.algo pre{
-    /*border:solid gray;
-    border-width:.1em .1em .1em .5em;
-    border-radius:4px;*/
-    border: none;
-    padding-left: 0;
-    tab-size: 4;
+.detail { 
+    padding-bottom: 20px; 
+    padding-top: 50px; 
+    border-bottom: 1px solid #DDD; 
 }
