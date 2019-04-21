@@ -4,246 +4,206 @@
 <head>
     <title>Select</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div id="select" class="design-detail">
+                            <div class="pagetitle">
+                                <h1>Select</h1>
+                            </div>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                        			<td>srcrel</td>
+                        			<td>char[ATTR_SIZE]</td>
+                        			<td>Name of Source Relation.</td>
+                    			</tr>
+                    			<tr>
+                        			<td>targetrel</td>
+                        			<td>char [ATTR_SIZE]</td>
+                        			<td>Name of the target Relation</td>
+                    			</tr>
+                    			<tr>
+                    			    <td>attr</td>
+                    			    <td>char [ATTR_SIZE]</td>
+                    			    <td>Attribute/column name to which 'select' condition need to be checked with.</td>
+                    			</tr>
+                    			<tr>
+                    			    <td>op</td>
+                    			    <td>int</td>
+                    			    <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal respectively).</td>
+								</tr>
+                    			<tr>
+                    			    <td>strval</td>
+                    			    <td>char [ATTR_SIZE]</td>
+                    			    <td>value of attribute.</td>
+                    			</tr>
+                            </table>
+                            
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover">
+                            	<tr>
+                            		<td>SUCCESS</td>
+                            		<td>On successful creation of new relation.</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_RELNOTOPEN</td>
+                        		    <td>If the source relation is not open.</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_RELEXIST</td>
+                        		    <td>If a relation with name targetrel already exists.</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_ATTRNOTEXIST</td>
+                        		    <td>If a attribute with name attr does not exist.</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_ATTRTYPEMISMATCH</td>
+                        		    <td>If the actual type of the attribute in the relation is different from the type of provided attribute.</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_CACHEFULL	</td>
+                        		    <td>If the openRel() fails because of no free slots in open relation table</td>
+                        		</tr>
+                        		<tr>
+                        		    <td>E_DISKFULL</td>
+                        		    <td>If disk space is not sufficient for creating the new relation.</td>
+                        		</tr>
+                         	</table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+							<h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int select(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr[ATTR_SIZE], int op, char strval[ATTR_SIZE]){
+
+    // get the srcrel's open relation id(let it be srcrelid), using getRelid() method of cache layer
+    // if srcrel is not open in open relation table, return E_RELNOTOPEN
+
+    // get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer.
+    // if getAttrcatEntry() call fails return E_ATTRNOTEXIST
+
+    //convert strval into union Attribute (let it be val) as shown in the following code:
+    // let type=attrcatentry.attr_type;
+
+    if(type==INT){  
+        //The input contains a string representation of the integer attribute value.
+        val.ival=atoi(attr[iter]);
+        //if conversion fails(i.e string can not be converted to integer) return E_ATTRTYPEMISMATCH. 
+
+    }else if(type==FLOAT){
+        //do accordingly to float
+    }else if(type==STRING){
+        //No type conversion needed here.
+    }
+    //if convert fails, return E_ATTRTYPEMISMATCH
+
+    //Next task is to create the destination relation.
+    //Prepare arguments for createrel() in the following way:
+    //get RelcatEntry of srcrel from cache using getRelCatEntry() method of cache layer.
+    //get the no. of attributes present in src relation, from RelcatEntry.(let it be nAttrs)
+
+    // let attr_name[nAttrs][ATTR_SIZE] be a 2D array of type char(attribute names of rel).
+    // let attr_types[nAttrs] be an array of type int
+
+    /*iterate through 0 to nAttrs-1 :
+        get the i'th attribute's AttrCatEntry (using getAttrcatEntry() of cache layer )
+        fill attr_name, attr_types of corresponding attributes using Attribute catalog found.
+    */
+
+    /* let retval= createrel(targetrel,no_of_attrs_srcrel,attr_name,attr_type)
+       where createrel is a function in schema layer
+       if create fails return retval */
+
+    //open targetrel (using retval=openRel() of OpenRelTable class in cache layer)
+    /* if open fails
+        delete target relation by calling deleterel(targetrel) of schema layer
+        return retval
+    */
+    
+    //Note: Before calling the search function, reset the search to start from the first hit
+    // by calling ba_search of block access layer with op=RST.
+    /*
+    while (1):
+        var: union Attribute record[no_of_attrs_srcrel];
+        if ba_search(srcrelid,record,attr,val,op) returns SUCCESS:
+            retval = ba_insert(targetrelid,record);
+            if(insert fails):
+                close the target rel(call closerel() method of OpenRelTable class in cache layer)
+                delete targetrelation by calling deleterel(targetrel) of schema layer
+                return retval
+
+        else: break
+    */
+
+    //Close the target relation
+    // return SUCCESS;
+            
+}</code></pre></div>
+
+                            <a href="code/select.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
         </div>
         
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
     </div>
-    
-    <div id="content">
-        <div id="design-content">
-            <div id="select" class="design-detail">
-                <h2>Select</h2>
-                <h3>Arguments:</h3>
-                <table>
-                    <tr>
-                        <td>srcrel</td>
-                        <td>char[ATTR_SIZE]</td>
-                        <td>Name of Source Relation.</td>
-                    </tr>
-                    <tr>
-                        <td>targetrel</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>Name of the target Relation</td>
-                    </tr>
-                    <tr>
-                        <td>attr</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>Attribute/column name to which 'select' condition need to be checked with.</td>
-                    </tr>
-                    <tr>
-                        <td>op</td>
-                        <td>int</td>
-                        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal respectively).</td>
-					</tr>
-                    <tr>
-                        <td>strval</td>
-                        <td>char [ATTR_SIZE]</td>
-                        <td>value of attribute.</td>
-                    </tr>
-					
-                </table>
-                
-                <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On successful creation of new relation.</td>
-                        </tr>
-                        <tr>
-                            <td>E_RELNOTOPEN</td>
-                            <td>If the source relation is not open.</td>
-                        </tr>
-                        <tr>
-                            <td>E_RELEXIST</td>
-                            <td>If a relation with name targetrel already exists.</td>
-                        </tr>
-                        <tr>
-                            <td>E_ATTRNOTEXIST</td>
-                            <td>If a attribute with name attr does not exist.</td>
-                        </tr>
-                        <tr>
-                            <td>E_ATTRTYPEMISMATCH</td>
-                            <td>If the actual type of the attribute in the relation is different from the type of provided attribute.</td>
-                        </tr>
-                        <tr>
-                            <td>E_CACHEFULL	</td>
-                            <td>If the openRel() fails because of no free slots in open relation table</td>
-                        </tr>
-                        <tr>
-                            <td>E_DISKFULL</td>
-                            <td>If disk space is not sufficient for creating the new relation.</td>
-                        </tr>
-                        
-                    </table>
-                </div>
-                
-                <h3>Description:</h3>
-                <p>Description of the function/method</p>
-                
-                <h3>Algorithm:</h3>
-                <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-                  <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid grey;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">select</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">srcrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span><span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">targetrel</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #204a87; font-weight: bold">int</span> <span style="color: #000000">op</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">char</span> <span style="color: #000000">strval</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">ATTR_SIZE</span><span style="color: #000000; font-weight: bold">]){</span>
-
-    <span style="color: #8f5902; font-style: italic">// get the srcrel&#39;s open relation id(let it be srcrelid), using getRelid() method of cache layer</span>
-    <span style="color: #8f5902; font-style: italic">// if srcrel is not open in open relation table, return E_RELNOTOPEN</span>
-
-    <span style="color: #8f5902; font-style: italic">// get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer.</span>
-    <span style="color: #8f5902; font-style: italic">// if getAttrcatEntry() call fails return E_ATTRNOTEXIST</span>
-
-    <span style="color: #8f5902; font-style: italic">//convert strval into union Attribute (let it be val) as shown in the following code:</span>
-    <span style="color: #8f5902; font-style: italic">// let type=attrcatentry.attr_type;</span>
-
-    <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">INT</span><span style="color: #000000; font-weight: bold">){</span>  
-        <span style="color: #8f5902; font-style: italic">//The input contains a string representation of the integer attribute value.</span>
-        <span style="color: #000000">val</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ival</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #000000">atoi</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">attr</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">iter</span><span style="color: #000000; font-weight: bold">]);</span>
-        <span style="color: #8f5902; font-style: italic">//if conversion fails(i.e string can not be converted to integer) return E_ATTRTYPEMISMATCH. </span>
-
-    <span style="color: #000000; font-weight: bold">}</span><span style="color: #204a87; font-weight: bold">else</span> <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">FLOAT</span><span style="color: #000000; font-weight: bold">){</span>
-        <span style="color: #8f5902; font-style: italic">//do accordingly to float</span>
-    <span style="color: #000000; font-weight: bold">}</span><span style="color: #204a87; font-weight: bold">else</span> <span style="color: #204a87; font-weight: bold">if</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">type</span><span style="color: #ce5c00; font-weight: bold">==</span><span style="color: #000000">STRING</span><span style="color: #000000; font-weight: bold">){</span>
-        <span style="color: #8f5902; font-style: italic">//No type conversion needed here.</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-    <span style="color: #8f5902; font-style: italic">//if convert fails, return E_ATTRTYPEMISMATCH</span>
-
-    <span style="color: #8f5902; font-style: italic">//Next task is to create the destination relation.</span>
-    <span style="color: #8f5902; font-style: italic">//Prepare arguments for createrel() in the following way:</span>
-    <span style="color: #8f5902; font-style: italic">//get RelcatEntry of srcrel from cache using getRelCatEntry() method).</span>
-    <span style="color: #8f5902; font-style: italic">//get the no. of attributes present in src relation, from RelcatEntry.(let it be nAttrs)</span>
-
-    <span style="color: #8f5902; font-style: italic">// let attr_name[nAttrs][ATTR_SIZE] be a 2D array of type char(attribute names of rel).</span>
-    <span style="color: #8f5902; font-style: italic">// let attr_types[nAttrs] be an array of type int</span>
-
-    <span style="color: #8f5902; font-style: italic">/*iterate through 0 to nAttrs-1 :</span>
-<span style="color: #8f5902; font-style: italic">        get the i&#39;th attribute&#39;s AttrCatEntry (using getAttrcatEntry() of cache layer )</span>
-<span style="color: #8f5902; font-style: italic">        fill attr_name, attr_types of corresponding attributes using Attribute catalog found.</span>
-<span style="color: #8f5902; font-style: italic">    */</span>
-
-    <span style="color: #8f5902; font-style: italic">// let retval= createrel(targetrel,no_of_attrs_srcrel,attr_name,attr_type)</span>
-    <span style="color: #8f5902; font-style: italic">// if create fails return retval</span>
-
-    <span style="color: #8f5902; font-style: italic">//open targetrel (using retval=openRel() of OpenRelTable class in cache layer)</span>
-    <span style="color: #8f5902; font-style: italic">/* if open fails</span>
-<span style="color: #8f5902; font-style: italic">        delete target relation by calling deleterel(targetrel) of schema layer</span>
-<span style="color: #8f5902; font-style: italic">        return retval</span>
-<span style="color: #8f5902; font-style: italic">    */</span>
-    
-    <span style="color: #8f5902; font-style: italic">//Note: Before calling the search function, reset the search to start from the first hit</span>
-    <span style="color: #8f5902; font-style: italic">// by calling ba_search of block access layer with op=RST.</span>
-    <span style="color: #8f5902; font-style: italic">/*</span>
-<span style="color: #8f5902; font-style: italic">    while (1):</span>
-<span style="color: #8f5902; font-style: italic">        var: union Attribute record[no_of_attrs_srcrel];</span>
-<span style="color: #8f5902; font-style: italic">        if ba_search(srcrelid,record,attr,val,op) returns SUCCESS:</span>
-<span style="color: #8f5902; font-style: italic">            retval = ba_insert(targetrelid,record);</span>
-<span style="color: #8f5902; font-style: italic">            if(insert fails):</span>
-<span style="color: #8f5902; font-style: italic">                close the target rel(call closerel() method of OpenRelTable class in cache layer)</span>
-<span style="color: #8f5902; font-style: italic">                delete targetrelation by calling deleterel(targetrel) of schema layer</span>
-<span style="color: #8f5902; font-style: italic">                return retval</span>
-
-<span style="color: #8f5902; font-style: italic">        else: break</span>
-<span style="color: #8f5902; font-style: italic">    */</span>
-
-    <span style="color: #8f5902; font-style: italic">// return SUCCESS;</span>
-    
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></td></tr></table></div>
-  
-
-                </div>
-                <a href="code/select.cpp" target="_blank" download>Click here</a> to download the code.
-            </div>
-            
-        </div>
-    </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
