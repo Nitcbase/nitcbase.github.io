@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    
+    <head>
+        <title>Cache</title>
+        <meta charset="UTF-8">
+            <link rel="stylesheet" href="css/bootstrap.min.css">
+                <link rel="stylesheet" href="css/style.css">
+    </head>
+    
+    
+    <body>
+        <div class="header" id="top">
+            <div id="title">
+                <h1> <a href="index.html">Nitcbase</a></h1>
+                <!--h3> Database Management System</h3-->
+            </div>
+            
+            <div id="menubar">
+                <ul id="menu">
+                    <li> <a href="index.html">Home</a></li>
+                    <li> <a href="documentation.html"> Documentation</a></li>
+                    <li> <a href="roadmap.html">Roadmap</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="content">
+            <div class="sidemenu">
+                <ul>
+                    <li> <a href="#select">Select</a></li>
+                    <li> <a href="#project">Project</a></li>
+                    <li> <a href="#insert">Insert</a></li>
+                    <li> <a href="#join">Join</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="main-content">
+            <div class="pagetitle"><h1>Algebra Layer</h1></div>
+            <div id="insert" class="detail">
+                <h2> Insert()</h2>
+                
+                <h2>Description:</h2>
+                <p>
+                This method inserts the given record into the specified Relation. This function inserts a record into the Relation, only if the Relation is opened.
+                </p>
+            </div>
+            
+            <div id="select" class="detail">
+                <h2> Select()</h2>
+                
+                <h2>Description:</h2>
+                <p>
+                This function creates a new target relation with attributes as that of source relation. It inserts the records of source relation which satisfies the given condition into the Target Relation.
+                </p>
+            </div>
+            
+            <div id="project" class="detail">
+                <h2> Project()</h2>
+                
+                <h2>Description:</h2>
+                <p>
+                This function creates a new target relation with list of Attributes specified in arguments . for each record of source relation,it inserts the new record with values corresponding to specified list of attributes into the Target relation.
+                </p>
+            </div>
+            
+            <div id="join" class="detail">
+                <h2> join()</h2>
+                
+                <h2>Description:</h2>
+                <p>
+                This function creates a new target relation with attributes constituting from both the source relations(excluding specified attribute from 2nd src relation).It inserts the records obtained by Equi-join of both the source Relations(an attribute from each Relation specified in arguments are used for equi-join) into the Target Relation.
+                </p>
+            </div>
+        
+    </body>
+    
+</html>
