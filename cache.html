@@ -56,7 +56,7 @@
             <div class="row">
                 
                 <!-- SIDEBAR BEGIN -->
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
                         <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
                             <i class="fas fa-align-left"></i>
@@ -74,7 +74,7 @@
                 <!-- END OF SIDEBAR -->
                 
                 <!--MAIN CONTENT START-->
-                <div class="col-sm-9">
+                <div class="col-sm-10">
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
@@ -90,24 +90,21 @@
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache</h2>
                         <p>Relation catalog stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, a set of relation catalog entries of open relations are cached in the main memory for easy access to this information and to achieve a good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Relation Cache contains all entries of the correspondig relation catalog entry.  Each cache entry is stored as a 'RelCatEntry' structure as shown below:</p>
-                		<div class="code">
-    typedef struct RelCatEntry {
-        char rel_name[ATTR_SIZE];
-        int num_attr;
-        int num_rec;
-        int first_blk;          //Head of linked list of blocks
-        int num_slots_blk;      //Number of slots in a block
-    } RelCatEntry ;
-    					</div>
-                		<p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openreltable">open relation table</a>. Relation cache entry for an open relation is part of open relation table entry for the relation.</p>
-                		<div>
+                		<div class="code"><pre><code>typedef struct RelCatEntry {
+    char rel_name[ATTR_SIZE];
+    int num_attr;
+    int num_rec;
+    int first_blk;          //Head of linked list of blocks
+    int num_slots_blk;      //Number of slots in a block
+} RelCatEntry ;</code></pre></div>
+                		<p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openrel_table">open relation table</a>. Relation cache entry for an open relation is part of open relation table entry for the relation.</p>
+                        </div>
                         
                         <div id="attribute_cache" class="detail">
                             <h2>Attribute Cache</h2>
                             <p>The Attribute catalog, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information for a set of open relations is also cached in the main memory for performance reasons and  easy access. The attribute catalog cache for opened relations is called the Attribute Cache. An Attribute cache entry will be created for every open relation. (Each relation whose relation catalog entry is cached in the relation cache will also have its attribute catalog entries cached in the attribute cache.) Hence the attribute catalog information for atmost MAXOPEN=12 relations are cached. Each Attribute Cache entry contains all the fields from attribute catalog and some extra fields for storing meta-data as explained below. Type of memory cached attribute catalog entry is defined as 'AttrCatEntry' and that of Attribute Cache entry is defined as 'AttributeCache'. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - why?), Attribute cache is stored in memory as a linked list of Attribute Cache entries.</p>
                             
-                            <div class="code">
-     typedef struct AttrCatEntry {
+                            <div class="code"><pre><code>     typedef struct AttrCatEntry {
         char rel_name[ATTR_SIZE];
         char attr_name[ATTR_SIZE];
         int attr_type;
@@ -123,8 +120,7 @@
         SearchIndexId sid;          /*IMPORTANT: used for storing state information of any search.
                                                 which will be used for getting next hit. */
         struct AttributeCache *next;
-    } AttributeCache;
-                			</div>
+    } AttributeCache;</code></pre></div>
                           	<p>As already stated, Attribute cache also stores some in memory information which will not be committed back to disk. They are:</p>
                            	<ol>
                            		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>

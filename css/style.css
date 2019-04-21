@@ -28,6 +28,7 @@ body {
     font-family: 'trebuchet ms', sans-serif;
     color: #555;
     background: #FFF;
+    tab-size: 4;
 }
 
 p {
@@ -35,7 +36,7 @@ p {
 }
 
 a {
-    color: dodgerblue;
+    color: #0056B3;
 }
 
 
@@ -76,4 +77,30 @@ header h3 {
     padding-bottom: 20px; 
     padding-top: 50px; 
     border-bottom: 1px solid #DDD; 
+}
+
+.code {
+    display: block;
+    margin: 0px 0px 10px;
+    background-color: #F5F5F5;
+    white-space: pre;
+    tab-size: 4;
+    border:solid gray;
+    border-left-color: gray;
+    border-width:1px 1px 1px .5em;
+    padding:.2em .6em;
+    border-radius:4px;
+}
+
+pre{
+    tab-size: 4;
+    -moz-tab-size: 4;
+}
+
+code {
+    color: #343A40  ;
+}
+
+.code pre{
+    margin-top: 1rem;
 }
