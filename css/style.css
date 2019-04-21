@@ -83,7 +83,7 @@ header h3 {
     display: block;
     margin: 0px 0px 10px;
     background-color: #F5F5F5;
-    white-space: pre;
+    /*white-space: pre;*/
     tab-size: 4;
     border:solid gray;
     border-left-color: gray;

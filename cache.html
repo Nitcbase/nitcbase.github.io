@@ -144,6 +144,538 @@
                 			<p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase.  (The catalogs which store meta-information about other relations are themselves treated as relations by Nitcbase).  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for the relation catalog has Relname set to the default name "relcat".   The relation catalog entry for the attribute catalog has Relname set to the default name "attrcat".  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
                 			<p>Open Relation Table is a static class (<b>Note:</b> In C++ static classes can be implemented by declaring each field and member function as static explicitly). <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table(data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an an instance (as the object is allocated statically).</p>
                         </div>
+                        
+                        <div class="pagetitle">
+                            <h1>Methods of Cache Layer</h1>
+                        </div>
+                        
+                        <div id="openrel" class="detail">
+                            <h2>OpenRel</h2>
+                        </div>
+                        
+                        <div id="closerel" class="detail">
+                            <h2>CloseRel</h2>
+                        </div>
+                        
+                        <div id="getrelid" class="detail">
+                            <h2>getRelId</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relName</td>
+                                    <td>char[ATTR_SIZE]</td>
+                                    <td>Name of the Relation.</td>
+                                </tr>
+                            </table>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relId</td>
+                                    <td>Returns the relId corresponding to the relation with name relName, if it is already open</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If the relation with name relName is not open</td>
+                                </tr>
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>relId OpenRelTable::getRelId(char relName[ATTR_SIZE]){
+	//Iterate over the relation cache{
+		//if relation with relation name relName is opened in the relation cache
+			return relid //return corresponding relid
+	//}
+	return E_NOTOPEN;
+}</code></pre></div> <!-- End of algo div -->
+                            <a href="code/cache_getrelid.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="getrelcatentry" class="detail">
+                            <h2>getRelCatEntry</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation.</td>
+                                </tr>
+                                <tr>
+                                    <td>relcat_buf</td>
+                                    <td>RelCatEntry *</td>
+                                    <td>pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.</td>
+                                </tr>
+                            </table>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::getRelCatEntry(relId relid, RelCatEntry *relcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relation catalog in the relation cache to the relcat_buf
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                            <a href="code/cache_getrelcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="setrelcatentry" class="detail">
+                            <h2>setRelCatEntry</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation.</td>
+                                </tr>
+                                <tr>
+                                    <td>relcat_buf</td>
+                                    <td>RelCatEntry *</td>
+                                    <td>pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache.</td>
+                                </tr>
+                            </table>
+
+                            <div class=retval>
+                                <h4>Return value:</h4>
+                                <table class="table table-bordered table-hover table-responsive">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::setRelCatEntry(relId relid, RelCatEntry *relcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relcat_buf to the relation catalog in the relation cache
+	//set the dirty flag corresponding to the relation with Id relid in the relation cache
+	return SUCCESS;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_setrelcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="getprevrecid" class="detail">
+                            <h2>getPrevRecId</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>recidbuff_ptr</td>
+                                    <td>recId *</td>
+                                    <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit stored in the meta information of the relation cache is to be copied into recid_ptr.</td>
+                                </tr>
+                            </table>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>If record id of previous hit is copied to recid. It means that the id pointed by recid is valid.</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::getPrevRecId(relId relid, recId *recidbuff_ptr){
+	if(relid&lt; 0 || relid&gt;= MAXOPEN){//check whether relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation in the relation cache to the recidbuff_ptr*/
+	return SUCCESS;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_getprevrecid.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="setprevrecid" class="detail">
+                            <h2>setPrevRecId</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>recidbuff_ptr</td>
+                                    <td>recId *</td>
+                                    <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair). The record id field of the previous hit is to be stored to the meta information of the relation cache from  recid_ptr.</td>
+                                </tr>
+                            </table>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>If the record id is successfully copied into the Relation Catalog Cache.</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::setPrevRecId(relId rel_id, recId *recidbuff_ptr){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation from the recidbuff_ptr to the relation cache*/
+	return SUCCESS;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_setprevrecid.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="getattrcatentry" class="detail">
+                            <h2>getAttrCatEntry</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>attrName/attr_offset</td>
+                                    <td>char[ATTR_SIZE] / int</td>
+                                    <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                </tr>
+                                <tr>
+                                    <td>attrcat_buf</td>
+                                    <td>AttrCatEntry *</td>
+                                    <td>pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.</td>
+                                </tr>
+                            </table>
+                            <b>Note:</b>This method is overloaded in type of the second argument</p>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>On successful copy of the attribute catalog entry corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+                                <tr>
+                                    <td>E_ATTRNOTEXIST</td>
+                                    <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::getAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			//copy the attribute catalog in the attribute cache to the attrcat_buf
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_getattrcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="setattrcatentry" class="detail">
+                            <h2>setAttrCatEntry</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>attrName/attr_offset</td>
+                                    <td>char[ATTR_SIZE] / int</td>
+                                    <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                </tr>
+                                <tr>
+                                    <td>attrcat_buf</td>
+                                    <td>AttrCatEntry *</td>
+                                    <td>pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.</td>
+                                </tr>
+                            </table>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>On successful copy of the attribute catalog entry into the cache corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+                                <tr>
+                                    <td>E_ATTRNOTEXIST</td>
+                                    <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::setAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			//copy the attrcat_buf to the corresponding attibute node in the attribute cache
+			//set the dirty flag corresponding to the attribute in the attribute cache
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_setattrcatentry.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                         <div id="getprevindexid" class="detail">
+                            <h2>getPrevIndexId</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>attrName/attr_offset</td>
+                                    <td>char[ATTR_SIZE] / int</td>
+                                    <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                </tr>
+                                <tr>
+                                    <td>indid</td>
+                                    <td>IndexId *</td>
+                                    <td>pointer to buffer of type IndexId where the index id is to be copied.</td>
+                                </tr>
+                            </table>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                                <h4>Return value:</h4>
+                                <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If index id of previous hit is copied to indid. It means that the id pointed by indid is valid.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRNOTEXIST</td>
+                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                    </tr>
+
+                                </table>
+                             </div>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::getPrevIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			/*copy the previous index id (in meta informatiom) corresponding to 
+			  the attribute in the attribute cache to the indid*/
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_getprevindexid.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+
+                        <div id="setprevindexid" class="detail">
+                            <h2>setPrevIndexId</h2>
+                            <h4>Arguments:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>relid</td>
+                                    <td>int</td>
+                                    <td>Relation Id of the Relation</td>
+                                </tr>
+                                <tr>
+                                    <td>attrName/attr_offset</td>
+                                    <td>char[ATTR_SIZE] / int</td>
+                                    <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                </tr>
+                                <tr>
+                                    <td>indid</td>
+                                    <td>IndexId *</td>
+                                    <td>pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.</td>
+                                </tr>
+                            </table>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                            <h4>Return value:</h4>
+                            <table class="table table-bordered table-hover table-responsive">
+                                <tr>
+                                    <td>SUCCESS</td>
+                                    <td>If index id pointed by indid is successfully copied to the Attribute catalog cache.</td>
+                                </tr>
+                                <tr>
+                                    <td>E_OUTOFBOUND</td>
+                                    <td>If the relid is out of the range 0-MAXOPEN</td>
+                                </tr>
+                                <tr>
+                                    <td>E_NOTOPEN</td>
+                                    <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                </tr>
+                                <tr>
+                                    <td>E_ATTRNOTEXIST</td>
+                                    <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                </tr>
+
+                            </table>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+                            <h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int OpenRelTable::setPrevIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			/*copy the indid to the previous index id (in meta informatiom)
+			  corresponding to the attribute in the attribute cache*/
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                            </div> <!-- End of algo div -->
+                            <a href="code/cache_setprevindexid.cpp" target="_blank" download>Click here</a> to download the code.
+                        </div>
+                        
                        
                         <!-- PAGE ENDS -->
                     </div>
@@ -151,7 +683,6 @@
                 <!-- END OF MAIN CONTENT -->
             </div>
         </div>
-        
     </div>
     <!-- END OF CONTENT -->
 </body>
