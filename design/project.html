@@ -63,60 +63,64 @@
                                 <h1>Project</h1>
                             </div>
                             <h4>Arguments:</h4>
-                            <table class="table table-bordered table-hover">
-                                <tr>
-                        			<td>srcrel</td>
-                        			<td>char[ATTR_SIZE]</td>
-                        			<td>Name of Source Relation.</td>
-                    			</tr>
-                   				<tr>
-                        			<td>targetrel</td>
-                        			<td>char [ATTR_SIZE]</td>
-                        			<td>Name of the target Relation(target relation is the Project of source Relation)</td>
-                    			</tr>
-                    			<tr>
-                        			<td>tar_nAttrs</td>
-                        			<td>int</td>
-                        			<td>No. of attributes that have to be projected from source relation to target relation.</td>
-                    			</tr>
-                    			<tr>
-                        			<td>tar_attrs</td>
-                        			<td>char[][ATTR_SIZE]</td>
-                        			<td>Pointer to attribute names array, (array of attributes that have to be projected from source relation to target relation.)</td>
-                    			</tr>
-                            </table>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+		                    			<td>srcrel</td>
+		                    			<td>char[ATTR_SIZE]</td>
+		                    			<td>Name of Source Relation.</td>
+		                			</tr>
+		               				<tr>
+		                    			<td>targetrel</td>
+		                    			<td>char [ATTR_SIZE]</td>
+		                    			<td>Name of the target Relation(target relation is the Project of source Relation)</td>
+		                			</tr>
+		                			<tr>
+		                    			<td>tar_nAttrs</td>
+		                    			<td>int</td>
+		                    			<td>No. of attributes that have to be projected from source relation to target relation.</td>
+		                			</tr>
+		                			<tr>
+		                    			<td>tar_attrs</td>
+		                    			<td>char[][ATTR_SIZE]</td>
+		                    			<td>Pointer to attribute names array, (array of attributes that have to be projected from source relation to target relation.)</td>
+		                			</tr>
+		                        </table>
+		                    </div>
                             
                             <h4>Return value:</h4>
-                            <table class="table table-bordered table-hover">
-                            	<tr>
-                            		<td>SUCCESS</td>
-                            		<td>On successful creation of new relation.</td>
-                        		</tr>
-                        		<tr>
-                            		<td>E_RELNOTOPEN</td>
-                            		<td>If the source relation is not open.</td>
-                        		</tr>
-                        		<tr>
-                        		    <td>E_RELEXIST</td>
-                            		<td>If a relation with name targetrel already exists.</td>
-                        		</tr>
-                        		<tr>
-                        		    <td>E_ATTRNOTEXIST</td>
-                            		<td>If any attribute with name given in attr array does not exist.</td>
-                        		</tr>
-                        		<tr>
-                            		<td>E_DUPLICATEATTR</td>
-                            		<td>If two any two attributes have same name in the target relation</td>
-                        		</tr>
-                        		<tr>
-                            		<td>E_DISKFULL</td>
-                            		<td>If disk space is not sufficient for creating the new relation.</td>
-                        		</tr>
-                        		<tr>
-                        		    <td>E_CACHEFULL	</td>
-                            		<td>If the openRel() fails because of no free slots in open relation table</td>
-                        		</tr>
-                         	</table>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successful creation of new relation.</td>
+		                    		</tr>
+		                    		<tr>
+		                        		<td>E_RELNOTOPEN</td>
+		                        		<td>If the source relation is not open.</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_RELEXIST</td>
+		                        		<td>If a relation with name targetrel already exists.</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_ATTRNOTEXIST</td>
+		                        		<td>If any attribute with name given in attr array does not exist.</td>
+		                    		</tr>
+		                    		<tr>
+		                        		<td>E_DUPLICATEATTR</td>
+		                        		<td>If two any two attributes have same name in the target relation</td>
+		                    		</tr>
+		                    		<tr>
+		                        		<td>E_DISKFULL</td>
+		                        		<td>If disk space is not sufficient for creating the new relation.</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_CACHEFULL	</td>
+		                        		<td>If the openRel() fails because of no free slots in open relation table</td>
+		                    		</tr>
+		                     	</table>
+		                    </div>
 
                             <h4>Description:</h4>
                             <p>Description of the function/method</p>
@@ -172,7 +176,7 @@
      
 }</code></pre></div>
 
-                            <a href="code/project.cpp" target="_blank" download>Click here</a> to download the code.
+                            <a href="code/project.cpp" target="_blank" download>Click here</a> to download the algorithm.
                         </div>
                         <!-- PAGE ENDS -->
                     </div>

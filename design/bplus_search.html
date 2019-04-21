@@ -4,93 +4,162 @@
 <head>
     <title>Search (B+ tree)</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div id="bplus_search" class="design-detail">
+                            <div class="pagetitle">
+                                <h1>Search (B+ tree)</h1>
+                            </div>
+                            <h4>Arguments:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+								        <td>relid</td>
+								        <td>int</td>
+								        <td>Relation Id of Relation in which target attribute is contained.</td>
+									</tr>
+									<tr>
+								        <td>attrname</td>
+								        <td>char[ATTR_SIZE]</td>
+								        <td>name of colomumn/attribute(containing b+ tree) to which search has to be made.</td>
+									</tr>
+									<tr>
+								        <td>attrval</td>
+								        <td>union Attribute</td>
+								        <td>value of attribute that to be checked against the operater.</td>
+								    </tr>
+									<tr>
+								        <td>op</td>
+								        <td>int</td>
+								        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal operators respectively).</td>
+									</tr>
+		                        </table>
+                            </div>
+                            
+                            <h4>Return value:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td>RecId (block#, slot#)</td>
+						                <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
+						            </tr>
+						            <tr>
+						                <td>(-1, -1)</td>
+						                <td>If no valid next hit is found.</td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+							<h4>Algorithm:</h4>
+                            <div class="code"><pre><code>struct recId bplus_search(relId relid, char AttrName[ATTR_SIZE], union Attribute AttrVal, int op){
+	AttrCatEntry attrcat_entry;
+	
+	//get the previous index id from the attribute cache (corresponds to relid, AttrName) by calling
+	OpenRelTable::getAttrCatEntry(relid, AttrName, &attrcat_entry);
+	prev_indexid = OpenRelTable::::getPrevIndexId(relid, AttrName);
+	
+	//prev_indexid is set only if the search proccessed through leaf index blocks (search has been done before atleast once)
+	//otherwise prev_indexid is unset ({-1,-1})
+	
+	//if prev_indexid is unset then assign block as root block and index as 0 (i.e seach from the root block)
+	//if prev_indexid is set then assign block as prev_indexid's block and index as prev_indexid's index + 1
+	
+	//if assigned index exceeds the indices present in the leaf index block{
+		//assign block as block right's block (i.e next leaf index block)
+		//if(block == -1) (i.e, search is done )then return {-1,-1}
+	//} 
+	
+	//if(block_num == root_block && index == 0){
+		//traverse through all the internal nodes according to the attribute value AttrVal and the operator op
+		//Accordingly update block and index variables
+	//}
+	
+	//NOTE: From Index blocks are leaf index blocks (WHY!!!)	 
+	
+	//Traverse through leaf index entries in the leaf index block (block) from index entry numbered as index
+	
+	//if no index entry in the leaf block satisfies the given condition{
+		//then there are two possiblities:
+		// 1. Search is Completed 
+		// 2. No record in the relation with relid satisfies the given condition
+		// update prev_recid in the attribute cache as {-1, -1}
+		// return recid = {-1, -1}
+	//} 
+	
+	//otherwise{
+		//update prev_recid in the attribute cache as 
+		//prev_recid = {block (leaf index block), index (index entry that satisfied the given conditon)}
+		//get record id (recid) from the index entry
+		//return record id
+	//}
+}</code></pre></div>
+
+                            <a href="code/bplus_search.cpp" target="_blank" download>Click here</a> to download the algorithm.
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
         </div>
         
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
     </div>
-    
-    <div id="content">
-        <div id="design-content">
-            <div id="search" class="design-detail">
-                <h2>Search (B+ tree)</h2>
-                <h3>Arguments:</h3>
-                <table>
-                    <tr>
-                        <td>relid</td>
-                        <td>int</td>
-                        <td>Relation Id of Relation in which target attribute is contained.</td>
-					</tr>
-					<tr>
-                        <td>attrname</td>
-                        <td>char[ATTR_SIZE]</td>
-                        <td>name of colomumn/attribute(containing b+ tree) to which search has to be made.</td>
-					</tr>
-					<tr>
-                        <td>attrval</td>
-                        <td>union Attribute</td>
-                        <td>value of attribute that to be checked against the operater.</td>
-                    </tr>
-					<tr>
-                        <td>op</td>
-                        <td>int</td>
-                        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal operators respectively).</td>
-					</tr>
-                </table>
-                
-                <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>RecId (block#, slot#)</td>
-                            <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
-                        </tr>
-                        <tr>
-                            <td>(-1, -1)</td>
-                            <td>If no valid next hit is found.</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <h3>Description:</h3>
-                <p>Description of the function/method</p>
-                
-                <h3>Algorithm:</h3>
-                <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-
-
-                </div> <!-- End of algo div -->
-                <a href="code/bplus_search.cpp" target="_blank" download>Click here</a> to download the code.
-            </div>
-            
-        </div>
-    </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>

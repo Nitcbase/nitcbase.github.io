@@ -4,78 +4,133 @@
 <head>
     <title>Destroy (B+ tree)</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div id="bplus_destroy" class="design-detail">
+                            <div class="pagetitle">
+                                <h1>Destroy (B+ tree)</h1>
+                            </div>
+                            <h4>Arguments:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>block_num</td>
+		                    			<td>int</td>
+		                    			<td>Block no. of head of bplus tree which need to be destroyed.</td>
+		                			</tr>
+		                        </table>
+                            </div>
+                            
+                            <h4>Return value:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successful deletion of b+ tree</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_OUTOFBOUND</td>
+		                    		    <td>If the block_num is less than 0 or greater than or equal to DISK_BLOCKS</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_INVALIDBLOCK</td>
+		                    		    <td>If the block is not an index block</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+							<h4>Algorithm:</h4>
+                            <div class="code"><pre><code>
+	//all the index blocks are deleted recursively
+	
+	if(block_num < 0 || block_num >= DISK_BLOCKS){ //if the block_num is invalid
+		E_OUTOFBOUND;
+	}
+	
+	//get the block_type from header of the block
+	if(block_type != INDINT || block_type != INDLEAF){ //if the block is not index block
+		return E_INVALIDBLOCK;
+	}
+	
+	if(block_type == INDLEAF){ //if the block is leaf index block
+		//delete the block from the disk
+	}
+	else if(block_type == INDINT){ 	//if the block is internal index block
+		//iterate over all the internal index entries{
+			//delete all the child index blocks corresponding to each internal index block by calling
+			bplus_destroy(child_block);
+		//}
+	}	
+	
+	return SUCCESS;
+}</code></pre></div>
+
+                            <a href="code/bplus_destroy.cpp" target="_blank" download>Click here</a> to download the algorithm.
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
         </div>
         
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
     </div>
-    
-    <div id="content">
-        <div id="design-content">
-            <div id="destroy" class="design-detail">
-                <h2>Destroy (B+ tree)</h2>
-                <h3>Arguments:</h3>
-                <table>
-                    <tr>
-                        <td>block_num</td>
-                        <td>int</td>
-                        <td>Block no. of head of bplus tree which need to be destroyed.</td>
-                    </tr>
-                </table>
-                
-                <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On successful deletion of b+ tree</td>
-                        </tr>
-                        <tr>
-                            <td>E_INVALIDBLOCK</td>
-                            <td>If the block is not an index block</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <h3>Description:</h3>
-                <p>Description of the function/method</p>
-                
-                <h3>Algorithm:</h3>
-                <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-
-
-                </div> <!-- End of algo div -->
-                <a href="code/bplus_destroy.cpp" target="_blank" download>Click here</a> to download the code.
-            </div>
-            
-        </div>
-    </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>

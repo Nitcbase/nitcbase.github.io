@@ -4,83 +4,142 @@
 <head>
     <title>Create (B+ tree)</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="/index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <!--MAIN CONTENT START-->
+                <div class="col">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div id="bplus_create" class="design-detail">
+                            <div class="pagetitle">
+                                <h1>Create (B+ tree)</h1>
+                            </div>
+                            <h4>Arguments:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>relid</td>
+		                    			<td>int</td>
+		                    			<td>Relation Id of Relation in which target attribute is contained.</td>
+		                			</tr>
+		                			<tr>
+		                    			<td>attrname</td>
+		                    			<td>char[ATTR_SIZE]</td>
+		                    			<td>name of attribute to which bplus tree has to be created.</td>
+		                			</tr>
+		                        </table>
+                            </div>
+                            
+                            <h4>Return value:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successul creation of tree</td>
+		                    		</tr>
+		                    		<tr>
+		                        		<td>E_DISKFULL</td>
+		                        		<td>If there is no enough space in disk to create the tree</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+
+                            <h4>Description:</h4>
+                            <p>Description of the function/method</p>
+
+							<h4>Algorithm:</h4>
+                            <div class="code"><pre><code>int bplus_create(relId relid, char attrName[ATTR_SIZE]){
+	/*get the root block from the attribute cache correponding to the
+	  relation with Id relid and the attribute with attribute name attrName*/
+	  
+	if(root_block != -1){ //Index already exists for the attribute
+		return SUCCESS;
+	}
+	
+	//get the free leaf index for the root block
+	leaf_buffer = Buffer::getFreeIndLeaf();
+	if(leaf_buffer == NULL){ //disk is full (i.e unable to get new record block from the disk)
+		return E_DISKFULL;
+	}
+	
+	//get the root block number corresponding to the leaf_buffer (free leaf index) from the buffer
+	root_block = leaf_buffer->getBlockNum();
+	
+	/*update the root block in the attribute cache correponding to the
+	  relation with Id relid and the attribute with attribute name attrName*/
+	  
+	//Iterate over all the records of the relation with Id relid{
+		//insert the index entries for each record in the bplus tree
+		flag = bplus_insert(relid, attrName, attrval, recid); //where the recid is record id corresponding to the record
+		if(flag == E_DISKFULL){ //unable to insert the record in bplus tree since disk is full
+			//destroy all the index blocks created so far corresponding to the record
+			bplus_destroy(root_block);
+			return E_DISKFULL;
+		}
+	//}
+	
+	return SUCCESS;        
+}</code></pre></div>
+
+                            <a href="code/bplus_create.cpp" target="_blank" download>Click here</a> to download the algorithm.
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
         </div>
         
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="/index.html">Home</a></li>
-                <li> <a href="/documentation.html"> Documentation</a></li>
-                <li> <a href="/roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
     </div>
-    
-    <div id="content">
-        <div id="design-content">
-            <div id="create" class="design-detail">
-                <h2>Create (B+ tree)</h2>
-                <h3>Arguments:</h3>
-                <table>
-                    <tr>
-                        <td>relid</td>
-                        <td>int</td>
-                        <td>Relation Id of Relation in which target attribute is contained.</td>
-                    </tr>
-                    <tr>
-                        <td>attrname</td>
-                        <td>char[ATTR_SIZE]</td>
-                        <td>name of attribute to which bplus tree has to be created.</td>
-                    </tr>
-                </table>
-                
-                <div class=retval>
-                    <h3>Return value:</h3>
-                    <table>
-                        <tr>
-                            <td>SUCCESS</td>
-                            <td>On successul creation of tree</td>
-                        </tr>
-                        <tr>
-                            <td>E_DISKFULL</td>
-                            <td>If there is no enough space in disk to create the tree</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <h3>Description:</h3>
-                <p>Description of the function/method</p>
-                
-                <h3>Algorithm:</h3>
-                <div class="algo">
-                    <!-- HTML from code is generated from http://hilite.me/ with configuration:
-                        source code:    our code
-                        language:       C++
-                        style:          tango
-                        CSS:            border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;
-                        Line numbers:   checked (check box)
-                        finally clicking on highlight! ;-)
-                        Copy the code from HTML section and paste n this div. Simple :-).
-                    -->
-                   
-
-
-                </div> <!-- End of algo div -->
-                <a href="code/bplus_create.cpp" target="_blank" download>Click here</a> to download the code.
-            </div>
-            
-        </div>
-    </div>
-    
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
