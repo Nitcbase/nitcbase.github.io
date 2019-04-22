@@ -51,7 +51,7 @@ header h3 {
 }
 
 #collapsibleSidebar {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 #collapsibleSidebar ul li a.sec::before {
