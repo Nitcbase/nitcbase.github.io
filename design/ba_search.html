@@ -49,7 +49,7 @@
 					<tr>
                         <td>attrval</td>
                         <td>union Attribute</td>
-                        <td>value of attribute that to be checked against the operater.</td>
+                        <td>value of attribute that has to be checked against the operater.</td>
                     </tr>
 					<tr>
                         <td>op</td>
@@ -181,6 +181,28 @@
                 <h2>Linear Search (Block Access)</h2>
                 <h3>Arguments:</h3>
                 <p>relid (int), attrName (char[ATTR_SIZE]), attrval (union Attribute), op (int)</p>
+                <table>
+                    <tr>
+                        <td>relid</td>
+                        <td>int</td>
+                        <td>Relation Id of Relation to which search has to be made.</td>
+                    </tr>
+					<tr>
+                        <td>attrname</td>
+                        <td>char[ATTR_SIZE]</td>
+                        <td>Attribute/column name to which condition need to be checked with.</td>
+					</tr>
+					<tr>
+                        <td>attrval</td>
+                        <td>union Attribute</td>
+                        <td>value of attribute that has to be checked against the operater.</td>
+                    </tr>
+					<tr>
+                        <td>op</td>
+                        <td>int</td>
+                        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE,RST,PRJCT corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal, reset, projet operators respectively).</td>
+					</tr>
+                </table>
                 
                 <div class=retval>
                     <h3>Return value:</h3>
