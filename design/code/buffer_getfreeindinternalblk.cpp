@@ -1,4 +1,4 @@
-static class IndInternal *getFreeIndInternal(){
+class IndInternal* Buffer::getFreeIndInternal(){
 
     // search for the free block in disk iterating through block_alloc_map array.
 

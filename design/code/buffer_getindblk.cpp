@@ -1,4 +1,4 @@
-class IndBuffer *getIndBlock(int block_num){
+class IndBuffer* Buffer::getIndBlock(int block_num){
     /*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,
      #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond
       to #block_num).

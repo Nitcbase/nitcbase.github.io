@@ -1,4 +1,4 @@
-static class IndLeaf *getFreeIndLeaf(){
+class IndLeaf* Buffer::getFreeIndLeaf(){
 
     // search for the free block in disk iterating through block_alloc_map array.
 

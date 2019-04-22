@@ -1,4 +1,4 @@
-static class RecBuffer *getFreeRecBlock(){
+class RecBuffer* Buffer::getFreeRecBlock(){
 
     // search for the free block in disk iterating through block_alloc_map array.
 
