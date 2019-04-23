@@ -31,6 +31,10 @@ body {
     tab-size: 4;
 }
 
+.table {
+    color: inherit;
+}
+
 p {
     font-family: 'trebuchet ms', sans-serif;
 }
@@ -120,4 +124,8 @@ code {
 
 .algo-collapse {
     border-bottom: 1px solid #CCC;
+}
+
+ol.methods {
+    
 }

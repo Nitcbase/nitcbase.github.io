@@ -56,19 +56,35 @@
             <div class="row">
                 
                 <!-- SIDEBAR BEGIN -->
-                <div class="col-sm-2">
-                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                <div class="col-md-2">
+                    <nav class="navbar navbar-expand-md sticky-top sticky-offset">
                         <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
                             <i class="fas fa-align-left"></i>
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-                            <li> <a href="#layout">Layout</a></li>
-                            <li> <a href="#buffer_class">Buffer Class</a></li>
-                            <li> <a href="#blkbuff_class">BlockBuffer Class</a></li>
-                            <li> <a href="#recbuff_class">RecBuffer Class</a></li>
-                            <li> <a href="#intbuff_class">IndInternal Class</a></li>
-                            <li> <a href="#leafbuff_class">IndLeaf Class</a></li>
+                            <li> <a class="sec" href="#layout"> Layout</a></li>
+                            <li> <a class="sec" href="#block_structures"> Block Structures</a></li>
+                            <li> <a class="sec" href="#buffer_class"> Buffer Class</a></li>
+                            <ul>
+                                <li><a href="#getfreerecblk">getFreeRecBlock()</a> </li>
+                                 <li><a href="#getfreeindinternal">getFreeIndInternal()</a> </li>
+                                 <li><a href="#getfreeindleaf">getFreeIndLeaf()</a> </li>
+                                 <li><a href="#getrecblk">getRecBlock()</a> </li>
+                                 <li><a href="#getindblk">getIndBlock()</a> </li>
+                                <li><a href="#deleteblk">deleteBlock()</a> </li>
+                                <li><a href="#releaseblk">releaseBlock()</a> </li>
+                            </ul>
+                            <li> <a class="sec" href="#blkbuff_class"> BlockBuffer Class</a></li>
+                            <ul>
+                                <li><a href="#getheader">getHeader()</a> </li>
+                                <li><a href="#setheader">setHeader()</a> </li>
+                                <li><a href="#getdataptr">get_dataptr()</a> </li>
+                            </ul>
+                            <li> <a class="sec" href="#recbuff_class"> RecBuffer Class</a></li>
+                            <li> <a class="sec" href="#indbuff_class"> IndBuffer Class</a></li>
+                            <li> <a class="sec" href="#intbuff_class"> IndInternal Class</a></li>
+                            <li> <a class="sec" href="#leafbuff_class"> IndLeaf Class</a></li>
                         </ul>
                         </div>
                     </nav>
@@ -76,88 +92,942 @@
                 <!-- END OF SIDEBAR -->
                 
                 <!--MAIN CONTENT START-->
-                <div class="col-sm-10">
+                <div class="col-md-10">
                     <div id="top">
                         <!-- PAGE STARTS -->
                         
                          <div class="pagetitle">
                             <h1>Buffer Layer</h1>
-                        </div>
+                         </div>
                         
                          <div id="layout" class="detail">
                          	<h2>Layout</h2>
-                         	<p>According to Nitcbase Layered architecture, Buffer Layer comes above the Physical Layer, whenever above layers  need to work on disk blocks, Buffer Module loads the Disk block to Buffer, works on it and commits back the block to Disk when needed. Buffer is a run time object which gives disk abstraction to layers above the buffer layer by using the interfaces provided by the Buffer layer. Nitcbase follows object oriented programming(OOP) design for buffer management, following is the class diagram of Buffer Layer.
-                         	</p>
+                            <p>Whenever one needs to work on a disk block, it has to be fetched from the disk (secondary storage) to the primary memory and after performing necessary operations, it has to be committed back to disk. NITCbase uses a dedicated Buffer Layer for this task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives disk abstraction to the other layers of the system. NITCbase allots a fixed memory that is sufficient for 32 blocks to cache the blocks and manipulate them in memory. Buffer Layer is responsible for maintaining that memory and making replacements when necessary. NITCbase follows Object Oriented design for Buffer layer whose class diagram follows.</p>
+                         	
                          	<center><img class="img-fluid" src="/img/buffer_class.png"></center>
                          </div>
+                        
+                        <div id="block_structures" class="detail">
+                            <h2>Block Structures</h2>
+                            <p>NITCbase defines different data structures for ease of handling different parts of a block structure. These structures make the code clean and neat (Otherwise, one has to work with offsets within the block and typecast whenever required).</p>
+                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of blocks and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure used for this header whose fields are shown below. The size of the header is 32 bytes.</p>
+                            <div class="code">
+                                <pre><code>struct HeadInfo{
+	int32_t block_type;
+	int32_t pblock;
+	int32_t lblock;
+	int32_t rblock;
+	int32_t num_entries;
+	int32_t num_attrs; //not useful for index block
+	int32_t num_slots;
+	unsigned char reserved[4];
+};</code></pre>
+                            </div>
+                            <p>According to storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains <b>Attributes</b>. A structure Attribute is used to handle the attribute in memory. Since an attribute can be one of different type (integar/ float/ string), Attribute is an union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  </p>
+                            <div class="code">
+                                <pre><code>typedef union Attribute{
+	int ival;
+	float fval;
+	char strval[ATTR_SIZE];
+} Attribute;</code></pre>
+                            </div>
+                            
+                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> consists of many attribute values and child pointers arranged alternatively in such a way that every attribute value will have its own left and right child pointers. The combination of an attribute value and its left and right child pointers is called an Internal Entry. Hence an Internal Index block is a combination of 100 such (overlapped) entries. The structure of the InternalEntry is given below: </p>
+                            <div class="code">
+                                <pre><code>struct InternalEntry{
+	int32_t lchild;
+	union Attribute attrval;
+	int32_t rchild;
+};</code></pre>
+                            </div>
+                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below: </p>
+                            <div class="code">
+                                <pre><code>struct Index{
+	union Attribute attrval;
+	int32_t block;
+	int32_t slot;
+	unsigned char unused[8];
+};</code></pre>
+                            </div>
+                            
+                        </div>
                          
                          <div id="buffer_class" class="detail">
                          	<h2>Buffer class</h2>
-                         	<p> Nitcbase assumes Buffer Class to be a Singleton class, Buffer contains 32 blocks(char: blocks[32][1024]) which are used to load the blocks from disk and also to commit the Buffer blocks back to disk. The metainfo of these buffer blocks is stored at respective index in struct metainfo array. struct metainfo contains following fields in it 1.free: type bool, value true in free indicates fallowing block in buffer is free and false indicates the blockis currently in use i.e loaded with some Disk block, 2.dirty: type bool, value true indicates respective page/block present in buffer is altered after loading from Disk whereas false indicates no change of block after loading it to buffer, 3.page_num:type int, which contains the Disk block number of correspoding buffer block.
-                         	</p>
-                         	<p>Buffer also stores block_alloc_map(unsigned char: block_alloc_map[DISK_BLOCKS]), an array where i'th element(byte) is 1 if i'th block in disk is allocated/used and 0 if not allocated/free. Layers above Buffer, uses public interfaces/methods of Buffer class to access Disk blocks(or to obtain Disk abstraction).                         
-                         	</p>
-                         	<h2>Public methods of Buffer class:</h2>
-                         	<p>1. class RecBuffer *getFreeRecBlock(): searches for the free disk block using block_alloc_map array, if no free entry is found, returns null, else allocates the corresponding free disk block in block_alloc_map, searches for free Buffer block (out of 32 buffer blocks), if not found, uses buffer replacement policy to get a free buffer block, after getting the free buffer block updates the buffer block with REC type and associate the respective metainfo of buffer block with free:false, dirty:true, block_num: free entry index found from block_alloc_map. creates a RecBuffer object and associate it with corresponding disk block and returns RecBuffer object pointer.
-                         	</p>
-                         	<p>2. class IndInternal *getFreeIndInternalBlock()/class IndLeaf *getFreeIndLeafBlock(): searches for the free disk block using block_alloc_map array, if no free entry is found returns null,found, uses buffer replacement policy to get a free buffer block, after getting the free buffer block updates the buffer block with INDINT/INDLEAF type and associate the respective metainfo of buffer block with free:false, dirty:true, block_num: free entry index found from block_alloc_map. and creates a IndBuffer object and associate it with corresponding disk block and returns IndInternal/IndLeaf object pointer.
-                         	</p>
-                         	<p>3.class RecBuffer *getRecBlock(int block_num):Look ups the Buffer for the block with disk #block as block_num, if not present loads it to the buffer from disk( uses buffer replacement if all 32 blocks of buffer are full) and sets the respective meta_info(free:false,dirty:false, block_num: block_num(passed as argument). checks whether the disk block #block_num, corresponds to REC block or not, if it is not returns NULL. creates a RecBuffer object and associate it with corresponding disk block #block_num and returns RecBuffer object pointer, psuedo code for the same can be seen in below snippet.
-                         	</p>
-                         	<p>4.class IndBuffer *getRIndBlock(int block_num):Look ups the Buffer for the block with #disk_block as block_num, if not present loads it to the buffer from disk( uses buffer replacement if all 32 blocks of buffer are full) and sets the respective meta_info(free:false,dirty:false, block_num: block_num(passed as argument). checks whether the disk block #block_num, corresponds to IND block or not, if not returns NULL. creates an IndInternal/IndLeaf object(based on whether the block is internal or leaf block of b+tree) using IndBuffer class pointer and associate it with corresponding disk block #block_num and returns IndBuffer pointer.
-                         	</p>
-                         	<p>5.releaseBlock(int block_num): checks if buffer contains the disk block #block_num in one of the 32 blocks of buffer(by looking up the block_no in metainfo array), if present, have to free/release the the respective block from buffer. commits the buffer block back to Disk if respective buffer block is found to be dirty and update the free of respective metainfo array to true.
-                         	</p>
-                         	<p>6.void deleteBlock(int block_num): checks if buffer contains the disk block #block_num in one of the 32 blocks of buffer. if present, free/release the respective buffer block by using releaseblock(block_num) method. Delete the Disk block by updating #block_num'th entry in block_alloc_map to '0'. 
-                         	</p>
+                            <p>Buffer contains a total of 32 blocks which are used to store the data from the disk blocks. Thes eblocks will be committed back to disk whenever needed. In addition to storing the data of a block, Buffer also maintains some meta information for each block. The structure storing the meta information is BufferMetaInfo. It includes block_num, which is the block# of the corresponding block in the disk along with dirty and free flags indicating whether the buffer block is dirty(modified) and free(unoccupied) respectively. In addition to these fields, some additional fields like timestamp are required in BufferMetaInfo to be used for Buffer replacement purpose. [YET TO BE DESIGNED] </p>
+                             <div class="code">
+                                <pre><code>struct BufferMetaInfo {
+	bool free;
+	bool dirty;
+	int block_num;
+};</code></pre>
+                             </div>
+                             <p>Buffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an arry of size DISK_BLOCKS(8192) where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data including block allocation map is private to the Buffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk fetch and committing interfaces to upper layers hiding the fact that blocks are being replaced. Buffer is a static class (i.e., all fields and methods are declared static) in NITCbase which means there exists only a single static object at any instance of time. The class defnition of Buffer class along with public methods is given below:</p>
+                             <p><b>Note:</b> The BlockBuffer class is a friend class to Buffer so that all methods in BlockBuffer can access private methods of Buffer layer. It is explained in the next section.</p>
+                             <div class="code">
+                                <pre><code>class Buffer {
+friend class BlockBuffer;
+private:
+	//fields
+	static unsigned char blocks[32][BLOCK_SIZE];
+	static struct BufferMetaInfo metainfo[32];
+	static unsigned char block_alloc_map[DISK_BLOCKS];
+
+	//methods
+	static int getBlockType(int buffer_index);
+	static int getFreeBuffer();
+	static int getbufferblock(int block_num);
+	static int loadBlock(int block_num);
+	static void releaseBufferBlock(int buffer_index);
+	static unsigned char* get_buf_dataptr(int block_num);
+
+public:
+	//methods
+	Buffer();
+	~Buffer();
+	static class RecBuffer *getFreeRecBlock();
+	static class IndBuffer *getFreeIndInternal();
+	static class IndBuffer *getFreeIndLeaf();
+	static class RecBuffer *getRecBlock(int block_num);
+	static class IndBuffer *getIndBlock(int block_num);
+	static void deleteBlock(int block_num);
+	static void releaseBlock(int block_num);
+};</code></pre>
+                             </div>
+                         	<br>
+                             <p>The specifications of the methods of Buffer class follows:</p>
+                             <ul class="methods">
+                                <li><div class="detail" id="getfreerecblk">
+                                    <h2>getFreeRecBlock</h2>
+                                    <h5>Arguments:</h5>
+                                    <p>NIL</p>
+
+                                    <h5>Return value:</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <tr>
+                                                <td>RecBuffer *</td>
+                                                <td>Returns a pointer to a new RecBuffer object</td>
+                                            </tr>
+                                            <tr>
+                                                <td>NULL</td>
+                                                <td>If free disk block is not available. (disk full)</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <h5>Description:</h5>
+                                    <p>Description of the function/method</p>
+
+                                    <h5><a data-toggle="collapse" href="#algo-getfreerecblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                    <div id="algo-getfreerecblk" class="collapse">
+                                        <div class="code">
+                                            <pre><code>class RecBuffer* Buffer::getFreeRecBlock(){
+
+    // search for the free block in disk iterating through block_alloc_map array.
+
+    //if no disk block is free return NULL
+
+    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+
+    //if no free buffer block in memory return NULL
+
+    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
+
+    class RecBuffer* newRecBuffer= new RecBuffer(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
+
+    // return the RecBuffer object pointer.
+}</code></pre>
+                                        </div>
+                                    </div>
+                                    </div></li>
+                                 
+                                 <li>
+                                    <div class="detail" id="getfreeindinternal">
+                                         <h2>getFreeIndInternalBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <p>NIL</p>
+
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>IndInternal *</td>
+                                                    <td>Returns a pointer to a new IndInternal object</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>If free disk block is not available. (disk full)</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-getfreeindinternal"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreeindinternal" class="collapse">
+                                            <div class="code">
+                                                <pre><code>class IndInternal* Buffer::getFreeIndInternal(){
+
+    // search for the free block in disk iterating through block_alloc_map array.
+
+    //if no disk block is free return NULL
+
+    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+
+    //if no free buffer block in memory return NULL
+
+    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
+
+    class IndInternal* newIndBuffer= new IndInternal(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
+
+    // return the IndBuffer object pointer.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="getfreeindleaf">
+                                        <h2>getFreeIndLeafBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <p>NIL</p>
+
+                                        
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>IndLeaf *</td>
+                                                    <td>Returns a pointer to a new IndLeaf object</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>If free disk block is not available. (disk full)</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p> 
+                                        <h5><a data-toggle="collapse" href="#algo-getfreeindleaf"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreeindleaf" class="collapse">
+                                            <div class="code">
+                                                <pre><code>class IndLeaf* Buffer::getFreeIndLeaf(){
+
+    // search for the free block in disk iterating through block_alloc_map array.
+
+    //if no disk block is free return NULL
+
+    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+
+    //if no free buffer block in memory return NULL
+
+    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
+
+    class IndLeaf* newIndBuffer= new IndLeaf(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
+
+    // return the IndBuffer object pointer.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="getrecblk">
+                                        <h2>getRecBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>block_num</td>
+                                                    <td>int</td>
+                                                    <td>Disk block number of Record block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                        <h5>Return value:</h5>
+                                        <div class=table-responsive>
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>RecBuffer *</td>
+                                                    <td>Returns a pointer to the RecBuffer object corresponding to the block_num</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>Provided block_num is not in the range of disk blocks.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>If the requested block is not a valid Record Block (can be a free block or any Index Block)</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getrecblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getrecblk" class="collapse">
+                                            <div class="code">
+                                                <pre><code>class RecBuffer* Buffer::getRecBlock(int block_num){
+    /*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,
+     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond
+      to #block_num).
+    */
+
+	/* if buffer doesn't conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info
+    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in 
+    buffer and do necessary initialisations in buffer meta info)*/
+
+    //if the block corresponding to #block_num is not a REC block return NULL
+
+    class RecBuffer* newRecBuffer= new RecBuffer(block_num);
+
+    // return the RecBuffer object pointer.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="getindblk">
+                                        <h2>getIndBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>block_num</td>
+                                                    <td>int</td>
+                                                    <td>Disk block number of Index block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>IndBuffer *</td>
+                                                    <td>Returns a pointer to the IndInternal/IndLeaf object corresponding to the block_num <br>
+                                                        (Returns an object of type IndInternal if the block is an internal Index block / returns an object of type IndLeaf if the block is a Leaf Index block). <br>
+                                                        <b>Note: </b>An object of child type can be assigned to a parent variable.
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>Provided block_num is not in the range of disk blocks.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>NULL</td>
+                                                    <td>If the requested block is not a valid Index Block (can be a free block or a Record Block)</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-getindblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getindblk" class="collapse">
+                                            <div class="code">
+                                                <pre><code>class IndBuffer* Buffer::getIndBlock(int block_num){
+    /*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,
+     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond
+      to #block_num).
+    */
+
+	/* if buffer doesn't conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info
+    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in 
+    buffer and do necessary initialisations in buffer meta info)*/
+
+    //if the block corresponding to #block_num is not a INDLEAF/INDINTERNAL block return NULL
+
+    class IndBuffer* newIndBuffer= new IndBuffer(block_num);
+
+    // return the IndBuffer object pointer.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="deleteblk">
+                                        <h2>deleteBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>block_num</td>
+                                                    <td>int</td>
+                                                    <td>Disk block number of block that has to be deleted.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p> 
+                                        <h5><a data-toggle="collapse" href="#algo-deleteblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-deleteblk" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void Buffer::deleteBlock(int block_num){
+    // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return
+
+    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can
+    be used for the same).*/
+
+    //if buffer does not contain disk block #block_num release the buffer block using releaseBlock(int block_num) method call
+
+    //set the block_alloc_map array element correspond to block_num as UNUSED
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="releaseblk">
+                                        <h2>releaseBlock</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>block_num</td>
+                                                    <td>int</td>
+                                                    <td>Disk block number of block that has to be released from buffer.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p> 
+                                        <h5><a data-toggle="collapse" href="#algo-releaseblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-releaseblk" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void Buffer::releaseBlock(int block_num){
+    // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return 
+
+    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can
+    be used for the same).*/
+
+    //if buffer does not contain disk block #block_num return 
+
+    // if the dirty field in metainfo of buffer block correspond to #block_num is set to true, commit the block back to disk.
+
+    // free the buffer block correspond to #block_num in metainfo array.
+
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                             </ul>
+                             
                          </div>
                          
                          <div id="blkbuff_class" class="detail">
                          	<h2>Block Buffer Class</h2>
-                         	<p>BlockBuffer class is a generic class for block of any type. The public Methods of this class deals with the information like Header info which is generic to all blocks of Disk. RecBuffer and IndBuffer classes will extend from BlockBuffer class.
+                         	<p>BlockBuffer class is a generic class for block of any type. It is an abstract class. It has a block_num as its only field which stores the disk block# corresponding to the block buffer object. In order to work with data of the block, any method need to know the location of memory where the block has been loaded. But the block will be loaded and stored into one of the 32 buffers in Buffer class. Adding to the complexity, the block may even not be present in the primary memory because of the replacement. So any function should get the pointer to the data block whenever an operation is to be performed on the fly using get_dataptr() method which in turn uses Buffer's interface to get the required reference. The public Methods of this class deals with the information like Header info which is generic to all blocks of Disk. RecBuffer and IndBuffer classes will extend from BlockBuffer class thereby inheriting all the fields and methods.
                          	</p>
-                         	<h2>Public methods:</h2>
-                         	<p>1.struct HeadInfo getheader(): This method returns the header of buffer block correspoding to BlockBuffer object. gets the header fields from buffer block and puts them in a struct HeadInfo variable and returns the HeadInfo struct.
-                         	</p>
-                         	<p>2.void setheader(struct HeadInfo head): This method sets the header of buffer block correspoding to BlockBuffer object. updates the buffer blocks header with the fields of struct HeadInfo head.
-                         	</p>                       
+                            <div class="code">
+                                <pre><code>class BlockBuffer{
+protected:
+	int block_num;
+	unsigned char *get_dataptr();
+
+public:
+	BlockBuffer(int block_num); 
+	struct HeadInfo getheader();
+	void setheader(struct HeadInfo head); 
+	virtual ~BlockBuffer();
+};</code></pre> 
+                            </div>
+                            <p>The following is the specification of methods of BlockBuffer</p>
+                             <ul class="methods">
+                                <li>
+                                    <div class="detail" id="getheader">
+                                        <h2>getHeader</h2>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="detail" id="setheader">
+                                        <h2>setHeader</h2>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="detail" id="getdataptr">
+                                        <h2>get_dataptr</h2>
+                                    </div> 
+                                </li>
+                             </ul>
+                                                
                          </div>
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>RecBuffer Class</h2>
-                         	<p>The object of this class will be associated with the REC type buffer blocks, public Methods of this class deals with the records and slotmap of the buffer block.
+                         	<p>The object of this class will be associated with the REC type buffer blocks i.e., a record Block. Public Methods of this class deals with the records and slotmap of the buffer block (Record Block). RecBuffer class extends the BlockBuffer class.
                          	</p>
-                         	<h2>Public methods:</h2>
-                         	<p>1.void getSlotmap(unsigned char *slotmap): slotmap consists of #slots(present in header of corresponding block) number of bytes. This method copies #slots sized slotmap from buffer block to memory pointed by slotmap variable(argument).
-                         	</p>
-                         	<p>2.void setSlotmap(unsigned char *slotmap): slotmap consists of #slots(present in header of corresponding block) number of bytes. This method copies #slots sized slotmap from memory pointed by slotmap variable(argument) to buffer block's slotmap.
-                         	</p>
-                         	<p>3.void getRecord(union Attribute *rec,int slot_num): checks whether the slot_num is within #slots entry present in corresponding buffer block, if yes, copies the slot_num'th record from buffer block to memory pointed by rec variable passed as argument.
-                         	</p>
-                        	<p>4.void setRecord(union Attribute *rec,int slot_num): checks whether the slot_num is within #slots entry present in corresponding buffer block, if yes, copies the record pointed by rec variable(passed as argument) to slot_num'th record of buffer block.
-                         	</p>
+                             <div class="code">
+                                <pre><code>class RecBuffer : public BlockBuffer{
+public:
+	RecBuffer(int blk_no);
+	void getSlotmap(unsigned char *slotmap); //change return type to to int = slotmapsize
+	void setSlotmap(unsigned char *slotmap);
+	void getRecord(union Attribute *rec,int slot_num);
+	void setRecord(union Attribute *rec,int slot_num);
+};</code></pre>
+                             </div>
+                             <p>The following is the specifications for methods of recBuffer class.</p>
+                             <ul class="methods">
+                                <li>
+                                    <div class="detail" id="getslotmap" >
+                                        <h2>getSlotmap</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>slotmap</td>
+                                                    <td>char[ATTR_SIZE]</td>
+                                                    <td>pointer to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getslotmap" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void RecBuffer::getSlotmap(unsigned char *slotmap){ 
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // copy the memory content in #slots sized slotmap from block to memory pointing by slotmap(as argument)
+}</code></pre>
+                                            </div>
+                                        </div>
+                                        
+                                    </div> 
+                                </li>
+                                
+                                <li>
+                                    <div class="detail" id="setslotmap" >
+                                        <h2>setSlotmap</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>slotmap</td>
+                                                    <td>char[ATTR_SIZE]</td>
+                                                    <td>pointer to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-setslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setslotmap" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void RecBuffer::setSlotmap(unsigned char *slotmap){ 
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // copy the memory content in #slots sized slotmap from memory pointing by slotmap(as argument) to SlotMap in block.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+                                 
+                                <li>
+                                    <div class="detail" id="getrecord" >
+                                        <h2>getRecord</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>record</td>
+                                                    <td>union Attribute *</td>
+                                                    <td>pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>slot_num</td>
+                                                    <td>int</td>
+                                                    <td>slot no. of record in block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On succesful copy of the record.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If the slot_num is not in the range of number of slots per the block.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_FREESLOT</td>
+                                                    <td>If the slot corresponding to the slot_num is free.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-getrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getrecord" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void RecBuffer::getRecord(union Attribute *rec,int slot_num){ 
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // get number of attributes(in corresponding relation) from the block.(obtained directly from correspoding offset in block)
+    // get number of slots from the block, which is present header.
+
+    // if slotnum is out of size of slot map or slot corresponding to slot_num is free return FAILURE
+
+    // copy the memory contents of slot_num'th record block to memory pointing by rec.
+
+    // return SUCCESS
+	
+}</code></pre>
+                                            </div>
+                                        </div>                                        
+                                    </div> 
+                                </li>
+                                 
+                                <li>
+                                    <div class="detail" id="setrecord" >
+                                        <h2>setRecord</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>record</td>
+                                                    <td>union Attribute *</td>
+                                                    <td>pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>slot_num</td>
+                                                    <td>int</td>
+                                                    <td>slot no. of record in block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On succesful copy of the record into the block.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If the slot_num is not in the range of number of slots per the block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-setrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setrecord" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void RecBuffer::setRecord(union Attribute *rec,int slot_num){ 
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // get number of attributes(in corresponding relation) from the block.(obtained directly from correspoding offset in block)
+    // get number of slots from the block, which is present header.
+
+    // if slotnum is out of size of slot map or slot corresponding to slot_num is free return FAILURE
+
+    // copy the memory contents of memory pointing by rec to slot_num'th record block.
+
+    // return SUCCESS
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+                                 
+                             </ul>
+                            
                          </div>
                          
+                        <div id="indbuff_class" class="detail">
+                            <h2>IndBuffer class</h2>
+                            <p>IndBuffer extends BlockBuffer class. IndBuffer is a generic(abstract) class for Index Blocks. It has two <b>pure virtual</b> methods- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructor of this class simply calls the constructor of the parent class with the argument received.</p>
+                            <div class="code">
+                                <pre><code>class IndBuffer : public BlockBuffer{
+public:
+	IndBuffer(int blk_no);
+	virtual int getEntry(void *ptr, int indexnum) =0;
+	virtual int setEntry(void *ptr, int indexnum) =0;
+};</code></pre>
+                            </div>
+                        </div>
+                        
                          <div id="intbuff_class" class="detail">
                          	<h2>IndInternal Class</h2>
-                         	<p>The object of this class will be associated with the INDINT type buffer blocks, public Methods of this class deals with the fields of Internal nodes of b+tree buffer block.
+                         	<p>The object of this class will be associated with the INDINT type buffer blocks i.e., Internal Index buffer blocks. Public Methods of this class deals with the entries of Internal nodes of b+tree buffer block known as InternalEntries. IndInternal class extends IndBuffer class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.
                          	</p>
-                         	<h2>Public methods:</h2>
-                         	<p>1.struct InternalEntry getInternalEntry(int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block, if yes, returns the index_num'th InternalEntry of buffer block.
-                         	</p>
-                         	<p>2.void setInternalEntry(struct InternalEntry Entry,int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block, if yes, updates the index_num'th InternalEntry of buffer block with Entry variable passed as argument.
-                         	</p>
+                             <div class="code">
+                                <pre><code>class IndInternal : public IndBuffer{
+public:
+	IndInternal(int blk_no);
+	int getEntry(void *ptr, int indexnum) ;
+	int setEntry(void *ptr, int indexnum) ;
+};</code></pre>
+                             </div>
+                             <p>The following is the specifications of methods of the class.</p>
+                             <ul class="methods">
+                                <li>
+                                    <div class="detail" id="intgetentry">
+                                        <h2>getEntry</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>entry_ptr</td>
+                                                    <td>void *</td>
+                                                    <td>entry_ptr is assumed to be a pointer to type InternalEntry.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>index_num</td>
+                                                    <td>int</td>
+                                                    <td>index no. of entry in Internal index block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On successful copy of the internal entry</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If index_num is outside the range 0-99</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p> 
+                                        <h5><a data-toggle="collapse" href="#algo-intgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-intgetentry" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int IndInternal::getEntry(void *ptr, int index_num){
+    /* get the data pointer(char *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // if the index_num is not in range of 0-(#Entries(in block)+1) return FAILURE
+
+    // copy the index_num'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
+    
+    // return SUCCESS.
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="intsetentry">
+                                        <h2>setEntry</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>entry_ptr</td>
+                                                    <td>void *</td>
+                                                    <td>entry_ptr is assumed to be a pointer to type InternalEntry.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>index_num</td>
+                                                    <td>int</td>
+                                                    <td>index no. of entry in Internal index block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On successful copy of the index entry into the block</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If index_num is outside the range 0-99</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-intsetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-intsetentry" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int IndInternal::setEntry(void *ptr, int index_num){
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // if the index_num is not in range of 0-(#Entries(in block)+1) return FAILURE
+
+    // copy the struct InternalEntry pointed by ptr to index_num'th entry in block. 
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </li>
+                             </ul>
+                        
                          </div>
                          
                          <div id="leafbuff_class" class="detail">
                          	<h2>IndLeaf Class</h2>
-                         	<p>The object of this class will be associated with the INDLEAF type buffer blocks, public Methods of this class deals with the indices of Leaf nodes of b+tree buffer block.
-                         	</p>
-                         	<h2>Public methods:</h2>
-                         	<p>1.struct Index getIndexval(int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block, if yes, returns the index_num'th Index of buffer block.
-                         	</p>
-                         	<p>2.void setIndexval(struct Index IndexEntry,int index_num): checks whether the index_num is within #Entries entry present in corresponding buffer block, if yes, updates the index_num'th Index of buffer block with IndexEntry variable passed as argument.
-                         	</p>
+                             <p>The object of this class will be associated with the INDLEAF type buffer blocks i.e., Leaf Index buffer blocks. Public Methods of this class deals with the entries of Leaf nodes of b+tree buffer block known as IndexEntries. LeafInternal class extends IndBuffer class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.</p>
+                             <div class="code">
+                                <pre><code>class IndLeaf : public IndBuffer{
+public:
+	IndLeaf(int blk_no);
+	int getEntry(void *ptr, int indexnum) ;
+	int setEntry(void *ptr, int indexnum) ;
+};</code></pre>
+                             </div>
+                             <p>The following is the specifications of methods of the class.</p>
+                             <ul class="methods">
+                                <li>
+                                    <div class="detail" id="leafgetentry">
+                                        <h2>getEntry</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-resonsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>entry_ptr</td>
+                                                    <td>void *</td>
+                                                    <td>entry_ptr is assumed to be a pointer to type Index.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>index_num</td>
+                                                    <td>int</td>
+                                                    <td>index no. of entry in Leaf index block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On successful copy of the index entry</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If index_num is outside the range 0-62</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-leafgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-leafgetentry" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int IndLeaf::getEntry(void *ptr, int index_num){
+
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // if the index_num is not in range of 0-(#Entries(in block)+1) return FAILURE
+
+    // copy the index_num'th Index entry in block to memory ptr(ptr can be type casted appropriately if needed). 
+    
+    // return SUCCESS.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="leafsetentry">
+                                        <h2>setEntry (Leaf Index Buffer)</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>entry_ptr</td>
+                                                    <td>void *</td>
+                                                    <td>entry_ptr is assumed to be a pointer to type Index.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>index_num</td>
+                                                    <td>int</td>
+                                                    <td>index no. of entry in Leaf index block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return value:</h5>
+                                        <div class="table-responsive">
+                                            
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>SUCCESS</td>
+                                                    <td>On successful copy of the index entry into the block</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>E_OUTOFBOUND</td>
+                                                    <td>If index_num is outside the range 0-62</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Description of the function/method</p>
+                                        <h5><a data-toggle="collapse" href="#algo-leafsetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-leafsetentry" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int IndLeaf::setEntry(void *ptr, int index_num){
+    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    can be implemented and called for this purpose*/
+
+    // if the index_num is not in range of 0-(#Entries(in block)+1) return FAILURE
+
+    // copy the struct Index pointed by ptr to index_num'th entry in block.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+                             
+                             </ul>
+                         	
                          </div>
                                                 
                         <!-- PAGE ENDS -->
