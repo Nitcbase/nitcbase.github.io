@@ -1,5 +1,5 @@
 int IndInternal::getEntry(void *ptr, int index_num){
-    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
+    /* get the data pointer(char *) corresponds to the block(of current object) from Buffer (a private function get_dataptr() 
     can be implemented and called for this purpose*/
 
     // if the index_num is not in range of 0-(#Entries(in block)+1) return FAILURE
