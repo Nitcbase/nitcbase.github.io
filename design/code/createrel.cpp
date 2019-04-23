@@ -4,10 +4,10 @@ int createRel(char relname[],int nAttrs, char attrs[][ATTR_SIZE],int attrtype[])
     // copy the relname into relname_val(type = string)
 
     // let recId targetrelid
-    /* using linear_search() of ba_layer, search the relation relcat (with Openrelid = 0), for attribute value of attribute "RelName" to be
-     equal to relname_val. let the return value of linear_search be targetrelid*/
+    /* using ba_search() of ba_layer, search the relation relcat (with Openrelid = 0), for attribute value of attribute "RelName" to be
+     equal to relname_val. let the return value of ba_search be retval*/
 
-    // if targetrelid.block != -1 (i.e "relcat" relation already contains a relation with relation name as relname) 
+    // if relcat==SUCCESS (i.e "relcat" relation already contains a relation with relation name as relname) 
         // return E_RELEXIST
 
     // by iterating though all the attributes of attrs[] array 
@@ -26,7 +26,7 @@ int createRel(char relname[],int nAttrs, char attrs[][ATTR_SIZE],int attrtype[])
 
         // retval = ba_insert(1,attrcatrec);
         /* if ba_insert fails:
-            delete targetrelation by calling deleterel(targetrel)
+            delete targetrelation by calling deleterel(targetrel) of schema layer
             return E_DISKFULL
         */
 

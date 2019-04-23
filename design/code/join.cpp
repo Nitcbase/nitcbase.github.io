@@ -36,9 +36,9 @@ int join(char srcrel1[ATTR_SIZE],char srcrel2[ATTR_SIZE],char targetrel[ATTR_SIZ
     // if create fails return retval
     
     //int targetrelid = openRel(targetrel) 
-    //where openrel is a function in schema layer
+    //where openRel is a function in schema layer
     /* if open fails
-        delete targetrelation by calling deleterel(targetrel) in schema layer
+        delete targetrelation by calling deleterel(targetrel) of schema layer
         return error value targetrelid
     */
     
@@ -50,11 +50,13 @@ int join(char srcrel1[ATTR_SIZE],char srcrel2[ATTR_SIZE],char targetrel[ATTR_SIZ
      			 copy the rel1's, rel2's record to tar_record[] (except for attr2 offset in rel2)
      			 call ba_insert(targetrelid,tar_record);
      			 if insert fails:
-     			 	 delete targetrelation by calling deleterel(targetrel) of schema layer
-        			 return E_DISKFULL
+                    close the targetrel(by calling closeRel(targetrel) method of schema layer)
+                    delete targetrel(by calling deleterel(targetrel) of schema layer)
+                    return E_DISKFULL
      		
      */
-     
+
+    //close the target relation by calling closeRel() of schema layer.
      //return SUCCESS;
     
 }

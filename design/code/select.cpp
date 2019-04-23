@@ -3,17 +3,15 @@ int select(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr[ATTR_SIZE
     // get the srcrel's open relation id(let it be srcrelid), using getRelid() method of cache layer
     // if srcrel is not open in open relation table, return E_RELNOTOPEN
 
-    // get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer.
+    // get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer(let it be attrcatentry).
     // if getAttrcatEntry() call fails return E_ATTRNOTEXIST
 
     //convert strval into union Attribute (let it be val) as shown in the following code:
     // let type=attrcatentry.attr_type;
-
     if(type==INT){  
         //The input contains a string representation of the integer attribute value.
         val.ival=atoi(attr[iter]);
         //if conversion fails(i.e string can not be converted to integer) return E_ATTRTYPEMISMATCH. 
-
     }else if(type==FLOAT){
         //do accordingly to float
     }else if(type==STRING){
@@ -38,7 +36,8 @@ int select(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr[ATTR_SIZE
        where createrel is a function in schema layer
        if create fails return retval */
 
-    //open targetrel (using retval=openRel() of OpenRelTable class in cache layer)
+    //int targetrelid = openRel(targetrel) 
+    //where openRel is a function in schema layer
     /* if open fails
         delete target relation by calling deleterel(targetrel) of schema layer
         return retval
@@ -52,14 +51,14 @@ int select(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr[ATTR_SIZE
         if ba_search(srcrelid,record,attr,val,op) returns SUCCESS:
             retval = ba_insert(targetrelid,record);
             if(insert fails):
-                close the target rel(call closerel() method of OpenRelTable class in cache layer)
-                delete targetrelation by calling deleterel(targetrel) of schema layer
+                close the targetrel(by calling closeRel(targetrel) method of schema layer)
+                delete targetrel (by calling deleterel(targetrel) of schema layer)
                 return retval
 
         else: break
     */
 
-    //Close the target relation
+    //Close the target relation using closeRel() method of schema layer
     // return SUCCESS;
     
 }

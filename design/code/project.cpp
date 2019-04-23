@@ -22,7 +22,8 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
     // retval= createrel(targetrel,tar_nAttrs,tar_attrs,attr_types);
     // if create fails return retval.
 
-    //open targetrel (using retval=openRel() in Openreltable)
+    //int targetrelid = openRel(targetrel) 
+    //where openRel is a function in schema layer
     /* if open fails 
     delete target relation by calling deleterel(targetrel) of schema layer
     return retval. */
@@ -36,15 +37,15 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
                 proj_record[i]=record[attr_offset[i]]
             retval= ba_insert(targetrelid,proj_record);
             if(insert fails){
-                close the target rel(call closerel() method of Openreltable in cache layer)
-                delete targetrelation by calling delete(targetrel) of schema layer
+                close the targetrel (by calling closeRel(targetrel) method of schema layer)
+                delete targetrel (by calling deleterel(targetrel) of schema layer)
                 return retval
             }
         }
         else: break
     */
 
-    //Close the target relation (call closerel() method of Openreltable in cache layer)
+    //Close the targetrel by calling closeRel() method of schema layer
     // return SUCCESS.
 
 }
