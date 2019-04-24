@@ -152,7 +152,7 @@
     // copy the relname into relname_val(type = string)
 
     // let recId targetrelid
-    /* using ba_search() of ba_layer, search the relation relcat (with Openrelid = 0), for attribute value of attribute "RelName" to be
+    /* using <a href="blockaccess.html#search" target="_blank">ba_search</a>() of ba_layer, search the relation relcat (with Openrelid = 0), for attribute value of attribute "RelName" to be
      equal to relname_val. let the return value of ba_search be retval*/
 
     // if relcat==SUCCESS (i.e "relcat" relation already contains a relation with relation name as relname) 
@@ -164,7 +164,7 @@
     // let union Attribute relcatrecord[6] (this is the record in relationcatalog corresponding to new relation)
     // fill relcatrecord appropriately with as that of new relation.
 
-    //retval = ba_insert(0,relcatrecord);
+    //retval = <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(0,relcatrecord);
     // if ba_insert fails return retval
 
     // iterate through 0 to nAttrs-1 :
@@ -172,7 +172,7 @@
         /* update attrcatrec corresponding to i'th attribute of the relation
          (Relation name = relname, Attribute name=attrs[i], type= attrtype[i], pflag=-1, rootblock= -1, offset= i).*/
 
-        // retval = ba_insert(1,attrcatrec);
+        // retval = <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(1,attrcatrec);
         /* if ba_insert fails:
             delete targetrelation by calling deleterel(targetrel) of schema layer
             return E_DISKFULL
@@ -221,10 +221,10 @@
                             <div class="collapse" id="algo-deleterel">
                                 <div class="code">
                                     <pre><code>int deleterel(char relname[ATTR_SIZE]){
-    // get the relation's open relation id(let it be srelid), using getRelid() method of Openreltable
+    // get the relation's open relation id(let it be srelid), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
     // if relation is opened in open relation table, return E_RELOPEN
 
-    // retval  = ba_delete(relname);
+    // retval  = <a href="blockaccess.html#delete" target="_blank">ba_delete</a>(relname);
     // return retval
 }</code></pre>
                                 </div>
@@ -265,10 +265,10 @@
                                 <div class="code">
                                     <pre><code>
 int createindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
-    // get the src relation's open relation id, using getRelid() method of Openreltable.
+    // get the src relation's open relation id, using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable.
     // if source not opened in open relation table, return E_RELNOTOPEN
 
-    // retval=bplus_create(relid,attr);
+    // retval=<a href="b+tree.html#create" target="_blank">bplus_create</a>(relid,attr);
     // return retval
 }</code></pre>
                                 </div>
@@ -319,10 +319,10 @@ int createindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
                             <div class="collapse" id="algo-dropind">
                                 <div class="code">
                                     <pre><code>int dropindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
-    // get the src relation's open relation id, using getRelid() method of Openreltable.
+    // get the src relation's open relation id, using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable.
     // if source opened in open relation table, return E_RELOPEN
 
-    // retval=bplus_destroy(relid,attr);
+    // retval=<a href="b+tree.html#destroy" target="_blank">bplus_destroy</a>(relid,attr);
     // return retval
 }</code></pre>
                                 </div>
@@ -376,10 +376,10 @@ int createindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
                                 <div class="code">
                                     <pre><code>
 int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
-    // get the relation's open relation id(let it be srelid), using getRelid() method of Openreltable
+    // get the relation's open relation id(let it be srelid), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
     // if relation is opened in open relation table, return E_RELOPEN
 
-    //retval= ba_renamerel(Oldrelname,Newrelname);
+    //retval= <a href="blockaccess.html#renamerel" target="_blank">ba_renamerel</a>(Oldrelname,Newrelname);
     // return retval
 }</code></pre>
                                 </div>
@@ -441,10 +441,10 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                             <div class="collapse" id="algo-renameattr">
                                 <div class="code">
                                     <pre><code>int renameattr(char relname[ATTR_SIZE], char OldAttrName[ATTR_SIZE], char NewAttrName){
-    // get the relation's open relation id(let it be srelid), using getRelid() method of Openreltable
+    // get the relation's open relation id(let it be srelid), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
     // if relation is opened in open relation table, return E_RELOPEN
     
-    // retval= ba_renameattr(relname,OldAttrName,NewAttrName);
+    // retval= <a href="blockaccess.html#renamecol" target="_blank">ba_renameattr</a>(relname,OldAttrName,NewAttrName);
     // return retval
 }</code></pre>
                                 </div>
@@ -488,7 +488,7 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                             <div class="collapse" id="algo-openrel">
                                 <div class="code">
                                     <pre><code>int openRel(char relname[16]){
-    //retval = openRel(relname) (call to OpenRel of OpenRelTable)
+    //retval = <a href="cache.html#openrel" target="_blank">openRel</a>(relname) (call to OpenRel of OpenRelTable)
     //return retval;
 }</code></pre>
                                 </div>
@@ -529,10 +529,10 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                                 <div class="code">
                                     <pre><code>
 int closeRel(char rel_name[ATTR_SIZE]){
-    // get the rel_name relation's open relation id(let it be rel_id), using getRelid() method of Openreltable
+    // get the rel_name relation's open relation id(let it be rel_id), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
     // if relation is not opened in Openreltable, return E_RELNOTOPEN
 
-    //close the rel_id'th relation using CloseRel() of OpenRelTable(in cache), let the return value be retval
+    //close the rel_id'th relation using <a href="cache.html#closerel" target="_blank">closeRel</a>() of OpenRelTable(in cache), let the return value be retval
     //return retval;
 }</code></pre>
                                 </div>

@@ -82,7 +82,7 @@
                         </div>
                         
                         <div class="detail">
-                            <p>The Front End parses SQL-Like queries and coverts them into a sequence of algebra layer function calls and schema layer function calls. The algebra function calls processes the basic retrieval requests from the database. These algebra function calls creates new relations (target relations) in the database. The functions of Algebra layer include Insert, Project, Select and Join (to join the two relations). Here NITCbase supports only Equi-Join of the two relations.</p>
+                            <p>The Front End parses SQL-Like queries and coverts them into a sequence of algebra layer function calls and schema layer function calls. The algebra functions process the basic insert/retrieval requests to/from the database. Retrieval functions will create a target relation into which the retrieved data will be stored.  The functions of the Algebra layer are Insert, Project, Select and Join. The Join function of NITCbase supports only <a href="https://en.wikipedia.org/wiki/Join_(SQL)#Equi-join" target="_blank">Equi-Join</a> of the two relations.</p>
                         </div>
                         
                         <div class="detail" id="insert">
@@ -93,12 +93,12 @@
 		                            <tr>
 		                    			<td>relName</td>
 		                    			<td>char[ATTR_SIZE]</td>
-		                    			<td>Name of Relation that has to be opened in cache.</td>
+		                    			<td>Name of the relation into which insert operation has to be performed.</td>
 		                			</tr>
 		                            <tr>
 		                    			<td>nAttrs</td>
 		                    			<td>int</td>
-		                    			<td>No. of attributes in the inserting record.(which has to be matched with no.of attributes in relation)</td>
+		                    			<td>Number of attributes in the inserting record.(which has to match with no.of attributes field in the relation cache entry for the relation)</td>
 		                			</tr>		
 		                            <tr>
 		                           		<td>record</td>
@@ -142,16 +142,16 @@
                                 <div class="code">
 <pre><code>int insert(char relname[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
 
-    // get the relation's open relation id(let it be rel_id), using getRelid() method of Openreltable
+    // get the relation's open relation id(let it be rel_id), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
     // if relation is not opened in Openreltable, return E_RELNOTOPEN
 
-    //get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using getRelCatEntry() method).
+    //get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() method).
     //if nAttrs!=no_of_attrs in relation, return E_NATTRMISMATCH
 
-    // let recval[nAttrs] be an array of type union Attribute
+    // let recval[nAttrs] be an array of type <a href="buffer.html#block_structures" target="_blank">union Attribute</a>
 
     /*iterate through 0 to nAttrs-1 :
-        get the i'th attribute's AttrCatEntry (using getAttrcatEntry() of Openreltable )
+        get the i'th attribute's AttrCatEntry (using <a href="buffer.html#getattrcatentry" target="_blank">getAttrcatEntry()</a> of Openreltable )
     */
     // let type=attrcatentry.attr_type;
 
@@ -167,12 +167,13 @@
     }
 
 
-    int retval= ba_insert(rel_id,attrval)
+    int retval= <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(rel_id,attrval)
 
     //return retval        
 }
 </code></pre>
                                 </div>
+                                <a data-toggle="collapse" href="#algo-insert">Close</a>
                             </div>
                         </div>
                         
@@ -251,7 +252,7 @@
                                 <div class="code">
                                     <pre><code>int select(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr[ATTR_SIZE], int op, char strval[ATTR_SIZE]){
 
-    // get the srcrel's open relation id(let it be srcrelid), using getRelid() method of cache layer
+    // get the srcrel's open relation id(let it be srcrelid), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of cache layer
     // if srcrel is not open in open relation table, return E_RELNOTOPEN
 
     // get the attribute catalog entry for attr, using getAttrcatEntry() method of cache layer(let it be attrcatentry).
@@ -271,8 +272,8 @@
     //if convert fails, return E_ATTRTYPEMISMATCH
 
     //Next task is to create the destination relation.
-    //Prepare arguments for createrel() in the following way:
-    //get RelcatEntry of srcrel from cache using getRelCatEntry() method of cache layer.
+    //Prepare arguments for <a href="schema.html#createrel" target="_blank">createRel</a>() in the following way:
+    //get RelcatEntry of srcrel from cache using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() method of cache layer.
     //get the no. of attributes present in src relation, from RelcatEntry.(let it be nAttrs)
 
     // let attr_name[nAttrs][ATTR_SIZE] be a 2D array of type char(attribute names of rel).
@@ -283,33 +284,33 @@
         fill attr_name, attr_types of corresponding attributes using Attribute catalog found.
     */
 
-    /* let retval= createrel(targetrel,no_of_attrs_srcrel,attr_name,attr_type)
+    /* let retval= <a href="schema.html#createrel" target="_blank">createRel</a>(targetrel,no_of_attrs_srcrel,attr_name,attr_type)
        where createrel is a function in schema layer
        if create fails return retval */
 
-    //int targetrelid = openRel(targetrel) 
+    //int targetrelid = <a href="schema.html#openrel" target="_blank">openRel</a>(targetrel) 
     //where openRel is a function in schema layer
     /* if open fails
-        delete target relation by calling deleterel(targetrel) of schema layer
+        delete target relation by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer
         return retval
     */
     
     //Note: Before calling the search function, reset the search to start from the first hit
-    // by calling ba_search of block access layer with op=RST.
+    // by calling <a href="blockaccess.html#search" target="_blank">ba_search</a> of block access layer with op=RST.
     /*
     while (1):
         var: union Attribute record[no_of_attrs_srcrel];
-        if ba_search(srcrelid,record,attr,val,op) returns SUCCESS:
-            retval = ba_insert(targetrelid,record);
+        if <a href="blockaccess.html#search" target="_blank">ba_search</a>(srcrelid,record,attr,val,op) returns SUCCESS:
+            retval = <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(targetrelid,record);
             if(insert fails):
-                close the targetrel(by calling closeRel(targetrel) method of schema layer)
-                delete targetrel (by calling deleterel(targetrel) of schema layer)
+                close the targetrel(by calling <a href="schema.html#closerel" target="_blank">closeRel</a>(targetrel) method of schema layer)
+                delete targetrel (by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer)
                 return retval
 
         else: break
     */
 
-    //Close the target relation using closeRel() method of schema layer
+    //Close the target relation using <a href="schema.html#closerel" target="_blank">closeRel</a>() method of schema layer
     // return SUCCESS;
     
 }
@@ -389,10 +390,10 @@
                                     <pre><code>
 int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, char tar_attrs[][ATTR_SIZE]){
     
-    // get the srcrel's open relation id(let it be srcrelid), using getRelid() method of cache layer
+    // get the srcrel's open relation id(let it be srcrelid), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of cache layer
     // if srcrel is not open in open relation table, return E_RELNOTOPEN
 
-    //get RelCatEntry of srcrel using getRelCatEntry() of OpenRelTable in cache layer
+    //get RelCatEntry of srcrel using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() of OpenRelTable in cache layer
     //get the no. of attributes present in relation from the fetched RelcatEntry.
 
     // let attr_offset[tar_nAttrs] be an array of type int.
@@ -407,33 +408,33 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
         fill the attr_offset,attr_types arrays of target relation from the corresonding Attribute catalog entries
     */
 
-    // retval= createrel(targetrel,tar_nAttrs,tar_attrs,attr_types);
+    // retval= <a href="schema.html#createrel" target="_blank">createRel</a>(targetrel,tar_nAttrs,tar_attrs,attr_types);
     // if create fails return retval.
 
-    //int targetrelid = openRel(targetrel) 
+    //int targetrelid = <a href="schema.html#openrel" target="_blank">openRel</a>(targetrel) 
     //where openRel is a function in schema layer
     /* if open fails 
-    delete target relation by calling deleterel(targetrel) of schema layer
+    delete target relation by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer
     return retval. */
 
     /*
     while (1):
         var: union Attribute record[no_of_attrs_srcrel];
-        if ba_search(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS{
+        if <a href="blockaccess.html#search" target="_blank">ba_search</a>(srcrelid,record,attr,val,op=PROJ_op) returns SUCCESS{
             declare: union Attribute proj_record[tar_nAttrs] (buffer for record which need to be inserted into target rel)
             iterate through 0 to tar_attrs-1:
                 proj_record[i]=record[attr_offset[i]]
-            retval= ba_insert(targetrelid,proj_record);
+            retval= <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(targetrelid,proj_record);
             if(insert fails){
-                close the targetrel (by calling closeRel(targetrel) method of schema layer)
-                delete targetrel (by calling deleterel(targetrel) of schema layer)
+                close the targetrel (by calling <a href="schema.html#closerel" target="_blank">closeRel</a>(targetrel) method of schema layer)
+                delete targetrel (by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer)
                 return retval
             }
         }
         else: break
     */
 
-    //Close the targetrel by calling closeRel() method of schema layer
+    //Close the targetrel by calling <a href="schema.html#closerel" target="_blank">closeRel</a>() method of schema layer
     // return SUCCESS.
 
 }
@@ -517,10 +518,10 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
                                 <div class="code">
                                     <pre><code>int join(char srcrel1[ATTR_SIZE],char srcrel2[ATTR_SIZE],char targetrel[ATTR_SIZE], char attr1[ATTR_SIZE], char attr2[ATTR_SIZE]){
 	
-    // get the srcrel1's open relation id(let it be srcrelid1), using getRelid() method of Openreltable in cache layer
+    // get the srcrel1's open relation id(let it be srcrelid1), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable in cache layer
     // if srcrel1 is not opened in open relation table, return E_RELNOTOPEN
 
-	// get the srcrel2's open relation id(let it be srcrelid2), using getRelid() method of Openreltable in cache layer
+	// get the srcrel2's open relation id(let it be srcrelid2), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable in cache layer
     // if srcrel2 is not opened in open relation table, return E_RELNOTOPEN
     
     //get the AttrCatEntry of attr1 in rel1 and attr2 in rel2 using getAttrCatEntry() method of Openreltable in cache layer.
@@ -529,8 +530,8 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
     
     // if attr1 and attr2 are of different types return E_ATTRTYPEMISMATCH
     
-    // let nAttrs1 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer).
-    // let nAttrs2 = no_of_attrs in rel1 ( can be found using getrelcatEntry() of Openreltable in cache layer). 
+    // let nAttrs1 = no_of_attrs in rel1 ( can be found using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() of Openreltable in cache layer).
+    // let nAttrs2 = no_of_attrs in rel1 ( can be found using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() of Openreltable in cache layer). 
     
     //Next step ensures that an index exists for atleast one of the relations
     /* if both the attributes of src rels have B+ tree:
@@ -548,32 +549,32 @@ int project(char srcrel[ATTR_SIZE],char targetrel[ATTR_SIZE],int tar_nAttrs, cha
     /* iterate through all the attributes in both the source rels and update tar_attrs[],tar_attrtype[] arrays (except for attr2 in srcrel2),
      by getting attribute catalog of each attribute from Openreltable(using method getattrcat() in cache layer) */  
        
-	// retval= createrel(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);
+	// retval= <a href="schema.html#createrel" target="_blank">createRel</a>(targetrel,nAttrs1+nAttrs2-1,tar_attrs,tar_attrtypes);
     // where createrel is a function in schema layer
     // if create fails return retval
     
-    //int targetrelid = openRel(targetrel) 
+    //int targetrelid = <a href="schema.html#openrel" target="_blank">openRel</a>(targetrel) 
     //where openRel is a function in schema layer
     /* if open fails
-        delete targetrelation by calling deleterel(targetrel) of schema layer
+        delete targetrelation by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer
         return error value targetrelid
     */
     
     //var: Union Attribute rec1[nAttrs1]
-    /* while ba_search(srcrelid1,rec1, ,oper=PROJ, no_val) returns success:
+    /* while <a href="blockaccess.html#search" target="_blank">ba_search</a>(srcrelid1,rec1, ,oper=PROJ, no_val) returns success:
     		var: union Attribute Record[nAttrs2]
-     		while ba_search(srcrelid2,Record, attr2, oper=EQ, rel1 record's attr1 value) returns SUCCESS:
+     		while <a href="blockaccess.html#search" target="_blank">ba_search</a>(srcrelid2,Record, attr2, oper=EQ, rel1 record's attr1 value) returns SUCCESS:
      			 var: union Attribute tar_record[nAttrs1+nAttrs2-1]
      			 copy the rel1's, rel2's record to tar_record[] (except for attr2 offset in rel2)
-     			 call ba_insert(targetrelid,tar_record);
+     			 call <a href="blockaccess.html#insert" target="_blank">ba_insert</a>(targetrelid,tar_record);
      			 if insert fails:
-                    close the targetrel(by calling closeRel(targetrel) method of schema layer)
-                    delete targetrel(by calling deleterel(targetrel) of schema layer)
+                    close the targetrel(by calling <a href="schema.html#closerel" target="_blank">closeRel</a>(targetrel) method of schema layer)
+                    delete targetrel(by calling <a href="schema.html#deleterel" target="_blank">deleteRel</a>(targetrel) of schema layer)
                     return E_DISKFULL
      		
      */
 
-    //close the target relation by calling closeRel() of schema layer.
+    //close the target relation by calling <a href="schema.html#closerel" target="_blank">closeRel</a>() of schema layer.
      //return SUCCESS;
     
 }

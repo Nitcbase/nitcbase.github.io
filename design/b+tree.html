@@ -132,7 +132,7 @@
 	}
 	
 	//get the free leaf index for the root block
-	leaf_buffer = Buffer::getFreeIndLeaf();
+	leaf_buffer = Buffer::<a href="buffer.html#getfreeindleaf" target="_blank">getFreeIndLeaf</a>();
 	if(leaf_buffer == NULL){ //disk is full (i.e unable to get new record block from the disk)
 		return E_DISKFULL;
 	}
@@ -161,7 +161,7 @@
                         
                         <div id="destroy" class="details">
                         	<h2>B+ Destroy</h2>
-                        	<h5>Arguments:</h4>
+                        	<h5>Arguments:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
@@ -274,14 +274,14 @@
                             <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-insert" class="collapse">
                             	<div class="code"><pre><code>int bplus_insert(int relid,char attrname[ATTR_SIZE],union Attribute val,recId rec_id){
-    //get the AttrCatEntry of target attribute using getAttrCatEntry() of cache layer.
+    //get the AttrCatEntry of target attribute using <a href="cache.html#getattrcatentry" target="_blank">getAttrCatEntry</a>() of cache layer.
     //let root_block_num be the root_block of AttrCatEntry 
     //if root_block_num of target attribute is -1, return E_NOINDEX
     //let attr_type be int (storing type of AttrCatEntry)
-    class IndBuffer *head=Buffer::getIndBlock(root_block_num);
+    class IndBuffer *head=Buffer::<a href="buffer.html#getindblk" target="_blank">getIndBuffer</a>(root_block_num);
     /* while head is not LEAF:
           let header be of type struct HeadInfo 
-          update header with HeadInfo of head using getheader() method of blockbuffer class.
+          update header with HeadInfo of head using <a href="buffer.html#getheader" target="_blank">getHeader</a>() method of blockbuffer class.
           
           let nEntries be no. of entries in head block(can be found from header)
           
@@ -291,11 +291,11 @@
           if no such offset is found:
               update root_block_num with value of rchild of nEntries-1'th(last) entry of head.
               free the head object
-              head=Buffer::getIndBlock(root_block_num);
+              head=Buffer::<a href="buffer.html#getindblk" target="_blank">getIndBuffer</a>(root_block_num);
           else:
               update root_block_num with value of lchild of i'th entry of head.
               Delete head. (calls destructor)
-              head=Buffer::getIndBlock(root_block_num);
+              head=Buffer::<a href="buffer.html#getindblk" target="_blank">getIndBuffer</a>(root_block_num);
     */
 
     //now head is the leaf block to which we need to insert Index into.
@@ -303,13 +303,13 @@
     /*let indexval be of type struct Index(Index which need to be inserted in to b+ tree)
     update indexval with as that of recid, val.*/
 
-    //update header with HeadInfo of block pointed by head using getheader() method of blockbuffer class.
+    //update header with HeadInfo of block pointed by head using <a href="buffer.html#getheader" target="_blank">getHeader</a>() method of blockbuffer class.
     //let nEntries be no. of entries in block pointing by head(can be found from header)
 
     //let indices[nEntries+1] be an array of type struct Index.
 
     //iterate through 0 to nEntries-1:
-        //update the i'th entry of indices with ith entry in head, using head-&gt;getEntry() method.
+        //update the i'th entry of indices with ith entry in head, using head-&gt;<a href="buffer.html#leafgetentry" target="_blank">getEntry</a>() method.
 
     //do linear search on indices to know the position of val in leaf.
     //insert indexval appropriately into indices array.
@@ -317,16 +317,16 @@
     /*
     if nEntries!= 63 ( max. no of entries in leaf)
         //iterate through 0 to nEntries-1:
-           //set the i'th entry of head with ith entry in indices array, using head-&gt;setEntry() method.
+           //set the i'th entry of head with ith entry in indices array, using head-&gt;<a href="buffer.html#leafsetentry" target="_blank">setEntry</a>() method.
 
         update header.num_entries=nEntries+1
-        set Headinfo of head with as that of header, using head-&gt;setheader() method.
+        set Headinfo of head with as that of header, using head-&gt;<a href="buffer.html#setheader" target="_blank">setHeader</a>() method.
         Delete head. (calls destructor)
         return SUCCESS.
     else:
-        class IndBuffer* new_blk=Buffer::getFreeIndLeaf();
+        class IndBuffer* new_blk=Buffer::<a href="buffer.html#getfreeindleaf" target="_blank">getFreeIndLeaf</a>();
         let newblkheader be of type struct HeadInfo 
-        update newblkheader with HeadInfo of new_blk using getheader() method of blockbuffer class.
+        update newblkheader with HeadInfo of new_blk using <a href="buffer.html#getheader" target="_blank">getHeader</a>() method of blockbuffer class.
 
         iterate through 0 to 31:
             set first 32 entries of indices in to 32 entries of head,
@@ -335,10 +335,10 @@
         let par_block(int) be the pblock in header.
         
         update header.num_entries=32
-        set Headinfo of head with as that of header, using head-&gt;setheader() method.
+        set Headinfo of head with as that of header, using head-&gt;<a href="buffer.html#setheader" target="_blank">setHeader</a>() method.
 
         update newblkheader.num_entries=32, newblkheader.pblock=par_block
-        set Headinfo of new_blk with as that of newblkheader, using new_blk-&gt;setheader() method.
+        set Headinfo of new_blk with as that of newblkheader, using new_blk-&gt;<a href="buffer.html#setheader" target="_blank">setHeader</a>() method.
 
         let new_attrval be of type union Attribute. (which need to be inserted in to parent)
         update new_attrval with attrval of indices[31] (i.e 32nd entry)
@@ -351,13 +351,13 @@
         // let done be a bool with value false.
         while(!done):
             if par_block!=-1
-                class IndBuffer *parblk=Buffer::getIndBlock(par_block);
+                class IndBuffer *parblk=Buffer::<a href="buffer.html#getindblk" target="_blank">getIndBuffer</a>(par_block);
                 let parheader be of type struct HeadInfo 
-                update parheader with HeadInfo of head using getheader() method of blockbuffer class.
+                update parheader with HeadInfo of head using <a href="buffer.html#getheader" target="_blank">getHeader</a>() method of blockbuffer class.
 
                 struct InternalEntries internal_entries[parheader.num_entries+1];
                 //iterate through 0 to parheader.num_entries-1:
-                    //update the i'th entry of internal_entries with ith entry in parblk, using parblk-&gtgetEntry() method.
+                    //update the i'th entry of internal_entries with ith entry in parblk, using parblk-&gt;<a href="buffer.html#intgetentry" target="_blank">getEntry</a>() method.
 
 
                 get the offset of head in par_block, iterating through the internal_entries of par_block (by checking the entry which contain lblock as child_block)
@@ -370,39 +370,39 @@
                 (update the rchild,lchild of entries adjacent to tar_ind approriately).
 
                 if(parheader.num_entries!=100) //par_block not full
-                    update the InternalEntries in parblk with as that of internal_entries array.(using setEntry() of IndBuffer class)
-                    update parheader accordingly and copy this to parblk HeadInfo (using parblk-&gt;setheader() method of blockbuffer class.
+                    update the InternalEntries in parblk with as that of internal_entries array.(using <a href="buffer.html#intsetentry" target="_blank">setEntry</a>() of IndBuffer class)
+                    update parheader accordingly and copy this to parblk HeadInfo (using parblk-&gt;<a href="buffer.html#setheader" target="_blank">setHeader</a>() method of blockbuffer class.
                     delete parblk
                     done=true;
                 else
-                    class IndBuffer* new_blk=Buffer::getFreeIndInternal();
-                    newblkheader=new_blk-&gt;getheader();
+                    class IndBuffer* new_blk=Buffer::<a href="buffer.html#getfreeindinternal" target="_blank">getFreeIndInternal</a>();
+                    newblkheader=new_blk-&gt;<a href="buffer.html#getheader" target="_blank">getHeader</a>();
                     new_blocknum=new_blk-&gt;getblocknum();
                     
                     iterating through 0 to 50:
                         update parblk,bew_blk such that first 50 entries of internal_entries get into parblk, next 50 into new_blk
-                        (use setEntry() of IndBuffer class)
+                        (use <a href="buffer.html#intsetentry" target="_blank">setEntry</a>() of IndBuffer class)
                     update parheader,newblkheader appropriately
-                    update HeadInfo of parblk,new_blk with parheader,newblkheader using setHeader() of BlockBuffer class.
+                    update HeadInfo of parblk,new_blk with parheader,newblkheader using <a href="buffer.html#setheader" target="_blank">setHeader</a>() of BlockBuffer class.
                     iterating through 2nd 50 entries of internal_entries
                         update pblock field(in Header) of all child blocks with new_blocknum
-                        (load each child using Buffer::getIndBlock(childblock), update HeadInfo of each block using setHeader() of BlockBuffer class)
+                        (load each child using Buffer::<a href="buffer.html#getindblk" target="_blank">getIndBuffer</a>(childblock), update HeadInfo of each block using <a href="buffer.html#setheader" target="_blank">setHeader</a>() of BlockBuffer class)
                     
                     delete parblk,delete new_blk;
                     child_block=par_block,par_block=parheader.pblock;
                     new_attrval=internal_entries[50].attrval;
             else //if par_block==-1
-                class IndBuffer* new_head=Buffer::getFreeIndInternal(); //if fails..delete indexing
-                struct HeadInfo newhead_header=new_blk-&gt;getheader();
+                class IndBuffer* new_head=Buffer::<a href="buffer.html#getfreeindinternal" target="_blank">getFreeIndInternal</a>(); //if fails..delete indexing
+                struct HeadInfo newhead_header=new_blk-&gt;<a href="buffer.html#getheader" target="_blank">getHeader</a>();
                 int new_hblk_num=new_head-&gt;getblocknum();
 
                 add only entry to new_head with lblock:child_block, rblock:new_blocknum, attrval:new_attrval
-                update Headinfo of new_head appropriately (using setheader() of blockBufferclass)
+                update Headinfo of new_head appropriately (using <a href="buffer.html#setheader" target="_blank">setHeader</a>() of blockBufferclass)
                 similarly update headers of child_block, new_blocknum with pblock=new_hblk_num
 
-                get the attribute catalog entry of attribute attr_name(using OpenRelTable::getAttrCatEntry(relid,attr_offset,&attrib_cat))
+                get the attribute catalog entry of attribute attr_name(using OpenRelTable::<a href="cache.html#getattrcatentry" target="_blank">getAttrCatEntry</a>(relid,attr_offset,&amp;attrib_cat))
                 update root_block of AttrCatEntry with new_hblk_num
-                set the attribute catalog entry of attribute attr_name(using OpenRelTable::getAttrCatEntry(relid,attr_offset,&attrib_cat)) with updated one.
+                set the attribute catalog entry of attribute attr_name(using OpenRelTable::<a href="cache.html#getattrcatentry" target="_blank">getAttrCatEntry</a>(relid,attr_offset,&amp;attrib_cat)) with updated one.
 
                 delete new_head;
                 done=true;
@@ -457,14 +457,14 @@
 
                             <h5>Description:</h5>
                             <p>Description of the function/method</p>
-                            <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-insert" class="collapse">
+                            <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-search" class="collapse">
                             	<div class="code"><pre><code>struct recId bplus_search(relId relid, char AttrName[ATTR_SIZE], union Attribute AttrVal, int op){
 	AttrCatEntry attrcat_entry;
 	
 	//get the previous index id from the attribute cache (corresponds to relid, AttrName) by calling
-	OpenRelTable::getAttrCatEntry(relid, AttrName, &attrcat_entry);
-	prev_indexid = OpenRelTable::::getPrevIndexId(relid, AttrName);
+	OpenRelTable::<a href="cache.html#getattrcatentry" target="_blank">getAttrCatEntry</a>(relid, AttrName, &amp;attrcat_entry);
+	prev_indexid = OpenRelTable::<a href="cache.html#getprevindexid" target="_blank">getPrevIndexId</a>(relid, AttrName);
 	
 	//prev_indexid is set only if the search proccessed through leaf index blocks (search has been done before atleast once)
 	//otherwise prev_indexid is unset ({-1,-1})
@@ -477,7 +477,7 @@
 		//if(block == -1) (i.e, search is done )then return {-1,-1}
 	//} 
 	
-	//if(block_num == root_block && index == 0){
+	//if(block_num == root_block &amp;&amp; index == 0){
 		//traverse through all the internal nodes according to the attribute value AttrVal and the operator op
 		//Accordingly update block and index variables
 	//}
