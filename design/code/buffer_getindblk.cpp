@@ -12,14 +12,14 @@ class IndBuffer* Buffer::getIndBlock(int block_num){
     // let int blk_type = getblocktype(buffer_block) /* a helper function getblocktype(buffer_block) can be used to know block type, by accessing header                                                     of block from buffer*/
 
     if(blk_type==IND_INTERNAL){
-			class IndBuffer* newIndBuffer= new IndInternal(block_num);
-			return newIndBuffer;
-		}else if(blk_type==IND_LEAF){
-			class IndBuffer* newIndBuffer= new IndLeaf(block_num);
-			return newIndBuffer;
-		}else{
-			return NULL; //returns NULL if block found to be other than internal or leaf block(i.e recblock)
-		}
+        class IndBuffer* newIndBuffer= new IndInternal(block_num);
+        return newIndBuffer;
+    }else if(blk_type==IND_LEAF){
+        class IndBuffer* newIndBuffer= new IndLeaf(block_num);
+        return newIndBuffer;
+    }else{
+        return NULL; //returns NULL if block found to be other than internal or leaf block(i.e recblock)
+    }
 
     //if the block corresponding to #block_num is not a INDLEAF/INDINTERNAL block return NULL
 
