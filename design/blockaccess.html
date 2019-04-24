@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Block Access Layer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
+</head>
+    
+    
+<body>
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-md-2">
+                    <nav class="navbar navbar-expand-md sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+                        	<li> <a href="#linear_search">Linear Search</a></li>
+                            <li> <a href="#insert">BA Insert</a></li>
+                            <li> <a href="#search">BA Search</a></li>
+                            <li> <a href="#delete">BA Delete</a></li>
+                            <li> <a href="#renamerel">BA RenameRel</a></li>
+                            <li> <a href="#renamecol">BA RenameCol</a></li>
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-md-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>Block Access Layer</h1>
+                        </div>
+                        
+                        <div class="detail">
+                            <p>In any database management system, in order to retrieve any data from the database or to alter the schema of the relations in the database the system has to work with the disk blocks. Block Access layer provides the abstraction and hides the disk structures to the above layers i.e, algebra layer and schema layer and also provides interface to the above layers in terms of records. Hence, the Block Access layer processes the requests from the algebra and schema layers and works with disk blocks. </p>
+                        </div>
+                        
+                        <div class="detail" id="linear_search">
+                        	<h2>Linear Search</h2>
+                        	<h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+								        <td>relid</td>
+								        <td>int</td>
+								        <td>Relation Id of Relation to which search has to be made.</td>
+								    </tr>
+									<tr>
+								        <td>attrname</td>
+								        <td>char[ATTR_SIZE]</td>
+								        <td>Attribute/column name to which condition need to be checked with.</td>
+									</tr>
+									<tr>
+								        <td>attrval</td>
+								        <td>union Attribute</td>
+								        <td>value of attribute that has to be checked against the operater.</td>
+								    </tr>
+									<tr>
+								        <td>op</td>
+								        <td>int</td>
+								        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE,RST,PRJCT corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal, reset, projet operators respectively).</td>
+									</tr>
+		                        </table>
+		                    </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td>RecId (block#, slot#)</td>
+						                <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
+						            </tr>
+						            <tr>
+						                <td>(-1, -1)</td>
+						                <td>If no valid next hit is found.</td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p>Description of the function/method</p>
+                            
+                            <div id="algo-create" class="collapse">
+                            	<div class="code"><pre><code>
+                            	</div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+        
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>
