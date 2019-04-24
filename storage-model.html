@@ -97,18 +97,76 @@
                             <p> Nitcbase assumes that disk is a sequence of blocks and a block is a sequence of bytes. The disk consists of 8192 blocks and a block is of 2048 bytes. Hence there is a total of 16MB of storage. Disk blocks are indexed from 0 to 8191. </p>
                             <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4, 5 are for storing first Block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat> Attribute Catalog</a> respectively. <b>Block allocation map</b> tells us whether a particular block is free or occupied and requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
+                            
+                            <div class="detail" id="access-methods">
+                            <h2>Disk access functions</h2>
+                                    <h5>readblock()</h5>
+                                    <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+		                    			<td>buffer</td>
+		                    			<td>void *</td>
+		                    			<td>memory pointer to which block has to be loaded/read.</td>
+		                			</tr>
+		                            <tr>
+		                    			<td>block_no</td>
+		                    			<td>int</td>
+		                    			<td>disk block which has to be read.</td>
+		                			</tr>		
+		                            
+		                        </table>
+		                    </div>
+		                    <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successfully loading/reading the block to buffer.</td>
+		                    		</tr>
+		                   			<tr>
+		                        		<td>E_OUTOFBOUND</td>
+		                        		<td>If the block number is out of range.</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+                          	 <h5>writeblock()</h5>
+                                    <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>block_no</td>
+		                    			<td>int</td>
+		                    			<td>disk block to which buffer block has to be written.</td>
+		                			</tr>
+		                            <tr>
+		                    			<td>buffer</td>
+		                    			<td>void *</td>
+		                    			<td>memory pointer from where block has to be copied to the disk.</td>
+		                			</tr>
+		                            		
+		                            
+		                        </table>
+		                    </div>
+		                    <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successfully writing the block to the disk.</td>
+		                    		</tr>
+		                   			<tr>
+		                        		<td>E_OUTOFBOUND</td>
+		                        		<td>If the block number is out of range.</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+                       		</div>
 
                             <p> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
                         </div>
                         
-                        <div class="detail" id="access-methods">
-                            <h2>Disk access functions</h2>
-                            <ul>
-                                <li>
-                                    <h5>read()</h5>
-                                </li>
-                            </ul>
-                        </div>
+                        
 
                         <div id="record_blk" class="detail">
                             <h2>Record block structure</h2>
