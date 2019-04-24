@@ -2,48 +2,517 @@
 <html>
 
 <head>
-    <title>B+ Tree</title>
+    <title>B+ Tree Layer</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
 </head>
     
     
 <body>
-    <div>
-    <div class="header" id="top">
-        <div id="title">
-            <h1> <a href="index.html">Nitcbase</a></h1>
-            <!--h3> Database Management System</h3-->
-        </div>
-        
-        <div id="menubar">
-            <ul id="menu">
-                <li> <a href="index.html">Home</a></li>
-                <li> <a href="documentation.html"> Documentation</a></li>
-                <li> <a href="roadmap.html">Roadmap</a></li>
-            </ul>
-        </div>
-    </div>
-    </div>
     
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
     <div id="content">
-        <div class="sidemenu">
-            <ul>
-                <li> <a href="#"></a></li>
-                <li> <a href="#"></a></li>
-                <li> <a href="#"></a></li>
-            </ul>
-        </div>
-        
-        <div id="main-content">
-            <div class="pagetitle"><h1>B<sup>+</sup> Tree</h1></div>
-            
-            <div class="detail">
+        <div class="container-fluid">
+            <div class="row">
                 
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-md-2">
+                    <nav class="navbar navbar-expand-md sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                            <ul class="nav flex-column sidemenu">
+                                <li> <a class="sec" href="#create"> B+ Create</a></li>
+                                <li> <a class="sec" href="#destroy"> B+ Destroy</a></li>
+                                <li> <a class="sec" href="#insert"> B+ Insert</a></li>
+                                <li> <a class="sec" href="#search"> B+ search</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-md-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>B+ Tree Layer</h1>
+                        </div>
+                        
+                        <div class="detail">
+                        	<p>Indices are access structures that are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records. They enable efficient access to records based on the indexing fields that are used to construct the index. NITCbase uses B+ Tree for indexing the records.
+                        	</p>
+                        </div>
+                        
+                         <div id="create" class="detail">
+                            <h2>B+ Create</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>relid</td>
+		                    			<td>int</td>
+		                    			<td>Relation Id of Relation in which target attribute is contained.</td>
+		                			</tr>
+		                			<tr>
+		                    			<td>attrname</td>
+		                    			<td>char[ATTR_SIZE]</td>
+		                    			<td>name of attribute to which bplus tree has to be created.</td>
+		                			</tr>
+		                        </table>
+                            </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successul creation of tree</td>
+		                    		</tr>
+		                    		<tr>
+		                        		<td>E_DISKFULL</td>
+		                        		<td>If there is no enough space in disk to create the tree</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+		                     
+		                     <h5>Description:</h5>
+		                     <p>Description of the function/method</p>
+		                     
+		                     <h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                             <div id="algo-create" class="collapse">
+                            	<div class="code"><pre><code>int bplus_create(relId relid, char attrName[ATTR_SIZE]){
+	/*get the root block from the attribute cache correponding to the
+	  relation with Id relid and the attribute with attribute name attrName*/
+	  
+	if(root_block != -1){ //Index already exists for the attribute
+		return SUCCESS;
+	}
+	
+	//get the free leaf index for the root block
+	leaf_buffer = Buffer::getFreeIndLeaf();
+	if(leaf_buffer == NULL){ //disk is full (i.e unable to get new record block from the disk)
+		return E_DISKFULL;
+	}
+	
+	//get the root block number corresponding to the leaf_buffer (free leaf index) from the buffer
+	root_block = leaf_buffer->getBlockNum();
+	
+	/*update the root block in the attribute cache correponding to the
+	  relation with Id relid and the attribute with attribute name attrName*/
+	  
+	//Iterate over all the records of the relation with Id relid{
+		//insert the index entries for each record in the bplus tree
+		flag = bplus_insert(relid, attrName, attrval, recid); //where the recid is record id corresponding to the record
+		if(flag == E_DISKFULL){ //unable to insert the record in bplus tree since disk is full
+			//destroy all the index blocks created so far corresponding to the record
+			bplus_destroy(root_block);
+			return E_DISKFULL;
+		}
+	//}
+	
+	return SUCCESS;        
+}</code></pre>
+								</div>
+                            </div> 
+                        </div>
+                        
+                        <div id="destroy" class="details">
+                        	<h2>B+ Destroy</h2>
+                        	<h5>Arguments:</h4>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>block_num</td>
+		                    			<td>int</td>
+		                    			<td>Block no. of head of bplus tree which need to be destroyed.</td>
+		                			</tr>
+		                        </table>
+                            </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                        		<td>SUCCESS</td>
+		                        		<td>On successful deletion of b+ tree</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_OUTOFBOUND</td>
+		                    		    <td>If the block_num is less than 0 or greater than or equal to DISK_BLOCKS</td>
+		                    		</tr>
+		                    		<tr>
+		                    		    <td>E_INVALIDBLOCK</td>
+		                    		    <td>If the block is not an index block</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p>Description of the function/method</p>
+                            
+                            <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-destroy" class="collapse">
+                            	<div class="code"><pre><code>int bplus_destroy(int block_num){
+	//all the index blocks are deleted recursively
+	
+	if(block_num &lt; 0 || block_num &gt;= DISK_BLOCKS){ //if the block_num is invalid
+		E_OUTOFBOUND;
+	}
+	
+	//get the block_type from header of the block
+	if(block_type != INDINT || block_type != INDLEAF){ //if the block is not index block
+		return E_INVALIDBLOCK;
+	}
+	
+	if(block_type == INDLEAF){ //if the block is leaf index block
+		//delete the block from the disk
+	}
+	else if(block_type == INDINT){ 	//if the block is internal index block
+		//iterate over all the internal index entries{
+			//delete all the child index blocks corresponding to each internal index block by calling
+			bplus_destroy(child_block);
+		//}
+	}	
+	
+	return SUCCESS;
+}</code></pre>
+								</div>
+                            </div>
+                        </div>
+                        
+                        <div id="insert" class="detail">
+                        	<h2>B+ Insert</h2>
+                        	<h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+								        <td>relid</td>
+								        <td>int</td>
+								        <td>Relation Id of Relation containing the target bplus tree.</td>
+								    </tr>
+								    <tr>
+								        <td>attrName</td>
+								        <td>char[ATTR_SIZE]</td>
+								        <td>Name of attribute corresponding to target bplus tree.</td>
+								    </tr>
+								    <tr>
+								        <td>attrval</td>
+								        <td>union Attribute</td>
+								        <td>value corresponding to attrName attribute of target record that need to be inserted in to bplus tree.</td>
+								    </tr>
+								    <tr>
+								        <td>recid</td>
+								        <td>RecId</td>
+								        <td>RecId of target record that need to be inserted in to bplus tree.</td>
+								    </tr>
+		                        </table>
+                            </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td>SUCCESS</td>
+						                <td>On successful insert of the recid.</td>
+						            </tr>
+						            <tr>
+						                <td>E_NOINDEX</td>
+						                <td>If B+ tree has not been created on the given attribute.</td>
+						            </tr>
+						            <tr>
+						                <td>E_DISKFULL</td>
+						                <td>If disk space is not sufficient to insert into the B+ tree.</td>
+						            </tr>
+		                     	</table>
+		                   	</div>
+							<h5>Description:</h5>
+                            <p>Description of the function/method</p>
+                            
+                            <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-insert" class="collapse">
+                            	<div class="code"><pre><code>int bplus_insert(int relid,char attrname[ATTR_SIZE],union Attribute val,recId rec_id){
+    //get the AttrCatEntry of target attribute using getAttrCatEntry() of cache layer.
+    //let root_block_num be the root_block of AttrCatEntry 
+    //if root_block_num of target attribute is -1, return E_NOINDEX
+    //let attr_type be int (storing type of AttrCatEntry)
+    class IndBuffer *head=Buffer::getIndBlock(root_block_num);
+    /* while head is not LEAF:
+          let header be of type struct HeadInfo 
+          update header with HeadInfo of head using getheader() method of blockbuffer class.
+          
+          let nEntries be no. of entries in head block(can be found from header)
+          
+          iterating through 0 to nEntries-1, to get the offset i, such that 'i' is the min. offset satisfying
+          i'th entry value &gt;= val  //helper function compare() can be used to compare two Union attribute values, based on attr_type.
+
+          if no such offset is found:
+              update root_block_num with value of rchild of nEntries-1'th(last) entry of head.
+              free the head object
+              head=Buffer::getIndBlock(root_block_num);
+          else:
+              update root_block_num with value of lchild of i'th entry of head.
+              Delete head. (calls destructor)
+              head=Buffer::getIndBlock(root_block_num);
+    */
+
+    //now head is the leaf block to which we need to insert Index into.
+    
+    /*let indexval be of type struct Index(Index which need to be inserted in to b+ tree)
+    update indexval with as that of recid, val.*/
+
+    //update header with HeadInfo of block pointed by head using getheader() method of blockbuffer class.
+    //let nEntries be no. of entries in block pointing by head(can be found from header)
+
+    //let indices[nEntries+1] be an array of type struct Index.
+
+    //iterate through 0 to nEntries-1:
+        //update the i'th entry of indices with ith entry in head, using head-&gt;getEntry() method.
+
+    //do linear search on indices to know the position of val in leaf.
+    //insert indexval appropriately into indices array.
+
+    /*
+    if nEntries!= 63 ( max. no of entries in leaf)
+        //iterate through 0 to nEntries-1:
+           //set the i'th entry of head with ith entry in indices array, using head-&gt;setEntry() method.
+
+        update header.num_entries=nEntries+1
+        set Headinfo of head with as that of header, using head-&gt;setheader() method.
+        Delete head. (calls destructor)
+        return SUCCESS.
+    else:
+        class IndBuffer* new_blk=Buffer::getFreeIndLeaf();
+        let newblkheader be of type struct HeadInfo 
+        update newblkheader with HeadInfo of new_blk using getheader() method of blockbuffer class.
+
+        iterate through 0 to 31:
+            set first 32 entries of indices in to 32 entries of head,
+            set next 32 entries of indices in to 32 entries of new_blk
+        
+        let par_block(int) be the pblock in header.
+        
+        update header.num_entries=32
+        set Headinfo of head with as that of header, using head-&gt;setheader() method.
+
+        update newblkheader.num_entries=32, newblkheader.pblock=par_block
+        set Headinfo of new_blk with as that of newblkheader, using new_blk-&gt;setheader() method.
+
+        let new_attrval be of type union Attribute. (which need to be inserted in to parent)
+        update new_attrval with attrval of indices[31] (i.e 32nd entry)
+
+        delete head;
+        delete new_blk; // delete calls destructor.
+        
+        int child_block=root_block_num;
+
+        // let done be a bool with value false.
+        while(!done):
+            if par_block!=-1
+                class IndBuffer *parblk=Buffer::getIndBlock(par_block);
+                let parheader be of type struct HeadInfo 
+                update parheader with HeadInfo of head using getheader() method of blockbuffer class.
+
+                struct InternalEntries internal_entries[parheader.num_entries+1];
+                //iterate through 0 to parheader.num_entries-1:
+                    //update the i'th entry of internal_entries with ith entry in parblk, using parblk-&gtgetEntry() method.
+
+
+                get the offset of head in par_block, iterating through the internal_entries of par_block (by checking the entry which contain lblock as child_block)
+                let tar_ind (int) be the offset of child_block.
+
+                iterating iter from parheader.num_entries to tar_ind+1 (in decreamenting order):
+                    internal_entries[iter]=internal_entries[iter-1];
+                
+                //update the internal_entries[tar_ind] with lchild:child_block,rchild:new_blocknum,attrval=new_attrval
+                (update the rchild,lchild of entries adjacent to tar_ind approriately).
+
+                if(parheader.num_entries!=100) //par_block not full
+                    update the InternalEntries in parblk with as that of internal_entries array.(using setEntry() of IndBuffer class)
+                    update parheader accordingly and copy this to parblk HeadInfo (using parblk-&gt;setheader() method of blockbuffer class.
+                    delete parblk
+                    done=true;
+                else
+                    class IndBuffer* new_blk=Buffer::getFreeIndInternal();
+                    newblkheader=new_blk-&gt;getheader();
+                    new_blocknum=new_blk-&gt;getblocknum();
+                    
+                    iterating through 0 to 50:
+                        update parblk,bew_blk such that first 50 entries of internal_entries get into parblk, next 50 into new_blk
+                        (use setEntry() of IndBuffer class)
+                    update parheader,newblkheader appropriately
+                    update HeadInfo of parblk,new_blk with parheader,newblkheader using setHeader() of BlockBuffer class.
+                    iterating through 2nd 50 entries of internal_entries
+                        update pblock field(in Header) of all child blocks with new_blocknum
+                        (load each child using Buffer::getIndBlock(childblock), update HeadInfo of each block using setHeader() of BlockBuffer class)
+                    
+                    delete parblk,delete new_blk;
+                    child_block=par_block,par_block=parheader.pblock;
+                    new_attrval=internal_entries[50].attrval;
+            else //if par_block==-1
+                class IndBuffer* new_head=Buffer::getFreeIndInternal(); //if fails..delete indexing
+                struct HeadInfo newhead_header=new_blk-&gt;getheader();
+                int new_hblk_num=new_head-&gt;getblocknum();
+
+                add only entry to new_head with lblock:child_block, rblock:new_blocknum, attrval:new_attrval
+                update Headinfo of new_head appropriately (using setheader() of blockBufferclass)
+                similarly update headers of child_block, new_blocknum with pblock=new_hblk_num
+
+                get the attribute catalog entry of attribute attr_name(using OpenRelTable::getAttrCatEntry(relid,attr_offset,&attrib_cat))
+                update root_block of AttrCatEntry with new_hblk_num
+                set the attribute catalog entry of attribute attr_name(using OpenRelTable::getAttrCatEntry(relid,attr_offset,&attrib_cat)) with updated one.
+
+                delete new_head;
+                done=true;
+    */
+   return SUCCESS;
+}</code></pre>
+                            	</div>
+                            </div>
+                        </div>
+                        
+                        <div id="search" class="detail">
+                        	<h2>B+ Search<h2>
+                        	<h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+								        <td>relid</td>
+								        <td>int</td>
+								        <td>Relation Id of Relation in which target attribute is contained.</td>
+									</tr>
+									<tr>
+								        <td>attrname</td>
+								        <td>char[ATTR_SIZE]</td>
+								        <td>name of colomumn/attribute(containing b+ tree) to which search has to be made.</td>
+									</tr>
+									<tr>
+								        <td>attrval</td>
+								        <td>union Attribute</td>
+								        <td>value of attribute that to be checked against the operater.</td>
+								    </tr>
+									<tr>
+								        <td>op</td>
+								        <td>int</td>
+								        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal operators respectively).</td>
+									</tr>
+		                        </table>
+                            </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td>RecId (block#, slot#)</td>
+						                <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
+						            </tr>
+						            <tr>
+						                <td>(-1, -1)</td>
+						                <td>If no valid next hit is found.</td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p>Description of the function/method</p>
+                            <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-insert" class="collapse">
+                            	<div class="code"><pre><code>struct recId bplus_search(relId relid, char AttrName[ATTR_SIZE], union Attribute AttrVal, int op){
+	AttrCatEntry attrcat_entry;
+	
+	//get the previous index id from the attribute cache (corresponds to relid, AttrName) by calling
+	OpenRelTable::getAttrCatEntry(relid, AttrName, &attrcat_entry);
+	prev_indexid = OpenRelTable::::getPrevIndexId(relid, AttrName);
+	
+	//prev_indexid is set only if the search proccessed through leaf index blocks (search has been done before atleast once)
+	//otherwise prev_indexid is unset ({-1,-1})
+	
+	//if prev_indexid is unset then assign block as root block and index as 0 (i.e seach from the root block)
+	//if prev_indexid is set then assign block as prev_indexid's block and index as prev_indexid's index + 1
+	
+	//if assigned index exceeds the indices present in the leaf index block{
+		//assign block as block right's block (i.e next leaf index block)
+		//if(block == -1) (i.e, search is done )then return {-1,-1}
+	//} 
+	
+	//if(block_num == root_block && index == 0){
+		//traverse through all the internal nodes according to the attribute value AttrVal and the operator op
+		//Accordingly update block and index variables
+	//}
+	
+	//NOTE: From Index blocks are leaf index blocks (WHY!!!)	 
+	
+	//Traverse through leaf index entries in the leaf index block (block) from index entry numbered as index
+	
+	//if no index entry in the leaf block satisfies the given condition{
+		//then there are two possiblities:
+		// 1. Search is Completed 
+		// 2. No record in the relation with relid satisfies the given condition
+		// update prev_recid in the attribute cache as {-1, -1}
+		// return recid = {-1, -1}
+	//} 
+	
+	//otherwise{
+		//update prev_recid in the attribute cache as 
+		//prev_recid = {block (leaf index block), index (index entry that satisfied the given conditon)}
+		//get record id (recid) from the index entry
+		//return record id
+	//}
+}</code></pre>
+                            	</div>
+                            </div>
+                        </div>                            
+                                  
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
             </div>
         </div>
     </div>
+    <!-- END OF CONTENT -->
 </body>
 
 </html>
