@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Storage Model</title>
+    <title>Physical Layer</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -89,7 +89,7 @@
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
-                            <h1>Storage model</h1>
+                            <h1>Physical Layer</h1>
                         </div>
                         
                         <div id="disk_model" class="detail">
@@ -99,69 +99,71 @@
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
                             <div class="detail" id="access-methods">
-                            <h2>Disk access functions</h2>
-                                    <h5>readblock()</h5>
-                                    <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-		                    			<td>buffer</td>
-		                    			<td>void *</td>
-		                    			<td>memory pointer to which block has to be loaded/read.</td>
-		                			</tr>
-		                            <tr>
-		                    			<td>block_no</td>
-		                    			<td>int</td>
-		                    			<td>disk block which has to be read.</td>
-		                			</tr>		
-		                            
-		                        </table>
-		                    </div>
-		                    <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-		                        		<td>SUCCESS</td>
-		                        		<td>On successfully loading/reading the block to buffer.</td>
-		                    		</tr>
-		                   			<tr>
-		                        		<td>E_OUTOFBOUND</td>
-		                        		<td>If the block number is out of range.</td>
-		                    		</tr>
-		                     	</table>
-		                     </div>
-                          	 <h5>writeblock()</h5>
-                                    <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-		                    			<td>block_no</td>
-		                    			<td>int</td>
-		                    			<td>disk block to which buffer block has to be written.</td>
-		                			</tr>
-		                            <tr>
-		                    			<td>buffer</td>
-		                    			<td>void *</td>
-		                    			<td>memory pointer from where block has to be copied to the disk.</td>
-		                			</tr>
-		                            		
-		                            
-		                        </table>
-		                    </div>
-		                    <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-		                        		<td>SUCCESS</td>
-		                        		<td>On successfully writing the block to the disk.</td>
-		                    		</tr>
-		                   			<tr>
-		                        		<td>E_OUTOFBOUND</td>
-		                        		<td>If the block number is out of range.</td>
-		                    		</tr>
-		                     	</table>
-		                     </div>
-                       		</div>
+                                <h2>Disk access functions</h2>
+                                <p>The physical layer functions readblock()/writeblock() takes as input a memory buffer (pointer) and a integer (block number) and transfer the block to/from the disk from/to the buffer.  These are the only
+                                functions through which the disk can be accessed.  These functions are supplied to you in the  NITCbase package and hence you do not need to implement them.</p>
+                                <h5>readblock()</h5>
+                                <h5>Arguments:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>buffer</td>
+                                            <td>void *</td>
+                                            <td>memory pointer to which block has to be loaded/read.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>block_no</td>
+                                            <td>int</td>
+                                            <td>disk block which has to be read.</td>
+                                        </tr>		
+
+                                    </table>
+                                </div>
+                                <h5>Return value:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>SUCCESS</td>
+                                            <td>On successfully loading/reading the block to buffer.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_OUTOFBOUND</td>
+                                            <td>If the block number is out of range.</td>
+                                        </tr>
+                                    </table>
+                                 </div>
+                          	     <h5>writeblock()</h5>
+                                 <h5>Arguments:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>block_no</td>
+                                            <td>int</td>
+                                            <td>disk block to which buffer block has to be written.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>buffer</td>
+                                            <td>void *</td>
+                                            <td>memory pointer from where block has to be copied to the disk.</td>
+                                        </tr>
+
+
+                                    </table>
+                                </div>
+                                <h5>Return value:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>SUCCESS</td>
+                                            <td>On successfully writing the block to the disk.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_OUTOFBOUND</td>
+                                            <td>If the block number is out of range.</td>
+                                        </tr>
+                                    </table>
+                                 </div>
+                                </div>
 
                             <p> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
                         </div>
@@ -171,15 +173,16 @@
                         <div id="record_blk" class="detail">
                             <h2>Record block structure</h2>
                             <p> Nitcbase is a collection of relations, and each relation is a collection of records.  The DBMS must store relations in the disk and the strategy is to store each relation in a set of blocks in the disk, organized as a linked list. Each block in such a linked list will be called a record block. The block will also contain some meta data like indices of the left and right blocks in the linked list. </p>
-                            <p> Records in a relation are composed of fields known as attributes each of which contains one item of information. Nitcbase fixes the size of attribute as 16 bytes.
+                            <p> Records in a relation are composed of fields known as <b>attributes</b>, each of which contains one item of information. Nitcbase fixes the size of attribute as 16 bytes <span style="color: red">*</span>.
                                 But the records in a relation are of variable size, the size can vary from 16 bytes (record with single attribute) to the size that the record can fit in a block. </p>
                             <p> A record block stores the actual data records. In addition to data records, each block also stores meta data in preamble/<b>header</b>. 
-                            The following figure shows the record block structure for a relation with K attributes. Since each attribute requires 16 bytes of storage space, to store record of this relation 16*K bytes must be allocated.</p>
-
+                            The following figure shows the record block structure for a relation with K attributes. Let L be the number of records stored in a block. (given K, L can be determined. This will be explained later.) Since each attribute requires 16 bytes of storage space, to store each record of this relation 16*K bytes must be allocated.</p>
+                            <p><span style="color: red">*</span><b>Note:</b> In real-world database systems, the size of an attribute will vary depending on the type of the attribute.  For instance, an integer type attribute will require less storage space than a string type attribute.  In NITCbase, we fix the size of all attributes to the same value to simplfy the implementation.  It is a conceptually straighforward (but cumbersome from the point of implementation) task to modify the DBMS to support variable sized attributes. </p>
+                            
                             <center><img class="img-fluid" src="img/record_block.png"></center>
 
-                            <p> First four bytes(0-3) of header are used to identify the type of block(REC/IND) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 24-31 are reserved for future use.</p>
-                            <p>  The record block is divided into <b>slots</b> of variable record size . Each slot stores a single record (and hence requires 16*K bytes for a relation with K attributes). Each block can have an arbitrary number of slots depending on the number of attributes in the relation. Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
+                            <p> First four bytes(0-3) of header are used to identify the type of block(<a href="/constants.html" target="_blank">REC/IND</a>) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 24-31 are reserved for future use.</p>
+                            <p>  Each record block is divided into <b>slots</b> of variable record size . Each slot stores a single record (and hence requires 16*K bytes for a relation with K attributes). Each block can have an arbitrary number of slots depending on the number of attributes in the relation. Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
 
                             <b><p> \[ 
                                 32+L+L*(16*K) \leq 2048 \\
@@ -240,16 +243,16 @@
 
                         <div id="intind_blk" class="detail">
                             <h2>Internal Index Block Structure</h2>
-                            <p>Nitcbase uses the <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> data structure for indexing records in a relation.  The DBMS may maintain zero or more <b>indices</b> per relation. There are two types of nodes for a B+ tree which are called <b>internal nodes</b> and <b>leaf nodes</b>. A disk block that stores an internal node of the B+ tree is called an Internal Index block. Each internal index block in Nitcbase stores a maximum of 100 attribute(key) values. Each of these values has an associated pair of <b>left and right child pointers</b>. Hence each internal index block is also required to store 101 child pointers (Only 101 Child pointers are required because the right child of one value is the same as the left child of the next value).</p>
+                            <p>Nitcbase uses the <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> data structure for indexing records in a relation.  The DBMS may maintain zero or more <b>indices</b> per relation. There are two types of nodes for a B+ tree. These are called <b>internal nodes</b> and <b>leaf nodes</b>. A disk block that stores an internal node of the B+ tree is called an Internal Index block. Each internal index block in Nitcbase stores a maximum of 100 attribute(key) values. Each of these values has an associated pair of <b>left and right child pointers</b>. Hence each internal index block is also required to store 101 child pointers (Only 101 Child pointers are required because the right child of one value is the same as the left child of the next value).</p>
                             <center><img class="img-fluid" src="img/internal_index.png"></center>
-                            <p>An Internal index block is divided into two parts. First 32 bytes contain header followed by actual attribute(key) values and child pointers arranged alternatively as shown in the figure. The header meta data is similar to that of a record block. The first four bytes of the header stores the value INDINT. PBlock is the Block# of parent block in the corresponding B+ tree. LBlock and RBlock have no significance for this block. #Entries field stores the actual number of attribute values (of maximum 100) stored in the block. #Attrs and #Slots fields also have no significance for an internal index block. The remaining space in the header is left unused.</p>
+                            <p>An Internal index block is divided into two parts. First 32 bytes contain header followed by actual attribute(key) values and child pointers arranged alternatively as shown in the figure. The header meta data is similar to that of a record block. The first four bytes of the header stores the value <a href="/constants.html" target="_blank">INDINT</a>. PBlock is the Block# of parent block in the corresponding B+ tree. LBlock and RBlock have no significance for an internal index block. #Entries field stores the actual number of attribute values (of maximum 100) stored in the block. #Attrs and #Slots fields also have no significance for an internal index block. The remaining space in the header is left unused.</p>
                         </div>
 
                         <div id="leafind_blk" class="detail">
                             <h2>Leaf Index Block Structure</h2>
-                            <p>A leaf node in the B+ tree stores the actual indices for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <b>leaf index Block</b>. Each such block in Nitcbase stores a maximum of 63 indices. An index is a 3-tuple (attribute value, block number, slot number). The size of an index in nitcbase is 32 bytes.</p>
+                            <p>A leaf node in the B+ tree stores the actual indices for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <b>leaf index Block</b>. Each leaf index block in Nitcbase stores a maximum of 63 indices. An index is a 3-tuple (attribute value, block number, slot number). The size of an index in nitcbase is 32 bytes (the last 8 bytes are unused).</p>
                             <center><img class="img-fluid" src="img/leaf_node.png"></center>
-                            <p>Any Leaf Index Block is also divided into a header part of 32 bytes followed by a part containing actual indices. Header is similar to that of any other block. The first four bytes of the header stores the value INDLEAF. PBlock is the Block# of the parent block in the corresponding B+ tree. This entry must always contain block# of an Internal Index block. Since all leaf nodes are connected in a B+ tree, LBlock and RBlock point to left and right Leaf Index blocks respectively. #Entries stores the actual number of indices (of maximum 63) stored in the block. #Attrs and #Slots fields have no significance for a Leaf index block. The remaining space in the header is left unused.</p>
+                            <p>Any Leaf Index Block is also divided into a header part of 32 bytes followed by a part containing actual indices. Header is similar to that of any other block. The first four bytes of the header stores the value <a href="/constants.html" target="_blank">INDLEAF</a>. PBlock is the Block# of the parent block in the corresponding B+ tree. This entry must always contain block# of an Internal Index block. Since all leaf nodes are connected in a B+ tree, LBlock and RBlock point to left and right Leaf Index blocks respectively. #Entries stores the actual number of indices (of maximum 63) stored in the block. #Attrs and #Slots fields have no significance for a Leaf index block. The remaining space in the header is left unused.</p>
                         </div>
 
                         <br>
@@ -257,14 +260,14 @@
 
                         <div class="pagetitle"><h1>Catalog structures</h1></div>
 
-                        <div class="detail" id="intro">
+                        <div class="detail" id="catalogs">
                             <p> Nitcbase maintains two catalogs in the disk for storing the meta data information about relations, attributes, indexes etc. These catalogs are: </p>
                             <ol>
                                 <li>Relation Catalog</li>
                                 <li>Attribute Catalog</li>
                             </ol>
                             <p> In an RDBMS, a relation refers to collection of records where each record is an n-tuple of attribute values. An attribute is a column or field in a relation. A database is a collection of relations. </p>
-                            <p> <i>Nitcbase organizes these catalogs as relations. The block structures used for the catalogs are record block structures since the catalogs are implemented as relations in Nitcbase.</i>
+                            <p> <i>Nitcbase organizes these catalogs as relations. Hence the block structures used for the catalogs are <a href="#record_blk">record block structures.</a></i>
                             </p>
 
                         </div>
@@ -272,7 +275,7 @@
 
                         <div class="detail" id="relcat">
                             <h2>Relation Catalog</h2>
-                            <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 80 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list, #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. This can be calculated from #Attributes</p>
+                            <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 96 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block, Last Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list and Last Block (byte# 64-79) stores the block number of the last record block of the relation. #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. (Note that #slots can be can be calculated from #Attributes as described <a href="#record_blk">earlier</a>.)</p>
 
                             <center><img class="img-fluid" src="img/rel_cat.png"></center>
 
@@ -317,14 +320,15 @@
 
                         <div class="detail" id="attrcat">
                             <h2>Attribute Catalog</h2>
-                            <p>Attribute Catalog stores meta information regarding every attribute of every relation. Each entry of the attribute catalog has the following attributes: <i>Relation name, Attribute Name, Attribute Type, Primary flag, Root block Index</i> and <i>offset</i>, where Attribute Name is name of the attribute and Attribute Type(Integer/Float/String) is data type of the attribute, Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings(of maximum size 16).Primary flag is set to 1 if the attribute is a primary key. Nitcbase uses B-Tree for indexing. Root block Index stores the root block number of the B-Tree if there is an index created on the attribute else it contains -1. Offset is an integer which specifies the relative offset of the attribute in the record (0 for first attribute, 1 for second attribute etc.). </p>
+                            <p>Attribute Catalog stores meta information regarding every attribute of every relation. Each entry of the attribute catalog has the following attributes: <i>Relation name, Attribute Name, Attribute Type, Primary flag, Root block Index</i> and <i>offset</i>, where Attribute Name is name of the attribute and Attribute Type(Integer/Float/String) is data type of the attribute, Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings (of maximum size 16). The primary key flag is presently unused<span style="color: red">*</span>. Nitcbase uses <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> for indexing. Root block Index stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise. Offset is an integer which specifies the relative offset of the attribute in the record (0 for first attribute, 1 for second attribute etc.). </p>
+                            <p><span style="color: red">*</span><b>Note:</b> At present NITCbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support for primary keys.  </p>
 
                             <center><img class="img-fluid" src="img/attr_cat.png"></center>
 
                             <b>NOTE:</b> 
                                 <ol>
                                     <li>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</li>
-                                    <li>Nitcbase doesnot create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</li>
+                                    <li>Nitcbase does not create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</li>
                                 </ol>
 
 

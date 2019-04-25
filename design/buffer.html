@@ -74,6 +74,7 @@
                                  <li><a href="#getindblk">getIndBlock()</a> </li>
                                 <li><a href="#deleteblk">deleteBlock()</a> </li>
                                 <li><a href="#releaseblk">releaseBlock()</a> </li>
+                                <li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
                             </ul>
                             <li> <a class="sec" href="#blkbuff_class"> BlockBuffer Class</a></li>
                             <ul>
@@ -85,6 +86,7 @@
                             <li> <a class="sec" href="#indbuff_class"> IndBuffer Class</a></li>
                             <li> <a class="sec" href="#intbuff_class"> IndInternal Class</a></li>
                             <li> <a class="sec" href="#leafbuff_class"> IndLeaf Class</a></li>
+                            <li> <a class="sec" href="#misc"> Miscellaneous</a></li>
                         </ul>
                         </div>
                     </nav>
@@ -102,15 +104,32 @@
                         
                          <div id="layout" class="detail">
                          	<h2>Layout</h2>
-                            <p>Whenever one needs to work on a disk block, it has to be fetched from the disk (secondary storage) to the primary memory and after performing necessary operations, it has to be committed back to disk. NITCbase uses a dedicated Buffer Layer for this task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives disk abstraction to the other layers of the system. NITCbase allots a fixed memory that is sufficient for 32 blocks to cache the blocks and manipulate them in memory. Buffer Layer is responsible for maintaining that memory and making replacements when necessary. NITCbase follows Object Oriented design for Buffer layer whose class diagram follows.</p>
-                         	
+                            <p>Whenever NITCBase needs to work on a disk block, the block has to be fetched first from the <a href="../storage-model.html">disk</a>(secondary storage) to the primary memory. A large pool of memory (called buffer in the documentation) is pre-allocated and managed  to hold copies of disk blocks in the memory.  When a request comes from any of the higher layers to the buffer layer involving access/update of a disk block, the corresponding disk block is loaded into the memory buffer.   After performing updates, the disk block has to be commited back to the disk. The disk interface functions of the <a href="../storage-model.html">physical layer</a> are used by the buffer layer to loads blocks from the disk to the buffer and back.  </p>   
+                                
+                             <p>NITCbase uses a dedicated Buffer Layer for the above task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives a <i>memory disk abstraction</i> to the higher layers of the system. NITCbase pre-allocates memory for holding 32 blocks in its buffer memory. Buffer Layer is responsible for maintaining the buffer memory and making replacements and writebacks as required. NITCbase follows Object Oriented design for Buffer layer whose class diagram is shown below.</p>
+    
+                             
                          	<center><img class="img-fluid" src="/img/buffer_class.png"></center>
+                             <br><br>
+                             <p>Certain structure definitions and functions that help access of record data in disk block (and meta data  as well) are also included in the buffer layer.  These are discussed at the end of this page (see
+                                 <a href="misc">miscellenious</a> section).</p>
                          </div>
                         
                         <div id="block_structures" class="detail">
                             <h2>Block Structures</h2>
-                            <p>NITCbase defines different data structures for ease of handling different parts of a block structure. These structures make the code clean and neat (Otherwise, one has to work with offsets within the block and typecast whenever required).</p>
-                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of blocks and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure used for this header whose fields are shown below. The size of the header is 32 bytes.</p>
+                            <p>The buffer layer defines the following structures. </p>
+                            <ol>
+                                <li>HeadInfo</li>
+                                <li>Attribute</li>
+                                <li>InternalEntry</li>
+                                <li>Index</li>
+                            </ol>
+                            <p>Each structure is designed to store a subset of the data within a disk block.  A disk block contains 2048 bytes of data. Higher layer functions typically request for access of a particular set of related data in a disk block at a time (and not the whole data together).  Whenever such a "selective access" request is made, the buffer layer method implementing the access functionality will pack the requested data into a structure of the corresponding kind designed to store the required data. </p>
+                            
+                            <h4>HeadInfo</h4>
+                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of blocks and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#getheader" target="_blank">getHeader()</a></i> and the <i><a href="#setheader" target="_blank">setHeader()</a></i> functions expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument. </p> 
+                            
+                            <p> <b>Implementation note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling them.</p>
                             <div class="code">
                                 <pre><code>struct HeadInfo{
 	int32_t block_type;
@@ -121,9 +140,12 @@
 	int32_t num_attrs; //not useful for index block
 	int32_t num_slots;
 	unsigned char reserved[4];
-};</code></pre>
+};
+/* #include &lt;cstdint&gt; must be done */ 
+</code></pre>
                             </div>
-                            <p>According to storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains <b>Attributes</b>. A structure Attribute is used to handle the attribute in memory. Since an attribute can be one of different type (integar/ float/ string), Attribute is an union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  </p>
+                            <h4>Attribute</h4>
+                            <p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. A structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
                             <div class="code">
                                 <pre><code>typedef union Attribute{
 	int ival;
@@ -131,30 +153,36 @@
 	char strval[ATTR_SIZE];
 } Attribute;</code></pre>
                             </div>
-                            
-                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> consists of many attribute values and child pointers arranged alternatively in such a way that every attribute value will have its own left and right child pointers. The combination of an attribute value and its left and right child pointers is called an Internal Entry. Hence an Internal Index block is a combination of 100 such (overlapped) entries. The structure of the InternalEntry is given below: </p>
+                            <h4>InternalEntry</h4>
+                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> methods of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling them. </p>
                             <div class="code">
                                 <pre><code>struct InternalEntry{
 	int32_t lchild;
 	union Attribute attrval;
 	int32_t rchild;
-};</code></pre>
+};
+/* #include &lt;cstdint&gt; must be done */ </code></pre>
                             </div>
-                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below: </p>
+                            <h4>Index</h4>
+                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record. which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. The <i><a href="#leafgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#leafsetentry" target="_blank">setEntry()</a></i> methods of the class <i><a class="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
+                            </p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
                             <div class="code">
                                 <pre><code>struct Index{
 	union Attribute attrval;
 	int32_t block;
 	int32_t slot;
 	unsigned char unused[8];
-};</code></pre>
+};
+/* #include &lt;cstdint&gt; must be done */ </code></pre>
                             </div>
                             
                         </div>
                          
                          <div id="buffer_class" class="detail">
                          	<h2>Buffer class</h2>
-                            <p>Buffer contains a total of 32 blocks which are used to store the data from the disk blocks. Thes eblocks will be committed back to disk whenever needed. In addition to storing the data of a block, Buffer also maintains some meta information for each block. The structure storing the meta information is BufferMetaInfo. It includes block_num, which is the block# of the corresponding block in the disk along with dirty and free flags indicating whether the buffer block is dirty(modified) and free(unoccupied) respectively. In addition to these fields, some additional fields like timestamp are required in BufferMetaInfo to be used for Buffer replacement purpose. [YET TO BE DESIGNED] </p>
+                             <p>The class <i>Buffer</i> contains as a private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>block[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>Buffer</i> class also maintains some meta information for each block. The structure storing the meta information is <i>BufferMetaInfo</i>. This structure contains the  <i>block_num</i> (the block# of the corresponding block in the disk), a <i>dirty flag</i> (indicating whether the block is modified) and a <i>free flag</i> (indicating whether the buffer is free). In addition to these fields, some additional fields like timestamp are required in BufferMetaInfo to be used for Buffer replacement purpose.[YET TO BE DESIGNED] </p>
                              <div class="code">
                                 <pre><code>struct BufferMetaInfo {
 	bool free;
@@ -162,8 +190,11 @@
 	int block_num;
 };</code></pre>
                              </div>
-                             <p>Buffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an arry of size DISK_BLOCKS(8192) where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data including block allocation map is private to the Buffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk fetch and committing interfaces to upper layers hiding the fact that blocks are being replaced. Buffer is a static class (i.e., all fields and methods are declared static) in NITCbase which means there exists only a single static object at any instance of time. The class defnition of Buffer class along with public methods is given below:</p>
-                             <p><b>Note:</b> The BlockBuffer class is a friend class to Buffer so that all methods in BlockBuffer can access private methods of Buffer layer. It is explained in the next section.</p>
+                             <p>Buffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data including block allocation map is private to the Buffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. Buffer is a static class (i.e., all fields and methods are declared static in C++) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class defnition of Buffer class along with public methods is given below:</p>
+                             
+                             <p><b>Note:</b> The <i>BlockBuffer</i> class is a friend class to Buffer so that all methods in <i>BlockBuffer</i> can access private methods of Buffer layer. It is explained in the next section.</p>
+                             
+                             <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class buffer, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. When the class is static you do not have to create an object instance for the class using the C++ construct <a href="https://en.wikipedia.org/wiki/New_and_delete_(C%2B%2B)" target="_blank">new</a>. In fact, <i>new ClassName</i> will have no effect when all member fields of the class <i>ClassName</i> are declared static</p>
                              <div class="code">
                                 <pre><code>class Buffer {
 friend class BlockBuffer;
@@ -206,7 +237,7 @@ public:
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-hover">
                                             <tr>
-                                                <td>RecBuffer *</td>
+                                                <td><a href="#recbuff_class">RecBuffer</a> *</td>
                                                 <td>Returns a pointer to a new RecBuffer object</td>
                                             </tr>
                                             <tr>
@@ -224,19 +255,18 @@ public:
                                         <div class="code">
                                             <pre><code>class RecBuffer* Buffer::getFreeRecBlock(){
 
-    // search for the free block in disk iterating through block_alloc_map array.
+    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
 
     //if no disk block is free return NULL
 
-    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
+    
+    //Update the <i>block_alloc_map</i> correspoding to free disk block.
 
-    //if no free buffer block in memory return NULL
+    class <i>RecBuffer* newRecBuffer</i>= new <i>RecBuffer(disk_free_block)</i>; 
+    //where disk_free_block is the free disk block obtained from block_alloc_map.
 
-    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
-
-    class RecBuffer* newRecBuffer= new RecBuffer(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return the RecBuffer object pointer.
+    // return <i>newRecBuffer</i>.
 }</code></pre>
                                         </div>
                                     </div>
@@ -252,7 +282,7 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>IndInternal *</td>
+                                                    <td><a href="#intbuff_class">IndInternal</a> *</td>
                                                     <td>Returns a pointer to a new IndInternal object</td>
                                                 </tr>
                                                 <tr>
@@ -269,19 +299,18 @@ public:
                                             <div class="code">
                                                 <pre><code>class IndInternal* Buffer::getFreeIndInternal(){
 
-    // search for the free block in disk iterating through block_alloc_map array.
+    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
 
     //if no disk block is free return NULL
 
-    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
+    
+    //Update the <i>block_alloc_map</i> correspoding to free disk block.
 
-    //if no free buffer block in memory return NULL
+    class <i>RecBuffer* newIndBuffer</i>= new <i><a href="#intbuff_class">IndInternal</a>(disk_free_block)</i>; 
+    //where disk_free_block is the free disk block obtained from block_alloc_map.
 
-    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
-
-    class IndInternal* newIndBuffer= new IndInternal(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return the IndBuffer object pointer.
+    // return <i>newIndBuffer</i>.
 }
 </code></pre>
                                             </div>
@@ -300,7 +329,7 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>IndLeaf *</td>
+                                                    <td><a href="#leafbuff_class">IndLeaf</a> *</td>
                                                     <td>Returns a pointer to a new IndLeaf object</td>
                                                 </tr>
                                                 <tr>
@@ -317,19 +346,18 @@ public:
                                             <div class="code">
                                                 <pre><code>class IndLeaf* Buffer::getFreeIndLeaf(){
 
-    // search for the free block in disk iterating through block_alloc_map array.
+    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
 
     //if no disk block is free return NULL
 
-    //get the free buffer block (you can use a helper function like getfreebuffer() in bufferclass)
+    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
+    
+    //Update the <i>block_alloc_map</i> correspoding to free disk block.
 
-    //if no free buffer block in memory return NULL
+    class <i>RecBuffer* newIndBuffer</i>= new <i><a href="#leafbuff_class">IndLeaf</a>(disk_free_block)</i>; 
+    //where disk_free_block is the free disk block obtained from block_alloc_map.
 
-    //update the metainfo array corresponding to free buffer. block_alloc_map correspoding to free disk block.
-
-    class IndLeaf* newIndBuffer= new IndLeaf(disk_free_block); //disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return the IndBuffer object pointer.
+    // return <i>newIndBuffer</i>.
 }
 </code></pre>
                                             </div>
@@ -355,7 +383,7 @@ public:
                                         <div class=table-responsive>
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>RecBuffer *</td>
+                                                    <td><a href="#recbuff_class">RecBuffer</a> *</td>
                                                     <td>Returns a pointer to the RecBuffer object corresponding to the block_num</td>
                                                 </tr>
                                                 <tr>
@@ -376,20 +404,19 @@ public:
                                         <div id="algo-getrecblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>class RecBuffer* Buffer::getRecBlock(int block_num){
-    /*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,
-     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond
-      to #block_num).
-    */
+    /*iterate in buffer blocks to know if one of the blocks in buffer already contains the disk block
+     #block_num (you may write a helper function getbufferblock(#block_num) to check if the buffer 
+     contains the disk block correspond to #block_num) */
 
-	/* if buffer doesn't conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info
-    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in 
-    buffer and do necessary initialisations in buffer meta info)*/
+	/* if buffer doesn't contain disk block #block_num, get a free buffer using 
+    <i><a href="#getfreebuffer">getFreeBuffer</a></i>() method and load the block into 
+    the buffer block using physical layer <i><a href="/storage-model.html#access-methods">readblock</a></i>() function. */
 
     //if the block corresponding to #block_num is not a REC block return NULL
 
-    class RecBuffer* newRecBuffer= new RecBuffer(block_num);
+    class<i> RecBuffer* newRecBuffer</i>= new <i>RecBuffer</i>(block_num);
 
-    // return the RecBuffer object pointer.
+    // return <i>newRecBuffer</i>.
 }</code></pre>
                                             </div>
                                         </div>
@@ -413,10 +440,10 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>IndBuffer *</td>
+                                                    <td><a href="#indbuff_class" >IndBuffer</a> *</td>
                                                     <td>Returns a pointer to the IndInternal/IndLeaf object corresponding to the block_num <br>
                                                         (Returns an object of type IndInternal if the block is an internal Index block / returns an object of type IndLeaf if the block is a Leaf Index block). <br>
-                                                        <b>Note: </b>An object of child type can be assigned to a parent variable.
+                                                        <b>Note: </b>An object of a child class can be assigned to a variable of a parent class.
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -436,33 +463,29 @@ public:
                                         <div id="algo-getindblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>class IndBuffer* Buffer::getIndBlock(int block_num){
-    /*iterate in buffer blocks to know if one of the blocks in buffer already contains a disk block,
-     #block_num(you can use a helper function getbufferblock(#block_num) to know if buffer contains a disk block corresond
-      to #block_num).
-    */
+    /*iterate in buffer blocks to know if the buffer already contains the disk block #block_num 
+    (you may write a helper function getbufferblock(#block_num) to check if the buffer 
+     contains the disk block correspond to #block_num. It will be useful here and elsewhere.) */
 
-	/* if buffer doesn't conain disk block #block_num, load it to buffer and do necessary initialisations in buffer meta info
-    (one can use load(#block_num) as helper function in buffer class to load the disk block to one of the free block(blocks[i]) in 
-    buffer and do necessary initialisations in buffer meta info)*/
-    //let buffer_block be the offset(block) in buffer to which disk block is loaded.
+	/* if buffer doesn't contain disk block #block_num, get a free buffer using 
+    <i><a href="#getfreebuffer">getFreeBuffer</a></i>() method and load the block into 
+    the buffer block using physical layer <i><a href="/storage-model.html#access-methods">readblock</a></i>() function. */
+    
+    //let <i>buffer_block</i> be the buffer index to which the disk block is loaded.
 
-    // let int blk_type = getblocktype(buffer_block) /* a helper function getblocktype(buffer_block) can be used to know block type, by accessing header                                                     of block from buffer*/
+    // let int blk_type = getblocktype(buffer_block) 
+        /* you may write a helper function getblocktype(buffer_block) to know block type
+        by accessing the header of the block from buffer*/
 
-    if(blk_type==IND_INTERNAL){
-        class IndBuffer* newIndBuffer= new IndInternal(block_num);
+    if(blk_type==INDINT){
+        class <i>IndBuffer* newIndBuffer</i>= new <i><a href="#intbuff_class">IndInternal</a></i>(block_num);
         return newIndBuffer;
-    }else if(blk_type==IND_LEAF){
-        class IndBuffer* newIndBuffer= new IndLeaf(block_num);
+    }else if(blk_type==INDLEAF){
+        class <i>IndBuffer* newIndBuffer</i>r= new <i><a href="#leafbuff_class">IndLeaf</a></i>(block_num);
         return newIndBuffer;
     }else{
-        return NULL; //returns NULL if block found to be other than internal or leaf block(i.e recblock)
+        return NULL; //returns NULL if block found to be other than internal or leaf block
     }
-
-    //if the block corresponding to #block_num is not a INDLEAF/INDINTERNAL block return NULL
-
-    class IndBuffer* newIndBuffer= new IndBuffer(block_num);
-
-    // return the IndBuffer object pointer.
 }</code></pre>
                                             </div>
                                         </div>
@@ -493,12 +516,12 @@ public:
                                                 <pre><code>void Buffer::deleteBlock(int block_num){
     // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return
 
-    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can
-    be used for the same).*/
+    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer
+    (Note: <i>getbufferblock</i>(block_num) method call can be used for the same).*/
 
-    //if buffer does not contain disk block #block_num release the buffer block using releaseBlock(int block_num) method call
+    //if buffer contains disk block <i>#block_num</i>, release the buffer block using <i><a href="#releaseblk">releaseBlock</a></i>(int block_num) 
 
-    //set the block_alloc_map array element correspond to block_num as UNUSED
+    //set the <i>block_alloc_map</i> array element correspond to block_num as UNUSED
 }
 </code></pre>
                                             </div>
@@ -515,7 +538,7 @@ public:
                                                 <tr>
                                                     <td>block_num</td>
                                                     <td>int</td>
-                                                    <td>Disk block number of block that has to be released from buffer.</td>
+                                                    <td>Disk block number of the block that has to be released from buffer.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -530,15 +553,52 @@ public:
                                                 <pre><code>void Buffer::releaseBlock(int block_num){
     // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return 
 
-    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer(getbufferblock(block_num) method call can
-    be used for the same).*/
+    /* iterate through buffer blocks to know if disk block <i>#block_num</i> is present in Buffer
+    (Note: <i>getbufferblock</i>(block_num) method call can be used for the same).*/
 
-    //if buffer does not contain disk block #block_num return 
+    //if buffer does not contain disk block <i>#block_num</i> return 
 
-    // if the dirty field in metainfo of buffer block correspond to #block_num is set to true, commit the block back to disk.
+    // if the <i>dirty</i> field in <i>metainfo[]</i> of buffer block corresponding to #block_num is set to true
+    // Commit the block back to disk.
 
-    // free the buffer block correspond to #block_num in metainfo array.
+    // free the buffer block corresponding to #block_num in metainfo array.
 
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="getfreebuffer">
+                                        <h2>getFreeBuffer</h2>
+                                        <h5>Arguments:</h5>
+                                        <p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>buffer_num</td>
+                                                    <td>int</td>
+                                                    <td>Buffer number of the free buffer.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>This is a private method which searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free. This function <b>never fails</b>.[YET TO BE DESIGNED]</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int Buffer::getFreeBuffer(){
+    // Iterate through all the buffer blocks and search for a free buffer
+    
+    // If no free buffer block is found perform replacement algorithm [TO BE DESIGNED]
+    
+    //update the <i>metainfo</i> array corresponding to free buffer. 
+    
+    //return the buffer index
 }
 </code></pre>
                                             </div>
@@ -551,8 +611,9 @@ public:
                          
                          <div id="blkbuff_class" class="detail">
                          	<h2>Block Buffer Class</h2>
-                         	<p>BlockBuffer class is a generic class for block of any type. It is an abstract class. It has a block_num as its only field which stores the disk block# corresponding to the block buffer object. In order to work with data of the block, any method need to know the location of memory where the block has been loaded. But the block will be loaded and stored into one of the 32 buffers in Buffer class. Adding to the complexity, the block may even not be present in the primary memory because of the replacement. So any function should get the pointer to the data block whenever an operation is to be performed on the fly using get_dataptr() method which in turn uses Buffer's interface to get the required reference. The public Methods of this class deals with the information like Header info which is generic to all blocks of Disk. RecBuffer and IndBuffer classes will extend from BlockBuffer class thereby inheriting all the fields and methods.
+                             <p>The class <i>BlockBuffer</i> is an <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)#Abstract_and_concrete" target="_blank">abstract class</a> that is a generic class for representing a disk block of any type (Record, Internal Index or Leaf Index). Its only field is <i>block_num</i>. The field <i>block_num</i> stores the disk block# corresponding to the block buffer object. In order to work with data of the block, any method in <i>Block Buffer</i> or its descendent classes need to know the address (pointer) to the buffer memory where the block has been loaded.  Note that the block will be loaded and stored into one of the 32 buffers in the class <i>Buffer</i>. Adding to the complexity, the block may even not be present in the primary memory because of the buffer replacement algorithms of the buffer layer. Hence any method of this class should first get the pointer to the data block whenever an operation is to be performed on the block.  The method get_buf_ptr() can be used for this purpose (<i>get_buf_ptr()</i> will invoke the private method<span style="color: red">*</span> <i>get_block_ptr</i> of class <i>Buffer</i> to load the block from the disk to the buffer whenever the block is not present in the buffer.) The public Methods of <i>Block Buffer</i> deals with the information like <a href="#block_structures">header</a> of the disk block which is generic to all blocks of Disk. <i><a href="#recbuff_class">RecBuffer</a></i> and <i><a href="#indbuff_class">IndBuffer</a></i> classes extend the class <i>BlockBuffer</i> thereby inheriting all the fields and methods of <i>Block Buffer</i>.
                          	</p>
+                             <p><span style="color: red">*</span><b>Implementation Note:</b> If  the class definition of a class (say A) declares another class (say class B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a> then an instance of B can invoke private methods of A. In our case, the definition of the class <i>Buffer</i>  contains the declaration <i>friend BlockBuffer</i>.  Hence, the method <i>get_buf_ptr</i>() in <i>BlockBuffer</i> is allowed to access the private method <i>get_block_ptr</i>  of the class <i>Buffer</i>. </p>
                             <div class="code">
                                 <pre><code>class BlockBuffer{
 protected:
@@ -592,7 +653,7 @@ public:
                          	<p>The object of this class will be associated with the REC type buffer blocks i.e., a record Block. Public Methods of this class deals with the records and slotmap of the buffer block (Record Block). RecBuffer class extends the BlockBuffer class.
                          	</p>
                              <div class="code">
-                                <pre><code>class RecBuffer : public BlockBuffer{
+                                <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
 	RecBuffer(int blk_no);
 	void getSlotmap(unsigned char *slotmap); //change return type to to int = slotmapsize
@@ -792,7 +853,7 @@ public:
                             <h2>IndBuffer class</h2>
                             <p>IndBuffer extends BlockBuffer class. IndBuffer is a generic(abstract) class for Index Blocks. It has two <b>pure virtual</b> methods- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructor of this class simply calls the constructor of the parent class with the argument received.</p>
                             <div class="code">
-                                <pre><code>class IndBuffer : public BlockBuffer{
+                                <pre><code>class IndBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
 	IndBuffer(int blk_no);
 	virtual int getEntry(void *ptr, int indexnum) =0;
@@ -806,7 +867,7 @@ public:
                          	<p>The object of this class will be associated with the INDINT type buffer blocks i.e., Internal Index buffer blocks. Public Methods of this class deals with the entries of Internal nodes of b+tree buffer block known as InternalEntries. IndInternal class extends IndBuffer class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.
                          	</p>
                              <div class="code">
-                                <pre><code>class IndInternal : public IndBuffer{
+                                 <pre><code>class IndInternal : public <a href="#indbuff_class">IndBuffer</a>{
 public:
 	IndInternal(int blk_no);
 	int getEntry(void *ptr, int indexnum) ;
@@ -926,7 +987,7 @@ public:
                          	<h2>IndLeaf Class</h2>
                              <p>The object of this class will be associated with the INDLEAF type buffer blocks i.e., Leaf Index buffer blocks. Public Methods of this class deals with the entries of Leaf nodes of b+tree buffer block known as IndexEntries. LeafInternal class extends IndBuffer class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.</p>
                              <div class="code">
-                                <pre><code>class IndLeaf : public IndBuffer{
+                                <pre><code>class IndLeaf : public <a href="#indbuffer_class">IndBuffer</a>{
 public:
 	IndLeaf(int blk_no);
 	int getEntry(void *ptr, int indexnum) ;
@@ -1042,6 +1103,88 @@ public:
                              </ul>
                          	
                          </div>
+                        
+                        <div class="detail" id="misc">
+                            <h2>Miscellaneous</h2>
+                            <h4>RecId</h4>
+                            <p>Every record in a relation in NITCbase is referenced using an id called recId. <i>recId</i> is a combination of block# and slot# where the record is stored in the disk. We can fetch any record from the disk using the interface provided by the Buffer layer (<b>Ex:</b> What methods of buffer layer are required to do so? In which sequence they are to be called?)</p>
+                            <div class="code">
+                                <pre><code>typedef struct recId{
+	int block;
+	int slot;
+} recId;</code></pre>
+                            </div>
+                            
+                            <h4>IndexId</h4>
+                            <p>An Index is a tuple (Attribute value, block#, slot#) whick is present in a Leaf Index Block of a B+ tree. Any such index can be referenced using an id called IndexId. <i>IndexId</i> is a combination of block#(block number of the corresponding leaf index block) and index#(offset of index in that block). </p>
+                            <div class="code">
+                                <pre><code>typedef struct IndexId{
+	int block;
+	int index;
+} IndexId;</code></pre>
+                            </div>
+                            
+                            <h4>compare()</h4>
+                            <p></p>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>attr1</td>
+                                        <td>union Attribute</td>
+                                        <td>first attribute value to be compared</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attr2</td>
+                                        <td>union Attribute</td>
+                                        <td>second attribute value to be compared</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrType</td>
+                                        <td>int</td>
+                                        <td>type of the attribute (INT/FLOAT/STR)</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>Negative integer</td>
+                                        <td>If value in attr1 is less than the value in attr2<span style="color: dodgerblue">*</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>0</td>
+                                        <td>If value in attr1 is equal to the value in attr2 *</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Positive integer</td>
+                                        <td>If value in attr1 is equal to the value in attr2 *</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p><span style="color: dodgerblue">*</span> For string types, the comparision is performed with respect to lexicographic order.</p>
+                            <h5>Description:</h5>
+                            <p>This function compares two attributes of type union Attribute depending on the type of the value.</p>
+                            <h5><a data-toggle="collapse" href="#algo-compare"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-compare" class="collapse">
+                                <div class="code">
+<pre><code>int compare(union Attribute attr1, union Attribute attr2, int AttrType){
+    /* if attrType == STR
+       return strcmp(attr1.strval, attr2.strval); */
+    
+    /* else if attrType == INT -1, 0, 1 depending on whether the value attr1.ival
+       is less than, equal to or greater than the value attr2.ival */ 
+    
+    /* else if attrType==FLOAT return -1, 0, 1 depending on whether the value attr1.fval
+       is less than, equal to or greater than the value attr2.fval */ 
+}
+</code></pre>
+                                </div>
+                            </div>
+                            
+                        </div>
                                                 
                         <!-- PAGE ENDS -->
                     </div>

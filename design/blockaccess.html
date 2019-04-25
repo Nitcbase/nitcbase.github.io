@@ -84,11 +84,11 @@
                         </div>
                         
                         <div class="detail">
-                            <p>In any database management system, in order to retrieve any data from the database or to alter the schema of the relations in the database the system has to work with the disk blocks. Block Access layer provides the abstraction and hides the disk structures to the above layers i.e, algebra layer and schema layer and also provides interface to the above layers in terms of records. Hence, the Block Access layer processes the requests from the algebra and schema layers and works with disk blocks. </p>
+                            <p>In any database management system, in order to retrieve data from the database or to alter the schema of the relations in the database, the system has to work with the disk blocks. Block Access layer provides an abstraction that hides the disk structures to the above layers (<a href="algebra.html">algebra layer</a> and <a href="schema.html">schema layer</a>). The block access layer also provides an interface to the above layers in terms of records instead of disk blocks. Hence, the Block Access layer processes the requests for update/retrieval from the algebra and schema layers and works with disk blocks that are buffered by the <a href="buffer.html">buffer layer</a>. </p>
                         </div>
                         
                         <div class="detail" id="linear_search">
-                        	<h2>Linear Search</h2>
+                        	<h2>linear_search</h2>
                         	<h5>Arguments:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
@@ -223,7 +223,7 @@
                         </div>
                         
                         <div class="detail" id="insert">
-                            <h2>Insert</h2>
+                            <h2>ba_insert</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -304,7 +304,7 @@
                         </div>
                         
                         <div class="detail" id="search">
-                            <h2>Search</h2>
+                            <h2>ba_search</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -400,7 +400,7 @@
                         </div>
                         
                         <div class="detail" id="delete">
-                            <h2>Delete</h2>
+                            <h2>ba_delete</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -475,7 +475,7 @@
                         </div>
                         
                         <div class="detail" id="renamerel">
-                            <h2>renameRel</h2>
+                            <h2>ba_renameRel</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -545,7 +545,7 @@
                         </div>
                         
                         <div class="detail" id="renamecol">
-                            <h2>renameCol</h2>
+                            <h2>ba_renameCol</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">

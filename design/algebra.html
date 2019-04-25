@@ -142,7 +142,7 @@
                                 <div class="code">
 <pre><code>int insert(char relname[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
 
-    // get the relation's open relation id(let it be rel_id), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of Openreltable
+    // get the relation's open relation id(let it be rel_id), using <a href="cache.html#getrelid" target="_blank">getRelId</a>() method of <a href="cache.html#openrel_table" target="_blank">Openreltable</a>
     // if relation is not opened in Openreltable, return E_RELNOTOPEN
 
     //get the no. of attributes present in relation, from RelcatEntry present in Openreltable(using <a href="cache.html#getrelcatentry" target="_blank">getRelCatEntry</a>() method).
@@ -173,7 +173,7 @@
 }
 </code></pre>
                                 </div>
-                                <a data-toggle="collapse" href="#algo-insert">Close</a>
+                                <a class="float-right" data-toggle="collapse" href="#algo-insert">Close <span class="fas fa-window-close"></span></a>
                             </div>
                         </div>
                         
