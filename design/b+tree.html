@@ -119,7 +119,7 @@
 		                     </div>
 		                     
 		                     <h5>Description:</h5>
-		                     <p>Description of the function/method</p>
+		                     <p>This method create the bplus-tree(Indexing) on the attribute of a relation specified in the arguments.</p>
 		                     
 		                     <h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              <div id="algo-create" class="collapse">
@@ -191,7 +191,7 @@
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method deletes/frees the bplus-tree whose head block_num is given as argument.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destroy" class="collapse">
@@ -269,7 +269,7 @@
 		                     	</table>
 		                   	</div>
 							<h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method inserts the <i>Index</i> of the record into bplus tree corresponding to the attribute of a relation as specified in the arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-insert" class="collapse">
@@ -456,7 +456,8 @@
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>If the attribute specified has an indexing, this method searches for the next hit record fallowing the condition given on attribute(based on op, Attrval). to find the next hit record fallowing bplus tree, it uses the sid(previous hit) from attribute cache, after finding the next hit updates the sid in cache.
+(NOTE:previous hit in attribute cache(sid) is used only if there is b+ indexing on that attribute)</p>
                             <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-search" class="collapse">
                             	<div class="code"><pre><code>struct recId bplus_search(relId relid, char AttrName[ATTR_SIZE], union Attribute AttrVal, int op){

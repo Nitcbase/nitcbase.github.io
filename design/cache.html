@@ -70,6 +70,8 @@
                                 <br>
                                 Methods:
                                 <ul >
+                                    <li><a href="#constructor">openRelTable()</a></li>
+                                    <li><a href="#destructor">~openRelTable()</a></li>
                                     <li><a href="#openrel">openRel()</a></li>
                                     <li><a href="#closerel">closeRel()</a></li>
                                     <li><a href="#getrelid">getRelId()</a></li>
@@ -99,13 +101,13 @@
                         
                          <div id="layout" class="detail">
                             <h2>Layout</h2>
-                            <p> The job of this module is to cache the catalog information of 'opened' relations in memory. Some meta data related to open relations is also managed by the cache layer. thereby providing immediate access to this information whenever required by any other layer. Since catalog information is frequently required by any query processing module, this layer of caching reduces the number of disk accesses for those catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module with public interfaces provided. </p>
+                             <p> The job of this module is to cache the  <a href="../storage-model.html#relcat">relation catalog</a> and  <a href="../storage-model.html#attrcat">attribute catalog</a> of opened relations in memory. Some meta data related to open relations is also managed by the cache layer.  Since catalog information is frequently required by any query processing module, caching reduces the number of disk accesses for accessing the catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module showing its private and public methods. </p>
                             <center><img class="img-fluid" src="/img/cache_class.png"></center>
                         </div>
                         
                         <div id="relation_cache" class="detail">
-                        <h2>Relation Cache</h2>
-                        <p>Relation catalog stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, a set of relation catalog entries of open relations are cached in the main memory for easy access to this information and to achieve a good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Relation Cache contains all entries of the correspondig relation catalog entry.  Each cache entry is stored as a 'RelCatEntry' structure as shown below:</p>
+                        <h2>Relation Catalog Entry</h2>
+                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache (also called as Open Relation Table). A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
                 		<div class="code"><pre><code>typedef struct RelCatEntry {
     char rel_name[ATTR_SIZE];
     int num_attr;
@@ -113,59 +115,62 @@
     int first_blk;          //Head of linked list of blocks
     int num_slots_blk;      //Number of slots in a block
 } RelCatEntry ;</code></pre></div>
-                		<p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openrel_table">open relation table</a>. Relation cache entry for an open relation is part of open relation table entry for the relation.</p>
+                            <p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openrel_table">open relation table</a>. <i>RelCatEntry</i> for an open relation is part of the open relation table entry for the relation.</p>
                         </div>
                         
                         <div id="attribute_cache" class="detail">
                             <h2>Attribute Cache</h2>
-                            <p>The Attribute catalog, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information for a set of open relations is also cached in the main memory for performance reasons and  easy access. The attribute catalog cache for opened relations is called the Attribute Cache. An Attribute cache entry will be created for every open relation. (Each relation whose relation catalog entry is cached in the relation cache will also have its attribute catalog entries cached in the attribute cache.) Hence the attribute catalog information for atmost MAXOPEN=12 relations are cached. Each Attribute Cache entry contains all the fields from attribute catalog and some extra fields for storing meta-data as explained below. Type of memory cached attribute catalog entry is defined as 'AttrCatEntry' and that of Attribute Cache entry is defined as 'AttributeCache'. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - why?), Attribute cache is stored in memory as a linked list of Attribute Cache entries.</p>
+                            <p>The <a href="../storage-model.html#attrcat">Attribute catalog</a>, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information of all open relations is also cached in the main memory for performance reasons and easy access. For each opened relation, NITCbase maintains an attribute cache. The Attribute cache of an open relation is a list of Attribute catalog entries, where each entry corresponds to an attribute of the relation. (Thus for each open relation there is an Attribute cache and for each attribute of an open relation, there is an entry in the corresponding attribute cache). Since at most MAXOPEN=12 relations can be opened at a time, there are at most MAXOPEN Attribute Caches exist at a time. </p>
+                                
+                            <p>Each entry in the Attribute Cache of a relation contains all the fields from the attribute catalog entry of the corresponding attribute, and some extra fields for storing meta-data as explained below. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>), Each Attribute cache is stored in the memory as a linked list of <i>Attribute Cache entries</i>.</p>
                             
                             <div class="code"><pre><code>     typedef struct AttrCatEntry {
         char rel_name[ATTR_SIZE];
         char attr_name[ATTR_SIZE];
-        int attr_type;
-        bool primary_flag;
-        int root_block;
-        int offset;
+        int attr_type;     // can be INT/FLOAT/STR
+        bool primary_flag; // Currently unused
+        int root_block;    // root block# of the B+ tree if exists, else -1
+        int offset;        // offset of the attribute in the relation
     } AttrCatEntry ;
 
-    typedef struct AttributeCache {
+    typedef struct AttributeCacheEntry {
         AttrCatEntry attrcat_entry;
         bool dirty;
-        recId rec_id;
-        SearchIndexId sid;          /*IMPORTANT: used for storing state information of any search.
-                                                which will be used for getting next hit. */
-        struct AttributeCache *next;
-    } AttributeCache;</code></pre></div>
-                          	<p>As already stated, Attribute cache also stores some in memory information which will not be committed back to disk. They are:</p>
+        <a href="buffer.html#misc">recId</a> recid;
+        <a href="buffer.html#misc">IndexId</a> prev_indid;   /*IMPORTANT: see explanation below  */
+        struct AttributeCacheEntry *next;
+    } AttributeCacheEntry;</code></pre></div>
+                          	<p>As already stated, AttributeCacheEntry also stores some in memory information which will not be committed back to disk. They are:</p>
                            	<ol>
                            		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
                     			<li><i>recid</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                    			<li><i>prev_recid</i>: This is used to store state of any search operation. It essentially stores information regardng last/previous hit. Search interfaces uses this information to know where previous search call returned and to quickly search for the next hit.</li>
+                                <li><i>prev_indid</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
                     		</ol> 
                         </div>
                         
                         <div id = "openrel_table" class="detail">
                         	<h2>Open Relation Table</h2>
-                        	<p>Cache layer stores the catalog cache in a tablular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in open relation table is considered as the relation identifier (relId). Any layer that wishes to access the meta information of an open relation need to access it using its relId. Each row in the Open Relation Table has the following fields:</p>
+                        	<p>Cache layer stores the catalog caches in a tabular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in the open relation table is considered as the relation identifier (relId). Any layer that wishes to access the catalog information of an open relation needs to supply relId as an argument for the access functions of cache layer (access functions are described below). Each entry in the Open Relation Table has the following fields:</p>
                         	<ol>
-                        		<li>relcat_entry: cached relation catalog entry of the relation</li>
-                    			<li>free: Indicates whether the row is free or occupied.</li>
-                    			<li>dirty: Indicates whether relation catalog entry is modified.</li>
-                    			<li>rec_id: Stores the record id (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                    			<li>attr_list: Head of the linked list storing attribute catalog cache whose length is equal to number of attributes in the relation.</li>
+                                <li><i>relcat_entry</i>: cached <a href="#relation_cache">relation catalog entry</a> of the relation</li>
+                                <li><i>free</i>: Indicates whether the entry is free or occupied.</li>
+                                <li><i>dirty</i>: Indicates whether <a href="#relation_cache">relation catalog entry</a> is modified.</li>
+                                <li><i>rec_id</i>: Stores the <a href="buffer.html#misc">record id</a> (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to the disk if it is modified.</li>
+                                <li><i>prev_recid</i>: It stores the block# and slot# of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> on the relation. <a href="blockaccess.html#linear_search">Linear search algorithm</a> of the block access layer uses this information to search for the next hit, starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="blockaccess.html#linear_search">Linear search algorithm</a> sets the value to (-1, -1). </li>
+                                <li><i>attr_list</i>: Head of the linked list storing the <a href="#attribute_cache">attribute catalog cache</a> of the corresponding relation.</li>
                 			</ol>
                         	<center><img class="img-fluid" src="/img/openreltable.png"></center>
                         	<p>The above figure shows the structure of Open relation table.</p>
-                			<p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase.  (The catalogs which store meta-information about other relations are themselves treated as relations by Nitcbase).  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for the relation catalog has Relname set to the default name "relcat".   The relation catalog entry for the attribute catalog has Relname set to the default name "attrcat".  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
-                			<p>Open Relation Table is a static class (<b>Note:</b> In C++ static classes can be implemented by declaring each field and member function as static explicitly). <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table(data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an an instance (as the object is allocated statically). The class structure of the open relation table showing its public interfaces is shown below.</p>
+                            <p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase. <b>The catalogs (which store meta-information about other relations) are themselves treated as relations by Nitcbase</b>.  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for <a href="../storage-model.html#relcat"><i>Relation Catalog</i></a> has <i>Relname="relcat"</i>.   The relation catalog entry for the <a href="../storage-model.html#attrcat"><i>attribute catalog</i></a> has <i>Relname="attrcat"</i>.  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
+                			<p>Open Relation Table is a static class<span style="color: dodgerblue">*</span>. <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table (data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an instance (as the object is allocated statically). The class structure of the open relation table showing its public interfaces is shown below.</p>
+                            <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>OpenRelTable</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
                             
                             <div class="code">
                                 <pre><code>typedef struct OpenRelTableEntry{
 	RelCatEntry relcat_entry;
-	struct AttributeCache *attr_list_head;
+	struct AttributeCacheEntry *attr_list_head;
 	bool free, dirty;
-	recId rec_id, prev_rid;
+	recId rec_id, prev_recid;
 }OpenRelTableEntry;
 
 
@@ -175,6 +180,8 @@ private:
 	static relId getFreeOpenRelTableEntry();
 	
 public:	
+    void openRelTable();
+    void ~openRelTable();
 	static relId OpenRel(char rel_name[ATTR_SIZE]);
 	static int CloseRel(relId rel_id);
 	static int getRelCatEntry(relId rel_id, RelCatEntry *relcat_buf);
@@ -185,11 +192,10 @@ public:
 	static int getAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf);
 	static int setAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf);
 	static int setAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf);
-	/* CHANGE THE NAME AND OVERLOAD*/
-	static SearchIndexId getSearchIndexId(relId rel_id, char attr_name[ATTR_SIZE]);
-	static SearchIndexId getSearchIndexId(relId rel_id, int attr_offset);
-	static int setSearchIndexId(relId rel_id, char attr_name[ATTR_SIZE], SearchIndexId sid);
-	static int setSearchIndexId(relId rel_id, int attr_offset, SearchIndexId sid);
+	static IndexId getPrevIndexId(relId rel_id, char attr_name[ATTR_SIZE]);
+	static IndexId getPrevIndexId(relId rel_id, int attr_offset);
+	static int setPrevIndexId(relId rel_id, char attr_name[ATTR_SIZE], IndexId prev_indid);
+	static int setPrevIndexId(relId rel_id, int attr_offset, IndexId prev_indid);
 	static relId getRelId(char rel_name[ATTR_SIZE]);
 };</code></pre>
                             </div>
@@ -200,6 +206,164 @@ public:
                         
                         <div class="pagetitle" id="methods">
                             <h1>Methods of Cache Layer</h1>
+                        </div>
+                        
+                        <div class="detail" id="constructor">
+                            <h2>openRelTable (Constructor)</h2>
+                            <h5>Arguments:</h5>
+                            <p>Nil</p>
+                            <h5>Return type:</h5>
+                            <p>void</p>
+                            <h5>Description:</h5>
+                            <p>It initializes the open relation table. It also opens relation catalog and attribute catalog with relId 0 and 1 respectively. </p>
+                            <p><b>Note:</b> Since the first block numbers of relation catalog and attribute catalog are known to us (they are fixed), we can directly fetch the entries from the disk blocks and populate the table.</p>
+                            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-constructor" class="collapse">
+                                <div class="code">
+                                    <pre><code>void openRelTable(){
+    \\intialize the openRelTable meta information
+    \\open the relation catalog
+    
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail" id="destructor">
+                            <h2>~openRelTable (Destructor)</h2>
+                            <h5>Arguments:</h5>
+                            <p>Nil</p>                            
+                            <h5>Return type:</h5>
+                            <p>void</p>
+                            <h5>Description:</h5>
+                            <p>This closes all the opened relations except relation catalog and attribute catalog. Entries corresponding to the relation catalog and attribute catalog will be committed back to the disk in the respective block and slot if they are marked as dirty.</p>
+                            <h5><a data-toggle="collapse" href="#algo-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-destructor" class="collapse">
+                                <div class="code">
+                                    <pre><code>void openRelTable(){
+
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail" id="rectorelcat">
+                            <h2><i>private</i> recordtoRelCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <p>Nil</p>
+                            
+                            <h5>Return type:</h5>
+                            <p>void</p>
+                            <h5>Description:</h5>
+                            <p></p>
+                        </div>
+                        
+                        <div class="detail" id="rectoattrcat">
+                            <h2><i>private</i> recordtoAttrCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								    </tr>
+		                        </table>
+		                    </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td></td>
+						                <td></td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p></p>
+                        </div>
+                        
+                        <div class="detail" id="relcattorec">
+                            <h2><i>private</i> relCatEntrytoRecord</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								    </tr>
+		                        </table>
+		                    </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td></td>
+						                <td></td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p></p>
+                        </div>
+                        
+                        <div class="detail" id="attrcattorec">
+                            <h2><i>private</i> attrCatEntrytoRecord</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								    </tr>
+		                        </table>
+		                    </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td></td>
+						                <td></td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p></p>
+                        </div>
+                        
+                        <div class="detail" id="getfreeentry">
+                            <h2><i>private</i> getFreeOpenrelTableEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                            <tr>
+								        <td></td>
+								        <td></td>
+								        <td></td>
+								    </tr>
+		                        </table>
+		                    </div>
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+						                <td></td>
+						                <td></td>
+						            </tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p></p>
                         </div>
                         
                         <div id="openrel" class="detail">
@@ -234,7 +398,7 @@ public:
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method Opens the relation specified as name in cache/OpenRelTable.</p>
 
 							<h5><a data-toggle="collapse" href="#algo-openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-openrel" class="collapse">
@@ -321,7 +485,7 @@ public:
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method closes the relation specified as name in cache/OpenRelTable.</p>
 
 							<h5><a data-toggle="collapse" href="#algo-closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-closerel">
@@ -398,7 +562,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This methods gives the Relation Id of the specified relation in cache(OpenRelTable).</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getrelid" class="collapse">
@@ -450,7 +614,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method gives the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getrelcatentry" class="collapse">
@@ -509,7 +673,7 @@ public:
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method sets the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setrelcatentry" class="collapse">
@@ -567,7 +731,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method gives the value of <i>prevrecid</i> field corresponding to the specified relation in cache.(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevrecid" class="collapse">
@@ -623,7 +787,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method sets the value of <i>prevrecid</i> field corresponding to the specified relation in cache.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setprevrecid" class="collapse">
@@ -690,7 +854,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This methods gives the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getattrcatentry" class="collapse">
@@ -762,7 +926,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This methods sets the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
@@ -835,7 +999,7 @@ public:
                                 </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method gives the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getprevindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevindexid" class="collapse">
@@ -907,7 +1071,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method sets the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setprevindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setprevindexid" class="collapse">

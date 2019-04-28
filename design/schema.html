@@ -141,7 +141,7 @@
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method creates a new Relation with the name, attribute/column list as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-createrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-createrel">
@@ -211,11 +211,15 @@
                                         <td>E_RELNOTEXIST</td>
                                         <td>If the relation does not exist</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If relName is either "relcat" or "attrcat". i.e., when the user tries to delete the catalogs.</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method deletes the Relation with name as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-deleterel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-deleterel">
@@ -254,11 +258,15 @@
                                         <td>E_DISKFULL</td>
                                         <td>If there is no enough space in the disk to create the tree</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If the relName is either "relcat" or "attrcat". i.e, when the user tries to create an index for catalogs.</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method creates a bplus indexing on an attribute attr in a relation relname as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-createind"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-createind">
@@ -309,11 +317,15 @@ int createindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
                                         <td>E_ATTRNOTEXIST</td>
                                         <td>If the attribute with name attr does not exist.</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If the relName is either "relcat" or "attrcat".</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method drops the bplus indexing on an attribute attr in a relation relname as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-dropind"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-dropind">
@@ -365,11 +377,15 @@ int createindex(char relname[ATTR_SIZE],char attr[ATTR_SIZE]){
                                         <td>E_RELEXIST</td>
                                         <td>If the relation with name newRelName already exists</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If the oldrelName is either "relcat" or "attrcat". i.e, when the user tries to rename either of the catalogs.</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method changes the relation name of specified relation to new name as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-renamerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-renamerel">
@@ -431,11 +447,15 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                                         <td>E_ATTREXIST</td>
                                         <td>If the attribute with name newAttrName already exists</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If the relName is either "relcat" or "attrcat". i.e, when the user tries to rename any attribute value of either of the catalogs.</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method changes the name of an attribute/column present in a specified relation, to new name as specified in arguments.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-renameattr"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-renameattr">
@@ -482,7 +502,7 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method Opens the relation specified as name in cache/OpenRelTable.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-openrel">
@@ -518,11 +538,15 @@ int renamerel(char Oldrelname[ATTR_SIZE],char Newrelname[ATTR_SIZE]){
                                         <td>E_NOTOPEN</td>
                                         <td>If relation with given name is not open</td>
                                     </tr>
+                                    <tr>
+                                        <td>E_INVALID</td>
+                                        <td>If the relName is either "relcat" or "attrcat". i.e, when the user tries to close either of the catalogs.</td>
+                                    </tr>
                                 </table>
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Description of the function/method</p>
+                            <p>This method closes the relation specified as name in cache/OpenRelTable.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-closerel">
