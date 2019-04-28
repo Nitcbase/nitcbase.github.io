@@ -220,10 +220,47 @@ public:
                             <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-constructor" class="collapse">
                                 <div class="code">
-                                    <pre><code>void openRelTable(){
-    \\intialize the openRelTable meta information
-    \\open the relation catalog
-    
+                                    <pre><code>OpenRelTable::OpenRelTable(){
+	
+	//Initialize all open relation table entries as free and set the dirty flag to false. 
+	
+	/************Loading the relation catalog entries***********/
+	//Let block_num and slot_num be the block and slot numbers of the relation catalog
+	RecBuffer *buffer = Buffer::getRecBlock(block_num);
+	//let <i>relcat_rec</i> be an array of type union Attribute
+	//get the record corresponding to relation catalog into relcat_rec
+	buffer->getRecord(relcat_rec,slot_num); 
+	// Now copy the fields from the record to the 0<sup>th</sup> entry of the open relation table. 
+	// since the default relation id of relation catalog is 0
+	
+	//Let block_num and slot_num be the block and slot numbers of the attribute catalog
+	//let <i>attrcat_rec</i> be an array of type union Attribute
+	//get the record corresponding to attribute catalog into attrcat_rec
+	buffer->getRecord(attrcat_rec,slot_num); 
+	// Now copy the fields from the record to the 1<sup>st</sup> entry of the open relation table. 
+	// since the default relation id of attribute catalog is 1
+	
+	//Set the prev_recid field in both the entries to (-1, -1)
+	//Set the free bit to false for both the entries.
+	
+	delete buffer;
+	
+	/************Loading the attribute catalog entries***********/
+	
+	//Let block_num be the first block number of the attribute catalog
+	RecBuffer *buffer = Buffer::getRecBlock(block_num);
+	//First 5 slots in this block corresponds to the attribute catalog entries of the relation catalog
+	// get the records from all the slots using getRecBlock of Buffer layer
+	// and arrange them as a linked list by filling all the fields of AttributeCacheEntry. (Attribute cache of relation catalog)
+	
+	// Next 6 slots in this block corresponds to the attribute catalog entries of the relation catalog
+	// get the records from all the slots using getRecBlock of Buffer layer
+	// and arrange them as a linked list by filling all the fields of AttributeCacheEntry. (Attribute cache of attribute catalog)
+	
+	//Set the prev_indid of all attrivutes to (-1, -1).
+	
+	delete buffer;
+		
 }</code></pre>
                                 </div>
                             </div>
@@ -240,8 +277,18 @@ public:
                             <h5><a data-toggle="collapse" href="#algo-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destructor" class="collapse">
                                 <div class="code">
-                                    <pre><code>void openRelTable(){
+                                    <pre><code>OpenRelTable::~OpenRelTable(){
 
+	// Close all the opened relations except relation catalog and attribute catalog
+	// using openRelTable::close() method.
+	
+	// Iterate over the linked list (Attribute Cache) of both the catalogs
+	//     Commit the entry to the disk if it is dirty
+	//     free the node from the list
+	
+	// Commit the relCatEntry of relation catalog and attribute catalog to
+	// the disk if they are dirty.
+	
 }</code></pre>
                                 </div>
                             </div>

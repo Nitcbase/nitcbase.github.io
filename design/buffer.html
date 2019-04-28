@@ -237,6 +237,16 @@ public:
                                         <p>void</p>
                                         <h5>Description:</h5>
                                         <p></p>
+                                        <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-buffer-constructor" class="collapse">
+                                            <div class="code">
+                                                <pre><code>Buffer::Buffer(){
+    // copy all block_alloc_map blocks from disk to buffer (using readblock() of disk)
+
+    //initialise metainfo of all the buffer blocks with dirty:false, free:true
+}</code></pre>
+                                            </div>
+                                        </div>
                                     </div>
                                  </li>
                                  
@@ -249,6 +259,17 @@ public:
                                         <p>void</p>
                                         <h5>Description:</h5>
                                         <p></p>
+                                        <h5><a data-toggle="collapse" href="#algo-buffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-buffer-destructor" class="collapse">
+                                            <div class="code">
+                                                <pre><code>Buffer::~Buffer(){
+    // copy all block_alloc_map blocks from buffer disk to(using writeblock() of disk)
+
+    /*iterate through all the buffer blocks, blocks with meta info as free:false,dirty:true
+        should be commited/written back to disk(using writeblock() of disk)*/
+}</code></pre>
+                                            </div>
+                                        </div>
                                     </div>
                                  </li>
                                  
@@ -698,6 +719,46 @@ public:
                             </div>
                             <p>The following is the specification of methods of BlockBuffer</p>
                              <ul class="methods">
+                                 <li>
+                                    <div class="detail" id="constructor">
+                                        <h2>Buffer (Constructor)</h2>
+                                        <h5>Arguments:</h5>
+                                        <p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+                                        <h5>Description:</h5>
+                                        <p></p>
+                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-blkbuffer-constructor" class="collapse">
+                                            <div class="code">
+                                                <pre><code>Blockbuffer::BlockBuffer(int block_num){
+    // set the block_num field of this object to blk_no;
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
+                                 <li>
+                                    <div class="detail" id="destructor">
+                                        <h2>~Buffer (Destructor)</h2>
+                                        <h5>Arguments:</h5>
+                                        <p>Nil</p>                            
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+                                        <h5>Description:</h5>
+                                        <p></p>
+                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-blkbuffer-destructor" class="collapse">
+                                            <div class="code">
+                                                <pre><code>BlockBuffer::~BlockBuffer(int blk_no){y
+    //release the block corresponding to block_no from buffer calling releaseBlock() method of buffer class.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+                                 
                                 <li>
                                     <div class="detail" id="getheader">
                                         <h2><i>public</i> getHeader</h2>
