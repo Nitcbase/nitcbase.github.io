@@ -277,7 +277,7 @@
                             <h2>Relation Catalog</h2>
                             <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 96 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block, Last Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list and Last Block (byte# 64-79) stores the block number of the last record block of the relation. #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. (Note that #slots can be can be calculated from #Attributes as described <a href="#record_blk">earlier</a>.)</p>
 
-                            <center><img class="img-fluid" src="img/rel_cat.png"></center>
+                            <center><img class="img-fluid" src="img/relation_catalog.png"></center>
 
                             <b>Note:</b> <i>Since the Relation Catalog is also stored in the disk like any other relation, its block structure is identical to that of any record block with 5 attributes.</i>
                             <br>
