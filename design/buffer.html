@@ -717,7 +717,8 @@ public:
 	void setHeader(struct HeadInfo head);
 	int getBlockType(int bufferIndex);
 	void setBlockType(int blockType);
-	BlockBuffer(int block);
+	BlockBuffer(int blockNum);
+	BlockBuffer(char blockType);
 };</code></pre> 
                             </div>
                             <p>The following is the specification of methods of BlockBuffer</p>
@@ -728,7 +729,7 @@ public:
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
-                                                <td>blk_no</td>
+                                                <td>blockNum</td>
                                                 <td>int</td>
                                                 <td>block number of the corresponding block</td>
                                             </table>
@@ -740,33 +741,42 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-blkbuffer-constructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>Blockbuffer::BlockBuffer(int blk_no){
-    // set the block_num field of this object to blk_no;
+                                                <pre><code>Blockbuffer::BlockBuffer(int blockNum){
+    				this.blockNum = blockNum;
+				getBlock();
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+				     
+				 <li>
+                                    <div class="detail" id="blkbuffer-constructor1">
+                                        <h2>BlockBuffer (Constructor)</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <td>blockType</td>
+                                                <td>char</td>
+                                                <td>block type of the corresponding block</td>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+                                        <h5>Description:</h5>
+                                        <p></p>
+                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-blkbuffer-constructor1" class="collapse">
+                                            <div class="code">
+                                                <pre><code>Blockbuffer::BlockBuffer(char blockType){
+    					this.blockNum = getFreeBlock(blockType);
 }</code></pre>
                                             </div>
                                         </div>
                                     </div>
                                  </li>
                                  
-                                 <li>
-                                    <div class="detail" id="blkbuffer-destructor">
-                                        <h2>~BlockBuffer (Destructor)</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>Nil</p>                            
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-                                        <h5>Description:</h5>
-                                        <p></p>
-                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-blkbuffer-destructor" class="collapse">
-                                            <div class="code">
-                                                <pre><code>BlockBuffer::~BlockBuffer(){
-    //release the block corresponding to block_no from buffer calling <a href="#releaseblk">releaseBlock</a>() method of buffer class.
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
+
                                  
                                 <li>
                                     <div class="detail" id="getheader">
