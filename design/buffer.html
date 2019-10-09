@@ -706,15 +706,18 @@ public:
                             <div class="code">
                                 <pre><code>class BlockBuffer{
 protected:
-	int block_num;
-	unsigned char *get_buf_ptr();
+	int blockNum;
+	unsigned char *getBufferPtr();
+	void getBlock();
+	int getFreeBlock(int BlockType);
 
 public:
-	BlockBuffer(int block_num); 
-    int getblocknum();
-	struct HeadInfo getheader();
-	void setheader(struct HeadInfo head); 
-	virtual ~BlockBuffer();
+	int getBlockNum();
+	struct HeadInfo getHeader();
+	void setHeader(struct HeadInfo head);
+	int getBlockType(int bufferIndex);
+	void setBlockType(int blockType);
+	BlockBuffer(int block);
 };</code></pre> 
                             </div>
                             <p>The following is the specification of methods of BlockBuffer</p>
