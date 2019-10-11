@@ -735,15 +735,16 @@ public:
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Should be called if the block already present in the disc.</p>
+                                        <p>to be called when the block already exists on the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-blkbuffer-constructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(int blockNum){
-    				this.blockNum = blockNum;
-				getBlock();
+		    				// set the blockNum field of the object to input argument.
+
+						// copy the block into buffer using getBlock function.
 }</code></pre>
                                             </div>
                                         </div>
@@ -762,14 +763,16 @@ public:
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Should be called if a new block has to be allocated in the disc.</p>
+                                        <p>to be called if a new block is to be allocated in the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-blkbuffer-constructor1" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(char blockType){
-    					this.blockNum = getFreeBlock(blockType);
+    						// allocate a block on the disc and a buffer in memory to hold the new block of given type using getFreeBlock function.
+
+						// set the blockNum field of the object to the allocated block number.
 }</code></pre>
                                             </div>
                                         </div>
