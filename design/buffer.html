@@ -713,8 +713,8 @@ protected:
 
 public:
 	int getBlockNum();
-	struct HeadInfo getHeader();
-	void setHeader(struct HeadInfo head);
+	struct HeadInfo* getHeader();
+	void setHeader(struct HeadInfo* head);
 	int getBlockType(int bufferIndex);
 	void setBlockType(int blockType);
 	BlockBuffer(int blockNum);
