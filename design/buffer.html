@@ -145,32 +145,33 @@
 </code></pre>
                             </div>
                             <h4>Attribute</h4>
-                            <p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. A structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
+                            <p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. The structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
                             <div class="code">
                                 <pre><code>typedef union Attribute{
-	int ival;
-	float fval;
-	char strval[ATTR_SIZE];
+	int iVal;
+	float fVal;
+	char strVal[ATTR_SIZE];
 } Attribute;</code></pre>
                             </div>
                             <h4>InternalEntry</h4>
-                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> methods of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling them. </p>
+                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument while the <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method returns a pointer to struct <i>struct InternalEntry</i>.</p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
                             <div class="code">
                                 <pre><code>struct InternalEntry{
-	int32_t lchild;
-	union Attribute attrval;
-	int32_t rchild;
+	int32_t lChild;
+	union Attribute attrVal;
+	int32_t rChild;
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
                             </div>
                             <h4>Index</h4>
-                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record. which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. The <i><a href="#leafgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#leafsetentry" target="_blank">setEntry()</a></i> methods of the class <i><a class="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
+                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record. which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
+				     The <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i>struct Index</i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument while the <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method returns a pointer to <i>struct Index</i>.
                             </p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
                             <div class="code">
                                 <pre><code>struct Index{
-	union Attribute attrval;
+	union Attribute attrVal;
 	int32_t block;
 	int32_t slot;
 	unsigned char unused[8];
