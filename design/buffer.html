@@ -181,7 +181,7 @@
                         </div>
                          
                          <div id="buffer_class" class="detail">
-                         	<h2>class Buffer</h2>
+                         	<h2>class StaticBuffer</h2>
                              <p>The class <i>Buffer</i> contains as a private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>block[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>Buffer</i> class also maintains some meta information for each block. The structure storing the meta information is <i>BufferMetaInfo</i>. This structure contains the  <i>block_num</i> (the block# of the corresponding block in the disk), a <i>dirty flag</i> (indicating whether the block is modified) and a <i>free flag</i> (indicating whether the buffer is free). In addition to these fields, some additional fields like timestamp are required in BufferMetaInfo to be used for Buffer replacement purpose.[YET TO BE DESIGNED] </p>
                              <div class="code">
                                 <pre><code>struct BufferMetaInfo {
@@ -196,7 +196,7 @@
                              
                              <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>Buffer</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
                              <div class="code">
-                                <pre><code>class Buffer {
+                                <pre><code>class StaticBuffer {
 friend class BlockBuffer;
 private:
 	//fields
@@ -205,24 +205,15 @@ private:
 	static unsigned char block_alloc_map[DISK_BLOCKS];
 
 	//methods
-	static int getBlockType(int buffer_index);
-	static int getFreeBuffer();
-	static int getbufferblock(int block_num);
-	static int loadBlock(int block_num);
-	static void releaseBufferBlock(int buffer_index);
-	static unsigned char* get_buf_dataptr(int block_num);
+	
+	static int getFreeBuffer(int blockNum);
+	static int getBufferNum(int blockNum);
+	
 
 public:
 	//methods
-	Buffer();
-	~Buffer();
-	static class RecBuffer *getFreeRecBlock();
-	static class IndBuffer *getFreeIndInternal();
-	static class IndBuffer *getFreeIndLeaf();
-	static class RecBuffer *getRecBlock(int block_num);
-	static class IndBuffer *getIndBlock(int block_num);
-	static void deleteBlock(int block_num);
-	static void releaseBlock(int block_num);
+	StaticBuffer();
+	~StaticBuffer();
 };</code></pre>
                              </div>
                          	<br>
