@@ -313,7 +313,51 @@ public:
                                         </div>
                                     </div>
                                  </li>
+				 
 				     
+				     
+				     
+				 
+                                 
+                                 <li>
+                                    <div class="detail" id="getbuffernum">
+                                        <h2><i>private: </i>getBufferNum</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number that is used retrieve it's corresponding buffer index.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>bufferNum</td>
+                                                    <td>int</td>
+                                                    <td>Buffer number of the buffer to which the block with the given block number is loaded.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>A private method which returns the buffer index of the buffer to which the block with the given block number is loaded.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int StaticBuffer::getBufferNum(){
+    //By traversing through the metainfo array, find the buffer index of the buffer to which the block with the given block number is loaded.
+    
+    //if found return buffer index, else indicate failure.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
 				     
                                  <!-- 
                                 <li><div class="detail" id="getfreerecblk">
