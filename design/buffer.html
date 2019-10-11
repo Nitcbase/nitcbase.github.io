@@ -187,7 +187,8 @@
                                 <pre><code>struct BufferMetaInfo {
 	bool free;
 	bool dirty;
-	int block_num;
+	int blockNum;
+	int timeStamp
 };</code></pre>
                              </div>
                              <p>Buffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data including block allocation map is private to the Buffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. Buffer is a static class (i.e., all fields and methods are declared static in C++) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class defnition of Buffer class along with public methods is given below:</p>
@@ -221,20 +222,20 @@ public:
                              <ul class="methods">
                                  <li>
                                     <div class="detail" id="buffer-constructor">
-                                        <h2>Buffer (Constructor)</h2>
+                                        <h2>StaticBuffer (Constructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
                                         <p>void</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>Copies block allocation map from disk to buffer and updates meta information. </p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-constructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>Buffer::Buffer(){
+                                                <pre><code>StaticBuffer::StaticBuffer(){
     // copy all <a href="../storage-model.html#disk_model">block_alloc_map</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods">readblock()</a> of disk)
 
-    //initialise metainfo of all the buffer blocks with dirty:false, free:true
+    //initialise metainfo of all the buffer blocks with dirty:false, free:true, timestamp:-1 and blockNum:-1
 }</code></pre>
                                             </div>
                                         </div>
@@ -243,13 +244,13 @@ public:
                                  
                                  <li>
                                     <div class="detail" id="buffer-destructor">
-                                        <h2>~Buffer (Destructor)</h2>
+                                        <h2>~StaticBuffer (Destructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>                            
                                         <h5>Return type:</h5>
                                         <p>void</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>Block allocation map is copied back to the disk from buffer and the blocks which were modified in the buffer are written back to the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-destructor" class="collapse">
                                             <div class="code">
