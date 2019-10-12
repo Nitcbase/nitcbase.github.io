@@ -870,6 +870,44 @@ public:
 
                                  
                                 <li>
+                                    <div class="detail" id="getdataptr">
+                                        <h2><i>protected</i>getBufferPtr</h2>
+                                        <h5>Arguments:</h5>
+                                        NIL
+                                        <h5>Return type:</h5>
+					    unsigned char*
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>char *</td>
+                                                    <td>returns the pointer to the block in buffer.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>This method gives the the pointer to first byte of the block present in buffer.
+					
+                                        <h5><a data-toggle="collapse" href="#algo-getdataptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getdataptr" class="collapse">
+                                            <div class="code">
+                                                <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
+	// find the buffer index of the block using getBufferNum().
+	// if the block is not present in the buffer, read and load the block to a new buffer using getFreeBuffer() and ReadBlock() of physical layer.
+	// Increase the time stamps in metainfo of all the occupied buffers.
+	// Reset the timestamp of the buffer to which the block is loaded.
+	// return the pointer to this buffer (blocks[bufferIndex]).
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+
+				     
+				     
+				     
+				     
+                                <li>
                                     <div class="detail" id="getheader">
                                         <h2><i>public:</i> getHeader</h2>
 										<h5>Arguments:</h5>
@@ -905,6 +943,8 @@ public:
                                         </div>
                                     </div> 
                                 </li>
+				     
+				     
                                 <li>
                                     <div class="detail" id="setheader">
                                         <h2><i>public:</i> setHeader</h2>
@@ -938,36 +978,8 @@ public:
                                         </div>
                                     </div> 
                                 </li>
-                                <li>
-                                    <div class="detail" id="getdataptr">
-                                        <h2><i>protected</i>get_buf_ptr</h2>
-                                        <h5>Arguments:</h5>
-                                        NIL
-                                        <h5>Return type:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>char *</td>
-                                                    <td>returns the pointer to the block in buffer.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>This method gives the the pointer to first byte of the block present in buffer.
-					
-                                        <h5><a data-toggle="collapse" href="#algo-getdataptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getdataptr" class="collapse">
-                                            <div class="code">
-                                                <pre><code>unsigned char * BlockBuffer::get_buf_ptr(){
-	// call <a href="#get_block_ptr">get_block_ptr</a>(block_num) of Buffer layer, let the return value be retval
-	return retval;
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </li>
-                             </ul>
+				     
+			    </ul>
                                                 
                          </div>
                          
