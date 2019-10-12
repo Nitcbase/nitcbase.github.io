@@ -871,7 +871,7 @@ public:
                                  
                                 <li>
                                     <div class="detail" id="getdataptr">
-                                        <h2><i>protected</i>getBufferPtr</h2>
+                                        <h2><i>protected: </i>getBufferPtr</h2>
                                         <h5>Arguments:</h5>
                                         NIL
                                         <h5>Return type:</h5>
@@ -892,10 +892,15 @@ public:
                                         <div id="algo-getdataptr" class="collapse">
                                             <div class="code">
                                                 <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
+	
 	// find the buffer index of the block using getBufferNum().
+	
 	// if the block is not present in the buffer, read and load the block to a new buffer using getFreeBuffer() and ReadBlock() of physical layer.
+	
 	// Increase the time stamps in metainfo of all the occupied buffers.
+	
 	// Reset the timestamp of the buffer to which the block is loaded.
+	
 	// return the pointer to this buffer (blocks[bufferIndex]).
 }</code></pre>
                                             </div>
