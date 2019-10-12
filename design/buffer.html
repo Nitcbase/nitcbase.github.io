@@ -104,41 +104,41 @@
                         
                          <div id="layout" class="detail">
                          	<h2>Layout</h2>
-                            <p>Whenever NITCBase needs to work on a disk block, the block has to be fetched first from the <a href="../storage-model.html">disk</a>(secondary storage) to the primary memory. A large pool of memory (called buffer in the documentation) is pre-allocated and managed  to hold copies of disk blocks in the memory.  When a request comes from any of the higher layers to the buffer layer involving access/update of a disk block, the corresponding disk block is loaded into the memory buffer.   After performing updates, the disk block has to be commited back to the disk. The disk interface functions of the <a href="../storage-model.html">physical layer</a> are used by the buffer layer to loads blocks from the disk to the buffer and back.  </p>   
+                            <p>Whenever NITCbase needs to work on a disk block, the block has to be first fetched from the <a href="../storage-model.html">disk</a>(secondary storage) to the primary memory. A large pool of memory (called buffer in the documentation) is pre-allocated and managed  to hold copies of disk blocks in the memory.  When a request comes from any of the higher layers to the buffer layer involving access/update of a disk block, the corresponding disk block is loaded into the memory buffer.   After performing updates, the disk block has to be commited back to the disk. The disk interface functions of the <a href="../storage-model.html">physical layer</a> are used by the buffer layer to load blocks from the disk to the buffer and back.  </p>   
                                 
-                             <p>NITCbase uses a dedicated Buffer Layer for the above task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives a <i>memory disk abstraction</i> to the higher layers of the system. NITCbase pre-allocates memory for holding 32 blocks in its buffer memory. Buffer Layer is responsible for maintaining the buffer memory and making replacements and writebacks as required. NITCbase follows Object Oriented design for Buffer layer whose class diagram is shown below.</p>
+                             <p>NITCbase uses a dedicated buffer layer for the above task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives a <i>memory disk abstraction</i> to the higher layers of the system. NITCbase pre-allocates memory for holding 32 blocks in its buffer memory. Buffer Layer is responsible for maintaining the buffer memory and making replacements and writebacks as required. NITCbase follows Object Oriented design for Buffer layer whose class diagram is shown below.</p>
     
                              
                          	<center><img class="img-fluid" src="/img/buffer_class.png"></center>
                              <br><br>
                              <p>Certain structure definitions and functions that help access of record data in disk block (and meta data  as well) are also included in the buffer layer.  These are discussed at the end of this page (see
-                                 <a href="misc">miscellenious</a> section).</p>
+                                 <a href="#misc">miscellenious</a> section).</p>
                          </div>
                         
                         <div id="block_structures" class="detail">
                             <h2>Block Structures</h2>
-                            <p>The buffer layer defines the following structures. </p>
+                            <p>The buffer layer defines the following block data structures. </p>
                             <ol>
                                 <li>HeadInfo</li>
                                 <li>Attribute</li>
                                 <li>InternalEntry</li>
                                 <li>Index</li>
                             </ol>
-                            <p>Each structure is designed to store a subset of the data within a disk block.  A disk block contains 2048 bytes of data. Higher layer functions typically request for access of a particular set of related data in a disk block at a time (and not the whole data together).  Whenever such a "selective access" request is made, the buffer layer method implementing the access functionality will pack the requested data into a structure of the corresponding kind designed to store the required data. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
+                            <p>Each structure is designed to store a subset of the data within a disk block.  A disk block contains 2048 bytes of data. Higher layer functions typically request for access of a particular set of related data in a disk block at a time (and not the whole data together).  Whenever such a "selective access" request is made, the buffer layer method implementing the access functionality will pack the requested data into a structure of the corresponding kind that is designed to store the required data. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
                             
                             <h4>HeadInfo</h4>
-                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of blocks and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#getheader" target="_blank">getHeader()</a></i> and the <i><a href="#setheader" target="_blank">setHeader()</a></i> functions expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument. </p> 
+                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of the block and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#setheader" target="_blank">setHeader()</a></i> function expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument. The <i><a href="#getheader" target="_blank">getHeader()</a></i> function returns a  pointer to <i>struct HeadInfo</i>.</p> 
                             
-                            <p> <b>Implementation note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling them.</p>
+                            <p> <b>Implementation note:</b> <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling it.</p>
                             <div class="code">
                                 <pre><code>struct HeadInfo{
-	int32_t block_type;
-	int32_t pblock;
-	int32_t lblock;
-	int32_t rblock;
-	int32_t num_entries;
-	int32_t num_attrs; //not useful for index block
-	int32_t num_slots;
+	int32_t blockType;
+	int32_t pBlock;
+	int32_t lBlock;
+	int32_t rBlock;
+	int32_t numEntries;
+	int32_t numAttrs; //not useful for index block
+	int32_t numSlots;
 	unsigned char reserved[4];
 };
 /* #include &lt;cstdint&gt; must be done */ 
