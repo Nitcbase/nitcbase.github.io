@@ -182,13 +182,14 @@
                         </div>
                          
                          <div id="buffer_class" class="detail">
-                         	<h2>class Buffer</h2>
+                         	<h2>class StaticBuffer</h2>
                              <p>The class <i>Buffer</i> contains as a private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>block[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>Buffer</i> class also maintains some meta information for each block. The structure storing the meta information is <i>BufferMetaInfo</i>. This structure contains the  <i>block_num</i> (the block# of the corresponding block in the disk), a <i>dirty flag</i> (indicating whether the block is modified) and a <i>free flag</i> (indicating whether the buffer is free). In addition to these fields, some additional fields like timestamp are required in BufferMetaInfo to be used for Buffer replacement purpose.[YET TO BE DESIGNED] </p>
                              <div class="code">
                                 <pre><code>struct BufferMetaInfo {
 	bool free;
 	bool dirty;
-	int block_num;
+	int blockNum;
+	int timeStamp
 };</code></pre>
                              </div>
                              <p>Buffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data including block allocation map is private to the Buffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. Buffer is a static class (i.e., all fields and methods are declared static in C++) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class defnition of Buffer class along with public methods is given below:</p>
@@ -197,33 +198,24 @@
                              
                              <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>Buffer</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
                              <div class="code">
-                                <pre><code>class Buffer {
+                                <pre><code>class StaticBuffer {
 friend class BlockBuffer;
 private:
 	//fields
 	static unsigned char blocks[32][BLOCK_SIZE];
 	static struct BufferMetaInfo metainfo[32];
-	static unsigned char block_alloc_map[DISK_BLOCKS];
+	static unsigned char blockAllocMap[DISK_BLOCKS];
 
 	//methods
-	static int getBlockType(int buffer_index);
-	static int getFreeBuffer();
-	static int getbufferblock(int block_num);
-	static int loadBlock(int block_num);
-	static void releaseBufferBlock(int buffer_index);
-	static unsigned char* get_buf_dataptr(int block_num);
+	
+	static int getFreeBuffer(int blockNum);
+	static int getBufferNum(int blockNum);
+	
 
 public:
 	//methods
-	Buffer();
-	~Buffer();
-	static class RecBuffer *getFreeRecBlock();
-	static class IndBuffer *getFreeIndInternal();
-	static class IndBuffer *getFreeIndLeaf();
-	static class RecBuffer *getRecBlock(int block_num);
-	static class IndBuffer *getIndBlock(int block_num);
-	static void deleteBlock(int block_num);
-	static void releaseBlock(int block_num);
+	StaticBuffer();
+	~StaticBuffer();
 };</code></pre>
                              </div>
                          	<br>
@@ -231,20 +223,20 @@ public:
                              <ul class="methods">
                                  <li>
                                     <div class="detail" id="buffer-constructor">
-                                        <h2>Buffer (Constructor)</h2>
+                                        <h2>StaticBuffer (Constructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>Copies block allocation map from disk to buffer and updates metainformation of each buffer to initial empty conditions. </p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-constructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>Buffer::Buffer(){
+                                                <pre><code>StaticBuffer::StaticBuffer(){
     // copy all <a href="../storage-model.html#disk_model">block_alloc_map</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods">readblock()</a> of disk)
 
-    //initialise metainfo of all the buffer blocks with dirty:false, free:true
+    //initialise metainfo of all the buffer blocks with dirty:false, free:true, timestamp:-1 and blockNum:-1
 }</code></pre>
                                             </div>
                                         </div>
@@ -253,17 +245,17 @@ public:
                                  
                                  <li>
                                     <div class="detail" id="buffer-destructor">
-                                        <h2>~Buffer (Destructor)</h2>
+                                        <h2>~StaticBuffer (Destructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>                            
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>Copies block allocation map back to the disk from buffer and the blocks which were modified in the buffer are written back to the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-destructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>Buffer::~Buffer(){
+                                                <pre><code>StaticBuffer::~StaticBuffer(){
     // copy all <a href="../storage-model.html#disk_model">block_alloc_map</a> blocks from buffer disk to(using <a href="../storage-model.html#access-methods">writeblock()</a> of disk)
 
     /*iterate through all the buffer blocks, blocks with meta info as free:false,dirty:true
@@ -273,7 +265,102 @@ public:
                                         </div>
                                     </div>
                                  </li>
+				     
+				     
+				 
                                  
+                                 <li>
+                                    <div class="detail" id="getfreebuffer">
+                                        <h2><i>private: </i>getFreeBuffer</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block to be loaded to the buffer.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>bufferNum</td>
+                                                    <td>int</td>
+                                                    <td>Buffer number of the free buffer to which the block is loaded.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>Searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free (this function <b>never fails</b>) and returns the buffer index.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int StaticBuffer::getFreeBuffer(int blockNum){
+    // Increase the time stamps in metainfo of all the occupied buffers.
+    
+    // If free buffer is available, bufferIndex is the index of the free buffer.
+    
+    // If free buffer is not available, bufferIndex is the index of the buffer with the largest timestamp. If the dirty bit of this buffer is set, perform write back operation to disk.
+    
+    //update the <i>metainfo</i> array corresponding to the buffer index. 
+    
+    //return the buffer index
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+				 
+				     
+				     
+				     
+				 
+                                 
+                                 <li>
+                                    <div class="detail" id="getbuffernum">
+                                        <h2><i>private: </i>getBufferNum</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number that is used retrieve it's corresponding buffer index.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>bufferNum</td>
+                                                    <td>int</td>
+                                                    <td>Buffer number of the buffer to which the block with the given block number is loaded.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>A private method which returns the buffer index of the buffer to which the block with the given block number is loaded.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int StaticBuffer::getBufferNum(int blockNum){
+    //By traversing through the metainfo array, find the buffer index of the buffer to which the block with the given block number is loaded.
+    
+    //if found return buffer index, else indicate failure.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+				     
+                                 <!-- 
                                 <li><div class="detail" id="getfreerecblk">
                                     <h2><i>public:</i> getFreeRecBlock</h2>
                                     <h5>Arguments:</h5>
@@ -698,9 +785,9 @@ public:
                              </ul>
                              
                          </div>
-                         
+                         -->
                          <div id="blkbuff_class" class="detail">
-                         	<h2>Class Block Buffer </h2>
+                         	<h2>Class BlockBuffer </h2>
                              <p>The class <i>BlockBuffer</i>  is a generic class for representing a disk block of any type (Record, Internal Index or Leaf Index). Its only field is <i>block_num</i>. The field <i>block_num</i> stores the disk block# corresponding to the block buffer object. In order to work with data of the block, any method in <i>Block Buffer</i> or its descendent classes need to know the address (pointer) to the buffer memory where the block has been loaded.  Note that the block will be loaded and stored into one of the 32 buffers in the class <i>Buffer</i>. Adding to the complexity, the block may even not be present in the primary memory because of the buffer replacement algorithms of the buffer layer. Hence any method of this class should first get the pointer to the data block whenever an operation is to be performed on the block.  The method <i>get_buf_ptr()</i> can be used for this purpose (<i>get_buf_ptr()</i> will invoke the private method<span style="color: red">*</span> <i>get_block_ptr</i> of class <i>Buffer</i> to load the block from the disk to the buffer whenever the block is not present in the buffer.) The public Methods of <i>Block Buffer</i> deals with the information like <a href="#block_structures">header</a> of the disk block which is generic to all blocks of Disk. <i><a href="#recbuff_class">RecBuffer</a></i> and <i><a href="#indbuff_class">IndBuffer</a></i> classes extend the class <i>BlockBuffer</i> thereby inheriting all the fields and methods of <i>Block Buffer</i>.
                          	</p>
                              <p><span style="color: red">*</span><b>Implementation Note:</b> If  the class definition of a class (say A) declares another class (say class B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a> then an instance of B can invoke private methods of A. In our case, the definition of the class <i>Buffer</i>  contains the declaration <i>friend BlockBuffer</i>.  Hence, the method <i>get_buf_ptr</i>() in <i>BlockBuffer</i> is allowed to access the private method <i>get_block_ptr</i>  of the class <i>Buffer</i>. </p>
