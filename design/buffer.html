@@ -203,7 +203,7 @@ private:
 	//fields
 	static unsigned char blocks[32][BLOCK_SIZE];
 	static struct BufferMetaInfo metainfo[32];
-	static unsigned char block_alloc_map[DISK_BLOCKS];
+	static unsigned char blockAllocMap[DISK_BLOCKS];
 
 	//methods
 	
@@ -228,7 +228,7 @@ public:
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Copies block allocation map from disk to buffer and updates meta information. </p>
+                                        <p>Copies block allocation map from disk to buffer and updates metainformation of each buffer to initial empty conditions. </p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-constructor" class="collapse">
                                             <div class="code">
@@ -250,11 +250,11 @@ public:
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Block allocation map is copied back to the disk from buffer and the blocks which were modified in the buffer are written back to the disk.</p>
+                                        <p>Copies block allocation map back to the disk from buffer and the blocks which were modified in the buffer are written back to the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-destructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>Buffer::~Buffer(){
+                                                <pre><code>StaticBuffer::~StaticBuffer(){
     // copy all <a href="../storage-model.html#disk_model">block_alloc_map</a> blocks from buffer disk to(using <a href="../storage-model.html#access-methods">writeblock()</a> of disk)
 
     /*iterate through all the buffer blocks, blocks with meta info as free:false,dirty:true
@@ -292,12 +292,12 @@ public:
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>This is a private method which searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free (this function <b>never fails</b>) and returns the buffer index.</p>
+                                        <p>Searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free (this function <b>never fails</b>) and returns the buffer index.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreebuff" class="collapse">
                                             <div class="code">
-<pre><code> int StaticBuffer::getFreeBuffer(){
+<pre><code> int StaticBuffer::getFreeBuffer(int blockNum){
     // Increase the time stamps in metainfo of all the occupied buffers.
     
     // If free buffer is available, bufferIndex is the index of the free buffer.
@@ -348,7 +348,7 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreebuff" class="collapse">
                                             <div class="code">
-<pre><code> int StaticBuffer::getBufferNum(){
+<pre><code> int StaticBuffer::getBufferNum(int blockNum){
     //By traversing through the metainfo array, find the buffer index of the buffer to which the block with the given block number is loaded.
     
     //if found return buffer index, else indicate failure.
