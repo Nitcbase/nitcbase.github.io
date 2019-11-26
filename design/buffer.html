@@ -204,16 +204,18 @@
 			    
                          <div id="buffer_class" class="detail">
                          	<h2>class StaticBuffer</h2>
-                             <p>The class <i>StaticBuffer</i> contains as a private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>blocks[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>StaticBuffer</i> class also maintains some meta information for each loaded block using the <i>BufferMetaInfo</i> structure. </p>
+                             <p>The class <i>StaticBuffer</i> contains as private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>blocks[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>StaticBuffer</i> class also maintains some meta information for each loaded block using the <i>BufferMetaInfo</i> structure. </p>
 
-				 <p>StaticBuffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted). All the data fields is private to the StaticBuffer class and can be accesses only through public interfaces(methods). This class basically provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. StaticBuffer is a static class (i.e., all fields and methods are declared static) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class definition of StaticBuffer along with public methods is given below:</p>
+				 <p>StaticBuffer also maintains a copy of the <a href="/storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted).If occupied it stores the type(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>) of the block stored at that position. All the data fields is private to the StaticBuffer class and can be accesses only through public interfaces(methods). This class provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. StaticBuffer is a static class (i.e., all fields and methods are declared static) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class definition of StaticBuffer is given below:</p>
                              
                              <p><b>Note:</b> The <i>BlockBuffer</i> class is a friend class to StaticBuffer class so that all methods in <i>BlockBuffer</i> can access private methods of StaticBuffer class. It is explained in the next section.</p>
                              
-                             <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>StaticBuffer</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
+                             <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>StaticBuffer</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory of the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
                              <div class="code">
                                 <pre><code>class StaticBuffer {
+				
 friend class BlockBuffer;
+
 private:
 	//fields
 	static unsigned char blocks[32][BLOCK_SIZE];
@@ -221,15 +223,15 @@ private:
 	static unsigned char blockAllocMap[DISK_BLOCKS];
 
 	//methods
-	
 	static int getFreeBuffer(int blockNum);
 	static int getBufferNum(int blockNum);
+	static int getStaticBlockType(int blockNum);
 	
-
 public:
 	//methods
 	StaticBuffer();
 	~StaticBuffer();
+	
 };</code></pre>
                              </div>
                          	<br>
@@ -243,12 +245,12 @@ public:
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Copies block allocation map from disk to buffer and updates metainformation of each buffer to initial empty conditions. </p>
+                                        <p>Copies block allocation map from disk to buffer and updates meta information of each buffer to initial empty conditions. </p>
                                         <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-buffer-constructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>StaticBuffer::StaticBuffer(){
-    // copy all <a href="../storage-model.html#disk_model">block_alloc_map</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods">readblock()</a> of disk)
+    // copy <a href="../storage-model.html#disk_model">blockAllocMap</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods">readblock()</a> of disk)
 
     //initialise metainfo of all the buffer blocks with dirty:false, free:true, timestamp:-1 and blockNum:-1
 }</code></pre>
@@ -360,8 +362,8 @@ public:
                                         <h5>Description:</h5>
                                         <p>A private method which returns the buffer index of the buffer to which the block with the given block number is loaded.</p>
                                         
-                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreebuff" class="collapse">
+                                        <h5><a data-toggle="collapse" href="#algo-getbuffernum"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getbuffernum" class="collapse">
                                             <div class="code">
 <pre><code> int StaticBuffer::getBufferNum(int blockNum){
     //By traversing through the metainfo array, find the buffer index of the buffer to which the block with the given block number is loaded.
@@ -400,8 +402,8 @@ public:
                                         <h5>Description:</h5>
                                         <p>Returns the block type of the block with the input block number.</p>
                                         
-                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreebuff" class="collapse">
+                                        <h5><a data-toggle="collapse" href="#algo-getstaticblocktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getstaticblocktype" class="collapse">
                                             <div class="code">
 <pre><code> int StaticBuffer::getStaticBlockType(int blockNum){
     //traverse the blockAllocMap to find the type corresponding to blockNum.
