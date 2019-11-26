@@ -921,24 +921,24 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td><a href="#block_structures">struct HeadInfo</a></td>
-                                                    <td>returns the required Header of the block in terms of struct HeadInfo.</td>
+                                                    <td><a href="#block_structures">struct HeadInfo*</a></td>
+                                                    <td>returns the pointer to the required Header of the block in terms of struct HeadInfo*.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method returns the header corresponding to the block.</p>
+                                        <p>This method returns the pointer to the header corresponding to the block.</p>
 					NOTE: Any type of block(REC/INDINT/INDLEAF) of NITCbase has same header, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.
 					                   
                                         <h5><a data-toggle="collapse" href="#algo-getheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getheader" class="collapse">
                                             <div class="code">
-                                                <pre><code>struct HeadInfo BlockBuffer::getheader(){
+                                                <pre><code>struct HeadInfo* BlockBuffer::getheader(){
 	/* get the pointer(char *) to the buffer entry of the block. 
-    (a private function <i><a href="#getdataptr">get_buff_ptr()</a></i> can be implemented and called for this purpose)*/
+    (the protected function <i><a href="#getdataptr">getBufferPtr()</a></i> can be called for this purpose)*/
     
-    struct HeadInfo head;
+    struct HeadInfo *head;
     
     /*copy the contents of header in block to head (note: header of the block and struct <i>HeadInfo</i> are of same structure,
     use appropriate type casting to copy the header from block to head)*/
@@ -958,7 +958,7 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>head</td>
-                                                    <td><a href="#block_structures">struct HeadInfo</a></td>
+                                                    <td><a href="#block_structures">struct HeadInfo*</a></td>
                                                     <td>HeadInfo which needed to be copied into the head of the block.</td>
                                                 </tr>
                                             </table>
@@ -971,11 +971,11 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-setheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setheader" class="collapse">
                                             <div class="code">
-                                                <pre><code>void BlockBuffer::setheader(struct HeadInfo head){
+                                                <pre><code>void BlockBuffer::setheader(struct HeadInfo *head){
 	/* get the pointer(char *) to the buffer entry of the block. 
-    (a private function <i><a href="#getdataptr">get_buff_ptr()</a></i> can be implemented and called for this purpose)*/
+    (the protected function <i><a href="#getdataptr">getBufferPtr()</a></i> can be called for this purpose)*/
     
-	/* copy the contents of header in block to <i>head</i> (note: header of block and struct HeadInfo are of same structure,
+	/* copy the contents of variable <i>head</i> to header in the block (note: header of block and struct HeadInfo are of same structure,
 	use appropriate type casting to copy the header from head to block)*/
 	return;
 }</code></pre>
