@@ -374,6 +374,46 @@ public:
                                     </div>
                                  </li>
 				     
+				<li>
+                                    <div class="detail" id="getstaticblocktype">
+                                        <h2><i>public: </i>getStaticBlockType</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block whose type is required.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td>Block type of the required block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>Returns the block type of the block with the input block number.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int StaticBuffer::getStaticBlockType(int blockNum){
+    //traverse the blockAllocMap to find the type corresponding to blockNum.
+    
+    //return the blockType obtained(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>)
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+				     
                                  <!-- 
                                 <li><div class="detail" id="getfreerecblk">
                                     <h2><i>public:</i> getFreeRecBlock</h2>
