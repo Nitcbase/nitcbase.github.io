@@ -876,8 +876,9 @@ public:
 				     
 <!-------------------------------------------Constructor 1----------------------------------------------------------->
                                  <li>
-                                    <div class="detail" id="blkbuffer-constructor1">
-                                        <h2>BlockBuffer (Constructor 1)</h2>
+                                    <div class="detail" id="blkbuffer-constructor">
+                                        <h2><i>public:</i> BlockBuffer (Constructor 1)</h2>
+
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -905,8 +906,8 @@ public:
 				     
 <!-----------------------------Constructor 2 -------------------------------------------------------->	     
 				 <li>
-                                    <div class="detail" id="blkbuffer-constructor2">
-                                        <h2>BlockBuffer (Constructor 2)</h2>
+                                    <div class="detail" id="blkbuffer-constructor1">
+                                        <h2><i>public:</i> BlockBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -1281,17 +1282,19 @@ public:
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>Class RecBuffer</h2>
-                         	<p>An object of this class will be associated with a <i><a href="../storage-model.html#record_blk">record block</a></i>. Public Methods of this class deal with access/retrieval of records and slotmap from a record block. <i>RecBuffer class</i> extends the <i><a href="#blkbuff_class">BlockBuffer class</a></i>.
+                         	<p>An object of this class will be associated with a <i><a href="../storage-model.html#record_blk">record block</a></i>. Public methods of this class deal with access/retrieval of records and slotmap from a record block. <i>RecBuffer class</i> extends the <i><a href="#blkbuff_class">BlockBuffer class</a></i>.
                          	</p>
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
+
+	//methods
+	RecBuffer();
 	RecBuffer(int blockNum);
-	RecBuffer(char blockType);
-	void getSlotmap(unsigned char *slotmap);
-	void setSlotmap(unsigned char *slotmap);
-	void getRecord(union Attribute *rec,int slot_num);
-	void setRecord(union Attribute *rec,int slot_num);
+	void getSlotmap(unsigned char *slotMap);
+	void setSlotmap(unsigned char *slotMap);
+	int getRecord(union Attribute *rec,int slotNum);
+	int setRecord(union Attribute *rec,int slotNum);
 };</code></pre>
                              </div>
                              <p>The following is the specification for methods of recBuffer class.</p>
@@ -1301,13 +1304,13 @@ public:
                                     <div class="detail" id="recbuff_constructor1">
 					    
 					    
-                                        <h2>RecBuffer (Constructor 1)</h2>
+                                        <h2><i>public:</i> RecBuffer (Constructor 1)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>block number of the corresponding record block</td>
+                                                <td>block number of the record block</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
@@ -1328,7 +1331,7 @@ public:
                                     <div class="detail" id="recbuff_constructor2">
 					    
 					    
-                                        <h2>RecBuffer (Constructor 2)</h2>
+                                        <h2><i>public:</i> RecBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         Nil
                                         <h5>Return type:</h5>
@@ -1339,7 +1342,7 @@ public:
                                         <div id="algo-recbuffer-constructor2" class="collapse">
                                             <div class="code">
                                                 <pre><code>RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-default constructor.
-													// 'R' used to denote RecBuffer</code></pre>
+												// 'R' used to denote RecBuffer</code></pre>
                                             </div>
                                         </div>
                                     </div>
@@ -1363,11 +1366,11 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>returns the slotmap of the block.</p>
+                                        <p>gives the slotmap of the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getslotmap" class="collapse">
                                             <div class="code">
-                                                <pre><code>void RecBuffer::getSlotmap(unsigned char *slotmap){ 
+                                                <pre><code>void RecBuffer::getSlotmap(unsigned char *slotMap){ 
     // get the starting address of the buffer containing the block using getBufferPtr. 
     
     // get the number of slots in the block.
@@ -1398,16 +1401,16 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>sets the slotmap of the corresponding block.</p>
+                                        <p>sets the slotmap of the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-setslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setslotmap" class="collapse">
                                             <div class="code">
-                                                <pre><code>void RecBuffer::setSlotmap(unsigned char *slotmap){ 
+                                                <pre><code>void RecBuffer::setSlotmap(unsigned char *slotMap){ 
     // get the starting address of the buffer containing the block using getBufferPtr. 
     
     // get the number of slots in the block.
     
-    // using offset range copy the slotmap from the memory pointed by the argument to the block.
+    // using offset range copy the slotmap from the memory pointed by the argument to that of the block.
     
 }</code></pre>
                                             </div>
@@ -1438,14 +1441,17 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>SUCCESS</td>
+						    <td>int</td>
                                                     <td>on succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
+						    <td>int</td>
                                                     <td>when the slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_FREESLOT</td>
+						    <td>int</td>
                                                     <td>when the slot corresponding to the slotNum is free.</td>
                                                 </tr>
                                             </table>
@@ -1500,10 +1506,12 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>SUCCESS</td>
+						    <td>int</td>
                                                     <td>on succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
+						    <td>int</td>
                                                     <td>when the slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
                                             </table>
