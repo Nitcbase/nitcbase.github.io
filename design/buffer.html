@@ -983,7 +983,6 @@ public:
                                         </div>
                                     </div> 
                                 </li>
-		<!--------------------------------------------------------------------------------------->
 				      <li>
                                     <div class="detail" id="getblk">
                                         <h2><i>public:</i> getBlock</h2>
@@ -992,31 +991,21 @@ public:
                                         <h5>Return value:</h5> void
                                         
                                         <h5>Description:</h5>
-                                        <p>This method gets the specfied record block into buffer(if not present) and returns RecBuffer object pointer corresponding to the disk block in buffer.</p>
+                                        <p>This method gets the block into buffer(if not present) and updates the timestamps. </p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::getBlock(){
-    /*iterate in buffer blocks to know if one of the blocks in buffer already contains the disk block
-     #block_num (you may write a helper function getbufferblock(#block_num) to check if the buffer 
-     contains the disk block correspond to #block_num) */
-	/* if buffer doesn't contain disk block #block_num, get a free buffer using 
-    <i><a href="#getfreebuffer">getFreeBuffer</a></i>() method and load the block into 
-    the buffer block using physical layer <i><a href="/storage-model.html#access-methods">readblock</a></i>() function. */
-    //if the block corresponding to #block_num is not a REC block return NULL
-    class<i> RecBuffer* newRecBuffer</i>= new <i>RecBuffer</i>(block_num);
-    // return <i>newRecBuffer</i>.
+     //check whether the block is already present in the buffer (using <i>StaticBuffer.getBufferNum</i>() ).
+     //if present, increase the timpestamps of all non-negative timestamps by 1 and set the timestamp of the already present buffer to 0.
+     //if not present, get a free buffer (using <i>StaticBuffer.getFreeBuffer</i>() ) and read the block into the free buffer (using readBlock()).
+   
 }</code></pre>
                                             </div>
                                         </div>
                                      </div>
                                  </li>
-				     
-				     
-				    <!-------------------------------------------------------------------->
-				     
-				     
 				     
 			    </ul>
                                                 
