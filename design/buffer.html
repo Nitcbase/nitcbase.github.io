@@ -814,7 +814,7 @@ public:
 				     
 <!-------------------------------------------Constructor 1----------------------------------------------------------->
                                  <li>
-                                    <div class="detail" id="blkbuffer-constructor">
+                                    <div class="detail" id="blkbuffer-constructor1">
                                         <h2>BlockBuffer (Constructor 1)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
@@ -843,7 +843,7 @@ public:
 				     
 <!-----------------------------Constructor 2 -------------------------------------------------------->	     
 				 <li>
-                                    <div class="detail" id="blkbuffer-constructor1">
+                                    <div class="detail" id="blkbuffer-constructor2">
                                         <h2>BlockBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
@@ -1154,6 +1154,10 @@ public:
                                         <div id="algo-getblktype" class="collapse">
                                             <div class="code">
                                                 <pre><code>int BlockBuffer::getBlockType(int bufferIndex){
+
+//blocks[bufferIndex][0] gives the staring address of the buffer						
+
+//retrieve the first 4 bytes of the buffer that stores the block type.
 	
 }</code></pre>
                                             </div>
@@ -1191,7 +1195,12 @@ public:
                                         <div id="algo-setblktype" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::setBlockType(int blockType){
-//NEED TO SET THE TYPE IN BLOCK ALLOCN MAP TOOO
+						
+//find the starting address of the buffer using <i>getBufferPtr</i>
+
+//store the given block type in the first 4 bytes of the buffer
+
+//update the <i>BlockAllocMap</i> 
 	
 }</code></pre>
                                             </div>
