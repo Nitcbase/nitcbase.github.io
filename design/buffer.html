@@ -991,7 +991,7 @@ public:
                                                 <tr>
 						    <td>bufferNum</td>
                                                     <td>int</td>
-                                                    <td>returns the buffer index corresponding to <i>this.blockNum</i>.</td>
+                                                    <td>the buffer index corresponding to <i>this.blockNum</i>.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1018,7 +1018,7 @@ public:
 				     
 				     
 				     
-<!--------------------------------------------------------------------------------------------------------------->
+<!--------------------------------------------getFreeBlock------------------------------------------------------------------->
 			     
 				     
 				      <li>
@@ -1040,13 +1040,13 @@ public:
                                                 <tr>
 						    <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>returns the block number of a free block</td>
+                                                    <td>the block number of a free block</td>
                                                 </tr>
 						    
                                                 <tr>
 						    <td><a href="../constants.html"> FAILURE </a></td>
                                                     <td>int</td>
-                                                    <td>returns FAILURE when there is no free block in the disk.</td>
+                                                    <td>FAILURE when there is no free block in the disk.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1076,6 +1076,43 @@ public:
 				     
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
+	
+				     
+				     
+<!-------------------------------------------------getBlockNum-------------------------------------------------------------->
+			     
+				     
+				      <li>
+                                    <div class="detail" id="getblkNum">
+                                        <h2><i>public:</i> getBlockNum</h2>
+                                        <h5>Arguments:</h5> NIL
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>block number of the block</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                       <h5>Description:</h5>
+                                        <p>This method returns the block number of the block.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getblknum"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getblknum" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int BlockBuffer::getBlockNum(int blockNum){
+
+   //return <i>this.blockNum</i>
+}</code></pre>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </li>
+					     
+				     
+<!---------------------------------------------------------------------------------------------------------------->				     
 				     
 				     
 				     
