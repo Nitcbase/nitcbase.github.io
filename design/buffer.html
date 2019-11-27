@@ -811,6 +811,8 @@ public:
                             </div>
                             <p>The following is the specification of methods of BlockBuffer</p>
                              <ul class="methods">
+				     
+<!-------------------------------------------Constructor 1----------------------------------------------------------->
                                  <li>
                                     <div class="detail" id="blkbuffer-constructor">
                                         <h2>BlockBuffer (Constructor 1)</h2>
@@ -839,6 +841,7 @@ public:
                                     </div>
                                  </li>
 				     
+<!-----------------------------Constructor 2 -------------------------------------------------------->	     
 				 <li>
                                     <div class="detail" id="blkbuffer-constructor1">
                                         <h2>BlockBuffer (Constructor 2)</h2>
@@ -868,7 +871,7 @@ public:
                                  </li>
                                  
 
-                                 
+ <!-----------------------------------------------getBufferPtr------------------------------------------------------>                                
                                 <li>
                                     <div class="detail" id="getdataptr">
                                         <h2><i>protected: </i>getBufferPtr</h2>
@@ -903,7 +906,7 @@ public:
 
 				     
 				     
-				     
+<!------------------------------------------getheader--------------------------------------------------------------->				     
 				     
                                 <li>
                                     <div class="detail" id="getheader">
@@ -943,7 +946,7 @@ public:
                                     </div> 
                                 </li>
 				     
-				     
+<!------------------------------------------------setheader------------------------------------------------------->				     
                                 <li>
                                     <div class="detail" id="setheader">
                                         <h2><i>public:</i> setHeader</h2>
@@ -979,11 +982,11 @@ public:
                                 </li>
 				     
 				     
-				     
+<!-----------------------------------------------getblock---------------------------------------------------------->				     
 				     
 				      <li>
                                     <div class="detail" id="getblk">
-                                        <h2><i>public:</i> getBlock</h2>
+                                        <h2><i>protected:</i> getBlock</h2>
                                         <h5>Arguments:</h5> NIL
                                         <h5>Return type:</h5>
                                         <div class="table-responsive">
@@ -1023,7 +1026,7 @@ public:
 				     
 				      <li>
                                     <div class="detail" id="getfreeblk">
-                                        <h2><i>public:</i> getFreeBlock</h2>
+                                        <h2><i>protected:</i> getFreeBlock</h2>
                                         <h5>Arguments:</h5> 
 					    <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -1114,7 +1117,89 @@ public:
 				     
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
+
+<!-----------------------------------getBlockType----------------------------------------------------------------------------->
 				     
+				     	     
+				     
+				     
+                                <li>
+                                    <div class="detail" id="getblocktyper">
+                                        <h2><i>public:</i> getBlockType</h2>
+					<h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>bufferIndex</td>
+                                                    <td>int</td>
+                                                    <td>index of the buffer of the block whose type is required.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td>The type of the block with the given buffer index (<a href="../constants.html">REC, IND_INTERNAL, IND_LEAF </a>).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>This method returns the type of the block corresponding to the given buffer index.</p>
+					                   
+                                        <h5><a data-toggle="collapse" href="#algo-getblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getblktype" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int BlockBuffer::getBlockType(int bufferIndex){
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+			
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------setBlockType----------------------------------------------------------------------------->
+				     
+				     	     
+				     
+				     
+                                <li>
+                                    <div class="detail" id="setblocktype">
+                                        <h2><i>public:</i> setBlockType</h2>
+					<h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td><a href="../constants.html">REC, IND_INTERNAL, IND_LEAF </a></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5> void
+                                        
+                                        <h5>Description:</h5>
+                                        <p>This method updates the type of the block with the given block type.</p>
+					                   
+                                        <h5><a data-toggle="collapse" href="#algo-setblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setblktype" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void BlockBuffer::setBlockType(int blockType){
+//NEED TO SET THE TYPE IN BLOCK ALLOCN MAP TOOO
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+			
+<!---------------------------------------------------------------------------------------------------------------->				     
 				     
 				     
 				     
