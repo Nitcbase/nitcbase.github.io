@@ -1040,7 +1040,8 @@ public:
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
-	RecBuffer(int blk_no);
+	RecBuffer(int blockNum);
+	RecBuffer(char blockType);
 	void getSlotmap(unsigned char *slotmap);
 	void setSlotmap(unsigned char *slotmap);
 	void getRecord(union Attribute *rec,int slot_num);
@@ -1051,23 +1052,19 @@ public:
                              <ul class="methods">
                                  <li>
                                     <div class="detail" id="recbuff_constructor">
-                                        <h2>RecBuffer (Constructor)</h2>
+					    
+					    
+                                        <h2>RecBuffer (Constructor 1)</h2>
                                         <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <td>blk_no</td>
-                                                <td>int</td>
-                                                <td>block number of the corresponding block</td>
-                                            </table>
-                                        </div>
+                                        Nil
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>to be called if a new record block is to be allocated in the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-recbuffer-constructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>RecBuffer::RecBuffer(int blk_no) : BlockBuffer(blk_no){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>RecBuffer::RecBuffer() : BlockBuffer(REC){} //this is a way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
                                     </div>
