@@ -1635,14 +1635,14 @@ public:
                                         <div id="algo-intgetentry" class="collapse">
                                             <div class="code">
                                                 <pre><code>int IndInternal::getEntry(void *ptr, int indexNum){
-						
-    // get the data pointer(char *) corresponding to the block (of current object) from Buffer using the function <i>getBufferPtr</i>
-    
-    // if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+	
+// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
+  
+// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
 
-    // copy the indexNum'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
+// copy the indexNum'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
     
-    // return SUCCESS.
+// return SUCCESS.
 	
 }</code></pre>
                                             </div>
@@ -1657,14 +1657,14 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>entry_ptr</td>
+                                                    <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>entry_ptr is assumed to be a pointer to type <a href="#block_structures">InternalEntry</a>.</td>
+                                                    <td>ptr is assumed to be a pointer to type <a href="#block_structures">InternalEntry</a>.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>index_num</td>
+                                                    <td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>index no. of entry in Internal index block.</td>
+                                                    <td>index number of entry in Internal index block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1683,18 +1683,19 @@ public:
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method sets the index_num'th <i>InternalEntry</i> of the IndInternal block with the <i>InternalEntry</i> sent as argument.</p>
+                                        <p>This method sets the indexNum'th <i>InternalEntry</i> of the IndInternal block with the <i>InternalEntry</i> sent as argument.</p>
                                         <h5><a data-toggle="collapse" href="#algo-intsetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intsetentry" class="collapse">
                                             <div class="code">
-                                                <pre><code>int IndInternal::setEntry(void *ptr, int index_num){
-    /* get the data pointer(char *) corresponding to the block (of current object) from Buffer
-    The private function <a href="buffer.html#getdataptr" target="_blank">get_buf_ptr</a>() is implemented for this purpose*/
-    
+                                                <pre><code>int IndInternal::setEntry(void *ptr, int indexNum){
+						
+// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
 
-    // if the index_num is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
 
-    // copy the struct InternalEntry pointed by ptr to index_num'th entry in block. 
+// copy the struct InternalEntry pointed by ptr to indexNum'th entry in block. 
+
+//return SUCCESS
 	
 }</code></pre>
                                             </div>
