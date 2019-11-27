@@ -1537,19 +1537,20 @@ public:
                             <div class="code">
                                 <pre><code>class IndBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
-	IndBuffer(int blk_no);
-	virtual int getEntry(void *ptr, int indexnum) =0;
-	virtual int setEntry(void *ptr, int indexnum) =0;
+	IndBuffer(int blockNum);
+	IndBuffer(char blockType);
+	virtual void* getEntry(int indexNum);
+	virtual int setEntry(void *ptr, int indexNum);
 };</code></pre>
                             </div>
                             <ul class="methods">
                                 <li>
-                                    <div class="detail" id="indbuff_constructor">
-                                        <h2>IndBuffer (Constructor)</h2>
+                                    <div class="detail" id="indbuff_constructor1">
+                                        <h2>IndBuffer (Constructor 1)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
-                                                <td>blk_no</td>
+                                                <td>blockNum</td>
                                                 <td>int</td>
                                                 <td>block number of the corresponding block</td>
                                             </table>
@@ -1557,25 +1558,37 @@ public:
                                         <h5>Return type:</h5>
                                         <p>void</p>
                                         <h5>Description:</h5>
-                                        <p></p>
+                                        <p>To be called when the index block already exists on the disk.</p>
                                         <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-indbuffer-constructor" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndBuffer::IndBuffer(int blk_no) : BlockBuffer(blk_no){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>IndBuffer::IndBuffer(int blockNum) : BlockBuffer(blockNum){} //this is a way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
                                     </div>
                                  </li>
                                  
                                  <li>
-                                    <div class="detail" id="indbuff_destructor">
-                                        <h2>~IndBuffer (Destructor)</h2>
+                                    <div class="detail" id="indbuff_constructor2">
+                                        <h2>IndBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
-                                        <p>Nil</p>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <td>blockType</td>
+                                                <td>char</td>
+                                                <td>block type of the corresponding block</td>
+                                            </table>
+                                        </div>
                                         <h5>Return type:</h5>
                                         <p>void</p>
                                         <h5>Description:</h5>
-                                        <p>Destructor for the class need not be explicitly written as the parent class destructor will be invoked automatically.</p>
+                                        <p>To be called if a new index block is to be allocated in the disk.</p>
+                                        <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-indbuffer-constructor" class="collapse">
+                                            <div class="code">
+                                                <pre><code>IndBuffer::IndBuffer(char blocktype) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
+                                            </div>
+                                        </div>
                                     </div>
                                  </li>
                             </ul>
