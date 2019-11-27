@@ -1050,50 +1050,55 @@ public:
                              </div>
                              <p>The following is the specification for methods of recBuffer class.</p>
                              <ul class="methods">
+
                                  <li>
-                                    <div class="detail" id="recbuff_constructor">
+                                    <div class="detail" id="recbuff_constructor1">
 					    
 					    
                                         <h2>RecBuffer (Constructor 1)</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <td>blockNum</td>
+                                                <td>int</td>
+                                                <td>block number of the corresponding record block</td>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>Nil</p>
+                                        <h5>Description:</h5>
+                                        <p>to be called when the record block already exists on the disk.</p>
+                                        <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-recbuffer-constructor1" class="collapse">
+                                            <div class="code">
+                                                <pre><code>RecBuffer::RecBuffer(int blockNum) : BlockBuffer(blockNum){} //this is a way to call parent non-default constructor.</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+
+
+                                 <li>
+                                    <div class="detail" id="recbuff_constructor2">
+					    
+					    
+                                        <h2>RecBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         Nil
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>to be called if a new record block is to be allocated in the disk.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-recbuffer-constructor" class="collapse">
+                                        <p>to be called when a new record block is to be allocated in the disk.</p>
+                                        <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-recbuffer-constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>RecBuffer::RecBuffer() : BlockBuffer(REC){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-default constructor.
+													// 'R' used to denote RecBuffer</code></pre>
                                             </div>
                                         </div>
                                     </div>
                                  </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="recbuff_destructor">
-                                        <h2>~RecBuffer (Destructor)</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>Nil</p>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-                                        <h5>Description:</h5>
-                                        <p>Destructor for the class need not be explicitly written as the parent class destructor will be invoked automatically.</p>
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <a data-toggle="collapse" href="#collapse1">
-                                                    <b>Q.</b> Why should the constructor be explicitly called while the destructor need not be explicitly invoked?
-                                                </a>
-                                            </div>
-                                            <div id="collapse1" class="collapse">
-                                                <div class="card-body">
-                                                    In C++, the destructor will invoke the default destructor of the parent class only when it has <b>no arguments</b>. Since the constructor has an argument, we need to explicitly pass the argument to the constructor of the parent class.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
+				                                      
                                  
                                 <li>
                                     <div class="detail" id="getslotmap" >
@@ -1102,9 +1107,9 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>slotmap</td>
-                                                    <td>char[ATTR_SIZE]</td>
-                                                    <td>pointer to an array of type unsigned char whose size must be equal to atleast that of the size of slotmap.</td>
+                                                    <td>slotMap</td>
+                                                    <td>unsigned char *</td>
+                                                    <td>pointer to an array of unsigned char whose size is equal to the size of slotmap.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1112,15 +1117,17 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>This method gives the slotmap of the block to which class object is corresponding to.</p>
+                                        <p>returns the slotmap of the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::getSlotmap(unsigned char *slotmap){ 
-    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer. 
-    The private function <a href="buffer.html#getdataptr" target="_blank">get_buf_ptr</a>() is implemented for this purpose*/
-    // let num_of_slots be the number of slots in the block(which can be found in the header).
-    // Copy the slotmap from the block to the memory pointed by the argument <i>slotmap</i>
+    // get the starting address of the buffer containing the block using getBufferPtr. 
+    
+    // get the number of slots in the block.
+    
+    // using offset range copy the slotmap of the block to the memory pointed by the argument.
+    
 }</code></pre>
                                             </div>
                                         </div>
@@ -1135,9 +1142,9 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>slotmap</td>
-                                                    <td>char[ATTR_SIZE]</td>
-                                                    <td>pointer to an array of type unsigned char whose size is assumed to be equal to that of the size of slotmap.</td>
+                                                    <td>slotMap</td>
+                                                    <td>unsigned char *</td>
+                                                    <td>pointer to an array of type unsigned char whose size is equal to the size of slotmap.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1145,15 +1152,17 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>This method sets the slotmap of the block to which class object is corresponding to.</p>
+                                        <p>sets the slotmap of the corresponding block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-setslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::setSlotmap(unsigned char *slotmap){ 
-    /* get the data pointer(chat *) corresponds to the block(of current object) from Buffer 
-    The private function <a href="buffer.html#getdataptr" target="_blank">get_buf_ptr</a>() is implemented for this purpose*/
-    // let num_of_slots be the number of slots in the block(which can be found in the header).
-    // Copy the slotmap from the memory pointed by the argument <i>slotmap</i> into the block
+    // get the starting address of the buffer containing the block using getBufferPtr. 
+    
+    // get the number of slots in the block.
+    
+    // using offset range copy the slotmap from the memory pointed by the argument to the block.
+    
 }</code></pre>
                                             </div>
                                         </div>
@@ -1167,14 +1176,14 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>record</td>
+                                                    <td>rec</td>
                                                     <td><a href="#block_structures">union Attribute</a> *</td>
-                                                    <td>pointer to an array of type Union Attribute whose size is assumed to be equal to the number of attributes in the relation.</td>
+                                                    <td>pointer to an array of type Union Attribute whose size is equal to the number of attributes in the relation.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>slot_num</td>
+                                                    <td>slotNum</td>
                                                     <td>int</td>
-                                                    <td>slot no. of record in block.</td>
+                                                    <td>slot number of the record in the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1183,35 +1192,36 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>SUCCESS</td>
-                                                    <td>On succesful copy of the record.</td>
+                                                    <td>on succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
-                                                    <td>If the slot_num is not in the range of number of slots per the block.</td>
+                                                    <td>when the slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_FREESLOT</td>
-                                                    <td>If the slot corresponding to the slot_num is free.</td>
+                                                    <td>when the slot corresponding to the slotNum is free.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method gives the slot_num'th record of the block.</p>
+                                        <p>gives the <i>slotNum</i><sup>th</sup> record of the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-getrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getrecord" class="collapse">
                                             <div class="code">
-                                                <pre><code>int RecBuffer::getRecord(union Attribute *rec,int slot_num){ 
-    /* get the data pointer(char *) corresponds to the block (of the current object) from Buffer 
-    The private function <a href="buffer.html#getdataptr" target="_blank">get_buf_ptr</a>() is implemented for this purpose*/
+                                                <pre><code>int RecBuffer::getRecord(union Attribute *rec,int slotNum){ 
+    // get the starting address of the buffer containing the block using getBufferPtr. 
 
-    // get number of attributes (in corresponding relation) from the <a href="../storage-model.html#record_blk">block header</a>.
-    // get number of slots from the block, which is present in the block header.
+    // get number of attributes in the block.
+    
+    // get the number of slots in the block.
 
-    // if slot_num is not in the permitted range return E_OUTOFBOUND
-    // if slot corresponding to slot_num is free return E_FREESLOT
+    // if input slotNum is not in the permitted range return E_OUTOFBOUND
+    
+    // if slot corresponding to input slotNum is free return E_FREESLOT
 
-    // copy the memory contents of <i>slot_num</i><sup>th</sup> record to the memory pointing by <i>rec</i>.
+    // using offset range copy <i>slotNum</i><sup>th</sup> record to the memory pointed by <i>rec</i>.
 
     // return SUCCESS
 	
