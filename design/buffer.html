@@ -1014,6 +1014,68 @@ public:
                                         </div>
                                      </div>
                                  </li>
+		
+				     
+				     
+				     
+<!--------------------------------------------------------------------------------------------------------------->
+			     
+				     
+				      <li>
+                                    <div class="detail" id="getfreeblk">
+                                        <h2><i>public:</i> getFreeBlock</h2>
+                                        <h5>Arguments:</h5> 
+					    <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td>The type of the required block (<a href="../constants.html">REC/IND_INTERNAL/IND_LEAF</a>).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>returns the block number of a free block</td>
+                                                </tr>
+						    
+                                                <tr>
+						    <td><a href="../constants.html"> FAILURE </a></td>
+                                                    <td>int</td>
+                                                    <td>returns FAILURE when there is no free block in the disk.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                       <h5>Description:</h5>
+                                        <p>This method returns the block number corresponding to a free block in the disk after alloting a free buffer for the block and setting the block type of the block with the given block type. If free block is not present FAILURE is returned.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getfreeblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreeblk" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int BlockBuffer::getFreeBlock(int blockType){
+						
+   //iterate through the <i>StaticBuffer.blockAllocMap</i> and find the index of a free block in the disk.
+   
+   //if no block is free, return FAILURE.
+   
+   //find a free buffer using <i>StaticBuffer.getFreeBuffer()</i> and update <i>StaticBuffer.blockAllocMap</i>.
+   
+   //update the block type of the block with the given block type using <i>Blockbuffer.setBlockType()</i>.
+   
+   //return block number of the free block.
+}</code></pre>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </li>
+					     
+				     
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
 				     
 				     
 				     
