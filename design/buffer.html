@@ -1259,7 +1259,7 @@ public:
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::setBlockType(int blockType){
 						
-//find the starting address of the buffer using <i>getBufferPtr</i>
+//find the starting address of the buffer using <i>BlockBuffer.getBufferPtr()</i>
 
 //store the given block type in the first 4 bytes of the buffer
 
@@ -1371,7 +1371,7 @@ public:
                                         <div id="algo-getslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::getSlotmap(unsigned char *slotMap){ 
-    // get the starting address of the buffer containing the block using getBufferPtr. 
+    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
     
     // get the number of slots in the block.
     
@@ -1406,7 +1406,7 @@ public:
                                         <div id="algo-setslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::setSlotmap(unsigned char *slotMap){ 
-    // get the starting address of the buffer containing the block using getBufferPtr. 
+    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
     
     // get the number of slots in the block.
     
@@ -1463,7 +1463,7 @@ public:
                                         <div id="algo-getrecord" class="collapse">
                                             <div class="code">
                                                 <pre><code>int RecBuffer::getRecord(union Attribute *rec,int slotNum){ 
-    // get the starting address of the buffer containing the block using getBufferPtr. 
+    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
 
     // get number of attributes in the block.
     
@@ -1523,7 +1523,7 @@ public:
                                         <div id="algo-setrecord" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::setRecord(union Attribute *rec,int slotNum){ 
-     // get the starting address of the buffer containing the block using getBufferPtr. 
+     // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
     
     // get number of attributes in the block.
     
@@ -1547,13 +1547,13 @@ public:
                          
                         <div id="indbuff_class" class="detail">
                             <h2>Class IndBuffer</h2>
-                            <p>IndBuffer extends <a href="#blkbuff_class">BlockBuffer class</a>. IndBuffer is a generic(abstract) class for Index Blocks. It has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank"><b>pure virtual methods</b></a>- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructor of this class simply calls the constructor of the parent class with the argument received.</p>
+                            <p>IndBuffer extends <a href="#blkbuff_class">BlockBuffer class</a>. IndBuffer is a generic(abstract) class for Index Blocks. It has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank"><b>pure virtual methods</b></a>- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructors of this class simply calls the constructor of the parent class with the argument received.</p>
                             <div class="code">
                                 <pre><code>class IndBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
 	IndBuffer(int blockNum);
 	IndBuffer(char blockType);
-	virtual void getEntry(void *ptr, int indexNum);
+	virtual int getEntry(void *ptr, int indexNum);
 	virtual int setEntry(void *ptr, int indexNum);
 };</code></pre>
                             </div>
@@ -1671,19 +1671,7 @@ public:
                                         </div>
                                     </div>
                                  </li>
-<!------------------------------------IndInternal destructor------------------------------------------------------>
-                                 
-                                 <li>
-                                    <div class="detail" id="intindbuff_destructor">
-                                        <h2>~IndInternal (Destructor)</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>NIL</p>
-                                        <h5>Return type:</h5>
-                                        <p>NIL</p>
-                                        <h5>Description:</h5>
-                                        <p>Destructor for the class need not be explicitly written as the parent class destructor will be invoked automatically.</p>
-                                    </div>
-                                 </li>
+
 				     
 <!---------------------------------------------getEntry-------------------------------------------------------------->                                 
                                  <li>
@@ -1725,7 +1713,7 @@ public:
                                             <div class="code">
                                                 <pre><code>int IndInternal::getEntry(void *ptr, int indexNum){
 	
-// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
+// get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
   
 // if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
 
@@ -1778,7 +1766,7 @@ public:
                                             <div class="code">
                                                 <pre><code>int IndInternal::setEntry(void *ptr, int indexNum){
 						
-// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
+// get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
 // if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
 
@@ -1860,18 +1848,7 @@ public:
                                  
 	
 
-<!----------------------------------------DESTRUCTOR------------------------------------------------------------------>                                  
-                                 <li>
-                                    <div class="detail" id="leafindbuff_destructor">
-                                        <h2>~IndLeaf (Destructor)</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>Nil</p>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-                                        <h5>Description:</h5>
-                                        <p>Destructor for the class need not be explicitly written as the parent class destructor will be invoked automatically.</p>
-                                    </div>
-                                 </li>
+
 <!--------------------------------------------getEntry-------------------------------------------------------------->                                 
                                 <li>
                                     <div class="detail" id="leafgetentry">
@@ -1912,7 +1889,7 @@ public:
                                             <div class="code">
                                                 <pre><code>int IndLeaf::getEntry(void *ptr, int index_num){
 						
-// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
+// get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
 // if the indexNum is not in range of 0-(#Entries(in block)+1), return E_OUTOFBOUND
 
@@ -1967,7 +1944,7 @@ public:
                                             <div class="code">
                                                 <pre><code>int IndLeaf::setEntry(void *ptr, int indexNum){
 						
-// get the starting address of the buffer containing the block using <i>getBufferPtr</i>.
+// get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
 // if the index_num is not in range of 0-(#Entries(in block)+1), return E_OUTOFBOUND
 
