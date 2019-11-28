@@ -112,7 +112,7 @@
                          	<center><img class="img-fluid" src="/img/buffer_class.png"></center>
                              <br><br>
                              <p>Certain structure definitions and functions that help access of record data in disk block (and meta data  as well) are also included in the buffer layer.  These are discussed at the end of this page (see
-                                 <a href="#misc">miscellenious</a> section).</p>
+                                 <a href="#misc">miscellaneous</a> section).</p>
                          </div>
                         
                         <div id="block_structures" class="detail">
@@ -127,9 +127,9 @@
                             <p>Each structure is designed to store a subset of the data within a disk block.  A disk block contains 2048 bytes of data. Higher layer functions typically request for access of a particular set of related data in a disk block at a time (and not the whole data together).  Whenever such a "selective access" request is made, the buffer layer method implementing the access functionality will pack the requested data into a structure of the corresponding kind that is designed to store the required data. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
                             
                             <h4>HeadInfo</h4>
-                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of the block and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#setheader" target="_blank">setHeader()</a></i> function expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument. The <i><a href="#getheader" target="_blank">getHeader()</a></i> function returns a  pointer to <i>struct HeadInfo</i>.</p> 
+                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of the block and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#setheader" target="_blank">setHeader()</a></i> function and the <i><a href="#getheader" target="_blank">getHeader()</a></i> function expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument.</p> 
                             
-                            <p> <b>Implementation note:</b> <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling it.</p>
+                            <p> <b>Implementation note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling it.</p>
                             <div class="code">
                                 <pre><code>struct HeadInfo{
 	int32_t blockType;
@@ -154,8 +154,8 @@
 } Attribute;</code></pre>
                             </div>
                             <h4>InternalEntry</h4>
-                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument while the <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method returns a pointer to struct <i>struct InternalEntry</i>.</p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
+                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
                             <div class="code">
                                 <pre><code>struct InternalEntry{
 	int32_t lChild;
@@ -165,10 +165,10 @@
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
                             </div>
                             <h4>Index</h4>
-                            <p>Any index of to a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record. which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
-				     The <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i>struct Index</i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument while the <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method returns a pointer to <i>struct Index</i>.
+                            <p>Any index of a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record, which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
+				     The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
                             </p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
+                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
                             <div class="code">
                                 <pre><code>struct Index{
 	union Attribute attrVal;
@@ -225,10 +225,10 @@ private:
 	//methods
 	static int getFreeBuffer(int blockNum);
 	static int getBufferNum(int blockNum);
-	static int getStaticBlockType(int blockNum);
 	
 public:
-	//methods
+	//methods	
+	static int getStaticBlockType(int blockNum);
 	StaticBuffer();
 	~StaticBuffer();
 	
@@ -239,7 +239,7 @@ public:
                              <ul class="methods">
                                  <li>
                                     <div class="detail" id="buffer-constructor">
-                                        <h2>StaticBuffer (Constructor)</h2>
+                                        <h2><i>public:</i> StaticBuffer (Constructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
@@ -261,7 +261,7 @@ public:
                                  
                                  <li>
                                     <div class="detail" id="buffer-destructor">
-                                        <h2>~StaticBuffer (Destructor)</h2>
+                                        <h2><i>public:</i> ~StaticBuffer (Destructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>                            
                                         <h5>Return type:</h5>
@@ -321,9 +321,9 @@ public:
     
     // if free buffer is not available, replace the buffer with the largest timestamp and set it as bufferIndex.
     
-    //update the <i>metainfo</i> array corresponding to the buffer index. 
+    // update the <i>metainfo</i> array corresponding to the buffer index. 
     
-    //return the buffer index
+    // return the buffer index
 }
 </code></pre>
                                             </div>
