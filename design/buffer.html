@@ -1068,6 +1068,7 @@ public:
 
 //copy the contents of the memory location pointed to by the argument <i>head</i> to the header of block using appropriate type casting
 
+//update dirty bit
 }</code></pre>
                                             </div>
                                         </div>
@@ -1296,6 +1297,8 @@ public:
 //store the given block type in the first 4 bytes of the buffer
 
 //update the <i>BlockAllocMap</i> 
+
+//update dirty bit
 	
 }</code></pre>
                                             </div>
@@ -1444,6 +1447,8 @@ public:
     
     // using offset range copy the slotmap from the memory pointed by the argument to that of the block.
     
+    //update dirty bit.
+    
 }</code></pre>
                                             </div>
                                         </div>
@@ -1565,6 +1570,8 @@ public:
     
     // using offset range copy contents of the memory pointed by <i>rec</i> to <i>slotNum</i><sup>th</sup> record.
 
+    // update dirty bit.
+    
     // return SUCCESS
 	
 }</code></pre>
@@ -1805,6 +1812,8 @@ public:
 
 // copy the struct InternalEntry pointed by ptr to indexNum'th entry in block. 
 
+//update dirty bit.
+
 //return SUCCESS
 	
 }</code></pre>
@@ -1982,6 +1991,8 @@ public:
 // if the index_num is not in range of 0-(#Entries(in block)+1), return E_OUTOFBOUND
 
 // copy the struct Index pointed by ptr to indexNum'th entry in block.
+
+//update dirty bit.
 
 //return SUCCESS
 
