@@ -65,27 +65,56 @@
                         <ul class="nav flex-column sidemenu">
                             <li> <a class="sec" href="#layout"> Layout</a></li>
                             <li> <a class="sec" href="#block_structures"> Block Structures</a></li>
-                            <li> <a class="sec" href="#buffer_class"> Class Buffer</a></li>
+                            <li> <a class="sec" href="#buffer_class"> Class StaticBuffer</a></li>
                             <ul>
-                                <li><a href="#getfreerecblk">getFreeRecBlock()</a> </li>
-                                 <li><a href="#getfreeindinternal">getFreeIndInternal()</a> </li>
-                                 <li><a href="#getfreeindleaf">getFreeIndLeaf()</a> </li>
-                                 <li><a href="#getrecblk">getRecBlock()</a> </li>
-                                 <li><a href="#getindblk">getIndBlock()</a> </li>
-                                <li><a href="#deleteblk">deleteBlock()</a> </li>
-                                <li><a href="#releaseblk">releaseBlock()</a> </li>
-                                <li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
+                                <li><a href="#buffer-constructor">StaticBuffer</a> </li>
+                                 <li><a href="#buffer-destructor">~StaticBuffer</a> </li>
+                                 <li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
+                                 <li><a href="#getbuffernum">getBufferNum()</a> </li>
+				 <li><a href="#getstaticblocktype">getStaticBlockType()</a> </li>
                             </ul>
                             <li> <a class="sec" href="#blkbuff_class"> Class BlockBuffer</a></li>
                             <ul>
-                                <li><a href="#getheader">getHeader()</a> </li>
-                                <li><a href="#setheader">setHeader()</a> </li>
-                                <li><a href="#getdataptr">get_buf_ptr()</a> </li>
+                                <li><a href="#blkbuffer-constructor">BlockBuffer 1</a> </li>
+                                <li><a href="#blkbuffer-constructor1">BlockBuffer 2</a> </li>
+                                <li><a href="#getdataptr">getBufferPtr()</a> </li>
+				<li><a href="#getheader">getHeader()</a> </li>
+				<li><a href="#setheader">setHeader()</a> </li>
+				<li><a href="#getblk">getBlock()</a> </li>
+				<li><a href="#getfreeblk">getFreeBlock()</a> </li>
+				<li><a href="#getblkNum">getBlockNum()</a> </li>
+				<li><a href="#getblocktyper">getBlockType()</a> </li>
+				<li><a href="#setblocktype">setBlockType()</a> </li>
+
                             </ul>
                             <li> <a class="sec" href="#recbuff_class"> Class RecBuffer</a></li>
+			    <ul>
+                                <li><a href="#recbuff_constructor1">RecBuffer 1</a> </li>
+                                <li><a href="#recbuff_constructor2">RecBuffer 2</a> </li>
+                                <li><a href="#getslotmap">getSlotmap()</a> </li>
+				<li><a href="#setslotmap">setSlotmap()</a> </li>
+				<li><a href="#getrecord">getRecord()</a> </li>
+				<li><a href="#setrecord">setRecord()</a> </li>
+			    </ul>
                             <li> <a class="sec" href="#indbuff_class"> Class IndBuffer</a></li>
+			    <ul>
+                                <li><a href="#indbuff_constructor1">IndBuffer 1</a> </li>
+                                <li><a href="#indbuff_constructor2">IndBuffer 2</a> </li>
+			    </ul>
                             <li> <a class="sec" href="#intbuff_class"> Class IndInternal</a></li>
+			    <ul>
+                                <li><a href="#intindbuff_constructor1">IndInternal 1</a> </li>
+                                <li><a href="#intindbuff_constructor2">IndInternal 2</a> </li>
+                                <li><a href="#intgetentry">getEntry()</a> </li>
+				<li><a href="#intsetentry">setEntry()</a> </li>
+			    </ul>
                             <li> <a class="sec" href="#leafbuff_class"> Class IndLeaf</a></li>
+			    <ul>
+                                <li><a href="#leafindbuff_constructor1">IndLeaf 1</a> </li>
+                                <li><a href="#leafindbuff_constructor2">IndLeaf 2</a> </li>
+                                <li><a href="#leafgetentry">getEntry()</a> </li>
+				<li><a href="#leafsetentry">setEntry()</a> </li>
+			    </ul>
                             <li> <a class="sec" href="#misc"> Miscellaneous</a></li>
                         </ul>
                         </div>
