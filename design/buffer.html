@@ -258,6 +258,7 @@ private:
 public:
 	//methods	
 	static int getStaticBlockType(int blockNum);
+	static void setDirtyBit(int blockNum);
 	StaticBuffer();
 	~StaticBuffer();
 	
@@ -450,6 +451,40 @@ public:
                                         </div>
                                     </div>
                                  </li>
+				     
+				<li>
+                                    <div class="detail" id="setdirtybit">
+                                        <h2><i>public: </i>setDirtyBit</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block whose buffer's dirty bit is to be set.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+					    
+                                        <h5>Description:</h5>
+                                        <p>sets the dirty bit of the buffer corresponding to the block</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-setdirtybit"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setdirtybit" class="collapse">
+                                            <div class="code">
+<pre><code> void StaticBuffer::setDirtyBit(int blockNum){
+    //find the buffer index corresponding to the block using the <i>getBufferNum()</i>.
+    
+    //set the dirty bit of that buffer in the metaInfo to true.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+
 				     
                                  <!-- 
                                 <li><div class="detail" id="getfreerecblk">
@@ -1640,7 +1675,7 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-indbuffer-constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndBuffer::IndBuffer(char blocktype) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
                                     </div>
@@ -1658,8 +1693,9 @@ public:
                              <div class="code">
                                  <pre><code>class IndInternal : public <a href="#indbuff_class">IndBuffer</a>{
 public:
+	//methods
 	IndInternal();
-	IndInternal(int blkNum);
+	IndInternal(int blockNum);
 	int getEntry(void *ptr, int indexNum) ;
 	int setEntry(void *ptr, int indexNum) ;
 };</code></pre>
@@ -1755,7 +1791,7 @@ public:
 	
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
   
-// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)-1) return E_OUTOFBOUND
 
 // copy the indexNum'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
     
@@ -1808,7 +1844,7 @@ public:
 						
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
-// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)-1) return E_OUTOFBOUND
 
 // copy the struct InternalEntry pointed by ptr to indexNum'th entry in block. 
 
@@ -1833,6 +1869,7 @@ public:
                              <div class="code">
                                 <pre><code>class IndLeaf : public <a href="#indbuffer_class">IndBuffer</a>{
 public:
+	//methods
 	IndLeaf();
 	IndLeaf(int blockNum);
 	int getEntry(void *ptr, int indexNum) ;
