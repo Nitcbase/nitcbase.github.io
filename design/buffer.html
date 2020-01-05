@@ -1675,7 +1675,7 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-indbuffer-constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndBuffer::IndBuffer(char blocktype) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
                                     </div>
@@ -1693,8 +1693,9 @@ public:
                              <div class="code">
                                  <pre><code>class IndInternal : public <a href="#indbuff_class">IndBuffer</a>{
 public:
+	//methods
 	IndInternal();
-	IndInternal(int blkNum);
+	IndInternal(int blockNum);
 	int getEntry(void *ptr, int indexNum) ;
 	int setEntry(void *ptr, int indexNum) ;
 };</code></pre>
@@ -1790,7 +1791,7 @@ public:
 	
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
   
-// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)-1) return E_OUTOFBOUND
 
 // copy the indexNum'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
     
@@ -1843,7 +1844,7 @@ public:
 						
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
-// if the indexNum is not in range of 0-(#Entries(in block)+1) return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)-1) return E_OUTOFBOUND
 
 // copy the struct InternalEntry pointed by ptr to indexNum'th entry in block. 
 
@@ -1868,6 +1869,7 @@ public:
                              <div class="code">
                                 <pre><code>class IndLeaf : public <a href="#indbuffer_class">IndBuffer</a>{
 public:
+	//methods
 	IndLeaf();
 	IndLeaf(int blockNum);
 	int getEntry(void *ptr, int indexNum) ;
@@ -1968,7 +1970,7 @@ public:
 						
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
-// if the indexNum is not in range of 0-(#Entries(in block)+1), return E_OUTOFBOUND
+// if the indexNum is not in range of 0-(#Entries(in block)-1), return E_OUTOFBOUND
 
 // copy the indexNum'th Index entry in block to memory ptr(ptr can be type casted appropriately if needed). 
     
@@ -2023,7 +2025,7 @@ public:
 						
 // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
 
-// if the index_num is not in range of 0-(#Entries(in block)+1), return E_OUTOFBOUND
+// if the index_num is not in range of 0-(#Entries(in block)-1), return E_OUTOFBOUND
 
 // copy the struct Index pointed by ptr to indexNum'th entry in block.
 
