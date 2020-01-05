@@ -469,7 +469,7 @@ public:
                                         <p>void</p>
 					    
                                         <h5>Description:</h5>
-                                        <p>sets the dirty bit in the buffer corresponding to the block</p>
+                                        <p>sets the dirty bit of the buffer corresponding to the block</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-setdirtybit"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setdirtybit" class="collapse">
@@ -477,7 +477,7 @@ public:
 <pre><code> void StaticBuffer::setDirtyBit(int blockNum){
     //find the buffer index corresponding to the block using the <i>getBufferNum()</i>.
     
-    //set the dirty bit of that buffer in the BufferMetaInfo to true.
+    //set the dirty bit of that buffer in the metaInfo to true.
 }
 </code></pre>
                                             </div>
