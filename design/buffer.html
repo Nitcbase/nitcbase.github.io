@@ -258,6 +258,7 @@ private:
 public:
 	//methods	
 	static int getStaticBlockType(int blockNum);
+	static void setDirtyBit(int blockNum);
 	StaticBuffer();
 	~StaticBuffer();
 	
@@ -450,6 +451,40 @@ public:
                                         </div>
                                     </div>
                                  </li>
+				     
+				<li>
+                                    <div class="detail" id="setdirtybit">
+                                        <h2><i>public: </i>setDirtyBit</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block whose buffer's dirty bit is to be set.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+					    
+                                        <h5>Description:</h5>
+                                        <p>sets the dirty bit in the buffer corresponding to the block</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-setdirtybit"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setdirtybit" class="collapse">
+                                            <div class="code">
+<pre><code> void StaticBuffer::setDirtyBit(int blockNum){
+    //find the buffer index corresponding to the block using the <i>getBufferNum()</i>.
+    
+    //set the dirty bit of that buffer in the BufferMetaInfo to true.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+
 				     
                                  <!-- 
                                 <li><div class="detail" id="getfreerecblk">
