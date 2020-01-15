@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Constants</title>
+    <title>Buffer</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -55,6 +55,7 @@
         <div class="container-fluid">
             <div class="row">
                 
+                
                 <!-- SIDEBAR BEGIN -->
                 <div class="col-sm-2">
                     <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
@@ -71,48 +72,112 @@
                 </div>
                 <!-- END OF SIDEBAR -->
                 
+                
+                
                 <!--MAIN CONTENT START-->
                 <div class="col-sm-10">
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
-                            <h1>Global Constants</h1>
+                            <h1>Block Buffer</h1>
                         </div>
                         <p>The constants used by various algorithms in NITCbase documentation are listed in the files <i>errors.h</i> (error values returned by the algorithms described in the project documentation) and <i>constants.h</i> (other global constants)</p>
                         
                         <div class="detail" id="constants">
-                            <h2>constants.h</h2>
+                            <h2>blockBuffer.h</h2>
                             <p></p>
                             <div class="code">
-<pre><code>
-#define BLOCK_SIZE 2048
-#define ATTR_SIZE 16
-#define DISK_BLOCKS 8192
-#define MAXOPEN 12
-
-#define USED 1 
-#define UNUSED -1
-#define ALLOTED 2
-
-#define REC 0
-#define IND_INTERNAL 1
-#define IND_LEAF 2
-
-#define EQ 101
-#define LE 102
-#define LT 103
-#define GE 104
-#define GT 105
-#define NE 106
-#define RST 100 //reset op.
-
-#define INT 0
-#define STRING 1
-#define FLOAT 2
+<pre><code>#include "../define/constants.h"
+#include <cstdint>
 
 
-#define RELCAT_RELID 0
-#define ATTRCAT_RELID 1
+struct HeadInfo{
+	int32_t blockType;
+	int32_t pblock;
+	int32_t lblock;
+	int32_t rblock;
+	int32_t numEntries;
+	int32_t numAttrs; 
+	int32_t numSlots;
+	unsigned char reserved[4];
+};
+
+typedef union Attribute{
+	int ival;
+	float fval;
+	char strval[ATTR_SIZE];
+}Attribute;
+
+struct InternalEntry{
+	int32_t lChild;
+	union Attribute attrVal;
+	int32_t rChild;
+};
+
+struct Index{
+	union Attribute attrVal;
+	int32_t block;
+	int32_t slot;
+	unsigned char unused[8];
+};
+
+class BlockBuffer{
+protected:
+	//field
+	int blockNum;
+	
+	//methods
+	unsigned char *getBufferPtr();
+	int getBlock();
+	int getFreeBlock(int BlockType);
+
+public:
+	//methods
+	BlockBuffer(int blockNum);
+	BlockBuffer(char blockType);
+	int getBlockNum();
+	void getHeader(struct HeadInfo* head);
+	void setHeader(struct HeadInfo* head);
+	int getBlockType(int bufferIndex);
+	void setBlockType(int blockType);
+};
+
+class RecBuffer : public BlockBuffer{
+public:
+
+	//methods
+	RecBuffer();
+	RecBuffer(int blockNum);
+	void getSlotmap(unsigned char *slotMap);
+	void setSlotmap(unsigned char *slotMap);
+	int getRecord(union Attribute *rec,int slotNum);
+	int setRecord(union Attribute *rec,int slotNum);
+};
+
+class IndBuffer : public BlockBuffer{
+public:
+	IndBuffer(int blockNum);
+	IndBuffer(char blockType);
+	virtual int getEntry(void *ptr, int indexNum) = 0; 
+	virtual int setEntry(void *ptr, int indexNum) = 0; 
+};
+
+class IndInternal : public IndBuffer{
+public:
+	IndInternal();//update in documentation
+	IndInternal(int blockNum);
+	int getEntry(void *ptr, int indexNum) ;
+	int setEntry(void *ptr, int indexNum) ;
+};
+
+class IndLeaf : public IndBuffer{
+public:
+	IndLeaf();
+	IndLeaf(int blockNum);
+	int getEntry(void *ptr, int indexNum) ;
+	int setEntry(void *ptr, int indexNum) ;
+};
+
 </code></pre>
                             </div>
                         </div>
