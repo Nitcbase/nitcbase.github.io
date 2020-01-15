@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Constants</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
+</head>
+    
+    
+<body>
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-sm-2">
+                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+                            <li> <a class="sec" href="#constants"> constants.h</a></li>
+                            <li> <a class="sec" href="#errors"> errors.h</a></li>
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-sm-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>Global Constants</h1>
+                        </div>
+                        <p>The constants used by various algorithms in NITCbase documentation are listed in the files <i>errors.h</i> (error values returned by the algorithms described in the project documentation) and <i>constants.h</i> (other global constants)</p>
+                        
+                        <div class="detail" id="constants">
+                            <h2>constants.h</h2>
+                            <p></p>
+                            <div class="code">
+<pre><code>
+#define BLOCK_SIZE 2048
+#define ATTR_SIZE 16
+#define DISK_BLOCKS 8192
+#define MAXOPEN 12
+
+#define USED 1 
+#define UNUSED -1
+#define ALLOTED 2
+
+#define REC 0
+#define IND_INTERNAL 1
+#define IND_LEAF 2
+
+#define EQ 101
+#define LE 102
+#define LT 103
+#define GE 104
+#define GT 105
+#define NE 106
+#define RST 100 //reset op.
+
+#define INT 0
+#define STRING 1
+#define FLOAT 2
+
+
+#define RELCAT_RELID 0
+#define ATTRCAT_RELID 1
+</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="detail" id="errors">
+                            <h2>errors.h</h2>
+                            <p></p>
+                            <div class="code">
+<pre><code>
+#define SUCCESS 0
+#define FAILURE -1
+#define E_OUTOFBOUND -2
+#define E_FREESLOT -3
+#define E_NOINDEX -4
+#define E_DISKFULL -5
+#define E_INVALIDBLOCK -6
+#define E_RELNOTEXIST -7
+#define E_RELEXIST -8
+#define E_ATTRNOTEXIST -9
+#define E_ATTREXIST -10
+#define E_CACHEFULL -11
+#define E_NOTOPEN -12
+#define E_RELNOTOPEN -13
+#define E_NATTRMISMATCH -14
+#define E_DUPLICATEATTR -15
+#define E_RELOPEN -16
+
+</code></pre>
+                            </div>
+                        </div>
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+        
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>
