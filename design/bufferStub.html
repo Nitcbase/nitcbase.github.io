@@ -64,8 +64,8 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-                            <li> <a class="sec" href="#constants"> constants.h</a></li>
-                            <li> <a class="sec" href="#errors"> errors.h</a></li>
+                            <li> <a class="sec" href="#blockBuffer.h"> blockBuffer.h</a></li>
+                            <li> <a class="sec" href="#staticBuffer.h"> staticBuffer.h</a></li>
                         </ul>
                         </div>
                     </nav>
@@ -81,9 +81,9 @@
                         <div class="pagetitle">
                             <h1>Block Buffer</h1>
                         </div>
-                        <p>The constants used by various algorithms in NITCbase documentation are listed in the files <i>errors.h</i> (error values returned by the algorithms described in the project documentation) and <i>constants.h</i> (other global constants)</p>
+                        <p></p>
                         
-                        <div class="detail" id="constants">
+                        <div class="detail" id="blockBuffer.h">
                             <h2>blockBuffer.h</h2>
                             <p></p>
                             <div class="code">
@@ -182,28 +182,43 @@ public:
                             </div>
                         </div>
                         
-                        <div class="detail" id="errors">
-                            <h2>errors.h</h2>
+                        <div class="detail" id="staticBuffer.h">
+                            <h2>staticBuffer.h</h2>
                             <p></p>
                             <div class="code">
 <pre><code>
-#define SUCCESS 0
-#define FAILURE -1
-#define E_OUTOFBOUND -2
-#define E_FREESLOT -3
-#define E_NOINDEX -4
-#define E_DISKFULL -5
-#define E_INVALIDBLOCK -6
-#define E_RELNOTEXIST -7
-#define E_RELEXIST -8
-#define E_ATTRNOTEXIST -9
-#define E_ATTREXIST -10
-#define E_CACHEFULL -11
-#define E_NOTOPEN -12
-#define E_RELNOTOPEN -13
-#define E_NATTRMISMATCH -14
-#define E_DUPLICATEATTR -15
-#define E_RELOPEN -16
+#include "../define/constants.h"
+#include <cstdint>
+
+struct BufferMetaInfo {
+	bool free;
+	bool dirty;
+	int blockNum;
+	int timeStamp;
+};
+
+class StaticBuffer {
+				
+friend class BlockBuffer;
+
+private:
+	//fields
+	static unsigned char blocks[32][BLOCK_SIZE];
+	static struct BufferMetaInfo metainfo[32];
+	static unsigned char blockAllocMap[DISK_BLOCKS];
+
+	//methods
+	static int getFreeBuffer(int blockNum);
+	static int getBufferNum(int blockNum);
+	
+public:
+	//methods	
+	static int getStaticBlockType(int blockNum);
+	static void setDirtyBit(int blockNum);
+	StaticBuffer();
+	~StaticBuffer();
+	
+};
 
 </code></pre>
                             </div>
