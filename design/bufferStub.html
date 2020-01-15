@@ -65,7 +65,11 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a class="sec" href="#blockBuffer.h"> blockBuffer.h</a></li>
+				
+                            <li> <a class="sec" href="#blockBuffer.cpp"> blockBuffer.cpp</a></li>
                             <li> <a class="sec" href="#staticBuffer.h"> staticBuffer.h</a></li>
+				
+                            <li> <a class="sec" href="#staticBuffer.cpp"> staticBuffer.cpp</a></li>
                         </ul>
                         </div>
                     </nav>
@@ -181,7 +185,128 @@ public:
 </code></pre>
                             </div>
                         </div>
-                        
+                       
+				
+<!--------------------------------------------BlockBuffer.cpp------------------------------------------------------------>				
+				 
+                        <div class="detail" id="blockBuffer.cpp">
+                            <h2>blockBuffer.cpp</h2>
+                            <p></p>
+                            <div class="code">
+<pre><code> 
+#include "blockBuffer.h"
+#include "staticBuffer.h"
+#include "../define/constants.h"
+#include "../define/error.h"
+using namespace std;
+
+BlockBuffer::BlockBuffer(int blockNum){
+
+
+}
+
+BlockBuffer::BlockBuffer(char blockType){
+
+}
+
+unsigned char * BlockBuffer::getBufferPtr(){
+	
+}
+
+void BlockBuffer::getHeader(struct HeadInfo *head){	
+
+
+}
+
+void BlockBuffer::setHeader(struct HeadInfo *head){
+
+
+}
+
+int BlockBuffer::getBlock(){
+  
+   
+}
+
+int BlockBuffer::getFreeBlock(int blockType){
+
+
+}
+
+int BlockBuffer::getBlockNum(){
+
+//return corresponding block number
+	
+}
+
+int BlockBuffer::getBlockType(int bufferIndex){
+
+
+	
+}
+
+void BlockBuffer::setBlockType(int blockType){						
+
+	
+}
+RecBuffer::RecBuffer(int blockNum) : BlockBuffer(blockNum){}
+RecBuffer::RecBuffer() : BlockBuffer('R'){}
+
+void RecBuffer::getSlotMap(unsigned char *slotMap){
+	
+} 
+void RecBuffer::setSlotMap(unsigned char *slotMap){
+	
+}
+
+int RecBuffer::getRecord(union Attribute *rec,int slotNum){ 
+	
+	
+}
+
+int RecBuffer::setRecord(union Attribute *rec,int slotNum){  //return type to be updated in the code 
+	
+}
+
+IndBuffer::IndBuffer(int blockNum) : BlockBuffer(blockNum){}
+IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){} 
+
+
+IndInternal::IndInternal() : IndBuffer('I'){}
+IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){}
+
+int IndInternal::getEntry(void *ptr, int indexNum){
+    
+}
+
+int IndInternal::setEntry(void *ptr, int indexNum){
+   
+
+}
+
+IndLeaf::IndLeaf() : IndBuffer('L'){}
+
+IndLeaf::IndLeaf(int blockNum) : IndBuffer(blockNum){}
+
+int IndLeaf::getEntry(void *ptr, int indexNum){
+
+
+}
+
+int IndLeaf::setEntry(void *ptr, int indexNum){						
+    
+}
+
+</code></pre>
+                            </div>
+                        </div>
+                       
+<!---------------------------------------------------------------------------------------------------------------------->				
+				
+			<div class="pagetitle">
+                            <h1>Static Buffer</h1>
+                        </div>	
+				
                         <div class="detail" id="staticBuffer.h">
                             <h2>staticBuffer.h</h2>
                             <p></p>
@@ -224,6 +349,14 @@ public:
                             </div>
                         </div>
                         <!-- PAGE ENDS -->
+<div class="detail" id="staticBuffer.h">
+                            <h2>staticBuffer.cpp</h2>
+                            <p></p>
+                            <div class="code">
+<pre><code>
+</code></pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- END OF MAIN CONTENT -->
