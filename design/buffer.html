@@ -280,7 +280,7 @@ public:
                                         <div id="algo-buffer-constructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>StaticBuffer::StaticBuffer(){
-    // copy <a href="../storage-model.html#disk_model">blockAllocMap</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods">readblock()</a> of disk)
+    // copy <a href="../storage-model.html#disk_model" target="_blank">blockAllocMap</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods" target="_blank">readblock()</a> of disk)
 
     //initialise metainfo of all the buffer blocks with dirty:false, free:true, timestamp:-1 and blockNum:-1
 }</code></pre>
@@ -302,10 +302,10 @@ public:
                                         <div id="algo-buffer-destructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>StaticBuffer::~StaticBuffer(){
-    // copy <a href="../storage-model.html#disk_model">blockAllocMap</a> blocks from buffer to disk(using <a href="../storage-model.html#access-methods">writeblock()</a> of disk)
+    // copy <a href="../storage-model.html#disk_model" target="_blank">blockAllocMap</a> blocks from buffer to disk(using <a href="../storage-model.html#access-methods" target="_blank">writeblock()</a> of disk)
 
     /*iterate through all the buffer blocks, 
-    	write back blocks with meta info as free:false,dirty:true (using writeblock() of disk)*/
+    	write back blocks with meta info as free:false,dirty:true (using <a href="../storage-model.html#access-methods" target="_blank">writeblock()</a> of disk)*/
 }</code></pre>
                                             </div>
                                         </div>
@@ -339,8 +339,8 @@ public:
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>Searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free (this function <b>never fails</b>) and returns the buffer index.</p>
-                                        
+                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer blocks are found, replacement is done to free a buffer block.</p>
+					<p><b>NOTE:</b> This function never fails - a buffer will always be allocated for the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreebuff" class="collapse">
                                             <div class="code">
@@ -388,14 +388,14 @@ public:
                                                     <td>Buffer number to which the given block is loaded.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>FAILURE</td>
+                                                    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
                                                     <td>int</td>
                                                     <td>Block not loaded to buffer.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>returns the buffer index of the buffer to which the block with the given block number is loaded.</p>
+                                        <p>Returns the buffer index of the buffer to which the block with the given block number is loaded.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getbuffernum"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getbuffernum" class="collapse">
@@ -431,7 +431,7 @@ public:
                                                 <tr>
                                                     <td>blockType</td>
                                                     <td>int</td>
-                                                    <td>Block type of the block.</td>
+                                                    <td>Block type of the block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>).</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -469,7 +469,7 @@ public:
                                         <p>void</p>
 					    
                                         <h5>Description:</h5>
-                                        <p>sets the dirty bit of the buffer corresponding to the block</p>
+                                        <p>Sets the dirty bit of the buffer corresponding to the block.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-setdirtybit"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setdirtybit" class="collapse">
@@ -1177,7 +1177,7 @@ public:
                                                 </tr>
 						    
                                                 <tr>
-						    <td><a href="../constants.html"> FAILURE </a></td>
+						    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
                                                     <td>int</td>
                                                     <td>when there is no free block in the disk.</td>
                                                 </tr>
