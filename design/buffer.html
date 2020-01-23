@@ -944,7 +944,7 @@ public:
 				     
 <!-------------------------------------------Constructor 1----------------------------------------------------------->
                                  <li>
-                                    <div class="detail" id="blkbuffer-constructor">
+                                    <div class="detail" id="blkbuffer-constructor1">
                                         <h2><i>public:</i> BlockBuffer (Constructor 1)</h2>
 
                                         <h5>Arguments:</h5>
@@ -952,15 +952,16 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>block number of the block</td>
+                                                <td>Block number of the block under consideration</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>to be called when the block already exists on the disk.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-blkbuffer-constructor" class="collapse">
+                                        <p>Called when the block already exists on the disk.</p>
+					<p><b>NOTE:</b> If a new block is to be allocated in the disk use <a href="#blkbuffer-constructor2">constuctor 2</a></p>
+                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-blkbuffer-constructor1" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(int blockNum){
 // set the blockNum field of the object to input argument.
@@ -975,22 +976,35 @@ public:
 				     
 <!-----------------------------Constructor 2 -------------------------------------------------------->	     
 				 <li>
-                                    <div class="detail" id="blkbuffer-constructor1">
+                                    <div class="detail" id="blkbuffer-constructor2">
                                         <h2><i>public:</i> BlockBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
-                                                <td>blockType</td>
-                                                <td>char</td>
-                                                <td>block type of the corresponding block</td>
+						<tr>
+							<td>R</td>
+							<td>char</td>
+							<td><a href="../constants.html">REC</a> block to be alloted</td>
+						</tr>
+						<tr>
+							<td>N</td>
+							<td>char</td>
+							<td><a href="../constants.html">IND_INTERNAL</a> block to be alloted</td>
+						</tr>
+						<tr>
+							<td>L</td>
+							<td>char</td>
+							<td><a href="../constants.html">IND_LEAF</a> block to be alloted</td>
+						</tr>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>to be called if a new block is to be allocated in the disk.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-blkbuffer-constructor1" class="collapse">
+                                        <p>Called if a new block is to be allocated in the disk.</p>
+					<p><b>NOTE:</b> If the block already exists on the disk use <a href="#blkbuffer-constructor1">constuctor 1</a></p>
+                                        <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-blkbuffer-constructor2" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(char blockType){
 // allocate a block on the disc and a buffer in memory to hold the new block of given type using getFreeBlock function.
@@ -1016,13 +1030,13 @@ public:
                                                 <tr>
                                                     <td>bufferPtr</td>							
                                                     <td>unsigned char*</td>
-                                                    <td>a pointer to the buffer containing the block.</td>
+                                                    <td>Pointer to the buffer containing the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>gives a pointer to the first byte of the block present in buffer.
+                                        <p>Returns a pointer to the first byte of the buffer storing the block.
 					
                                         <h5><a data-toggle="collapse" href="#algo-getdataptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getdataptr" class="collapse">
@@ -1051,7 +1065,7 @@ public:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>pointer to which the header information of the block is copied.</td>
+                                                    <td>pointer to which the header contents of the block is copied.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1059,8 +1073,12 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>gives the header of the block.</p>
-					NOTE: Any type of block(REC/INDINT/INDLEAF) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.
+                                        <p>Gives the header of the block.</p>
+					    <p><b>NOTE:</b> 
+					    <ul>
+						    <li>Any type of block(REC/INDINT/INDLEAF) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+						    <li>Higher layer must alloacate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
+					    </ul></p>
 					                   
                                         <h5><a data-toggle="collapse" href="#algo-getheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getheader" class="collapse">
@@ -1086,7 +1104,7 @@ public:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>pointer whose contents is copied to the block header.</td>
+                                                    <td>Pointer whose contents is copied to the block header.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1094,7 +1112,7 @@ public:
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>sets the header of the block.</p>
+                                        <p>Sets the header of the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-setheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setheader" class="collapse">
                                             <div class="code">
