@@ -959,7 +959,7 @@ public:
                                         <p>Nil</p>
                                         <h5>Description:</h5>
                                         <p>Called when the block already exists on the disk.</p>
-					<p><b>NOTE:</b> If a new block is to be allocated in the disk use <a href="#blkbuffer-constructor2">constuctor 2</a></p>
+					<p><b>NOTE:</b> If a new block is to be allocated in the disk use <a href="#blkbuffer-constructor2">constructor 2</a></p>
                                         <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-blkbuffer-constructor1" class="collapse">
                                             <div class="code">
@@ -984,17 +984,17 @@ public:
 						<tr>
 							<td>R</td>
 							<td>char</td>
-							<td><a href="../constants.html">REC</a> block to be alloted</td>
+							<td><a href="../constants.html" target="_blank">REC</a> block to be alloted</td>
 						</tr>
 						<tr>
 							<td>N</td>
 							<td>char</td>
-							<td><a href="../constants.html">IND_INTERNAL</a> block to be alloted</td>
+							<td><a href="../constants.html" target="_blank">IND_INTERNAL</a> block to be alloted</td>
 						</tr>
 						<tr>
 							<td>L</td>
 							<td>char</td>
-							<td><a href="../constants.html">IND_LEAF</a> block to be alloted</td>
+							<td><a href="../constants.html" target="_blank">IND_LEAF</a> block to be alloted</td>
 						</tr>
                                             </table>
                                         </div>
@@ -1002,7 +1002,7 @@ public:
                                         <p>Nil</p>
                                         <h5>Description:</h5>
                                         <p>Called if a new block is to be allocated in the disk.</p>
-					<p><b>NOTE:</b> If the block already exists on the disk use <a href="#blkbuffer-constructor1">constuctor 1</a></p>
+					<p><b>NOTE:</b> If the block already exists on the disk use <a href="#blkbuffer-constructor1">constructor 1</a></p>
                                         <h5><a data-toggle="collapse" href="#algo-blkbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-blkbuffer-constructor2" class="collapse">
                                             <div class="code">
@@ -1065,7 +1065,7 @@ public:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>pointer to which the header contents of the block is copied.</td>
+                                                    <td>Pointer to which the header contents of the block is copied.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1076,7 +1076,7 @@ public:
                                         <p>Gives the header of the block.</p>
 					    <p><b>NOTE:</b> 
 					    <ul>
-						    <li>Any type of block(REC/INDINT/INDLEAF) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+						    <li>Any type of block(record block/ index internal block/ index leaf block) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
 						    <li>Higher layer must alloacate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
 					    </ul></p>
 					                   
@@ -1121,7 +1121,7 @@ public:
 
 //copy the contents of the memory location pointed to by the argument <i>head</i> to the header of block using appropriate type casting
 
-//update dirty bit
+//update dirty bit using setDirtyBit().
 }</code></pre>
                                             </div>
                                         </div>
@@ -1141,13 +1141,13 @@ public:
                                                 <tr>
 						    <td>bufferNum</td>
                                                     <td>int</td>
-                                                    <td>the buffer index of the buffer containing the block.</td>
+                                                    <td>Buffer index of the buffer containing the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                        <h5>Description:</h5>
-                                        <p>loads the block into buffer (if not present), updates the timestamps and returns the corresponding buffer index. </p>
-                                        NOTE: This function will never fail i.e it will always assign a buffer to the block doing replacement if necessary.
+                                        <p>Loads the block into buffer (if not present), updates the timestamps and returns the corresponding buffer index. </p>
+					    <p><b>NOTE:</b> This function will fails - a buffer will always be alloted to the block doing replacement if necessary.</p>
 					    
                                         <h5><a data-toggle="collapse" href="#algo-getblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblk" class="collapse">
@@ -1181,7 +1181,7 @@ public:
                                                 <tr>
 						    <td>blockType</td>
                                                     <td>int</td>
-                                                    <td>the type of the required block (<a href="../constants.html">REC/IND_INTERNAL/IND_LEAF</a>).</td>
+                                                    <td>Type of the required block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1191,18 +1191,18 @@ public:
                                                 <tr>
 						    <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>the block number of a free block</td>
+                                                    <td>Block number of a free block</td>
                                                 </tr>
 						    
                                                 <tr>
 						    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
                                                     <td>int</td>
-                                                    <td>when there is no free block in the disk.</td>
+                                                    <td>No free block available on the disk.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                        <h5>Description:</h5>
-                                        <p>returns the block number of a free block in the disk and allots a buffer for the block. If free block is not available FAILURE is returned.</p>
+                                        <p>Returns the block number of a free block in the disk and allots a buffer for the block. If free block is not available FAILURE is returned.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getfreeblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreeblk" class="collapse">
@@ -1245,12 +1245,12 @@ public:
                                                 <tr>
 						    <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>block number of the block</td>
+                                                    <td>Block number of the block</td>
                                                 </tr>
                                             </table>
                                         </div>
                                        <h5>Description:</h5>
-                                        <p>returns the block number of the block.</p>
+                                        <p>Returns the block number of the block.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getblknum"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblknum" class="collapse">
@@ -1282,7 +1282,7 @@ public:
                                                 <tr>
 						    <td>bufferIndex</td>
                                                     <td>int</td>
-                                                    <td>index of the buffer of the block whose type is required.</td>
+                                                    <td>Index of the buffer of the block whose type is required.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1292,13 +1292,13 @@ public:
                                                 <tr>
 						    <td>blockType</td>
                                                     <td>int</td>
-                                                    <td>the type of the block(<a href="../constants.html">REC, IND_INTERNAL, IND_LEAF </a>).</td>
+                                                    <td>Type of the block(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>returns the type of the block corresponding to the input buffer index.</p>
+                                        <p>Returns the type of the block corresponding to the input buffer index.</p>
 					                   
                                         <h5><a data-toggle="collapse" href="#algo-getblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblktype" class="collapse">
@@ -1332,14 +1332,14 @@ public:
                                                 <tr>
 						    <td>blockType</td>
                                                     <td>int</td>
-                                                    <td>the block type which is used for updation(<a href="../constants.html">REC, IND_INTERNAL, IND_LEAF</a>)</td>
+                                                    <td>New block type to be updated(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>)</td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5> void
                                         
                                         <h5>Description:</h5>
-                                        <p>sets the type of the block with the given block type.</p>
+                                        <p>Sets the type of the block with the given block type.</p>
 					                   
                                         <h5><a data-toggle="collapse" href="#algo-setblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setblktype" class="collapse">
@@ -1351,7 +1351,7 @@ public:
 
 //update the <i>BlockAllocMap</i> 
 
-//update dirty bit
+//update dirty bit using setDirtyBit()
 	
 }</code></pre>
                                             </div>
