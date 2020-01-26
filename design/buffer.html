@@ -184,32 +184,35 @@
 } Attribute;</code></pre>
                             	</div>
 			    </div>
-                            <h4>InternalEntry</h4>
-                            <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
-                            <div class="code">
-                                <pre><code>struct InternalEntry{
+			    <div id="block_structures_internal_entry">
+				    <h4>InternalEntry</h4>
+				    <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
+				    <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
+				    <div class="code">
+					<pre><code>struct InternalEntry{
 	int32_t lChild;
 	union Attribute attrVal;
 	int32_t rChild;
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
-                            </div>
-                            <h4>Index</h4>
-                            <p>Any index of a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record, which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
-				     The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
-                            </p>
-                            <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
-                            <div class="code">
-                                <pre><code>struct Index{
+                            		</div>
+			    </div>
+			   <div id="block_structures_index">
+				    <h4>Index</h4>
+				    <p>Any index of a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record, which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
+					     The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
+				    </p>
+				    <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
+				    <div class="code">
+					<pre><code>struct Index{
 	union Attribute attrVal;
 	int32_t block;
 	int32_t slot;
 	unsigned char unused[8];
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
-                            </div>
-                            
+                            	</div>
+			   </div>
                         </div>
                          
 			    
@@ -1405,7 +1408,7 @@ public:
                                             <div class="code">
                                                 <pre><code>
 IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent non-default constructor.
-					       // 'N' used to denote RecBuffer
+					       // 'N' used to denote IndInternal Buffer
 </code></pre>
                                             </div>
                                         </div>
@@ -1423,7 +1426,7 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures">InternalEntry</a> to which the entry contents are copied.</td>
+                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> to which the entry contents are copied.</td>
                                                 </tr>
                                                 <tr>
 							<td>indexNum</td>
@@ -1447,7 +1450,12 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method gives the indexNum'th <i>InternalEntry</i> of the IndInternal block.</p> 
+                                        <p>Gives the indexNum'th <i>InternalEntry</i> of the IndInternal block.</p>
+					    <p><b>NOTE:</b> <ul>
+						    <li>The argument to the function must be of type <i>struct InternalEntry *</i>.</li>
+						    <li>Higher layer must allocate memory for <i>struct InternalEntry</i> before calling this function.</li>
+						    </ul>
+					    </p>
                                         <h5><a data-toggle="collapse" href="#algo-intgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intgetentry" class="collapse">
                                             <div class="code">
