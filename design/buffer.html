@@ -1476,7 +1476,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
 					<p><b>NOTE:</b> 
 						<ul>
 							<li>The array of unsigned char should have size equal to the size of slotmap.</li>
-							<li>Higher layer must allocate memory for the pointer to unsigned char array before calling this function.</li>
+							<li>Higher layer must allocate memory for the unsigned char array before calling this function.</li>
 					    	</ul>
 					</p>
                                         <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
@@ -1566,7 +1566,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                                     <td>Succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND>/a></td>
+                                                    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
 						    <td>int</td>
                                                     <td>The slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
@@ -1664,7 +1664,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
     
     // using offset range copy contents of the memory pointed by <i>rec</i> to <i>slotNum</i><sup>th</sup> record.
 
-    // update dirty bit.
+    // update dirty bit using setDirtyBit().
     
     // return SUCCESS
 	
@@ -1695,6 +1695,11 @@ public:
                             </div>
 			    <p>The following is the specification of methods of IndBuffer class</p>
                             <ul class="methods">
+
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------Constructor 1----------------------------------------------------------------------------->
                                 <li>
                                     <div class="detail" id="indbuff_constructor1">
                                         <h2>IndBuffer (Constructor 1)</h2>
@@ -1703,13 +1708,16 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>block number of the corresponding block</td>
+                                                <td>Block number of the block under consideration.</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
+					    
                                         <h5>Description:</h5>
-                                        <p>To be called when the index block already exists on the disk.</p>
+					<p>Called when the index block already exists on the disk.</p>
+					<p><b>NOTE:</b> If a new index block is to be allocated in the disk use <a href="#indbuff_constructor2">constructor 2</a>.</p>
+                                        
                                         <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-indbuffer-constructor1" class="collapse">
                                             <div class="code">
@@ -1718,22 +1726,35 @@ public:
                                         </div>
                                     </div>
                                  </li>
-                                 
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------Constructor 2----------------------------------------------------------------------------->
                                  <li>
                                     <div class="detail" id="indbuff_constructor2">
                                         <h2>IndBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
-                                                <td>blockType</td>
-                                                <td>char</td>
-                                                <td>block type of the corresponding block</td>
+                                                <tr>
+							<td>N</td>
+							<td>char</td>
+							<td><a href="../constants.html" target="_blank">IND_INTERNAL</a> block to be alloted</td>
+						</tr>
+						<tr>
+							<td>L</td>
+							<td>char</td>
+							<td><a href="../constants.html" target="_blank">IND_LEAF</a> block to be alloted</td>
+						</tr>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
-                                        <p>void</p>
+                                        <p>Nil</p>
+					    
                                         <h5>Description:</h5>
-                                        <p>To be called if a new index block is to be allocated in the disk.</p>
+					<p>Called if a index new block is to be allocated in the disk.</p>
+					<p><b>NOTE:</b> If the index block already exists on the disk use <a href="#indbuff_constructor1">constructor 1</a>.</p>
+					    
                                         <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-indbuffer-constructor2" class="collapse">
                                             <div class="code">
