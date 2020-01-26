@@ -173,15 +173,17 @@
 /* #include &lt;cstdint&gt; must be done */ 
 </code></pre>
                             </div>
-                            <h4>Attribute</h4>
-                            <p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. The structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
-                            <div class="code">
-                                <pre><code>typedef union Attribute{
+			    <div id="block_structures_attribute">
+                            	<h4>Attribute</h4>
+                            	<p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. The structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
+                            	<div class="code">
+                                	<pre><code>typedef union Attribute{
 	int iVal;
 	float fVal;
 	char strVal[ATTR_SIZE];
 } Attribute;</code></pre>
-                            </div>
+                            	</div>
+			    </div>
                             <h4>InternalEntry</h4>
                             <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
                             <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
@@ -1462,7 +1464,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                                 <tr>
                                                     <td>slotMap</td>
                                                     <td>unsigned char *</td>
-                                                    <td>Pointer to an array of unsigned char (whose size is equal to the size of slotmap) to which the slot map will be loaded.</td>
+                                                    <td>Pointer to an array of unsigned char to which the slot map will be loaded.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1471,7 +1473,12 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
 
                                         <h5>Description:</h5>
                                         <p>Gives the slotmap of the block.</p>
-					<p><b>NOTE:</b> Higher layer must allocate memory for the pointer to unsigned char array before calling this function. </p>
+					<p><b>NOTE:</b> 
+						<ul>
+							<li>The array of unsigned char should have size equal to the size of slotmap.</li>
+							<li>Higher layer must allocate memory for the pointer to unsigned char array before calling this function.</li>
+					    	</ul>
+					</p>
                                         <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getslotmap" class="collapse">
                                             <div class="code">
@@ -1501,7 +1508,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                                 <tr>
                                                     <td>slotMap</td>
                                                     <td>unsigned char *</td>
-                                                    <td>pointer to an array of type unsigned char (whose size is equal to the size of slotmap) from which the slot map will be loaded.</td>
+                                                    <td>Pointer to an array of type unsigned char from which the slot map will be loaded.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1509,7 +1516,8 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                         <p>void</p>
 
                                         <h5>Description:</h5>
-                                        <p>sets the slotmap of the block.</p>
+                                        <p>Sets the slotmap of the block.</p>
+					<p><b>NOTE:</b> The array of unsigned char should have size equal to the size of slotmap.</p>
                                         <h5><a data-toggle="collapse" href="#algo-setslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setslotmap" class="collapse">
                                             <div class="code">
@@ -1520,14 +1528,17 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
     
     // using offset range copy the slotmap from the memory pointed by the argument to that of the block.
     
-    //update dirty bit.
+    //update dirty bit using setDirtyBit().
     
 }</code></pre>
                                             </div>
                                         </div>
                                     </div> 
                                 </li>
-                                 
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------getRecord----------------------------------------------------------------------------->
                                 <li>
                                     <div class="detail" id="getrecord" >
                                         <h2><i>public:</i> getRecord</h2>
@@ -1536,13 +1547,13 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>rec</td>
-                                                    <td><a href="#block_structures">union Attribute</a> *</td>
-                                                    <td>pointer to an array of type Union Attribute (whose size is equal to the number of attributes in the relation) to which the record will be loaded.</td>
+                                                    <td><a href="#block_structures_attribute">union Attribute</a> *</td>
+                                                    <td>Pointer to an array of type <i>union Attribute</i> to which the record will be loaded.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>slotNum</td>
                                                     <td>int</td>
-                                                    <td>slot number of the record in the block.</td>
+                                                    <td>Slot number of the record in the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1550,25 +1561,31 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
 						    <td>int</td>
-                                                    <td>on succesful copy of the record.</td>
+                                                    <td>Succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>E_OUTOFBOUND</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND>/a></td>
 						    <td>int</td>
-                                                    <td>when the slotNum is outside the possible slot values of the block.</td>
+                                                    <td>The slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>E_FREESLOT</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">E_FREESLOT</a></td>
 						    <td>int</td>
-                                                    <td>when the slot corresponding to the slotNum is free.</td>
+                                                    <td>The slot corresponding to the slotNum is free.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>gives the <i>slotNum</i><sup>th</sup> record of the block.</p>
+                                        <p>Gives the <i>slotNum</i><sup>th</sup> record of the block.</p>
+					<p><b>NOTE:</b> 
+						<ul>
+							<li>The array of <i>union Attribute</i> elements should have size equal to the number of attributes in the relation.</li>
+							<li>Higher layer must allocate memory for the the array of <i>union Attribute</i> elements before calling this function.</li>
+					    	</ul>
+					</p>
                                         <h5><a data-toggle="collapse" href="#algo-getrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getrecord" class="collapse">
                                             <div class="code">
@@ -1592,7 +1609,10 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                         </div>                                        
                                     </div> 
                                 </li>
-                                 
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------setrecord----------------------------------------------------------------------------->
                                 <li>
                                     <div class="detail" id="setrecord" >
                                         <h2><i>public:</i> setRecord</h2>
@@ -1601,13 +1621,13 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>rec</td>
-                                                    <td><a href="#block_structures">union Attribute</a> *</td>
-                                                    <td>pointer to an array of type Union Attribute (whose size is equal to the number of attributes in the relation) from which the record will be loaded.</td>
+                                                    <td><a href="#block_structures_attribute">union Attribute</a> *</td>
+                                                    <td>Pointer to an array of type <i>union Attribute</i> from which the record will be loaded.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>slotNum</td>
                                                     <td>int</td>
-                                                    <td>slot number of the record in the block.</td>
+                                                    <td>Slot number of the record in the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1615,20 +1635,21 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
 						    <td>int</td>
-                                                    <td>on succesful copy of the record.</td>
+                                                    <td>Succesful copy of the record.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>E_OUTOFBOUND</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
 						    <td>int</td>
-                                                    <td>when the slotNum is outside the possible slot values of the block.</td>
+                                                    <td>The slotNum is outside the possible slot values of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>sets the <i>slotNum</i><sup>th</sup> record of the block as the input record.</p>
+                                        <p>Sets the <i>slotNum</i><sup>th</sup> record of the block as the input record.</p>
+					<p><b>NOTE:</b> The array of <i>union Attribute</i> elements should have size equal to the number of attributes in the relation. </p>
                                         <h5><a data-toggle="collapse" href="#algo-setrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setrecord" class="collapse">
                                             <div class="code">
@@ -1656,7 +1677,10 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-
                              </ul>
                             
                          </div>
-                         
+<!---------------------------------------------------------------------------------------------------------------->				     
+				     
+
+<!-----------------------------------IndBuffer----------------------------------------------------------------------------->
                         <div id="indbuff_class" class="detail">
                             <h2>Class IndBuffer</h2>
                             <p>IndBuffer extends <a href="#blkbuff_class">BlockBuffer class</a>. IndBuffer is a generic(abstract) class for Index Blocks. It has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank"><b>pure virtual methods</b></a>- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructors of this class simply calls the constructor of the parent class with the argument received.</p>
