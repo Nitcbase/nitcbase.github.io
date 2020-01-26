@@ -486,434 +486,7 @@ public:
                                         </div>
                                     </div>
                                  </li>
-
-				     
-                                 <!-- 
-                                <li><div class="detail" id="getfreerecblk">
-                                    <h2><i>public:</i> getFreeRecBlock</h2>
-                                    <h5>Arguments:</h5>
-                                    <p>NIL</p>
-
-                                    <h5>Return value:</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <td><a href="#recbuff_class">RecBuffer</a> *</td>
-                                                <td>Returns a pointer to a new RecBuffer object</td>
-                                            </tr>
-                                            <tr>
-                                                <td>NULL</td>
-                                                <td>If free disk block is not available. (disk full)</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-
-                                    <h5>Description:</h5>
-                                    <p>This method searches for the free block in disk, loads the disk block to buffer and assigns the free block found to be REC type and returns the RecBuffer object pointer corresponding to loaded block in buffer.</p>
-
-                                    <h5><a data-toggle="collapse" href="#algo-getfreerecblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                    <div id="algo-getfreerecblk" class="collapse">
-                                        <div class="code">
-                                            <pre><code>class RecBuffer* Buffer::getFreeRecBlock(){
-
-    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
-
-    //if no disk block is free return NULL
-
-    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
     
-    //Update the <i>block_alloc_map</i> correspoding to free disk block.
-
-    class <i>RecBuffer* newRecBuffer</i>= new <i>RecBuffer(disk_free_block)</i>; 
-    //where disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return <i>newRecBuffer</i>.
-}</code></pre>
-                                        </div>
-                                    </div>
-                                    </div></li>
-                                 
-                                 <li>
-                                    <div class="detail" id="getfreeindinternal">
-                                         <h2><i>public:</i> getFreeIndInternalBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>NIL</p>
-
-                                        <h5>Return value:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td><a href="#intbuff_class">IndInternal</a> *</td>
-                                                    <td>Returns a pointer to a new IndInternal object</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>If free disk block is not available. (disk full)</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>This method searches for the free block in disk, loads the disk block to buffer and assigns the free block found to be IND_INTERNAL type and returns the IndBuffer object pointer corresponding to loaded block in buffer.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-getfreeindinternal"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreeindinternal" class="collapse">
-                                            <div class="code">
-                                                <pre><code>class IndInternal* Buffer::getFreeIndInternal(){
-
-    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
-
-    //if no disk block is free return NULL
-
-    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
-    
-    //Update the <i>block_alloc_map</i> correspoding to free disk block.
-
-    class <i>RecBuffer* newIndBuffer</i>= new <i><a href="#intbuff_class">IndInternal</a>(disk_free_block)</i>; 
-    //where disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return <i>newIndBuffer</i>.
-}
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="getfreeindleaf">
-                                        <h2><i>public:</i> getFreeIndLeafBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>NIL</p>
-
-                                        
-                                        <h5>Return value:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td><a href="#leafbuff_class">IndLeaf</a> *</td>
-                                                    <td>Returns a pointer to a new IndLeaf object</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>If free disk block is not available. (disk full)</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>This method searches for the free block in disk, loads the disk block to buffer and assigns the free block found to be IND_LEAF type and returns the IndBuffer object pointer corresponding to loaded block in buffer.</p> 
-                                        <h5><a data-toggle="collapse" href="#algo-getfreeindleaf"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreeindleaf" class="collapse">
-                                            <div class="code">
-                                                <pre><code>class IndLeaf* Buffer::getFreeIndLeaf(){
-
-    // search for the free block in disk iterating through <i>block_alloc_map</i> array.
-
-    //if no disk block is free return NULL
-
-    //get the free buffer block using <i><a href="#getfreebuffer">getfreebuffer()</a></i> in the class <i>buffer</i>
-    
-    //Update the <i>block_alloc_map</i> correspoding to free disk block.
-
-    class <i>RecBuffer* newIndBuffer</i>= new <i><a href="#leafbuff_class">IndLeaf</a>(disk_free_block)</i>; 
-    //where disk_free_block is the free disk block obtained from block_alloc_map.
-
-    // return <i>newIndBuffer</i>.
-}
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="getrecblk">
-                                        <h2><i>public:</i> getRecBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>block_num</td>
-                                                    <td>int</td>
-                                                    <td>Disk block number of Record block.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        
-                                        <h5>Return value:</h5>
-                                        <div class=table-responsive>
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td><a href="#recbuff_class">RecBuffer</a> *</td>
-                                                    <td>Returns a pointer to the RecBuffer object corresponding to the block_num</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>Provided block_num is not in the range of disk blocks.</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>If the requested block is not a valid Record Block (can be a free block or any Index Block)</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>This method gets the specfied record block into buffer(if not present) and returns RecBuffer object pointer corresponding to the disk block in buffer.</p>
-                                        
-                                        <h5><a data-toggle="collapse" href="#algo-getrecblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getrecblk" class="collapse">
-                                            <div class="code">
-                                                <pre><code>class RecBuffer* Buffer::getRecBlock(int block_num){
-    /*iterate in buffer blocks to know if one of the blocks in buffer already contains the disk block
-     #block_num (you may write a helper function getbufferblock(#block_num) to check if the buffer 
-     contains the disk block correspond to #block_num) */
-
-	/* if buffer doesn't contain disk block #block_num, get a free buffer using 
-    <i><a href="#getfreebuffer">getFreeBuffer</a></i>() method and load the block into 
-    the buffer block using physical layer <i><a href="/storage-model.html#access-methods">readblock</a></i>() function. */
-
-    //if the block corresponding to #block_num is not a REC block return NULL
-
-    class<i> RecBuffer* newRecBuffer</i>= new <i>RecBuffer</i>(block_num);
-
-    // return <i>newRecBuffer</i>.
-}</code></pre>
-                                            </div>
-                                        </div>
-                                     </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="getindblk">
-                                        <h2><i>public:</i> getIndBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>block_num</td>
-                                                    <td>int</td>
-                                                    <td>Disk block number of Index block.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return value:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td><a href="#indbuff_class" >IndBuffer</a> *</td>
-                                                    <td>Returns a pointer to the IndInternal/IndLeaf object corresponding to the block_num <br>
-                                                        (Returns an object of type IndInternal if the block is an internal Index block / returns an object of type IndLeaf if the block is a Leaf Index block). <br>
-                                                        <b>Note: </b>An object of a child class can be assigned to a variable of a parent class.
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>Provided block_num is not in the range of disk blocks.</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>NULL</td>
-                                                    <td>If the requested block is not a valid Index Block (can be a free block or a Record Block)</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>This method gets the specfied index block into buffer(if not present) and returns IndBuffer object pointer corresponding to the disk block in buffer.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-getindblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getindblk" class="collapse">
-                                            <div class="code">
-                                                <pre><code>class IndBuffer* Buffer::getIndBlock(int block_num){
-    /*iterate in buffer blocks to know if the buffer already contains the disk block #block_num 
-    (you may write a helper function getbufferblock(#block_num) to check if the buffer 
-     contains the disk block correspond to #block_num. It will be useful here and elsewhere.) */
-
-	/* if buffer doesn't contain disk block #block_num, get a free buffer using 
-    <i><a href="#getfreebuffer">getFreeBuffer</a></i>() method and load the block into 
-    the buffer block using physical layer <i><a href="/storage-model.html#access-methods">readblock</a></i>() function. */
-    
-    //let <i>buffer_block</i> be the buffer index to which the disk block is loaded.
-
-    // let int blk_type = getblocktype(buffer_block) 
-        /* you may write a helper function getblocktype(buffer_block) to know block type
-        by accessing the header of the block from buffer*/
-
-    if(blk_type==INDINT){
-        class <i>IndBuffer* newIndBuffer</i>= new <i><a href="#intbuff_class">IndInternal</a></i>(block_num);
-        return newIndBuffer;
-    }else if(blk_type==INDLEAF){
-        class <i>IndBuffer* newIndBuffer</i>r= new <i><a href="#leafbuff_class">IndLeaf</a></i>(block_num);
-        return newIndBuffer;
-    }else{
-        return NULL; //returns NULL if block found to be other than internal or leaf block
-    }
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="deleteblk">
-                                        <h2><i>public:</i> deleteBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>block_num</td>
-                                                    <td>int</td>
-                                                    <td>Disk block number of block that has to be deleted.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-
-                                        <h5>Description:</h5>
-                                        <p>This method deletes the block corresponding to disk block block_num.</p> 
-                                        <h5><a data-toggle="collapse" href="#algo-deleteblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-deleteblk" class="collapse">
-                                            <div class="code">
-                                                <pre><code>void Buffer::deleteBlock(int block_num){
-    // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return
-
-    /* iterate through buffer blocks to know if disk block #block_num is present in Buffer
-    (Note: <i>getbufferblock</i>(block_num) method call can be used for the same).*/
-
-    //if buffer contains disk block <i>#block_num</i>, release the buffer block using <i><a href="#releaseblk">releaseBlock</a></i>(int block_num) 
-
-    //set the <i>block_alloc_map</i> array element correspond to block_num as UNUSED
-}
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="releaseblk">
-                                        <h2><i>public:</i> releaseBlock</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>block_num</td>
-                                                    <td>int</td>
-                                                    <td>Disk block number of the block that has to be released from buffer.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-
-                                        <h5>Description:</h5>
-                                        <p>Description of the function/method</p> 
-                                        <h5><a data-toggle="collapse" href="#algo-releaseblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-releaseblk" class="collapse">
-                                            <div class="code">
-                                                <pre><code>void Buffer::releaseBlock(int block_num){
-    // if block_num &lt; 0 OR block_num &gt;= DISK_BLOCKS return 
-
-    /* iterate through buffer blocks to know if disk block <i>#block_num</i> is present in Buffer
-    (Note: <i>getbufferblock</i>(block_num) method call can be used for the same).*/
-
-    //if buffer does not contain disk block <i>#block_num</i> return 
-
-    // if the <i>dirty</i> field in <i>metainfo[]</i> of buffer block corresponding to #block_num is set to true
-    // Commit the block back to disk.
-
-    // free the buffer block corresponding to #block_num in metainfo array.
-
-}
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="get_block_ptr">
-                                        <h2><i>private:</i>get_block_ptr</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>block_num</td>
-                                                    <td>int</td>
-                                                    <td>Disk block number of Record block.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        
-                                        <h5>Return value:</h5>
-                                        <div class=table-responsive>
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>char *</td>
-                                                    <td>Returns a pointer to the block present in buffer.</td>
-                                                </tr>
-                                                
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>Description of the function/method</p>
-                                        
-                                        <h5><a data-toggle="collapse" href="#algo-get_block_ptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-get_block_ptr" class="collapse">
-                                            <div class="code">
-                                                <pre><code>unsigned char* Buffer::get_block_ptr(int block_num){
-	int buffer_block=getbufferblock(block_num);
-	//if there is no corresponding to <i>block_num</i> in buffer
-        //load the block into buffer by using getFreeBuffer() and read()
-        //update <i>buffer_block</i> as return value of getFreeBuffer.
-	
-	//return the address of the buffer block (char *).
-}</code></pre>
-                                            </div>
-                                        </div>
-                                     </div>
-                                 </li>
-                                 
-                                 <li>
-                                    <div class="detail" id="getfreebuffer">
-                                        <h2><i>private:</i>getFreeBuffer</h2>
-                                        <h5>Arguments:</h5>
-                                        <p>Nil</p>
-                                        <h5>Return type:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>buffer_num</td>
-                                                    <td>int</td>
-                                                    <td>Buffer number of the free buffer.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Description:</h5>
-                                        <p>This is a private method which searches for a free buffer block. If no buffer blocks are found it does replacement to make a buffer block free. This function <b>never fails</b>.[YET TO BE DESIGNED]</p>
-                                        
-                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreebuff" class="collapse">
-                                            <div class="code">
-<pre><code> int Buffer::getFreeBuffer(){
-    // Iterate through all the buffer blocks and search for a free buffer
-    
-    // If no free buffer block is found perform replacement algorithm [TO BE DESIGNED]
-    
-    //update the <i>metainfo</i> array corresponding to free buffer. 
-    
-    //return the buffer index
-}
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-                             </ul>
-                             
-                         </div>
-                         -->
                          <div id="blkbuff_class" class="detail">
                          	<h2>Class BlockBuffer </h2>
                              <p>The class <i>BlockBuffer</i>  is a generic class for representing a disk block of any type (Record, Internal Index or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block buffer object. In order to work with data of the block, any method in <i>BlockBuffer</i> or its descendent classes need to know the address (pointer) to the buffer memory where the block has been loaded.  Note that the block will be loaded and stored into one of the 32 buffers in the class <i>StaticBuffer</i>. Adding to the complexity, the block may even not be present in the primary memory because of the buffer replacement algorithm of the buffer layer. Hence any method of this class should first get the pointer to the data block whenever an operation is to be performed on the block. The method <i>getBufferPtr()</i> can be used for this purpose. The public Methods of <i>BlockBuffer</i> deals with the information like <a href="#block_structures">header</a> of the disk block which is generic to all blocks of Disk. <i><a href="#recbuff_class">RecBuffer</a></i> and <i><a href="#indbuff_class">IndBuffer</a></i> classes extend the class <i>BlockBuffer</i> thereby inheriting all the fields and methods of <i>BlockBuffer</i>.
@@ -1708,7 +1281,7 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>Block number of the block under consideration.</td>
+                                                <td>Block number of the index block.</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
@@ -1785,46 +1358,54 @@ public:
                              </div>
                              <p>The following is the specification of methods of IndInternal class</p>
                              <ul class="methods">
-				     
-<!------------------------------------IndInternal constructor 1------------------------------------------------------>
-                                 <li>
+<!------------------------------------Constructor 1------------------------------------------------------>
+				     <li>
                                     <div class="detail" id="intindbuff_constructor1">
                                         <h2>IndInternal (Constructor 1)</h2>
-                                        <h5>Arguments:</h5>
-                                        NIL
-                                        <h5>Return type:</h5>
-                                        <p>NIL</p>
-                                        <h5>Description:</h5>
-                                        <p>Constructor calls the constructor of the parent class with argument <i>char blockType</i></p>
-                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-intindbuffer-constructor1" class="collapse">
-                                            <div class="code">
-                                                <pre><code>IndInternal::IndInternal() : IndBuffer('I'){} //this is a way to call parent non-default constructor IndBuffer(char blockType).(Here 'I' indicates that the type of the block is IndInternal)
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-<!------------------------------------IndInternal constructor 2------------------------------------------------------>
-				     <li>
-                                    <div class="detail" id="intindbuff_constructor2">
-                                        <h2>IndInternal (Constructor 2)</h2>
                                         <h5>Arguments:</h5> 
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>block number of the corresponding block</td>
+                                                <td>Block number of the internal index block</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
-                                        <p>NIL</p>
+                                        <p>Nil</p>
+					    
                                         <h5>Description:</h5>
-                                        <p>Constructor calls the constructor of the parent class with argument <i>int blockNum</i></p>
-                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-intindbuffer-constructor" class="collapse">
+                                        <p>Called when the internal index block already exists on the disk.</p>
+					<p><b>NOTE:</b> If a new internal index block is to be allocated in the disk use <a href="#intindbuff_constructor2">constructor 2</a>.</p>
+					    
+                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-intindbuffer-constructor1" class="collapse">
                                             <div class="code">
                                                 <pre><code>IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer(int blockNum)</i>.
+</code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </li>
+				     
+<!------------------------------------Constructor 2------------------------------------------------------>
+                                 <li>
+                                    <div class="detail" id="intindbuff_constructor2">
+                                        <h2>IndInternal (Constructor 2)</h2>
+                                        <h5>Arguments:</h5>
+					<p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <p>Nil</p>
+					    
+                                        <h5>Description:</h5>
+                                        <p>Called if a new internal index block is to be allocated in the disk.</p>
+					<p><b>NOTE:</b> If the internal index block already exists on the disk use <a href="#intindbuff_constructor1">constructor 1</a>.</p>
+					    
+                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-intindbuffer-constructor2" class="collapse">
+                                            <div class="code">
+                                                <pre><code>
+IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent non-default constructor.
+					       // 'N' used to denote RecBuffer
 </code></pre>
                                             </div>
                                         </div>
@@ -1842,12 +1423,12 @@ public:
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>ptr is assumed to be a pointer to type <a href="#block_structures">InternalEntry</a>.</td>
+                                                    <td>Pointer of type <a href="#block_structures">InternalEntry</a> to which the entry contents are copied.</td>
                                                 </tr>
                                                 <tr>
 							<td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>index number of entry in Internal index block.</td>
+                                                    <td>Index number of entry in internal index block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1855,12 +1436,12 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
-                                                    <td>On successful copy of the internal entry</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
+                                                    <td>Successful copy of the internal index entry.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>E_OUTOFBOUND</td>
-                                                    <td>If index_num is outside the range 0-99</td>
+						    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
+                                                    <td>indexNum is outside valid range.</td>
                                                 </tr>
                                             </table>
                                         </div>
