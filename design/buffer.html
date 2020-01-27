@@ -1383,7 +1383,7 @@ public:
                                         <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intindbuffer-constructor1" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer(int blockNum)</i>.
+                                                <pre><code>IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(int blockNum)</i>.
 </code></pre>
                                             </div>
                                         </div>
@@ -1407,7 +1407,7 @@ public:
                                         <div id="algo-intindbuffer-constructor2" class="collapse">
                                             <div class="code">
                                                 <pre><code>
-IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent non-default constructor.
+IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(char blockType)</i>.
 					       // 'N' used to denote IndInternal Buffer
 </code></pre>
                                             </div>
@@ -1426,7 +1426,7 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> to which the contents of the specified entry of internal index block are copied.</td>
+                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry*</a> to which the contents of the specified entry of internal index block are copied.</td>
                                                 </tr>
                                                 <tr>
 							<td>indexNum</td>
@@ -1451,14 +1451,14 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
 
                                         <h5>Description:</h5>
                                         <p>Gives the indexNum'th <i>InternalEntry</i> of the IndInternal block.</p>
-					    <p><b>NOTE:</b> <ul>
+					<p><b>NOTE:</b> <ul>
 					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
 							    However, because the void pointer does not know what type of object it is pointing to, 
 							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
 						    <li>Higher layer must pass the argument of type <i>struct InternalEntry *</i>.</li>
 						    <li>Higher layer must also allocate memory for <i>struct InternalEntry</i> before calling this function.</li>
 						    </ul>
-					    </p>
+					</p>
                                         <h5><a data-toggle="collapse" href="#algo-intgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intgetentry" class="collapse">
                                             <div class="code">
@@ -1487,7 +1487,7 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> whose contents are copied to the specified entry of internal index block.</td>
+                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry*</a> whose contents are copied to the specified entry of internal index block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>indexNum</td>
@@ -1560,54 +1560,61 @@ public:
                              </div>
                              <p>The following is the specification of methods of IndLeaf class</p>
                              <ul class="methods">
-				     			     
 <!--------------------------------------Constructor 1--------------------------------------------->				     
                                  <li>
                                     <div class="detail" id="leafindbuff_constructor1">
                                         <h2>IndLeaf (Constructor 1)</h2>
                                         <h5>Arguments:</h5> 
-                                        NIL
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <td>blockNum</td>
+                                                <td>int</td>
+                                                <td>Block number of the leaf index block.</td>
+                                            </table>
+                                        </div>
                                         <h5>Return type:</h5>
-                                        NIL
+                                        <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Constructor calls the constructor of the parent class with argument <i>char blockType</i></p>
+					    
+                                        <p>Called when the leaf index block already exists on the disk.</p>
+					<p><b>NOTE:</b> If a new leaf index block is to be allocated in the disk use <a href="#leafindbuff_constructor2">constructor 2</a>.</p>
+					    
                                         <h5><a data-toggle="collapse" href="#algo-leafindbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-leafindbuffer-constructor1" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndLeaf::IndLeaf() : IndBuffer('L'){} //this is a way to call parent non-default constructor IndBuffer(char blockType). (Here 'L' indicates that the type of the block is IndLeaf)
+                                                <pre><code>IndLeaf::IndLeaf(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(int blockNum)</i>.
 </code></pre>
                                             </div>
                                         </div>
                                     </div>
                                  </li>
+                                 
+                                 
+				     
 <!--------------------------------------Constructor 2--------------------------------------------->				     
                                  <li>
                                     <div class="detail" id="leafindbuff_constructor2">
                                         <h2>IndLeaf (Constructor 2)</h2>
                                         <h5>Arguments:</h5> 
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <td>blockNum</td>
-                                                <td>int</td>
-                                                <td>block number of the corresponding block</td>
-                                            </table>
-                                        </div>
+					<p>Nil</p>
                                         <h5>Return type:</h5>
-                                        <p>NIL</p>
-                                        <h5>Description:</h5>
-                                        <p>Constructor calls the constructor of the parent class with argument <i>int blockNum</i></p>
+					<p>Nil</p>
+                                        
+					<h5>Description:</h5>
+                                        <p>Called if a new leaf index block is to be allocated in the disk.</p>
+					<p><b>NOTE:</b> If the leaf index block already exists on the disk use <a href="#leafindbuff_constructor1">constructor 1</a>.</p>
+					    
                                         <h5><a data-toggle="collapse" href="#algo-leafindbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-leafindbuffer-constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndLeaf::IndLeaf(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer(int blockNum)</i>.
+                                                <pre><code>
+IndLeaf::IndLeaf() : IndBuffer('L'){} // this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(char blockType)</i>.
+				      // 'L' used to denote IndInternal Buffer
 </code></pre>
                                             </div>
                                         </div>
                                     </div>
                                  </li>
-                                 
-                                 
-	
 
 
 <!--------------------------------------------getEntry-------------------------------------------------------------->                                 
@@ -1620,12 +1627,12 @@ public:
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>ptr is assumed to be a pointer to type <a href="#block_structures">Index</a>.</td>
+                                                    <td>Pointer of type <a href="#block_structures_index">struct Index*</a> to which the contents of the specified entry of leaf index block are copied.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>index number of entry in Leaf index block.</td>
+                                                    <td>Index number of entry in leaf index block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1633,18 +1640,27 @@ public:
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
-                                                    <td>On successful copy of the index entry</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
+                                                    <td>Successful copy of the leaf index entry.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>E_OUTOFBOUND</td>
-                                                    <td>If indexNum is outside the range 0-62</td>
+						    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
+                                                    <td>indexNum is outside valid range.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method gives the indexNum'th <i>Index</i> of the IndLeaf block.</p>
+                                        <p>Gives the indexNum'th <i>Index</i> of the IndLeaf block.</p>
+					<p><b>NOTE:</b> <ul>
+					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
+							    However, because the void pointer does not know what type of object it is pointing to, 
+							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+						    <li>Higher layer must pass the argument of type <i>struct Index*</i>.</li>
+						    <li>Higher layer must also allocate memory for <i>struct Index</i> before calling this function.</li>
+						    </ul>
+					</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-leafgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-leafgetentry" class="collapse">
                                             <div class="code">
@@ -1674,12 +1690,12 @@ public:
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>ptr is assumed to be a pointer to type <a href="#block_structures">Index</a>.</td>
+                                                    <td>Pointer of type <a href="#block_structures_index">struct Index*</a> whose contents are copied to the specified entry of leaf index block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>index number of entry in Leaf index block.</td>
+                                                    <td>Index number of entry in leaf index block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1688,18 +1704,26 @@ public:
                                             
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
-                                                    <td>On successful copy of the index entry into the block</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
+                                                    <td>Successful copy of the leaf index entry.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
-                                                    <td>If indexNum is outside the range 0-62</td>
+                                                    <td>indexNum is outside valid range.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method sets the indexNum'th <i>Index</i> of the IndLeaf block with the <i>Index</i> sent as argument.</p>
+                                        <p>Sets the indexNum'th <i>Index</i> of the IndLeaf block with the <i>Index</i> sent as argument.</p>
+					<p><b>NOTE:</b> <ul>
+					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
+							    However, because the void pointer does not know what type of object it is pointing to, 
+							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+						    <li>Higher layer must pass the argument of type <i>struct Index*</i>.</li>
+						</ul>
+					</p>
+					 
                                         <h5><a data-toggle="collapse" href="#algo-leafsetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-leafsetentry" class="collapse">
                                             <div class="code">
@@ -1711,7 +1735,7 @@ public:
 
 // copy the struct Index pointed by ptr to indexNum'th entry in block.
 
-//update dirty bit.
+//update dirty bit using setDirtyBit().
 
 //return SUCCESS
 
