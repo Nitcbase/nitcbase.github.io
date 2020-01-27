@@ -682,7 +682,7 @@ public:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>Pointer whose contents is copied to the block header.</td>
+                                                    <td>Pointer whose contents are copied to the block header.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1426,7 +1426,7 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> to which the entry contents are copied.</td>
+                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> to which the contents of the specified entry of internal index block are copied.</td>
                                                 </tr>
                                                 <tr>
 							<td>indexNum</td>
@@ -1452,8 +1452,11 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                         <h5>Description:</h5>
                                         <p>Gives the indexNum'th <i>InternalEntry</i> of the IndInternal block.</p>
 					    <p><b>NOTE:</b> <ul>
-						    <li>The argument to the function must be of type <i>struct InternalEntry *</i>.</li>
-						    <li>Higher layer must allocate memory for <i>struct InternalEntry</i> before calling this function.</li>
+					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
+							    However, because the void pointer does not know what type of object it is pointing to, 
+							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+						    <li>Higher layer must pass the argument of type <i>struct InternalEntry *</i>.</li>
+						    <li>Higher layer must also allocate memory for <i>struct InternalEntry</i> before calling this function.</li>
 						    </ul>
 					    </p>
                                         <h5><a data-toggle="collapse" href="#algo-intgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
@@ -1484,12 +1487,12 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>ptr is assumed to be a pointer to type <a href="#block_structures">InternalEntry</a>.</td>
+                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry</a> whose contents are copied to the specified entry of internal index block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>index number of entry in Internal index block.</td>
+                                                    <td>Index number of entry in internal index block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1497,18 +1500,25 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-                                                    <td>SUCCESS</td>
-                                                    <td>On successful copy of the index entry into the block</td>
+                                                    <td><a href="/constants.html#constants" target="_blank">SUCCESS</a></td>
+                                                    <td>Successful copy of the internal index entry.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
-                                                    <td>If index_num is outside the range 0-99</td>
+                                                    <td>indexNum is outside valid range.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>This method sets the indexNum'th <i>InternalEntry</i> of the IndInternal block with the <i>InternalEntry</i> sent as argument.</p>
+                                        <p>Sets the indexNum'th <i>InternalEntry</i> of the IndInternal block with the <i>InternalEntry</i> sent as argument.</p>
+					<p><b>NOTE:</b> <ul>
+					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
+							    However, because the void pointer does not know what type of object it is pointing to, 
+							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+						    <li>Higher layer must pass the argument of type <i>struct InternalEntry *</i>.</li>
+						</ul>
+					</p>   
                                         <h5><a data-toggle="collapse" href="#algo-intsetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intsetentry" class="collapse">
                                             <div class="code">
@@ -1520,7 +1530,7 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
 
 // copy the struct InternalEntry pointed by ptr to indexNum'th entry in block. 
 
-//update dirty bit.
+//update dirty bit using setDirtyBit().
 
 //return SUCCESS
 	
