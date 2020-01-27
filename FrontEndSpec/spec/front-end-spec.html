@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Basic Page Needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <title>XFS Interface</title>
+
+    <!-- Mobile Specific Metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="../img/favicon.jpg"/>
+
+    <!-- CSS
+    ================================================== -->       
+    <!-- Bootstrap css file-->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font awesome css file-->
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- Superslide css file-->
+    <link rel="stylesheet" href="../css/superslides.css">
+    <!-- Slick slider css file -->
+    <link href="../css/slick.css" rel="stylesheet"> 
+    <!-- smooth animate css file -->
+    <link rel="stylesheet" href="../css/animate.css">  
+    <!-- Elastic grid css file -->
+    <link rel="stylesheet" href="../css/elastic_grid.css"> 
+    <!-- Circle counter cdn css file -->
+    <link rel='stylesheet prefetch' href='../css/jquery.circliful.css'>    
+    <!-- Default Theme css file -->
+    <link id="orginal" href="../css/themes/eucalyptus-theme.css" rel="stylesheet">
+    <!-- Main structure css file -->
+    <link href="../style.css" rel="stylesheet">
+   
+    <!-- Google fonts -->
+    <link href='../css/opensans.css' rel='stylesheet' type='text/css'>
+    <link href='../css/varela.css' rel='stylesheet' type='text/css'>
+    <link href='../css/montserrat.css' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body> 
+     <!-- BEGAIN PRELOADER -->
+    <div id="preloader">
+      <div id="status">&nbsp;</div>
+    </div>
+    <!-- END PRELOADER -->
+
+  
+    <!--=========== BEGIN HEADER SECTION ================-->
+    <header id="header">
+      <!-- BEGIN MENU -->
+      <div class="menu_area">
+        <nav class="navbar navbar-default navbar-fixed-top past-main" role="navigation"> 
+          <div class="container">
+          <div class="navbar-header">
+            <!-- FOR MOBILE VIEW COLLAPSED BUTTON -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+              <!-- LOGO -->
+
+            <!-- TEXT BASED LOGO -->
+            <a class="navbar-brand" >NITCBase</a>
+            
+                              
+          </div>
+                                   
+          
+      <!-- END MENU -->
+
+
+      
+    </header>
+		<!--=========== End HEADER SECTION ================--> 
+		
+		
+       <section id="expfs">
+		<br>
+		<br>
+		<br>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <div class="about_area">
+             
+                <!-- START ABOUT HEADING -->
+              <div class="heading">
+                <h2 >XFS Interface Usage Specification</h2>
+                <br/>
+                <br/>
+                <p><b>XFS Interface</b> is an external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a text file called <b>disk.txt</b>. The interface can format the disk, dump data structures like Block allocation map,Relation catalog and Attribute catalog, load/remove relations, list relations and copy specified block of a relation on the XFS disk to a UNIX file.</p>
+
+               
+				
+                <p> The various commands available in XFS Interface are discussed below. </p>
+
+     
+                 
+                <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>INSERT INTO <i>table-name</i> <i>(column-names) </i> VALUES <i>(values)</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to insert a single record, entered directly from the interface. It inserts the values specified in the command syntax into the relation in the xfs disk.The order of values must be in line with the order in which the column names are specified in the command.The column names and the values should be seperated by comma in the syntax. <br><br>
+eg: INSERT INTO sample (No, Name, Marks, PhNo, DOB, Place, Cgpa) FROM sample.csv </li></ul>
+	   
+                <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>INSERT INTO  <i>table-name</i>  <i>(column-names) </i> FROM <i>filename</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to insert multiple records into the relation in the xfs disk from a csv file containing the values of the records.The column names should be seperated by comma in the syntax. The order of values in the csv file must be in line with the order in which the column names are specified in the command. Each line in the csv file corresponds to a record to be inserted in to the relation.
+<div><br>
+eg: INSERT INTO sample (No, Name, Marks, PhNo, DOB, Place, Cgpa) FROM sample.csv
+<h5><i>sample.csv</i></h5>
+<pre>                        
+1,ABC,10,8126845454,21-10-1998,THR,8.9<br>
+2,DEFGH,100,9656464479,15-01-1997,KTM,9.6<br>
+3,PQRSTUV,25,9495454646,31-1-1998,KLM,10</pre>
+</div>
+The 3 records in sample.csv will be added to the table sample in the disk.</li></ul>
+
+	
+		
+                <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>CREATE TABLE table_name (column1 datatype,
+column2 datatype, column3 datatype, ....);</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to create a new relation in the disk. <br><br>
+eg: CREATE TABLE sample (No INT, Name STRING, Marks INT, PhNo INT, DOB STRING, Place STRING, Cgpa FLOAT</li></ul>
+
+	        <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>DROP TABLE <i>tablename</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to remove relation from the disk. <br><br>
+eg:DROP TABLE sample</li></ul>
+
+	      <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>SELECT FROM <i>source_relation</i> INTO <i>target_relation</i> WHERE <i>attribute_name op value</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to select the records from the source relation which satisfy a given condition ,into a target relation. <br><br>
+eg: SELECT FROM  source INTO target WHERE Marks &lt;50 </li></ul>
+
+                <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>SELECT FROM <i>source_relation</i> INTO <i>file_name</i> WHERE <i>attribute_name op value</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to select the records from the source relation which satisfy a given condition ,into a target file. <br><br>
+eg: SELECT FROM  source INTO target_file.csv WHERE Marks &lt; 50 </li></ul>
+
+                <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>DISPLAY  <i>relation_name</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to display the records from the relation specified along with the attribute names. <br><br>
+eg: DISPLAY source </li></ul>
+                 
+	      <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>SELECT FROM <i>relation1</i> JOIN <i>relation2</i>INTO <i>target_relation</i> WHERE <i>attribute_name op value</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to select the records from the equijoin of two relations which satisfy a given condition , into a target relation. <br><br>
+eg: SELECT FROM  rel1 JOIN rel2 INTO target WHERE Marks &lt;50 </li></ul>
+
+	      <ul class="list-group">
+                <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>SELECT FROM <i>relation1</i> JOIN <i>relation2</i>INTO <i>target_file</i> WHERE <i>attribute_name op value</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to select the records from the equijoin of two relations which satisfy a given condition , into a target file. <br><br>
+eg: SELECT FROM  rel1 JOIN rel2 INTO target.csv WHERE Marks &lt;50 </li></ul>
+
+	<ul class="list-group">
+          <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>ALTER TABLE <i>table_name</i> RENAME <i>new_table_name</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to rename an existing relation.<br><br>
+eg: ALTER TABLE sample RENAME new_sample </li></ul>
+
+	<ul class="list-group">
+          <li class="list-group-item" style="color:black"> <i>Syntax</i> :<b>ALTER TABLE <i>table_name</i> RENAME COLUMN 
+<i>column_name</i> <i>new_column_name</i> </b></li>
+                <li class="list-group-item" style="color:black"><i>Semantics</i> : This command is used to rename attribute name of a relation.<br><br>
+eg: ALTER TABLE sample RENAME COLUMN Marks Total_Marks </li></ul>
+
+              
+            </div>
+          </div>
+          </div>
+        </div>       
+      </div>
+       </section>
+   
+		   
+      <!--=========== BEGIN FOOTER ================-->
+     <footer id="footer">
+       <div class="container">
+         <div class="row">
+<a style="float: right" rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="../img/creativecommons.png" /></a>
+           <div class="col-lg-6 col-md-6 col-sm-6">
+             <div class="footer_left">
+               <p><a href="http://www.nitc.ac.in/">National Institute of Technology, Calicut</a></p>
+             </div>
+           </div>
+         </div>
+       </div>
+      </footer>
+      <!--=========== END FOOTER ================-->
+
+     <!-- Javascript Files
+     ================================================== -->
+  
+     <!-- initialize jQuery Library -->
+    <script src="../js/jquery.min.js"></script>
+    <!-- Google map -->
+    <script src="../js/map_js.js"></script>
+    <script src="../js/jquery.ui.map.js"></script>
+     <!-- For smooth animatin  -->
+    <script src="../js/wow.min.js"></script> 
+    <!-- Bootstrap js -->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- superslides slider -->
+    <script src="../js/jquery.superslides.min.js" type="text/javascript"></script>
+    <!-- slick slider -->
+    <script src="../js/slick.min.js"></script>    
+    <!-- for circle counter -->
+    <script src='../js/jquery.circliful.min.js'></script>
+    <!-- for portfolio filter gallery -->
+    <script src="../js/modernizr.custom.js"></script>
+    <script src="../js/classie.js"></script>
+    <script src="../js/elastic_grid.min.js"></script>
+    <script src="../js/portfolio_slider.js"></script>
+
+    <!-- Custom js-->
+    <script src="../js/custom.js"></script>
+  </body>
+</html>
+
+ 
+
