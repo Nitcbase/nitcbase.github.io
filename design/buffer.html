@@ -1798,15 +1798,15 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is a way to call parent non-defaul
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td>Negative integer</td>
-                                        <td>If value in attr1 is less than the value in attr2<span style="color: dodgerblue">*</span></td>
+                                        <td>Value in attr1 is less than the value in attr2<span style="color: dodgerblue">*</span></td>
                                     </tr>
                                     <tr>
                                         <td>0</td>
-                                        <td>If value in attr1 is equal to the value in attr2 *</td>
+                                        <td>Value in attr1 is equal to the value in attr2 *</td>
                                     </tr>
                                     <tr>
                                         <td>Positive integer</td>
-                                        <td>If value in attr1 is equal to the value in attr2 *</td>
+                                        <td>Value in attr1 is greater to the value in attr2 *</td>
                                     </tr>
                                 </table>
                             </div>
@@ -1817,13 +1817,13 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is a way to call parent non-defaul
                             <div id="algo-compare" class="collapse">
                                 <div class="code">
 <pre><code>int compare(union Attribute attr1, union Attribute attr2, int AttrType){
-    /* if attrType == STR
+    /* if attrType == <a href="/constants.html#constants" target="_blank">STRING</a>
        return strcmp(attr1.strval, attr2.strval); */
     
-    /* else if attrType == INT -1, 0, 1 depending on whether the value attr1.ival
+    /* else if attrType == <a href="/constants.html#constants" target="_blank">INT</a> -1, 0, 1 depending on whether the value attr1.ival
        is less than, equal to or greater than the value attr2.ival */ 
     
-    /* else if attrType==FLOAT return -1, 0, 1 depending on whether the value attr1.fval
+    /* else if attrType== <a href="/constants.html#constants" target="_blank">FLOAT</a> return -1, 0, 1 depending on whether the value attr1.fval
        is less than, equal to or greater than the value attr2.fval */ 
 }
 </code></pre>
