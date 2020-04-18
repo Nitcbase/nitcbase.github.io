@@ -99,9 +99,10 @@
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
                             <div class="detail" id="access-methods">
+                                
                                 <h2>class Disk</h2>
-                                <p>The physical layer functions readblock()/writeblock() takes as input a memory buffer (pointer) and a integer (block number) and transfer the block to/from the disk from/to the buffer.  These are the only
-                                functions through which the disk can be accessed.  These functions are supplied to you in the  NITCbase package and hence you do not need to implement them.</p>
+                                <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, destructor , a function to read from the disk and a function to write to the disk. These are the only functions through which the disk can be accessed. These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
+</p>
                                 <h5>readblock()</h5>
                                 <h5>Arguments:</h5>
                                 <div class="table-responsive">
@@ -131,6 +132,9 @@
                                             <td>If the block number is out of range.</td>
                                         </tr>
                                     </table>
+                                    <h5>Description</h5>
+                                    <p>Transfers the contents of the specified disk block to the input memory buffer.</p>
+                                    
                                  </div>
                           	     <h5>writeblock()</h5>
                                  <h5>Arguments:</h5>
@@ -149,6 +153,9 @@
 
 
                                     </table>
+                                    <h5>Description</h5>
+                                    <p>Transfers the contents of the input memory buffer memory buffer to the specified disk block.</p>
+                                    
                                 </div>
                                 <h5>Return value:</h5>
                                 <div class="table-responsive">
