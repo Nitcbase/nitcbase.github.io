@@ -98,9 +98,9 @@
                             <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4, 5 are for storing first Block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat> Attribute Catalog</a> respectively. <b>Block allocation map</b> tells us whether a particular block is free or occupied. If occupied it stores the type of the block stored (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>). It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
-                           
-                                                     <div id="disk_model" class="detail">
-                         	<h2>class Disk</h2>
+			</div>   
+                        <div id="disk_class" class="detail">
+                             <h2>class Disk</h2>
                              <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, destructor , a function to read from the disk and a function to write to the disk. These are the only functions through which the disk can be accessed. These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
  </p>
 			     <center><img class="img-fluid" src="/img/disk_class.png"></center>
@@ -117,35 +117,30 @@ public:
 };
                                 </code></pre>
                              </div>
-                             
-                             
-                             
-                         	<br>
+                             <br>
                              <ul class="methods">
                                  <li>
-                                    <div class="detail" id="disk_model">
+                                    <div class="detail" id="disk_constructor">
                                         <h2><i>public:</i> Disk (Constructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Makes a temporary copy of the current disk. This is to ensure that if the system has a forced shutdown during its session the previous state of the disk will not be lost
-</p>
-                                        
-                                        
+                                        <p>Used to make a temporary copy of the disk contents before the starting of a new session. This ensures that if the system has a forced shutdown during the course of the session, the previous state of the disk is not lost.
+</p>                                        
                                     </div>
                                  </li>
                                  
                                  <li>
-                                    <div class="detail" id="disk_model">
+                                    <div class="detail" id="disk_destructor">
                                         <h2><i>public:</i> ~Disk (Destructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>                            
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Writes back the changes made to the disk in the current session back to the disk on graceful termination so that changes are visible in future sessions.</p>
+                                        <p>Used to update the changes made to the disk on graceful termination of the lattest session. This ensures that these changes are visible in future sessions.</p>
                                         
                                     </div>
                                  </li>
@@ -154,7 +149,7 @@ public:
 				 
                                  
                                  <li>
-                                    <div class="detail" id="disk_model">
+                                    <div class="detail" id="disk_readBlock">
                                         <h2><i>public: </i>readBlock</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
@@ -162,12 +157,12 @@ public:
                                                 <tr>
                                                     <td>buffer</td>
                                                     <td>unsigned char *</td>
-                                                    <td>memory pointer to which block has to be loaded/read.</td>
+                                                    <td>Memory pointer of the buffer to which the block contents is to be loaded/read.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>disk block which has to be read.</td>
+                                                    <td>Block number of the disk block to be read.</td>
                                                 </tr>		
 
                                             </table>
@@ -177,63 +172,59 @@ public:
                                             <table class="table table-bordered table-hover">
                                                 <tr>
                                                     <td>SUCCESS</td>
-                                                    <td>On successfully loading/reading the block to buffer.</td>
+                                                    <td>Successful loading/reading of the block to the buffer.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
-                                                    <td>If the block number is out of range.</td>
+                                                    <td>Block number is out of range.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>Transfers the contents of the specified disk block to the input memory buffer.
-</p>
-					
+                                        <p>Transfers the contents of the specified disk block to the input memory buffer. Used in buffer layer to load disk block to buffer.</p>
                                     </div>
                                  </li>
                                  
                                  
                                  <li>
-                                    <div class="detail" id="disk_model">
+                                    <div class="detail" id="disk_writeBlock">
                                         <h2><i>public: </i>writeBlock</h2>
                                         <h5>Arguments:</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <td>blockNum</td>
-                                                <td>int</td>
-                                                <td>disk block to which buffer block has to be written.</td>
-                                            </tr>
-                                            <tr>
-                                                <td>buffer</td>
-                                                <td>unsigned char *</td>
-                                                <td>memory pointer from where block has to be copied to the disk.</td>
-                                            </tr>
-
-
-                                        </table>
-                                    </div>
+                                    	<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							<td>blockNum</td>
+							<td>int</td>
+							<td>Block number of the disk block to be written to.</td>
+						    </tr>
+						    <tr>
+							<td>buffer</td>
+							<td>unsigned char *</td>
+							<td>Memory pointer of the buffer from which contents is to be written to the block.</td>
+						    </tr>
+						</table>
+                                    	</div>
                                     
                                         
-                                    <h5>Return value:</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <tr>
-                                                <td>SUCCESS</td>
-                                                <td>On successfully writing the block to the disk.</td>
-                                            </tr>
-                                            <tr>
-                                                <td>E_OUTOFBOUND</td>
-                                                <td>If the block number is out of range.</td>
-                                            </tr>
-                                        </table>
-                                     </div>
+                                    	<h5>Return value:</h5>
+                                    	<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							<td>SUCCESS</td>
+							<td>Successfully writing of the block to the disk.</td>
+						    </tr>
+						    <tr>
+							<td>E_OUTOFBOUND</td>
+							<td>Block number is out of range.</td>
+						    </tr>
+						</table>
+                                     	</div>
                                         <h5>Description:</h5>
-                                        <p>Transfers the contents of the input memory buffer memory buffer to the specified disk block.</p>
+                                        <p>Transfers the contents of the input memory buffer memory buffer to the specified disk block. Used in buffer layer to write buffer contents to disk.</p>
 					
                                     </div>
                                  </li>
-                                
+			 </ul>
 		</div>
 <p> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
                         
