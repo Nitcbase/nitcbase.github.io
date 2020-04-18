@@ -104,21 +104,21 @@
                              <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, destructor , a function to read from the disk and a function to write to the disk. These are the only functions through which the disk can be accessed. These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
  </p>
 
-<!--
+
                              <div class="code">
                                 <pre><code>class Disk {
 				
                                     public:
                                             Disk();
                                             ~Disk();
-                                            int readBlock(unsigned char *block, int blockNum);
-                                            int writeBlock(unsigned char *block, int blockNum);
+                                            static int readBlock(unsigned char *block, int blockNum);
+                                            static int writeBlock(unsigned char *block, int blockNum);
 	
                                             };
                                 </code></pre>
                              </div>
                              
-                             -->
+                             
                              
                          	<br>
                              <ul class="methods">
