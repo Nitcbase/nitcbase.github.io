@@ -101,19 +101,19 @@
 			</div>   
                         <div id="disk_class" class="detail">
                              <h2>class Disk</h2>
-                             <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, destructor , a function to read from the disk and a function to write to the disk. These are the only functions through which the disk can be accessed. These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
+                             <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, a destructor , a function to read from the disk and a function to write to the disk. Out of these the readBlock and writeBlock functions are static. 
+				     C++ allows static functions to be accessed using the semantics classname::functionname() (instead of objectinstance->functionname() as in the case of methods that are not declared statically). These are the only functions through which the disk can be accessed.
+				     These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
  </p>
 			     <center><img class="img-fluid" src="/img/disk_class.png"></center>
 			     <br><br>
                              <div class="code">
-                                <pre><code>class Disk {
-				
+                                <pre><code>class Disk {			
 public:
 	Disk();
 	~Disk();
 	static int readBlock(unsigned char *block, int blockNum);
 	static int writeBlock(unsigned char *block, int blockNum);
-
 };
                                 </code></pre>
                              </div>
@@ -193,14 +193,14 @@ public:
                                     	<div class="table-responsive">
 						<table class="table table-bordered table-hover">
 						    <tr>
-							<td>blockNum</td>
-							<td>int</td>
-							<td>Block number of the disk block to be written to.</td>
-						    </tr>
-						    <tr>
 							<td>buffer</td>
 							<td>unsigned char *</td>
 							<td>Memory pointer of the buffer from which contents is to be written to the block.</td>
+						    </tr>	
+						    <tr>
+							<td>blockNum</td>
+							<td>int</td>
+							<td>Block number of the disk block to be written to.</td>
 						    </tr>
 						</table>
                                     	</div>
@@ -226,10 +226,7 @@ public:
                                  </li>
 			 </ul>
 		</div>
-<p> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
-                        
-                        
-                        
+		<p><b>Note: </b> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
 
                         <div id="record_blk" class="detail">
                             <h2>Record block structure</h2>
