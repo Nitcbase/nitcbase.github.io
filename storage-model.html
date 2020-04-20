@@ -73,6 +73,7 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a href="#disk_model">Disk model</a></li>
+                            <li> <a href="#disk_class">Disk class</a></li>
                             <li> <a href="#record_blk">Record block structure</a></li>
                             <li> <a href="#intind_blk">Internal index block structure</a></li>
                             <li> <a href="#leafind_blk">Leaf index block structure</a></li>
@@ -100,9 +101,10 @@
                             
 			</div>   
                         <div id="disk_class" class="detail">
-                             <h2>class Disk</h2>
-                             <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, a destructor , a function to read from the disk and a function to write to the disk. Out of these the readBlock and writeBlock functions are static. 
-				     C++ allows static functions to be accessed using the semantics classname::functionname() (instead of objectinstance->functionname() as in the case of methods that are not declared statically). These are the only functions through which the disk can be accessed.
+                             <h2>Disk class</h2>
+                             <p>The disk is accessed by higher layers through the disk class. The class contains a constructor, a destructor, a function to read from the disk and a function to write to the disk. Out of these the readBlock and writeBlock functions are static. 
+				     C++ allows static functions to be accessed using the semantics classname::functionname() (instead of objectinstance->functionname() as in the case of methods that are not declared statically). These are the only functions through which the disk can be accessed. 
+				     A single object of the class needs to be declared at the start of the session. Its sole purpose is to run the constructor and the destructor of the class.
 				     These functions are supplied to you in the NITCbase package and hence you do not need to implement them.
  </p>
 			     <center><img class="img-fluid" src="/img/disk_class.png"></center>
@@ -182,6 +184,7 @@ public:
                                         </div>
                                         <h5>Description:</h5>
                                         <p>Transfers the contents of the specified disk block to the input memory buffer. Used in buffer layer to load disk block to buffer.</p>
+					<p><b>Note: Higher layers must allocate memory for the unsigned character array of size 2048 before passing its pointer to the function. </p>
                                     </div>
                                  </li>
                                  
@@ -211,7 +214,7 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							<td>SUCCESS</td>
-							<td>Successfully writing of the block to the disk.</td>
+							<td>Successful writing of the block to the disk.</td>
 						    </tr>
 						    <tr>
 							<td>E_OUTOFBOUND</td>
@@ -221,12 +224,12 @@ public:
                                      	</div>
                                         <h5>Description:</h5>
                                         <p>Transfers the contents of the input memory buffer memory buffer to the specified disk block. Used in buffer layer to write buffer contents to disk.</p>
-					
+					<p><b>Note: Higher layers must allocate memory for the unsigned character array of size 2048 before passing its pointer to the function. </p>
                                     </div>
                                  </li>
 			 </ul>
 		</div>
-		<p><b>Note: </b> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
+		<p><b>Note: </b>Excluding the first three blocks (which hold the Block Allocation Map), the rest of the occupied blocks are of three types based on type of information stored in them- 1. Record block 2. Internal Index block 3. Leaf Index block. </p>
 
                         <div id="record_blk" class="detail">
                             <h2>Record block structure</h2>
@@ -239,7 +242,7 @@ public:
                             
                             <center><img class="img-fluid" src="img/record_block.png"></center>
 
-                            <p> First four bytes(0-3) of header are used to identify the type of block(<a href="/constants.html" target="_blank">REC/IND</a>) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 24-31 are reserved for future use.</p>
+                            <p> First four bytes(0-3) of header are used to identify the type of block(<a href="/constants.html" target="_blank">REC/IND</a>) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 28-31 are reserved for future use.</p>
                             <p>  Each record block is divided into <b>slots</b> of variable record size . Each slot stores a single record (and hence requires 16*K bytes for a relation with K attributes). Each block can have an arbitrary number of slots depending on the number of attributes in the relation. Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
 
                             <b><p> \[ 
