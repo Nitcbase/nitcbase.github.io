@@ -96,7 +96,7 @@
                         <div id="disk_model" class="detail">
                             <h2>Disk Model</h2>
                             <p>Nitcbase assumes that the disk is a sequence of blocks, and a block is a sequence of bytes. The disk consists of 8192 blocks, and each block is of 2048 bytes, resulting in a total of 16MB of storage. Disk blocks are indexed from 0 to 8191.</p>
-			    <p>Blocks 0-3 are reserved for storing Block Allocation Map, whereas Blocks 4 and 5 are for storing the first block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat>Attribute Catalog</a>, respectively. <b>Block Allocation Map</b> tells us whether a particular block is free or occupied. If occupied, it stores the type of the block stored (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>). It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block Allocation Map. The following figure summarizes the disk structure. </p>
+			    <p>Blocks 0-3 are reserved for storing Block Allocation Map, whereas Blocks 4 and 5 are for storing the first block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat>Attribute Catalog</a>, respectively. <b>Block Allocation Map</b> tells us whether a particular block is free or occupied. If occupied, it stores the type (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>) of the block stored. It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block Allocation Map. The following figure summarizes the disk structure. </p>
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
 			</div>   
@@ -325,12 +325,12 @@ public:
                         <div class="pagetitle"><h1>Catalog structures</h1></div>
 
                         <div class="detail" id="catalogs">
-                            <p> Nitcbase maintains two catalogs in the disk for storing the meta data information about relations, attributes, indexes etc. These catalogs are: </p>
+                            <p> Nitcbase maintains two catalogs in the disk for storing metadata information about relations, attributes, indexes, etc. These catalogs are: </p>
                             <ol>
                                 <li>Relation Catalog</li>
                                 <li>Attribute Catalog</li>
                             </ol>
-                            <p> In an RDBMS, a relation refers to collection of records where each record is an n-tuple of attribute values. An attribute is a column or field in a relation. A database is a collection of relations. </p>
+                            <p> In an RDBMS, a relation refers to a collection of records where each record is an n-tuple of attribute values. An attribute is a column or a field in a relation. A database is a collection of relations. </p>
                             <p> <i>Nitcbase organizes these catalogs as relations. Hence the block structures used for the catalogs are <a href="#record_blk">record block structures.</a></i>
                             </p>
 
@@ -339,18 +339,18 @@ public:
 
                         <div class="detail" id="relcat">
                             <h2>Relation Catalog</h2>
-                            <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 96 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block, Last Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list and Last Block (byte# 64-79) stores the block number of the last record block of the relation. #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. (Note that #slots can be can be calculated from #Attributes as described <a href="#record_blk">earlier</a>.)</p>
-
+                            <p> Nitcbase stores the first block of the Relation Catalog in block 4 of the disk. Relation Catalog is used for storing meta-information of the relations in a database. Each entry in the Relation Catalog has a size of 96 bytes and has the following six attributes: <i>RelationName, #Attributes, #Records, FirstBlock, LastBlock,</i> and <i>#SlotsPerBlock</i>. RelationName (bytes 0-15) stores the name of the relation, #Attributes(bytes 16-31) stores the number of attributes of that relation, and #Records(bytes 32-47) stores the number of records currently stored in that relation. The record blocks of a relation are arranged as a linked list. FirstBlock (bytes 48-63), which stores the block number of the first record block of the relation, essentially points to the head of the linked list. LastBlock (byte# 64-79), which stores the block number of the last record block of the relation, indicates the tail of the linked list. #SlotsPerBlock (bytes 80-95) stores the number of slots a record block of that relation has. (Note that #Slots can be calculated from #Attributes as described <a href="#record_blk">earlier</a>.)</p>
+				
                             <center><img class="img-fluid" src="img/relation_catalog.png"></center>
 
-                            <b>Note:</b> <i>Since the Relation Catalog is also stored in the disk like any other relation, its block structure is identical to that of any record block with 6 attributes.</i>
+                            <b>Note:</b> <i>Since the Relation Catalog is internally implemented as a relation, it's block structure is identical to that of any record block with six attributes.</i>
                             <br>
                             <br>
                             <div class="question">
                                 <div class="card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse4">
-                                            <b>Q1.</b> What are the values of the header fields #Attrs, #Slots for a Relation Catalog block?
+                                            <b>Q1.</b> What are the values of the header fields #Attrs and #Slots for a Relation Catalog block?
                                         </a>
                                     </div>
                                     <div id="collapse4" class="collapse">
@@ -369,12 +369,12 @@ public:
                                 <div class="card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse5">
-                                            <b>Q2.</b> What is the minimum number of entries in the relation catalog and what relations do they correspond to?
+                                            <b>Q2.</b> What is the minimum number of entries allowed in the Relation Catalog? What relations do these entries correspond to?
                                         </a>
                                     </div>
                                     <div id="collapse5" class="collapse">
                                         <div class="card-body">
-                                            Minimum number of entries in the relation catalog is 2 despite not creating any relation externally. They correspond to relation catalog and attribute catalog since they are also relations and should be in the disk all the time.
+                                            The minimum number of entries in the Relation Catalog is two, even in the absence of other relations in the database. These entries correspond to Relation Catalog and Attribute Catalog since they are also treated as relations and should be in the disk at all times.
                                         </div>
                                     </div>
                                 </div>
@@ -384,15 +384,15 @@ public:
 
                         <div class="detail" id="attrcat">
                             <h2>Attribute Catalog</h2>
-                            <p>Attribute Catalog stores meta information regarding every attribute of every relation. Each entry of the attribute catalog has the following attributes: <i>Relation name, Attribute Name, Attribute Type, Primary flag, Root block Index</i> and <i>offset</i>, where Attribute Name is name of the attribute and Attribute Type(Integer/Float/String) is data type of the attribute, Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings (of maximum size 16). The primary key flag is presently unused<span style="color: red">*</span>. Nitcbase uses <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> for indexing. Root block Index stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise. Offset is an integer which specifies the relative offset of the attribute in the record (0 for first attribute, 1 for second attribute etc.). </p>
-                            <p><span style="color: red">*</span><b>Note:</b> At present NITCbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support for primary keys.  </p>
+                            <p> Attribute Catalog stores meta-information regarding all the attributes of each relation. Each entry of the Attribute Catalog has the following six attributes: <i>RelationName, AttributeName, AttributeType, PrimaryFlag, RootBlock,</i> and <i>Offset</i>. RelationName is the name of the relation corresponding to the attribute, AttributeName is the name of the attribute and AttributeType is the data type of the attribute. Only three data types are permitted by Nitcbase- integer, floating-point numbers, and strings (of maximum size 16). The PrimaryFlag is presently unused<span style="color: red">*</span>. Nitcbase employes <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> for indexing. RootBlock stores the root block number of the B+ tree if there is an index created on the attribute; and contains -1 otherwise. Offset is an integer that specifies the relative offset of the attribute in the record (0 for the first attribute, 1 for the second attribute, etc).</p>
+                            <p><span style="color: red">*</span><b>Note:</b> At present, Nitcbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support of primary keys.  </p>
 
                             <center><img class="img-fluid" src="img/attr_cat.png"></center>
 
                             <b>NOTE:</b> 
                                 <ol>
-                                    <li>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</li>
-                                    <li>Nitcbase does not create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</li>
+                                    <li>Attribute Catalog is internally implemented as a relation. Hence, it's block structure is identical to that of any record block with six attributes.</li>
+                                    <li>Nitcbase does not create indices for accessing the Attribute Catalog and Relation Catalog. Hence, access to these catalogs is through a sequential search of the record blocks of the respective catalogs.</li>
                                 </ol>
 
 
@@ -400,12 +400,12 @@ public:
                                 <div class="card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse6">
-                                            <b>Q1.</b> What is the minimum number of entries in the attribute catalog and what relations/attributes do they correspond to?
+                                            <b>Q1.</b> What is the minimum number of entries allowed in the Attribute Catalog? What relations/attributes do these entries correspond to?
                                         </a>
                                     </div>
                                     <div id="collapse6" class="collapse">
                                         <div class="card-body">
-                                            Minimum number of entries in the attribute catalog is 12 despite not creating any relation externally. 6 out of these 12 correspond to 6 attributes of relation catalog and the rest 6 corresponds to 6 attributes of attribute catalog since they are also relations and should be in the disk all the time.
+                                            The minimum number of entries in the attribute catalog is 12, even in the absence of other relations in the database. 6 out of these 12 correspond to the 6 attributes of Relation Catalog and the rest 6 corresponds to the 6 attributes of Attribute Catalog. This is because the catalogs are also treated as relations and should be in the disk at all times.
                                         </div>
                                     </div>
                                 </div>
