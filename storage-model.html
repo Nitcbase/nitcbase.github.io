@@ -95,8 +95,8 @@
                         
                         <div id="disk_model" class="detail">
                             <h2>Disk Model</h2>
-                            <p> Nitcbase assumes that disk is a sequence of blocks and a block is a sequence of bytes. The disk consists of 8192 blocks and a block is of 2048 bytes. Hence there is a total of 16MB of storage. Disk blocks are indexed from 0 to 8191. </p>
-                            <p> Block# 0-3 are reserved for storing Block allocation map where as Block# 4, 5 are for storing first Block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat> Attribute Catalog</a> respectively. <b>Block allocation map</b> tells us whether a particular block is free or occupied. If occupied it stores the type of the block stored (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>). It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block allocation map. The following figure summarizes the disk structure. </p>
+                            <p>Nitcbase assumes that the disk is a sequence of blocks, and a block is a sequence of bytes. The disk consists of 8192 blocks, and each block is of 2048 bytes, resulting in a total of 16MB of storage. Disk blocks are indexed from 0 to 8191.</p>
+			    <p>Blocks 0-3 are reserved for storing Block Allocation Map, whereas Blocks 4 and 5 are for storing the first block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat>Attribute Catalog</a>, respectively. <b>Block Allocation Map</b> tells us whether a particular block is free or occupied. If occupied, it stores the type of the block stored (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>). It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block Allocation Map. The following figure summarizes the disk structure. </p>
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
 			</div>   
