@@ -96,7 +96,7 @@
                         <div id="disk_model" class="detail">
                             <h2>Disk Model</h2>
                             <p>Nitcbase assumes that the disk is a sequence of blocks, and a block is a sequence of bytes. The disk consists of 8192 blocks, and each block is of 2048 bytes, resulting in a total of 16MB of storage. Disk blocks are indexed from 0 to 8191.</p>
-			    <p>Blocks 0-3 are reserved for storing Block Allocation Map, whereas Blocks 4 and 5 are for storing the first block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat>Attribute Catalog</a>, respectively. <b>Block Allocation Map</b> tells us whether a particular block is free or occupied. If occupied, it stores the type (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>) of the block stored. It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block Allocation Map. The following figure summarizes the disk structure. </p>
+			    <p>Blocks 0-3 are reserved for storing Block Allocation Map, whereas Blocks 4 and 5 are for storing the first block of <a href=#relcat>Relation Catalog</a> and <a href=#attrcat>Attribute Catalog</a>, respectively. <b>Block Allocation Map</b> tells us whether a particular block is free or occupied. If occupied, it stores the type (<a href="/constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>) of the block. It requires one byte per each block. Hence a total of 8192/2048=4 blocks are required for Block Allocation Map. The following figure summarizes the disk structure. </p>
                             <center><img class="img-fluid" src="img/disk_model.png"></center>
                             
 			</div>   
@@ -322,10 +322,10 @@ public:
                         <br>
                         <br>
 
-                        <div class="pagetitle"><h1>Catalog structures</h1></div>
+                        <div class="pagetitle"><h1>Catalog Structures</h1></div>
 
                         <div class="detail" id="catalogs">
-                            <p> Nitcbase maintains two catalogs in the disk for storing metadata information about relations, attributes, indexes, etc. These catalogs are: </p>
+                            <p> Nitcbase maintains two catalogs in the disk for storing metadata information about relations, attributes, indices, etc. These catalogs are: </p>
                             <ol>
                                 <li>Relation Catalog</li>
                                 <li>Attribute Catalog</li>
@@ -385,14 +385,14 @@ public:
                         <div class="detail" id="attrcat">
                             <h2>Attribute Catalog</h2>
                             <p> Attribute Catalog stores meta-information regarding all the attributes of each relation. Each entry of the Attribute Catalog has the following six attributes: <i>RelationName, AttributeName, AttributeType, PrimaryFlag, RootBlock,</i> and <i>Offset</i>. RelationName is the name of the relation corresponding to the attribute, AttributeName is the name of the attribute and AttributeType is the data type of the attribute. Only three data types are permitted by Nitcbase- integer, floating-point numbers, and strings (of maximum size 16). The PrimaryFlag is presently unused<span style="color: red">*</span>. Nitcbase employes <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> for indexing. RootBlock stores the root block number of the B+ tree if there is an index created on the attribute; and contains -1 otherwise. Offset is an integer that specifies the relative offset of the attribute in the record (0 for the first attribute, 1 for the second attribute, etc).</p>
-                            <p><span style="color: red">*</span><b>Note:</b> At present, Nitcbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support of primary keys.  </p>
+                            <p><span style="color: red">*</span> At present, Nitcbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support of primary keys.  </p>
 
                             <center><img class="img-fluid" src="img/attr_cat.png"></center>
 
-                            <b>NOTE:</b> 
+                            <b>Note:</b> 
                                 <ol>
                                     <li>Attribute Catalog is internally implemented as a relation. Hence, it's block structure is identical to that of any record block with six attributes.</li>
-                                    <li>Nitcbase does not create indices for accessing the Attribute Catalog and Relation Catalog. Hence, access to these catalogs is through a sequential search of the record blocks of the respective catalogs.</li>
+                                    <li>Nitcbase does not create indices for accessing the Attribute Catalog and Relation Catalog. Access to these catalogs is possible only through a sequential search of the record blocks of the respective catalogs.</li>
                                 </ol>
 
 
@@ -400,12 +400,12 @@ public:
                                 <div class="card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse6">
-                                            <b>Q1.</b> What is the minimum number of entries allowed in the Attribute Catalog? What relations/attributes do these entries correspond to?
+                                            <b>Q1.</b> What is the minimum number of entries allowed in the Attribute Catalog? What relations and attributes do these entries correspond to?
                                         </a>
                                     </div>
                                     <div id="collapse6" class="collapse">
                                         <div class="card-body">
-                                            The minimum number of entries in the attribute catalog is 12, even in the absence of other relations in the database. 6 out of these 12 correspond to the 6 attributes of Relation Catalog and the rest 6 corresponds to the 6 attributes of Attribute Catalog. This is because the catalogs are also treated as relations and should be in the disk at all times.
+                                            The minimum number of entries in the attribute catalog is 12, even in the absence of other relations in the database. 6 out of these 12 correspond to the 6 attributes of Relation Catalog and the remaining 6 corresponds to the 6 attributes of Attribute Catalog. This is because the catalogs are also treated as relations and should be in the disk at all times.
                                         </div>
                                     </div>
                                 </div>
