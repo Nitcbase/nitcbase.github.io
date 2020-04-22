@@ -65,20 +65,29 @@
             <div class="row">
                 
                 <!-- SIDEBAR BEGIN -->
-                <div class="col-sm-2">
-                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                <div class="col-md-2">
+                    <nav class="navbar navbar-expand-md sticky-top sticky-offset">
                         <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
                             <i class="fas fa-align-left"></i>
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-                            <li> <a href="#disk_model">Disk model</a></li>
-                            <li> <a href="#disk_class">Disk class</a></li>
-                            <li> <a href="#record_blk">Record block structure</a></li>
-                            <li> <a href="#intind_blk">Internal index block structure</a></li>
-                            <li> <a href="#leafind_blk">Leaf index block structure</a></li>
-                            <li> <a href="#relcat">Relation Catalog</a></li>
-                            <li> <a href="#attrcat">Attribute Catalog</a></li>
+                            <li> <a class="sec" href="#disk_model">Disk Model</a></li>
+                            <li> <a class="sec" href="#disk_class">Disk class</a></li>
+                            <ul>
+                                <li><a href="#disk_constructor">Disk</a> </li>
+                                 <li><a href="#disk_destructor">~Disk</a> </li>
+                                 <li><a href="#disk_readBlock">readBlock()</a> </li>
+                                 <li><a href="#disk_writeBlock">writeBlock()</a> </li>
+                            </ul>
+                            <li> <a class="sec" href="#record_blk">Record block structure</a></li>
+                            <li> <a class="sec" href="#intind_blk">Internal Index Block Structure</a></li>
+                            <li> <a class="sec" href="#leafind_blk">Leaf Index Block Structure</a></li>
+                            <li> <a class="sec" href="#catalogs">Catalog Structures</a></li>
+			    <ul>
+                                <li><a href="#relcat">Relation Catalog</a> </li>
+                                <li><a href="#attrcat">Attribute Catalog</a> </li>
+			    </ul>
                         </ul>
                         </div>
                     </nav>
