@@ -72,12 +72,9 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-                            <li> <a href="#disk_model">Disk model</a></li>
-                            <li> <a href="#record_blk">Record block structure</a></li>
-                            <li> <a href="#intind_blk">Internal index block structure</a></li>
-                            <li> <a href="#leafind_blk">Leaf index block structure</a></li>
-                            <li> <a href="#relcat">Relation Catalog</a></li>
-                            <li> <a href="#attrcat">Attribute Catalog</a></li>
+                            <li> <a href="#indexing">Understanding Indexing</a></li>
+                            <li> <a href="#implementation">Implementation in NITCBase</a></li>
+                          
                         </ul>
                         </div>
                     </nav>
@@ -89,263 +86,26 @@
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
-                            <h1>Physical Layer</h1>
+                            <h1>Indexing in NITCBase</h1>
                         </div>
                         
                         <div id="intro" class="detail">
                             NITCBase uses B+ Tree for indexing an attribute in a relation. To implement B+ Tree layer you must require a thorough understanding of Physical layer, Buffer layer and Cache layer. As you might already know, we use indexing to reduce disk access and to implement search queries faster.  Click <a href="Bplustreedetails.html">here</a> to read more on B+ Trees.
                             
-                            <div class="detail" id="access-methods">
-                                <h2>Disk access functions</h2>
-                                <p>The physical layer functions readblock()/writeblock() takes as input a memory buffer (pointer) and a integer (block number) and transfer the block to/from the disk from/to the buffer.  These are the only
-                                functions through which the disk can be accessed.  These functions are supplied to you in the  NITCbase package and hence you do not need to implement them.</p>
-                                <h5>readblock()</h5>
-                                <h5>Arguments:</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>buffer</td>
-                                            <td>void *</td>
-                                            <td>memory pointer to which block has to be loaded/read.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>block_no</td>
-                                            <td>int</td>
-                                            <td>disk block which has to be read.</td>
-                                        </tr>		
-
-                                    </table>
-                                </div>
-                                <h5>Return value:</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>SUCCESS</td>
-                                            <td>On successfully loading/reading the block to buffer.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_OUTOFBOUND</td>
-                                            <td>If the block number is out of range.</td>
-                                        </tr>
-                                    </table>
-                                 </div>
-                          	     <h5>writeblock()</h5>
-                                 <h5>Arguments:</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>block_no</td>
-                                            <td>int</td>
-                                            <td>disk block to which buffer block has to be written.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>buffer</td>
-                                            <td>void *</td>
-                                            <td>memory pointer from where block has to be copied to the disk.</td>
-                                        </tr>
-
-
-                                    </table>
-                                </div>
-                                <h5>Return value:</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>SUCCESS</td>
-                                            <td>On successfully writing the block to the disk.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_OUTOFBOUND</td>
-                                            <td>If the block number is out of range.</td>
-                                        </tr>
-                                    </table>
-                                 </div>
-                                </div>
-
-                            <p> Based on type of information stored in a block, a block can be of 2 types- 1. Record block, 2. Index block . </p>
-                        </div>
-                        
-                        
-
-                        <div id="record_blk" class="detail">
-                            <h2>Record block structure</h2>
-                            <p> Nitcbase is a collection of relations, and each relation is a collection of records.  The DBMS must store relations in the disk and the strategy is to store each relation in a set of blocks in the disk, organized as a linked list. Each block in such a linked list will be called a record block. The block will also contain some meta data like indices of the left and right blocks in the linked list. </p>
-                            <p> Records in a relation are composed of fields known as <b>attributes</b>, each of which contains one item of information. Nitcbase fixes the size of attribute as 16 bytes <span style="color: red">*</span>.
-                                But the records in a relation are of variable size, the size can vary from 16 bytes (record with single attribute) to the size that the record can fit in a block. </p>
-                            <p> A record block stores the actual data records. In addition to data records, each block also stores meta data in preamble/<b>header</b>. 
-                            The following figure shows the record block structure for a relation with K attributes. Let L be the number of records stored in a block. (given K, L can be determined. This will be explained later.) Since each attribute requires 16 bytes of storage space, to store each record of this relation 16*K bytes must be allocated.</p>
-                            <p><span style="color: red">*</span><b>Note:</b> In real-world database systems, the size of an attribute will vary depending on the type of the attribute.  For instance, an integer type attribute will require less storage space than a string type attribute.  In NITCbase, we fix the size of all attributes to the same value to simplfy the implementation.  It is a conceptually straighforward (but cumbersome from the point of implementation) task to modify the DBMS to support variable sized attributes. </p>
-                            
-                            <center><iframe src="https://onedrive.live.com/embed?cid=35B9F1D197FBC2AE&resid=35B9F1D197FBC2AE%211118&authkey=AJaKrn-sy7zjl-8&em=2" width="804" height="654" frameborder="0" scrolling="no"></iframe>
-                                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQhXxwsgUKruUxN5UxzZHZpCDQRhHXsMd6AkQML54e9pQNtBEXQa_xDFpNBp2vCKlHSMnsvqqfnFcCC/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                            <div class="detail" id="indexing">
+                                <h2>Understanding Indexing</h2>
+                                <p>On creating a database of your own, it is essential that we have access to the data stored without much time delay. Hence we use indexing. Once a database is created and stored in a disk we cannot always search for a particular entry when a need arises by starting from the beginning. Creating an index enables us to access the required entry with very few disk access. Disk access is a high-latency operation, which is not suitable for a very large database. Hence we must find a way to get access to each entry without wasting time on disk access. This paves the way for B Trees and B+ Trees.</p>
+                                
+                            </div>
                               
-                            </center>
-
-                            <p> First four bytes(0-3) of header are used to identify the type of block(<a href="/constants.html" target="_blank">REC/IND</a>) where REC represents a record block. Next four bytes(4-7) are used for storing parent block pointer which has no significance for a record block and can be set to -1. Byte# 8-11 and 12-15 are used for storing Left and right block numbers respectively. Next four bytes are used for storing number of records currently stored in the block. Byte#20-23 and 24-27 are used for storing #Attr (Number of attributes of the records of the relation that are stored in this block) and #Slots (Number of slots in this block) respectively. Bytes 24-31 are reserved for future use.</p>
-                            <p>  Each record block is divided into <b>slots</b> of variable record size . Each slot stores a single record (and hence requires 16*K bytes for a relation with K attributes). Each block can have an arbitrary number of slots depending on the number of attributes in the relation. Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
-
-                            <b><p> \[ 
-                                32+L+L*(16*K) \leq 2048 \\
-                                L*(16*K + 1 ) \leq 2016 \\
-                                \#Slots = L = \left \lfloor \frac {2016} {((16 * \#Attributes(K)) + 1)} \right \rfloor 
-                                \]</p></b>
-
-                            <!--center><img class="formula" src="img/num_slots_formula.png" width="50%"></center-->
-                            <p> The <b>slotmap</b>, which appears at the end of the header is used for indicating whether a slot is occupied or free. Size of the slotmap is equal to the number of slots, L, that fits in the block. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap starts from 32<sup>nd</sup>byte of the header followed by the slots which store actual records. Some amount of space may be left unused at the end whose size is less than the size of a record.</p>
-
-                            <div class="question">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse1">
-                                            <b>Q1.</b> Calculate the number of slots and slotmap size for a relation with 5 attributes
-                                        </a>
-                                    </div>
-                                    <div id="collapse1" class="collapse">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li>$ \#Slots = \left \lfloor \frac{2016}{(16*5)+1} \right \rfloor = 24 \\ $ </li>
-                                                <li>Since the slotmap size is equal to the number of slots in a block, slotmap size = 24 bytes. </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse2">
-                                            <b>Q2.</b> What is the maximum number of attributes possible for a relation in Nitcbase?
-                                        </a>
-                                    </div>
-                                    <div id="collapse2" class="collapse">
-                                        <div class="card-body">
-                                            In Nitcbase, size of the record in any relation is bounded by the size of a block. Hence number of attributes is maximum when a record fits in a block. It is calculated as: <br>
-                                            $ 16*K+1 \leq 2016 \\
-                                              K = \left \lfloor \frac{2015}{16} \right \rfloor \\
-                                              K = 125 \\
-                                            $
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse3">
-                                            <b>Q3.</b> What is the maximum number of slots possible for a record block in Nitcbase?
-                                        </a>
-                                    </div>
-                                    <div id="collapse3" class="collapse">
-                                        <div class="card-body">
-                                            A record block has maximum number of slots when number of attributes of the corresponding relation is 1. Hence maximum number of slots can be calculated as 118.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
-
-                        <div id="intind_blk" class="detail">
-                            <h2>Internal Index Block Structure</h2>
-                            <p>Nitcbase uses the <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> data structure for indexing records in a relation.  The DBMS may maintain zero or more <b>indices</b> per relation. There are two types of nodes for a B+ tree. These are called <b>internal nodes</b> and <b>leaf nodes</b>. A disk block that stores an internal node of the B+ tree is called an Internal Index block. Each internal index block in Nitcbase stores a maximum of 100 attribute(key) values. Each of these values has an associated pair of <b>left and right child pointers</b>. Hence each internal index block is also required to store 101 child pointers (Only 101 Child pointers are required because the right child of one value is the same as the left child of the next value).</p>
-                            <center><img class="img-fluid" src="img/internal_index.png"></center>
-                            <p>An Internal index block is divided into two parts. First 32 bytes contain header followed by actual attribute(key) values and child pointers arranged alternatively as shown in the figure. The header meta data is similar to that of a record block. The first four bytes of the header stores the value <a href="/constants.html" target="_blank">INDINT</a>. PBlock is the Block# of parent block in the corresponding B+ tree. LBlock and RBlock have no significance for an internal index block. #Entries field stores the actual number of attribute values (of maximum 100) stored in the block. #Attrs and #Slots fields also have no significance for an internal index block. The remaining space in the header is left unused.</p>
-                        </div>
-
-                        <div id="leafind_blk" class="detail">
-                            <h2>Leaf Index Block Structure</h2>
-                            <p>A leaf node in the B+ tree stores the actual indices for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <b>leaf index Block</b>. Each leaf index block in Nitcbase stores a maximum of 63 indices. An index is a 3-tuple (attribute value, block number, slot number). The size of an index in nitcbase is 32 bytes (the last 8 bytes are unused).</p>
-                            <center><img class="img-fluid" src="img/leaf_node.png"></center>
-                            <p>Any Leaf Index Block is also divided into a header part of 32 bytes followed by a part containing actual indices. Header is similar to that of any other block. The first four bytes of the header stores the value <a href="/constants.html" target="_blank">INDLEAF</a>. PBlock is the Block# of the parent block in the corresponding B+ tree. This entry must always contain block# of an Internal Index block. Since all leaf nodes are connected in a B+ tree, LBlock and RBlock point to left and right Leaf Index blocks respectively. #Entries stores the actual number of indices (of maximum 63) stored in the block. #Attrs and #Slots fields have no significance for a Leaf index block. The remaining space in the header is left unused.</p>
-                        </div>
-
-                        <br>
-                        <br>
-
-                        <div class="pagetitle"><h1>Catalog structures</h1></div>
-
-                        <div class="detail" id="catalogs">
-                            <p> Nitcbase maintains two catalogs in the disk for storing the meta data information about relations, attributes, indexes etc. These catalogs are: </p>
-                            <ol>
-                                <li>Relation Catalog</li>
-                                <li>Attribute Catalog</li>
-                            </ol>
-                            <p> In an RDBMS, a relation refers to collection of records where each record is an n-tuple of attribute values. An attribute is a column or field in a relation. A database is a collection of relations. </p>
-                            <p> <i>Nitcbase organizes these catalogs as relations. Hence the block structures used for the catalogs are <a href="#record_blk">record block structures.</a></i>
-                            </p>
-
-                        </div>
-
-
-                        <div class="detail" id="relcat">
-                            <h2>Relation Catalog</h2>
-                            <p> Nitcbase stores first block of the Relation Catalog in Block# 4 of the disk. Relation Catalog stores meta information regarding relations in a database. Each entry in the Relation Catalog is of size 96 bytes and has the following attributes: Relation Name, #Attributes, #Records, First Block, Last Block and #Slots per Block. In each entry, RelName(byte# 0-15) stores name of the relation, #Attributes(byte# 16-31) stores number of attributes of the relation, #Records(byte# 32-47) stores the number of records currently stored in the relation and First Block (byte# 48-63) stores the block number of the first record block of the relation. Since record blocks are arranged as linked list, First Block essentially stores head of the linked list and Last Block (byte# 64-79) stores the block number of the last record block of the relation. #Slots per block (byte# 64-79) stores the number of slots a record block of that relation has. (Note that #slots can be can be calculated from #Attributes as described <a href="#record_blk">earlier</a>.)</p>
-
-                            <center><img class="img-fluid" src="img/relation_catalog.png"></center>
-
-                            <b>Note:</b> <i>Since the Relation Catalog is also stored in the disk like any other relation, its block structure is identical to that of any record block with 6 attributes.</i>
-                            <br>
-                            <br>
-                            <div class="question">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse4">
-                                            <b>Q1.</b> What are the values of the header fields #Attrs, #Slots for a Relation Catalog block?
-                                        </a>
-                                    </div>
-                                    <div id="collapse4" class="collapse">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li>
-                                                    #Attrs = 6.
-                                                </li>
-                                                <li>
-                                                    #Slots = $\left \lfloor \frac{2016}{(16*6)+1} \right \rfloor = 20 \\ $
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse5">
-                                            <b>Q2.</b> What is the minimum number of entries in the relation catalog and what relations do they correspond to?
-                                        </a>
-                                    </div>
-                                    <div id="collapse5" class="collapse">
-                                        <div class="card-body">
-                                            Minimum number of entries in the relation catalog is 2 despite not creating any relation externally. They correspond to relation catalog and attribute catalog since they are also relations and should be in the disk all the time.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="detail" id="attrcat">
-                            <h2>Attribute Catalog</h2>
-                            <p>Attribute Catalog stores meta information regarding every attribute of every relation. Each entry of the attribute catalog has the following attributes: <i>Relation name, Attribute Name, Attribute Type, Primary flag, Root block Index</i> and <i>offset</i>, where Attribute Name is name of the attribute and Attribute Type(Integer/Float/String) is data type of the attribute, Nitcbase permits three data types for attributes. They are integer, floating point numbers and strings (of maximum size 16). The primary key flag is presently unused<span style="color: red">*</span>. Nitcbase uses <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a> for indexing. Root block Index stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise. Offset is an integer which specifies the relative offset of the attribute in the record (0 for first attribute, 1 for second attribute etc.). </p>
-                            <p><span style="color: red">*</span><b>Note:</b> At present NITCbase does not support the notion of a <a href="https://en.wikipedia.org/wiki/Primary_key" target="_blank">primary key</a>. The flag is kept in the slot for future support for primary keys.  </p>
-
-                            <center><img class="img-fluid" src="img/attr_cat.png"></center>
-
-                            <b>NOTE:</b> 
-                                <ol>
-                                    <li>Attribute catalog is also implemented internally as a relation. Hence its block structure is identical to that of any record block with 6 attributes as shown in the figure above.</li>
-                                    <li>Nitcbase does not create any index for accessing the attribute catalog and relation catalog. Hence access to these catalogs will be through a sequential search through the record blocks of the respective catalog.</li>
-                                </ol>
-
-
-                            <div class="question">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <a data-toggle="collapse" href="#collapse6">
-                                            <b>Q1.</b> What is the minimum number of entries in the attribute catalog and what relations/attributes do they correspond to?
-                                        </a>
-                                    </div>
-                                    <div id="collapse6" class="collapse">
-                                        <div class="card-body">
-                                            Minimum number of entries in the attribute catalog is 12 despite not creating any relation externally. 6 out of these 12 correspond to 6 attributes of relation catalog and the rest 6 corresponds to 6 attributes of attribute catalog since they are also relations and should be in the disk all the time.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                               
+                          	     
+                        <div id="implementation" class="detail">
+                            <h2>B+Tree Implementation in NITCBase</h2>
+                            <p>Consider a Table Student (Name, Roll No, Batch, Marks) with 4 attributes.
+</p>
+                            
                             
                         </div>
                         <!-- PAGE ENDS -->
@@ -360,3 +120,4 @@
 </body>
 
 </html>
+
