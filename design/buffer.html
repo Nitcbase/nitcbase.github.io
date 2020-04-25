@@ -133,15 +133,16 @@
                         
                          <div id="layout" class="detail">
                          	<h2>Layout</h2>
-                            <p>Whenever NITCbase needs to work on a disk block, the block has to be first fetched from the <a href="../storage-model.html">disk</a>(secondary storage) to the primary memory. A large pool of memory (called buffer in the documentation) is pre-allocated and managed  to hold copies of disk blocks in the memory.  When a request comes from any of the higher layers to the buffer layer involving access/update of a disk block, the corresponding disk block is loaded into the memory buffer.   After performing updates, the disk block has to be commited back to the disk. The disk interface functions of the <a href="../storage-model.html">physical layer</a> are used by the buffer layer to load blocks from the disk to the buffer and back.  </p>   
+                            <p>Whenever NITCbase needs to work on a disk block, the block has to be first fetched from the secondary memory storage (the <a href="../storage-model.html" target="_blank">disk</a>) to the primary memory. A large pool of memory (called <i>buffer</i> in the documentation) is pre-allocated and managed to hold copies of disk blocks in the primary memory. When a request involving access/update of a disk block comes from any of the higher layers, the corresponding disk block is loaded into the buffer. After performing updates, the block has to be committed back to the disk. </p>   
                                 
-                             <p>NITCbase uses a dedicated buffer layer for the above task. All the requests involving disk blocks should go through the buffer layer. The interface provided by the buffer layer gives a <i>memory disk abstraction</i> to the higher layers of the system. NITCbase pre-allocates memory for holding 32 blocks in its buffer memory. Buffer Layer is responsible for maintaining the buffer memory and making replacements and writebacks as required. NITCbase follows Object Oriented design for Buffer layer whose class diagram is shown below.</p>
+                            <p>NITCbase uses a dedicated <i>Buffer Layer</i> for the above task. All the requests involving disk blocks go through the Buffer Layer. The interface provided by the Buffer Layer gives a <i>memory disk abstraction</i> to higher layers. NITCbase has pre-allocated memory for holding 32 blocks in its buffer memory at a given time. Buffer Layer is responsible for maintaining the buffer memory and making replacements and writebacks as required. The <a href="../storage-model.html#disk_class" target="_blank">disk class</a> functions are used by the Buffer Layer to load blocks from the disk to the buffer and back. A single object of the disk class needs to be declared at the start of the session. Its purpose is to run the constructor and the destructor of the class. </p>
     
-                             
-                         	<center><img class="img-fluid" src="/img/buffer_class.png"></center>
-                             <br><br>
-                             <p>Certain structure definitions and functions that help access of record data in disk block (and meta data  as well) are also included in the buffer layer.  These are discussed at the end of this page (see
-                                 <a href="#misc">miscellaneous</a> section).</p>
+			    <p>NITCbase follows an Object-Oriented design for Buffer Layer. The class diagram is as shown below. </p>
+                         
+			    <center><img class="img-fluid" src="/img/buffer_class.png"></center>
+                            <br><br>
+				 
+                            <p>Certain structure definitions and functions that help access record data and metadata from the disk block are also included in the Buffer Layer. These are discussed at the end of this page (see <a href="#misc">miscellaneous</a> section).</p>
                          </div>
                         
                         <div id="block_structures" class="detail">
