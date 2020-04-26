@@ -154,31 +154,31 @@
                                 <li>InternalEntry</li>
                                 <li>Index</li>
                             </ol>
-                            <p>Each structure is designed to store a subset of the data stored in a disk block. A disk block contains 2048 bytes of data. Higher layer functions, however, instead of processing the whole block data together, typically request access to a particular set of related data in a disk block at a time. Whenever such a <i>selective access</i> request is made, the method in the Buffer Layer implementing the access functionality will pack the requested data into the corresponding block structure designed to store the required data. Variables of these structures will be declared and used in the <a href="cache.html" target="_blank">Cache Layer</a>, the <a href="blockaccess.html" target="_blank">Block Access Layer</a>, and the <a href="b+tree.html" target="_blank">B+ Tree Layer</a>. </p>
+                            <p>Each structure is designed to store a subset of the data stored in a disk block. A disk block contains 2048 bytes of data. Higher layer functions, however, instead of processing the whole block data together, typically request access to a particular set of related data in a disk block at a time. Whenever such a <i>selective access</i> request is made, the method in the Buffer Layer implementing the access functionality will pack the requested data into the corresponding block structure designed to store that particular type of data. Variables of these structures will be declared and used in the <a href="cache.html" target="_blank">Cache Layer</a>, the <a href="blockaccess.html" target="_blank">Block Access Layer</a>, and the <a href="b+tree.html" target="_blank">B+ Tree Layer</a>. </p>
                             
 							<div id="block_structures_headinfo">
 								<h4>HeadInfo</h4>
-								<p>NITCbase maintains a 32 bytes fixed-size header for every disk block. This header stores meta-information, like the type of the block, and a few block specific information, like #Attrs and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. The structure <i>HeadInfo</i> is used to collect all the entries of the header, as shown below. The <i><a href="#setheader">setHeader()</a></i>  and the <i><a href="#getheader">getHeader()</a></i> methods takes a pointer to <i>struct HeadInfo</i> as argument. </p> 
+								<p>NITCbase maintains a 32 bytes fixed-size header for every disk block. This header stores meta-information, like the type of the block, and a few block specific information, like #Attrs and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. The structure <i>HeadInfo</i> is used to collect all the entries of the header, as shown below. The <i><a href="#setheader">setHeader()</a></i>  and the <i><a href="#getheader">getHeader()</a></i> methods take a pointer to <i>struct HeadInfo</i> as argument. </p> 
 
-								<p><b>Implementation Note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layers to allocate memory for the <i>struct HeadInfo</i> before calling them. </p>
+								<p><b>Implementation Note:</b> <i>getHeader()</i> and <i>setHeader()</i> methods expect the higher layers to allocate memory for the <i>struct HeadInfo</i> before calling them. </p>
 								<div class="code">
 									<pre><code>struct HeadInfo{
-		int32_t blockType;
-		int32_t pBlock;
-		int32_t lBlock;
-		int32_t rBlock;
-		int32_t numEntries;
-		int32_t numAttrs;
-		int32_t numSlots;
-		unsigned char reserved[4];
-	};
+	int32_t blockType;
+	int32_t pBlock;
+	int32_t lBlock;
+	int32_t rBlock;
+	int32_t numEntries;
+	int32_t numAttrs;
+	int32_t numSlots;
+	unsigned char reserved[4];
+};
 	/* #include &lt;cstdint&gt; must be done */ 
 	</code></pre>
 								</div>
 							</div>
 			    			<div id="block_structures_attribute">
                             	<h4>Attribute</h4>
-                            	<p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. The structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
+                            	<p>According to the Physical Layer storage model, a <a href="/storage-model.html#record_blk" target="_blank">Record block</a> has slots for storing records, and each record contains a set of attributes. The <i>Attribute</i> block data structure is used to hold an attribute in memory. Since an attribute can have one amongst different types (integer/ float/ string), <i>Attribute</i> is a union of all the three types. The size of an <i>Attribute</i> is fixed at 16 bytes. A record will be an array of <i>Attributes</i> whose size is equal to the number of attributes in the relation. An attribute being a fundamental unit of data in a record, the <i>Attribute</i> block data structure is used in several functions of NITCbase. </p>
                             	<div class="code">
                                 	<pre><code>typedef union Attribute{
 	int iVal;
@@ -186,13 +186,13 @@
 	char strVal[ATTR_SIZE];
 } Attribute;</code></pre>
                             	</div>
-			    </div>
-			    <div id="block_structures_internal_entry">
-				    <h4>InternalEntry</h4>
-				    <p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal index block</a> of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that each attribute value is stored between its left child and right child pointers (The right child value of one attribute will be the same as the left child of the next attribute. Hence only one copy is stored making the data overlapped). The combination (left child, attribute value, right child) is called an Internal Entry. An Internal Index block is a combination of 100 such (overlapped) entries. The structure of <i>InternalEntry</i> is given below. The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#intbuff_class">IndInternal</a></i> expects a pointer to <i>struct InternalEntry</i> to be supplied by the calling higher layer functions as an argument.</p>
-				    <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#indbuff_class">IndBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#intbuff_class">IndInternal</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>InternalEntry</i> before calling it. </p>
-				    <div class="code">
-					<pre><code>struct InternalEntry{
+			    			</div>
+							<div id="block_structures_internal_entry">
+								<h4>InternalEntry</h4>
+								<p>Each <a href="/storage-model.html#intind_blk" target="_blank">Internal Index</a> block of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ Tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that an attribute value is stored between its left child and right child pointers. The right child pointer of one attribute value will be the same as the left child pointer of the next attribute value. Hence to avoid redundancy, only one copy is stored, making the data overlapped. The combination of left child, attribute value, and right child makes up the <i>InternalEntry</i> structure, as shown below. An Internal Index block is a combination of 100 such overlapped entries. The <i><a href="#intgetentry">getEntry()</a></i> and <i><a href="#intsetentry">setEntry()</a></i> methods of the class <a href="#intbuff_class">IndInternal</a> take a pointer to <i>struct InternalEntry</i> as an argument. </p>
+								<p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#intbuff_class">IndInternal</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct InternalEntry</i> before calling them. </p>
+								<div class="code">
+								<pre><code>struct InternalEntry{
 	int32_t lChild;
 	union Attribute attrVal;
 	int32_t rChild;
@@ -202,10 +202,8 @@
 			    </div>
 			   <div id="block_structures_index">
 				    <h4>Index</h4>
-				    <p>Any index of a relation should store a reference to the record in the relation along with the corresponding attribute value(s). NITCbase uses (block#, slot#) pair for referencing any record, which is known as Record Id. In NITCbase, an Index is a combination of attribute value, block# and slot# followed by some unused space left for future use. Each <a href="/storage-model.html#leafind_blk" target="_blank">leaf index block</a> is a combination of 63 such Index entries. The structure of Index is given below. 
-					     The <i><a href="#intgetentry" target="_blank">getEntry()</a></i> method and the <i><a href="#intsetentry" target="_blank">setEntry()</a></i> method of the class <i><a href="#leafbuff_class">IndLeaf</a></i> expects a pointer to <i>struct Index</i> to be supplied by the calling higher layer functions as an argument.
-				    </p>
-				    <p><b>Implementation note:</b> The functions <i>getEntry()</i> and <i>setEntry()</i> are declared in the class <a href="#leafbuff_class">LeafBuffer</a> and are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <i><a href="#leafbuff_class">LeafBuffer</a></i>. <i>getEntry()</i> and <i>setEntry()</i> expects the higher layer to allocate memory for struct <i>Index</i> before calling them. </p>
+				    <p>An index of a relation should store a reference to its record along with the corresponding attribute value. NITCbase uses <a href="#recid">RecId</a>, which is a (block#, slot#) pair, for referencing any record. In NITCbase, an <i>Index</i> structure is a combination of attribute value, block#, and slot#, followed by some unused space left for future use, as shown below. Each <a href="/storage-model.html#leafind_blk" target="_blank">Leaf Index</a> block is a combination of 63 such <i>Index</i> entries.  The <i><a href="#leafgetentry">getEntry()</a></i> and the <i><a href="#leafsetentry">setEntry()</a></i> methods of the class <a href="#leafbuff_class">IndLeaf</a> take a pointer to <i>struct Index</i> as an argument. </p>
+				    <p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#leafbuff_class">LeafBuffer</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct Index</i> before calling them. </p>
 				    <div class="code">
 					<pre><code>struct Index{
 	union Attribute attrVal;
@@ -214,9 +212,9 @@
 	unsigned char unused[8];
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
-                            	</div>
+                    </div>
 			   </div>
-                        </div>
+			</div>
                          
 			    
 <div id="buffer_structures" class="detail">
