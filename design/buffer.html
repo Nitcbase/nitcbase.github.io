@@ -147,34 +147,36 @@
                         
                         <div id="block_structures" class="detail">
                             <h2>Block Structures</h2>
-                            <p>The buffer layer defines the following block data structures. </p>
+                            <p>The Buffer Layer defines the following block data structures. </p>
                             <ol>
                                 <li>HeadInfo</li>
                                 <li>Attribute</li>
                                 <li>InternalEntry</li>
                                 <li>Index</li>
                             </ol>
-                            <p>Each structure is designed to store a subset of the data within a disk block.  A disk block contains 2048 bytes of data. Higher layer functions typically request for access of a particular set of related data in a disk block at a time (and not the whole data together).  Whenever such a "selective access" request is made, the buffer layer method implementing the access functionality will pack the requested data into a structure of the corresponding kind that is designed to store the required data. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
+                            <p>Each structure is designed to store a subset of the data stored in a disk block. A disk block contains 2048 bytes of data. Higher layer functions, however, instead of processing the whole block data together, typically request access to a particular set of related data in a disk block at a time. Whenever such a <i>selective access</i> request is made, the method in the Buffer Layer implementing the access functionality will pack the requested data into the corresponding block structure designed to store the required data. Variables of these structures will be declared and used in the <a href="cache.html" target="_blank">Cache Layer</a>, the <a href="blockaccess.html" target="_blank">Block Access Layer</a>, and the <a href="b+tree.html" target="_blank">B+ Tree Layer</a>. </p>
                             
-                            <h4>HeadInfo</h4>
-                            <p>NITCbase maintains a fixed size header for every disk block. This header stores meta information like type of the block and few block specific information like #Attributes and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. HeadInfo is the structure that collects all the entries of the header as shown below. The size of the header is 32 bytes. The <i><a href="#setheader" target="_blank">setHeader()</a></i> function and the <i><a href="#getheader" target="_blank">getHeader()</a></i> function expects a pointer to <i>struct HeadInfo</i> to be supplied by the calling higher layer functions as an argument.</p> 
-                            
-                            <p> <b>Implementation note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layer to allocate memory for struct HeadInfo before calling it.</p>
-                            <div class="code">
-                                <pre><code>struct HeadInfo{
-	int32_t blockType;
-	int32_t pBlock;
-	int32_t lBlock;
-	int32_t rBlock;
-	int32_t numEntries;
-	int32_t numAttrs; //not useful for index block
-	int32_t numSlots;
-	unsigned char reserved[4];
-};
-/* #include &lt;cstdint&gt; must be done */ 
-</code></pre>
-                            </div>
-			    <div id="block_structures_attribute">
+							<div id="block_structures_headinfo">
+								<h4>HeadInfo</h4>
+								<p>NITCbase maintains a 32 bytes fixed-size header for every disk block. This header stores meta-information, like the type of the block, and a few block specific information, like #Attrs and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. The structure <i>HeadInfo</i> is used to collect all the entries of the header, as shown below. The <i><a href="#setheader">setHeader()</a></i>  and the <i><a href="#getheader">getHeader()</a></i> methods takes a pointer to <i>struct HeadInfo</i> as argument. </p> 
+
+								<p><b>Implementation Note:</b> <i>getHeader()</i> and <i>setHeader()</i> expects the higher layers to allocate memory for the <i>struct HeadInfo</i> before calling them. </p>
+								<div class="code">
+									<pre><code>struct HeadInfo{
+		int32_t blockType;
+		int32_t pBlock;
+		int32_t lBlock;
+		int32_t rBlock;
+		int32_t numEntries;
+		int32_t numAttrs;
+		int32_t numSlots;
+		unsigned char reserved[4];
+	};
+	/* #include &lt;cstdint&gt; must be done */ 
+	</code></pre>
+								</div>
+							</div>
+			    			<div id="block_structures_attribute">
                             	<h4>Attribute</h4>
                             	<p>According to the physical layer storage model for <a href="/storage-model.html#record_blk" target="_blank">record block</a>, each block has slots for storing records and each record contains a set of  <b>Attributes</b>. The structure Attribute is used to hold an attribute in memory. Since an attribute can be one among different types (integar/ float/ string), <i>Attribute</i> is a union of values of all the three types. Size of an Attribute is 16 bytes. A record will be an array of Attributes whose size is equal to the number of attributes in the relation.  An attribute being a fundamental unit of data in a record, the <i>Attribute</i> structure is used in several functions of NITCbase. </p>
                             	<div class="code">
