@@ -67,8 +67,8 @@
                             <li> <a class="sec" href="#block_structures"> Block Structures</a></li>
                             <li> <a class="sec" href="#static_buffer_class"> Class StaticBuffer</a></li>
                             <ul>
-                                <li><a href="#buffer-constructor">StaticBuffer</a> </li>
-                                 <li><a href="#buffer-destructor">~StaticBuffer</a> </li>
+                                <li><a href="#static_buffer_constructor">StaticBuffer</a> </li>
+                                 <li><a href="#static_buffer_destructor">~StaticBuffer</a> </li>
                                  <li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
                                  <li><a href="#getbuffernum">getBufferNum()</a> </li>
 				 <li><a href="#getstaticblocktype">getStaticBlockType()</a> </li>
@@ -246,6 +246,13 @@
 				
 friend class BlockBuffer;
 
+public:
+	//methods
+	StaticBuffer();
+	~StaticBuffer();
+	static int getStaticBlockType(int blockNum);
+	static void setDirtyBit(int blockNum);
+	
 private:
 	//fields
 	static unsigned char blocks[32][BLOCK_SIZE];
@@ -256,60 +263,58 @@ private:
 	static int getFreeBuffer(int blockNum);
 	static int getBufferNum(int blockNum);
 	
-public:
-	//methods	
-	static int getStaticBlockType(int blockNum);
-	static void setDirtyBit(int blockNum);
-	StaticBuffer();
-	~StaticBuffer();
-	
 };</code></pre>
                              </div>
                          	<br>
                              <p>The following are the specifications for the methods in class <i>StaticBuffer</i>. The stub code is availabe <a href="bufferStub.html" target="_blank">here</a>.</p>
                              <ul class="methods">
+<!-------------------------------------------StaticBuffer Constructor----------------------------------------------------------->
                                  <li>
-                                    <div class="detail" id="buffer-constructor">
+                                    <div class="detail" id="static_buffer_constructor">
                                         <h2><i>public:</i> StaticBuffer (Constructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Copies block allocation map from disk to buffer and updates meta information of each buffer to initial empty conditions. </p>
-                                        <h5><a data-toggle="collapse" href="#algo-buffer-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-buffer-constructor" class="collapse">
+                                        <p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+                                        <h5><a data-toggle="collapse" href="#algo_static_buffer_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_static_buffer_constructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>StaticBuffer::StaticBuffer(){
-    // copy <a href="../storage-model.html#disk_model" target="_blank">blockAllocMap</a> blocks from disk to buffer (using <a href="../storage-model.html#access-methods" target="_blank">readblock()</a> of disk)
+    // copy <a href="../storage-model.html#disk_model" target="_blank">Block Allocation Map</a> blocks from disk to <i>blockAllocMap</i> using <a href="../storage-model.html#disk_readBlock" target="_blank">Disk::readBlock()</a>.
 
-    //initialise metainfo of all the buffer blocks with dirty:false, free:true, timestamp:-1 and blockNum:-1
+    //initialize <i>metaInfo</i> of all the buffer blocks with free:true, dirty:false, blockNum:-1 and timeStamp:-1.
+    
 }</code></pre>
                                             </div>
                                         </div>
+					<p><b>NOTE:</b> The object of the StaticBuffer class must be declared after the object of the <a href="../storage-model.html#disk_class" target="_blank">Disk class</a> to ensure that the StaticBuffer constructor is called after the Disk constructor.</p>
                                     </div>
                                  </li>
-                                 
+<!-------------------------------------------StaticBuffer Destructor----------------------------------------------------------->
                                  <li>
-                                    <div class="detail" id="buffer-destructor">
+                                    <div class="detail" id="static_buffer_destructor">
                                         <h2><i>public:</i> ~StaticBuffer (Destructor)</h2>
                                         <h5>Arguments:</h5>
                                         <p>Nil</p>                            
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Copies from buffer to disk the block allocation map and the dirty blocks.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-buffer-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-buffer-destructor" class="collapse">
+                                        <p>Copies the Block Allocation Map and the dirty blocks from the buffer memory to disk. Should be called at the end of the session before the <a href="../storage-model.html#disk_constructor" target="_blank">Disk destructor</a>.</p>
+                                        <h5><a data-toggle="collapse" href="#algo_static_buffer_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_static_buffer_destructor" class="collapse">
                                             <div class="code">
                                                 <pre><code>StaticBuffer::~StaticBuffer(){
-    // copy <a href="../storage-model.html#disk_model" target="_blank">blockAllocMap</a> blocks from buffer to disk(using <a href="../storage-model.html#access-methods" target="_blank">writeblock()</a> of disk)
+    // copy <i>blockAllocMap</i> to <a href="../storage-model.html#disk_model" target="_blank">Block Allocation Map</a> blocks in the disk using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a>.
 
-    /*iterate through all the buffer blocks, 
-    	write back blocks with meta info as free:false,dirty:true (using <a href="../storage-model.html#access-methods" target="_blank">writeblock()</a> of disk)*/
+    /*iterate through all the <i>metaInfo</i> entries, 
+    	write back buffer blocks with meta-info as free:false,dirty:true using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a>.*/
+	
 }</code></pre>
                                             </div>
                                         </div>
+					<p><b>NOTE:</b> The object of the StaticBuffer class must be declared after the object of the <a href="../storage-model.html#disk_class" target="_blank">Disk class</a> to ensure that the StaticBuffer destructor is called after the Disk destructor.</p>
                                     </div>
                                  </li>
 				     
