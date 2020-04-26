@@ -65,7 +65,7 @@
                         <ul class="nav flex-column sidemenu">
                             <li> <a class="sec" href="#layout"> Layout</a></li>
                             <li> <a class="sec" href="#block_structures"> Block Structures</a></li>
-                            <li> <a class="sec" href="#buffer_class"> Class StaticBuffer</a></li>
+                            <li> <a class="sec" href="#static_buffer_class"> Class StaticBuffer</a></li>
                             <ul>
                                 <li><a href="#buffer-constructor">StaticBuffer</a> </li>
                                  <li><a href="#buffer-destructor">~StaticBuffer</a> </li>
@@ -77,7 +77,7 @@
                             <ul>
                                 <li><a href="#blkbuffer-constructor">BlockBuffer 1</a> </li>
                                 <li><a href="#blkbuffer-constructor1">BlockBuffer 2</a> </li>
-                                <li><a href="#getdataptr">getBufferPtr()</a> </li>
+                                <li><a href="#getbuffptr">getBufferPtr()</a> </li>
 				<li><a href="#getheader">getHeader()</a> </li>
 				<li><a href="#setheader">setHeader()</a> </li>
 				<li><a href="#getblk">getBlock()</a> </li>
@@ -178,7 +178,7 @@
 							</div>
 			    			<div id="block_structures_attribute">
                             	<h4>Attribute</h4>
-                            	<p>According to the Physical Layer storage model, a <a href="../storage-model.html#record_blk" target="_blank">Record block</a> has slots for storing records, and each record contains a set of attributes. The <i>Attribute</i> block data structure is used to hold an attribute in memory. Since an attribute can have one amongst different types (integer/ float/ string), <i>Attribute</i> is a union of all the three types. The size of an <i>Attribute</i> is fixed at 16 bytes. A record will be an array of <i>Attributes</i> whose size is equal to the number of attributes in the relation. An attribute being a fundamental unit of data in a record, the <i>Attribute</i> block data structure is used in several functions of NITCbase. </p>
+                            	<p>According to the Physical Layer storage model, a <a href="../storage-model.html#record_blk" target="_blank">Record</a> block has slots for storing records, and each record contains a set of attributes. The <i>Attribute</i> block data structure is used to hold an attribute in memory. Since an attribute can have one amongst different types (integer/ float/ string), <i>Attribute</i> is a union of all the three types. The size of an <i>Attribute</i> is fixed at 16 bytes. A record will be an array of <i>Attributes</i> whose size is equal to the number of attributes in the relation. An attribute being a fundamental unit of data in a record, the <i>Attribute</i> block data structure is used in several functions of NITCbase. </p>
                             	<div class="code">
                                 	<pre><code>typedef union Attribute{
 	int iVal;
@@ -199,62 +199,57 @@
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
                             		</div>
-			    </div>
-			   <div id="block_structures_index">
-				    <h4>Index</h4>
-				    <p>An index of a relation should store a reference to its record along with the corresponding attribute value. NITCbase uses <a href="#recid">RecId</a>, which is a (block#, slot#) pair, for referencing any record. In NITCbase, an <i>Index</i> structure is a combination of attribute value, block#, and slot#, followed by some unused space left for future use, as shown below. Each <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index</a> block is a combination of 63 such <i>Index</i> entries.  The <i><a href="#leafgetentry">getEntry()</a></i> and the <i><a href="#leafsetentry">setEntry()</a></i> methods of the class <a href="#leafbuff_class">IndLeaf</a> take a pointer to <i>struct Index</i> as an argument. </p>
-				    <p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#leafbuff_class">LeafBuffer</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct Index</i> before calling them. </p>
-				    <div class="code">
-					<pre><code>struct Index{
+							</div>
+						   <div id="block_structures_index">
+								<h4>Index</h4>
+								<p>An index of a relation should store a reference to its record along with the corresponding attribute value. NITCbase uses <a href="#recid">RecId</a>, which is a (block#, slot#) pair, for referencing any record. In NITCbase, an <i>Index</i> structure is a combination of attribute value, block#, and slot#, followed by some unused space left for future use, as shown below. Each <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index</a> block is a combination of 63 such <i>Index</i> entries.  The <i><a href="#leafgetentry">getEntry()</a></i> and the <i><a href="#leafsetentry">setEntry()</a></i> methods of the class <a href="#leafbuff_class">IndLeaf</a> take a pointer to <i>struct Index</i> as an argument. </p>
+								<p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#leafbuff_class">LeafBuffer</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct Index</i> before calling them. </p>
+								<div class="code">
+								<pre><code>struct Index{
 	union Attribute attrVal;
 	int32_t block;
 	int32_t slot;
 	unsigned char unused[8];
 };
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
-                    </div>
-			   </div>
-			</div>
+								</div>
+						   </div>
+						</div>
                          
 			    
-<div id="buffer_structures" class="detail">
+						<div id="buffer_structures" class="detail">
                             <h2>Buffer Structure</h2>
-                            <p>The buffer layer also defines a buffer structure.
-				StaticBuffer class maintains some meta information for each block loaded to buffer. The structure storing the meta information is BufferMetaInfo. This structure contains the blockNum (the block number of the corresponding block in the disk), a dirty flag (indicating whether the block is modified), a free flag (indicating whether the buffer is free) and a timestamp(indicating the last time the buffer was accessed).
-				Replacement is done using a simple Least Recently Used algorithm (implemented in <a href="#getfreebuffer">getFreeBuffer</a> function) and timestamp is updated each time the buffer is accessed (as is done in <a href="#getdataptr">getBufferPtr</a> function).
-				</p>
+                            <p>The Buffer Layer also defines a buffer structure. StaticBuffer class maintains meta-information for each block loaded to buffer. The BufferMetaInfo structure is used for storing this meta-information. This structure contains four fields:  a <i>free</i> flag which indicates whether the buffer is free, a <i>dirty</i> flag which indicates whether the block has been modified, a <i>blockNum</i> field which is the block number of the block that is stored in the given buffer and a <i>timeStamp</i> field which indicates the last time the buffer had been accessed. Replacement is done using a simple <i>Least Recently Used</i>(LRU) algorithm, which has been implemented in the <a href="#getfreebuffer">getFreeBuffer</a> method. The timeStamp field is updated each time the buffer is accessed, as is done in the <a href="#getbuffptr">getBufferPtr method</a>. </p>
                             
 			    <div class="code">
-                                <pre><code>struct BufferMetaInfo {
+                                <pre><code>struct BufferMetaInfo{
 	bool free;
 	bool dirty;
 	int blockNum;
 	int timeStamp;
 };</code></pre>
                              </div>
-			    
-                            
-                            
                         </div>
 			    
-                         <div id="buffer_class" class="detail">
+                         <div id="static_buffer_class" class="detail">
                          	<h2>class StaticBuffer</h2>
-                             <p>The class <i>StaticBuffer</i> contains as private field a two dimensional array of unsigned characters <i>blocks[32][BLOCK_SIZE]</i>, of size sufficient to store 32 disk blocks in memory. Logically  <i>blocks[i]</i> can be used to buffer one disk block for each 0 &le; i &le; 31. (Each entry of <i>blocks</i>,  <i>blocks[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation.) Buffer blocks will be committed back to disk whenever needed. In addition to storing the data of a block, <i>StaticBuffer</i> class also maintains some meta information for each loaded block using the <i>BufferMetaInfo</i> structure. </p>
+                             
+							 <p>The class <i>StaticBuffer</i> contains as its member field, <i>blocks[32][<a href="../constants.html" target="_blank">BLOCK_SIZE</a>]</i>, a two-dimensional array of unsigned characters with size sufficient to store 32 disk blocks in memory at any given time. Logically <i>blocks[i]</i> can be used to buffer one disk block for each 0 ≤ i ≤ 31. Each entry of <i>blocks</i>, i.e., <i>blocks[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation. Buffer blocks will be committed back to the disk as and when required. In addition to storing the data of a block, class <i>StaticBuffer</i> also maintains meta-information for each loaded block using the <i>metaInfo[32]</i> field,which is an array of <i>BufferMetaInfo</i> structures. <i>StaticBuffer</i> also maintains a copy of the <a href="../storage-model.html#disk_model" target="_blank">Block Allocation Map</a> in its <i>blockAllocMap[<a href="../constants.html" target="_blank">DISK_BLOCKS</a>]</i> field. The i<sup>th</sup> entry      of the Block Allocation Map specifies whether the i<sup>th</sup> block is occupied or free. If occupied, it stores the type(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>) of the block.  </p>
 
-				 <p>StaticBuffer also maintains a copy of the <a href="../storage-model.html#disk_model" target="_blank"> Block Allocation map</a> in the memory. It is an array of size <a href="/constants.html#constants" target="_blank">DISK_BLOCKS</a> where i<sup>th</sup> entry specifies whether i<sup>th</sup> block is occupied(allotted) or free(not alloted).If occupied it stores the type(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>) of the block stored at that position. All the data fields is private to the StaticBuffer class and can be accesses only through public interfaces(methods). This class provides the basic disk "fetch and commit" interfaces to upper layers giving a feeling that the disk is in the memory. StaticBuffer is a static class (i.e., all fields and methods are declared static) in NITCbase.  Consequently, there exists only a single static object of the class<span style="color: dodgerblue">*</span>. The class definition of StaticBuffer is given below:</p>
+				 			 <p>All these data fields are private to the <i>StaticBuffer</i> class and can only be accessed through public method interfaces. This class provides the basic disk <i>fetch and commit</i> interfaces to upper layers, creating an illusion that the entire disk is in memory. <i>StaticBuffer</i> is a <b>static class</b>, i.e., all fields and methods are declared static. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class, and any access to them will refer to the same statically allocated memory. Also static methods in a class are allowed to access only static members of the class. Consequently, there needs to exist only a single static object of the class*. The class definition of <i>StaticBuffer</i> is as given below: </p>
                              
-                             <p><b>Note:</b> The <i>BlockBuffer</i> class is a friend class to StaticBuffer class so that all methods in <i>BlockBuffer</i> can access private methods of StaticBuffer class. It is explained in the next section.</p>
+                             <p><b>Note:</b> The class <i>BlockBuffer</i> is a friend class to class <i>StaticBuffer</i>. This allows all methods in <i>BlockBuffer</i> to access private fields and methods of the class <i>StaticBuffer</i>. This is explained in detail in the next section. </p>
                              
-                             <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>StaticBuffer</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory of the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
+                             <p><b><span style="color: dodgerblue">*</span>Implementation Note:</b> C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically. Since the class is static, only a single object of the class needs to be created when NITCbase is running, whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)" target="_blank">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)" target="_blank">destructor</a>.</p>
                              <div class="code">
-                                <pre><code>class StaticBuffer {
+                                <pre><code>class StaticBuffer{
 				
 friend class BlockBuffer;
 
 private:
 	//fields
 	static unsigned char blocks[32][BLOCK_SIZE];
-	static struct BufferMetaInfo metainfo[32];
+	static struct BufferMetaInfo metaInfo[32];
 	static unsigned char blockAllocMap[DISK_BLOCKS];
 
 	//methods
@@ -271,7 +266,7 @@ public:
 };</code></pre>
                              </div>
                          	<br>
-                             <p>The following is the specification of methods of <a href="bufferStub.html" target="_blank">StaticBuffer class</a></p>
+                             <p>The following are the specification of the methods in class StaticBuffer. The stub code is availabe <a href="bufferStub.html" target="_blank">here</a>.</p>
                              <ul class="methods">
                                  <li>
                                     <div class="detail" id="buffer-constructor">
@@ -599,7 +594,7 @@ public:
 
  <!-----------------------------------------------getBufferPtr------------------------------------------------------>                                
                                 <li>
-                                    <div class="detail" id="getdataptr">
+                                    <div class="detail" id="getbuffptr">
                                         <h2><i>protected: </i>getBufferPtr</h2>
                                         <h5>Arguments:</h5>
                                         NIL
@@ -617,8 +612,8 @@ public:
                                         <h5>Description:</h5>
                                         <p>Returns a pointer to the first byte of the buffer storing the block.
 					
-                                        <h5><a data-toggle="collapse" href="#algo-getdataptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getdataptr" class="collapse">
+                                        <h5><a data-toggle="collapse" href="#algo-getbuffptr"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getbuffptr" class="collapse">
                                             <div class="code">
                                                 <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
 	//find the buffer index of the block using <i>getBlock()</i> 
@@ -1753,15 +1748,16 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is a way to call parent non-defaul
                         <div class="detail" id="misc">
                             <h2>Miscellaneous</h2>
                             <p>Here we give the definition of <i>RecId</i> and <i>IndexId</i> structures which will be of use in several modules of NITCbase. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
-                            <h4>RecId</h4>
-                            <p>Every record in a relation in NITCbase is referenced using an id called <i>recId</i>. <i>recId</i> is a combination of block# and slot# where the record is stored in the disk.</p>
-                            <div class="code">
-                                <pre><code>typedef struct recId{
-	int block;
-	int slot;
-} recId;</code></pre>
-                            </div>
-                            
+							<div id = "#recid">
+								<h4>RecId</h4>
+								<p>Every record in a relation in NITCbase is referenced using an id called <i>recId</i>. <i>recId</i> is a combination of block# and slot# where the record is stored in the disk.</p>
+								<div class="code">
+									<pre><code>typedef struct recId{
+		int block;
+		int slot;
+	} recId;</code></pre>
+								</div>
+							</div>
                             <h4>IndexId</h4>
                             <p>An <i><a href="#block_structures">Index</a></i> for a relation is a tuple (Attribute value, block#, slot#), which is present in a <i><a href="../storage-model.html#leafind_blk">Leaf Index Block</a></i> of a <a href="https://en.wikipedia.org/wiki/B-tree">B+ tree</a>. Any such index can be referenced using an id called <i>IndexId</i>. <i>IndexId</i> is a combination of block#(block number of the corresponding leaf index block) and index#(offset of index in that block). </p>
                             <div class="code">
