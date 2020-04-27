@@ -535,7 +535,7 @@ protected:
 <!-----------------------------BlockBuffer Constructor 1 -------------------------------------------------------->	     
 				 				<li>
                                     <div class="detail" id="blk_buffer_constructor1">
-                                        <h2><i>public:</i> BlockBuffer (Constructor 2)</h2>
+                                        <h2><i>public:</i> BlockBuffer (Constructor 1)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -659,7 +659,7 @@ protected:
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>Returns the type of the block corresponding to the input block number.</p>
+                                        <p>Returns the type of the block corresponding to the block object.</p>
 					                   
                                         <h5><a data-toggle="collapse" href="#algo-getblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblktype" class="collapse">
@@ -701,11 +701,12 @@ protected:
                                         <div id="algo-setblktype" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::setBlockType(int blockType){						
+	
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
 
 	//store the input block type in the first 4 bytes of the buffer.
 
-	//update the <i>StaticBuffer::blockAllocMap</i> 
+	//update the <i>StaticBuffer::blockAllocMap</i>. 
 
 	//update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
 	
@@ -742,6 +743,7 @@ protected:
                                         <div id="algo-getheader" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::getHeader(struct HeadInfo *head){	
+	
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
 
 	//copy the header of block to the memory location pointed to by the <i>head</i> using appropriate type casting.
@@ -751,7 +753,7 @@ protected:
                                         </div>
 										<p><b>NOTE:</b> 
 											<ul>
-												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore <i>getheader()</i> function is kept in abstract class <i>BlockBuffer</i>.</li>
 												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
 											</ul>
 								 		</p>
@@ -835,7 +837,7 @@ protected:
                                     <div class="detail" id="getbuffptr">
                                         <h2><i>protected: </i>getBufferPtr</h2>
                                         <h5>Arguments:</h5>
-                                        NIL
+					<p>Nil</p>
                                         <h5>Return type:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -854,21 +856,19 @@ protected:
                                         <div id="algo-getbuffptr" class="collapse">
                                             <div class="code">
                                                 <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
+	
 	//find the buffer number of the block using <i>getBlock()</i> 
 	
-	// return the pointer to this buffer (blocks[bufferNum]).
+	// return the pointer to this buffer (i.e., return <i>blocks[bufferNum]</i>).
 }</code></pre>
                                             </div>
                                         </div>
                                     </div> 
                                 </li>
-
-				     
-				     
 				     
 <!-----------------------------------------------getblock---------------------------------------------------------->				     
 				     
-				      <li>
+				    <li>
                                     <div class="detail" id="getblk">
                                         <h2><i>protected:</i> getBlock</h2>
                                         <h5>Arguments:</h5> Nil
@@ -884,22 +884,22 @@ protected:
                                         </div>
                                        <h5>Description:</h5>
                                         <p>Loads the block into buffer (if not present), updates the timestamps and returns the corresponding buffer number. </p>
-					    <p><b>NOTE:</b> This function never fails - a buffer will always be alloted to the block doing replacement if necessary.</p>
 					    
                                         <h5><a data-toggle="collapse" href="#algo-getblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>int BlockBuffer::getBlock(){
 						
-     //check whether the block is already present in the buffer using <i>StaticBuffer.getBufferNum</i>() .
+     //check whether the block is already present in the buffer using <i>StaticBuffer::getBufferNum</i>() .
      
-     //if present, set the timestamp of the corresponding buffer to 0 and increment the timpestamps of all other occupied buffers in the BufferMetaInfo.
+     //if present, set the timestamp of the corresponding buffer to 0 and increment the <i>timpeStamps</i> in the <i>BufferMetaInfo</i> of all other occupied buffers.
      
-     //if not present, get a free buffer using <i>StaticBuffer.getFreeBuffer</i>() and read the block into the free buffer using <i>readBlock()</i>.
+     //if not present, get a free buffer using <i>StaticBuffer::getFreeBuffer</i>() and read the block into the free buffer using <i>readBlock()</i>.
    
 }</code></pre>
                                             </div>
                                         </div>
+					<p><b>NOTE:</b> This function never fails - a buffer will always be alloted to the block doing replacement if necessary.</p>
                                      </div>
                                  </li>
 		
