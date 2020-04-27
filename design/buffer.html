@@ -238,7 +238,7 @@
 
 				 			 <p>All these data fields are private to the <i>StaticBuffer</i> class and can only be accessed through public methods. This class provides the basic disk <i>fetch and commit</i> interfaces to the higher layers, creating an illusion of having the entire disk in memory at all times. <i>StaticBuffer</i> is a <b>static class</b>, i.e., all member fields and methods are declared static. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class, and any access to them will refer to the same statically allocated memory. Also static methods in a class are allowed to access only static members of the class. Consequently, there needs to exist only a single static object of the class*. The class definition of <i>StaticBuffer</i> is as given below: </p>
                              
-                             <p><b>Note:</b> The class <i>BlockBuffer</i> is a friend class to <i>StaticBuffer</i> class. This allows all methods in <i>BlockBuffer</i> to the access private fields and methods of the <i>StaticBuffer</i> class. This is explained in detail in the next section. </p>
+                             <p><b>Note:</b> The class <i>BlockBuffer</i> is a friend class to <i>StaticBuffer</i> class. This allows all methods in <i>BlockBuffer</i> to access the private fields and methods of the <i>StaticBuffer</i> class. At the same time, friendship is not inherited in C++, i.e., if a base class has a friend class, then the class doesn’t become a friend of the derived classes. This is explained in detail in the next section. </p>
                              
                              <p><b><span style="color: dodgerblue">*</span>Implementation Note:</b> C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically. Since the class is static, only a single object of the class needs to be created when NITCbase is running, whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)" target="_blank">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)" target="_blank">destructor</a>.</p>
                              <div class="code">
@@ -260,8 +260,8 @@ private:
 	static unsigned char blockAllocMap[DISK_BLOCKS];
 
 	//methods
-	static int getFreeBuffer(int blockNum);
 	static int getBufferNum(int blockNum);
+	static int getFreeBuffer(int blockNum);
 	
 };</code></pre>
                              </div>
@@ -351,6 +351,7 @@ private:
     //traverse the <i>blockAllocMap</i> to find the type corresponding to blockNum.
     
     //return the blockType obtained(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>)
+    
 }
 </code></pre>
                                             </div>
@@ -383,71 +384,16 @@ private:
                                         <div id="algo-setdirtybit" class="collapse">
                                             <div class="code">
 <pre><code> void StaticBuffer::setDirtyBit(int blockNum){
-    //find the buffer index corresponding to the block using <a href="#getbuffernum">getBufferNum()</a>.
+    //find the buffer number corresponding to the block using <a href="#getbuffernum">getBufferNum()</a>.
     
     //set the <i>dirty</i> flag of that buffer in <i>metaInfo</i> to true.
+    
 }
 </code></pre>
                                             </div>
                                         </div>
                                     </div>
-                                 </li>
-				     
-<!-------------------------------------------getFreeBuffer Function----------------------------------------------------------->
-				                          
-                                 <li>
-                                    <div class="detail" id="getfreebuffer">
-                                        <h2><i>private: </i>getFreeBuffer</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>blockNum</td>
-                                                    <td>int</td>
-                                                    <td>Block number of the block to be loaded to a buffer block.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>bufferNum</td>
-                                                    <td>int</td>
-                                                    <td>Buffer number of the free/freed buffer block assigned to the input block.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Description:</h5>
-                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer block is found, the <i>least recently used</i> (LRU) buffer block is replaced. </p>
-                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getfreebuff" class="collapse">
-                                            <div class="code">
-<pre><code> int StaticBuffer::getFreeBuffer(int blockNum){
-    // increase the <i>timeStamp</i> in <i>metaInfo</i> of all occupied buffers.
-    
-    // let <i>bufferIndex</i> be used to store the buffer number of the free/freed buffer.
-	
-    // if a free buffer is available, <i>bufferIndex</i> is the index of that free buffer.
-    
-    // if a free buffer is not available, write back the buffer with the largest <i>timeStamp</i> using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a> and set it as <i>bufferIndex</i>.
-    
-    // update the <i>metaInfo</i> entry corresponding to <i>bufferIndex</i> with free:false, dirty:false, blockNum:the input block number and timeStamp:0.
-    
-    // return the <i>bufferIndex</i>.
-}
-</code></pre>
-                                            </div>
-                                        </div>
-										<p><b>NOTE:</b> 
-											<ul>
-												<li>This function never fails - a buffer is <i>always</i> assigned to the block.</li>
-												<li>The <i>timeStamp</i> is reset to 0 each time the buffer block is accessed and incremented when other buffer blocks are accessed. Thus the buffer block with the largest <i>timeStamp</i> is the one that is least recently used. </li>
-												<li>The function allots a free buffer block, fills its <i>metaInfo</i> with relevant information, and updates the timeStamp. The caller is responsible for actually loading the block into the buffer. </li>
-											</ul>
-										</p>
-                                    </div>
-                                 </li>
+                                 </li>				     
 
 <!-------------------------------------------getBufferNum Function----------------------------------------------------------->				     
                                  
@@ -497,6 +443,63 @@ private:
                                         </div>
                                     </div>
                                  </li>
+				     
+<!-------------------------------------------getFreeBuffer Function----------------------------------------------------------->
+				                          
+                                 <li>
+                                    <div class="detail" id="getfreebuffer">
+                                        <h2><i>private: </i>getFreeBuffer</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block to be loaded to a buffer block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>bufferNum</td>
+                                                    <td>int</td>
+                                                    <td>Buffer number of the free/freed buffer block assigned to the input block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Description:</h5>
+                                        <p>Assigns a buffer to the block and returns the buffer number. If no free buffer block is found, the <i>least recently used</i> (LRU) buffer block is replaced. </p>
+                                        <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getfreebuff" class="collapse">
+                                            <div class="code">
+<pre><code> int StaticBuffer::getFreeBuffer(int blockNum){
+    // increase the <i>timeStamp</i> in <i>metaInfo</i> of all occupied buffers.
+    
+    // let <i>bufferNum</i> be used to store the buffer number of the free/freed buffer.
+	
+    // if a free buffer is available, <i>bufferNum</i> is the index of that free buffer.
+    
+    // if a free buffer is not available, write back the buffer with the largest <i>timeStamp</i> using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a> and set it as <i>bufferNum</i>.
+    
+    // update the <i>metaInfo</i> entry corresponding to <i>bufferNum</i> with free:false, dirty:false, blockNum:the input block number and timeStamp:0.
+    
+    // return the <i>bufferNum</i>.
+}
+</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>This function never fails - a buffer is <i>always</i> assigned to the block.</li>
+												<li>The <i>timeStamp</i> is reset to 0 each time the buffer block is accessed and incremented when other buffer blocks are accessed. Thus the buffer block with the largest <i>timeStamp</i> is the one that is least recently used. </li>
+												<li>The function allots a free buffer block, fills its <i>metaInfo</i> with relevant information, and updates the timeStamp. The caller is responsible for actually loading the block into the buffer. </li>
+											</ul>
+										</p>
+                                    </div>
+                                 </li>
+
 							</ul>
                          	<div id="blkbuff_class" class="detail">
                          	<h2>Class BlockBuffer </h2>
@@ -628,9 +631,9 @@ public:
                                         <div id="algo-getbuffptr" class="collapse">
                                             <div class="code">
                                                 <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
-	//find the buffer index of the block using <i>getBlock()</i> 
+	//find the buffer number of the block using <i>getBlock()</i> 
 	
-	// return the pointer to this buffer (blocks[bufferIndex]).
+	// return the pointer to this buffer (blocks[bufferNum]).
 }</code></pre>
                                             </div>
                                         </div>
@@ -727,12 +730,12 @@ public:
                                                 <tr>
 						    <td>bufferNum</td>
                                                     <td>int</td>
-                                                    <td>Buffer index of the buffer containing the block.</td>
+                                                    <td>Buffer number of the buffer containing the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                        <h5>Description:</h5>
-                                        <p>Loads the block into buffer (if not present), updates the timestamps and returns the corresponding buffer index. </p>
+                                        <p>Loads the block into buffer (if not present), updates the timestamps and returns the corresponding buffer number. </p>
 					    <p><b>NOTE:</b> This function never fails - a buffer will always be alloted to the block doing replacement if necessary.</p>
 					    
                                         <h5><a data-toggle="collapse" href="#algo-getblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
