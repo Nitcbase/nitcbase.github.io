@@ -342,7 +342,7 @@ private:
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>Returns the block type of the block with the input block number. This function is used to find the block type without creating a block object(as will be required in <a href="/b+tree.html" target="_blank">B+ Tree layer</a>)  </p>
+                                        <p>Returns the block type of the block corresponding to the input block number. This function is used to find the block type without creation of a block object. </p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getstaticblocktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getstaticblocktype" class="collapse">
@@ -355,7 +355,7 @@ private:
 </code></pre>
                                             </div>
                                         </div>
-									<p><b>NOTE:</b> This function is useful in cases where, given a block number, its block type is not known. Hence it is also not known which type of record object (Record block/ Index Internal block/Index Leaf block) needs to be used to store the block. This function has been made used in the B+ Tree Layer, where the block number of the constituent blocks of a B+ Tree is known, but it is not known whether the block is of type <ahref="#intbuff_class">IndInternal</a> or <ahref="#leafbuff_class">IndLeaf</a>. </p>
+									<p><b>NOTE:</b> This function is useful in cases where, given a block number, its block type is not known. Hence it is also not known which type of record object (Record block/ Index Internal block/Index Leaf block) needs to be used to store the block. This function has been used in the <a href="b+tree.html" target="_blank">B+ Tree Layer</a>, where the block number of the constituent blocks of a B+ Tree is known, but it is not known whether the block is of type <a href="#intbuff_class">IndInternal</a> or <a href="#leafbuff_class">IndLeaf</a>. </p>
                                     </div>
                                  </li>
 				     
@@ -381,12 +381,12 @@ private:
                                                 <tr>
                                                     <td>bufferNum</td>
                                                     <td>int</td>
-                                                    <td>Buffer number of the free/freed buffer block assigned to the block.</td>
+                                                    <td>Buffer number of the free/freed buffer block assigned to the input block.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer block is found, replacement of the <i>last recently used</i> (LRU) buffer block is done to free a buffer block. </p>
+                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer block is found, the <i>least recently used</i> (LRU) buffer block is replaced. </p>
                                         <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreebuff" class="collapse">
                                             <div class="code">
@@ -399,7 +399,7 @@ private:
     
     // if a free buffer is not available, write back the buffer with the largest <i>timeStamp</i> using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a> and set it as <i>bufferIndex</i>.
     
-    // update the <i>metaInfo</i> entry corresponding to <i>bufferIndex</i> with free:false, dirty:false, blockNum:input block number and timeStamp:0.
+    // update the <i>metaInfo</i> entry corresponding to <i>bufferIndex</i> with free:false, dirty:false, blockNum:the input block number and timeStamp:0.
     
     // return the <i>bufferIndex</i>.
 }
