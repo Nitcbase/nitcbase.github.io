@@ -503,8 +503,8 @@ private:
 						</div>
                         <div id="blkbuff_class" class="detail">
                          	<h2>Class BlockBuffer </h2>
-                             <p>The class <i>BlockBuffer</i> is a generic class for representing a disk block of any type (Record, Internal Index, or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block object. In order to work with data of the block, any method of the <i>BlockBuffer</i> class or its descendent classes need to know the address of the buffer memory to which the block has been loaded. Note that the block has to be loaded and stored in one of the 32 buffers of the <i>StaticBuffer</i> class. Adding to the complexity is the fact that the block, once loaded, may not even be present in the buffer memory later on because of the buffer replacement algorithm implemented by Buffer Layer. Hence any method of this class operating on the block data should first get the pointer to the buffer memory that holds the contents of the block. The <i>getBufferPtr()</i> method is used for this purpose. The public methods of <i>BlockBuffer</i> deal with the information like <a href="#block_structures_headinfo">header</a> and block type, which are generic to all blocks. <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes extend the class <i>BlockBuffer</i>, thereby inheriting all the fields and methods of BlockBuffer. </p>
-                             <p><b>Note:</b>If the class definition of a class (say A) declares another class (say class B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a>, then an instance of B can access the private fields and methods of A. This friendship is, however, not inherited by the child classes of B. As per the NITCbase design, the definition of the class StaticBuffer contains the declaration of <i>friend BlockBuffer</i>. Hence, the methods in BlockBuffer can access the private fields and methods of the class StaticBuffer. On the other hand, <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes can access them only through the public functions of StaticBuffer and through the public and protected functions of BlockBuffer classes.  </p>
+                             <p>The class <i>BlockBuffer</i> is a generic class for representing a disk block of any type (Record, Internal Index, or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block object. The block has to be loaded and stored in one of the 32 buffers of the <i>StaticBuffer</i> class before its data can be accessed. Adding to the complexity is the fact that the block, once loaded, may not even be present in the buffer memory later on because of the buffer replacement algorithm implemented by Buffer Layer. In order to work with data of the block, any method of the <i>BlockBuffer</i> class or its descendent classes need to know the address of the buffer memory to which the block has been loaded. Hence any method of this class operating on the block data should first get the pointer to the buffer memory that holds the contents of the block. The <i>getBufferPtr()</i> method is used for this purpose. The public methods of <i>BlockBuffer</i> deal with the information like <a href="#block_structures_headinfo">header</a> and block type, which are generic to all blocks. <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes extend the class <i>BlockBuffer</i>, thereby inheriting all the fields and methods of <i>BlockBuffer</i>. </p>
+                             <p><b>Note:</b>If the class definition of a class (say A) declares another class (say B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a>, then an instance of class B can access the private fields and methods of class A. This friendship is, however, not inherited by the child classes of B. As per the NITCbase design, the definition of the class StaticBuffer contains the declaration: <i>friend class BlockBuffer</i>. Hence, the methods in <i>BlockBuffer</i> can access the private fields and methods of the class StaticBuffer. On the other hand, <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes can access them only through the public functions of StaticBuffer and through the public and protected functions of <i>BlockBuffer</i> class. </p>
                             <div class="code">
                                 <pre><code>class BlockBuffer{
 public:
@@ -532,7 +532,7 @@ protected:
                             <p>The following are the specifications for the methods in class <i>BlockBuffer</i>. The stub code is availabe <a href="bufferStub.html" target="_blank">here</a>. </p>
                              <ul class="methods">
 				     
-<!-----------------------------Constructor 1 -------------------------------------------------------->	     
+<!-----------------------------BlockBuffer Constructor 1 -------------------------------------------------------->	     
 				 				<li>
                                     <div class="detail" id="blk_buffer_constructor1">
                                         <h2><i>public:</i> BlockBuffer (Constructor 2)</h2>
@@ -565,7 +565,7 @@ protected:
                                         <div id="algo_blk_buffer_constructor1" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(char blockType){
-	// allocate a block on the disc and a buffer in memory to hold the new block of given type using <a href="#getfreeblk">getFreeBlock</a>().
+	// allocate a block in the disk and a buffer in memory to hold the new block of given type using <a href="#getfreeblk">getFreeBlock</a>().
 
 	// set the <i>blockNum</i> field of the object to that of the allocated block number.
 
@@ -608,7 +608,228 @@ protected:
                                     </div>
                                  </li>            
 
- <!-----------------------------------------------getBufferPtr------------------------------------------------------>
+ <!-------------------------------------------------getBlockNum-------------------------------------------------------------->
+				     
+				      			<li>
+                                    <div class="detail" id="getblkNum">
+                                        <h2><i>public:</i> getBlockNum</h2>
+                                        <h5>Arguments:</h5>
+										<p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockNum</td>
+                                                    <td>int</td>
+                                                    <td>Block number of the block.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                       <h5>Description:</h5>
+                                        <p>Returns the block number of the block.</p>
+                                        
+                                        <h5><a data-toggle="collapse" href="#algo-getblknum"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getblknum" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int BlockBuffer::getBlockNum(){
+
+	//return corresponding block number
+}</code></pre>
+                                            </div>
+                                        </div>
+                                     </div>
+                                 </li>
+					     
+<!-----------------------------------getBlockType----------------------------------------------------------------------------->
+				     
+                                <li>
+                                    <div class="detail" id="getblocktyper">
+                                        <h2><i>public:</i> getBlockType</h2>
+										<h5>Arguments:</h5>
+                                        <p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+						    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td>Type of the block(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <h5>Description:</h5>
+                                        <p>Returns the type of the block corresponding to the input block number.</p>
+					                   
+                                        <h5><a data-toggle="collapse" href="#algo-getblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getblktype" class="collapse">
+                                            <div class="code">
+                                                <pre><code>int BlockBuffer::getBlockType(){
+
+	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>. 
+	
+	//return the first 4 bytes of the buffer that stores the block type.
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+			
+<!-----------------------------------setBlockType----------------------------------------------------------------------------->
+				     
+                                <li>
+                                    <div class="detail" id="setblocktype">
+                                        <h2><i>public:</i> setBlockType</h2>
+										<h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+												    <td>blockType</td>
+                                                    <td>int</td>
+                                                    <td>Type used to set the block type(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5> 
+										<p>void</p>
+                                        
+                                        <h5>Description:</h5>
+                                        <p>Sets the type of the block with the input block type.</p>
+					                   
+                                        <h5><a data-toggle="collapse" href="#algo-setblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setblktype" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void BlockBuffer::setBlockType(int blockType){						
+	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
+
+	//store the input block type in the first 4 bytes of the buffer.
+
+	//update the <i>StaticBuffer::blockAllocMap</i> 
+
+	//update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+			
+<!------------------------------------------getheader--------------------------------------------------------------->				     
+				     
+                                <li>
+                                    <div class="detail" id="getheader">
+                                        <h2><i>public:</i> getHeader</h2>
+					    
+										<h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>head</td>
+                                                    <td><a href="#block_structures_headinfo">struct HeadInfo*</a></td>
+                                                    <td>Pointer to which the header contents of the block is copied.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Gives the header of the block.</p>
+					    
+					                   
+                                        <h5><a data-toggle="collapse" href="#algo-getheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-getheader" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void BlockBuffer::getHeader(struct HeadInfo *head){	
+	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
+
+	//copy the header of block to the memory location pointed to by the <i>head</i> using appropriate type casting.
+
+}</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
+											</ul>
+								 		</p>
+                                    </div> 
+                                </li>
+				     
+<!------------------------------------------------setheader------------------------------------------------------->				     
+                                <li>
+                                    <div class="detail" id="setheader">
+                                        <h2><i>public:</i> setHeader</h2>
+										<h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+                                                    <td>head</td>
+                                                    <td><a href="#block_structures_headinfo">struct HeadInfo*</a></td>
+                                                    <td>Pointer whose contents are copied to the block header.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Sets the header of the block.</p>
+                                        <h5><a data-toggle="collapse" href="#algo-setheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-setheader" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void BlockBuffer::setHeader(struct HeadInfo *head){
+	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
+
+	//copy the contents of the memory location pointed to by <i>head</i> to the header of block using appropriate type casting.
+
+	//update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
+											</ul>
+								 		</p>
+                                    </div> 
+                                </li>
+				     
+<!------------------------------------------------releaseblock------------------------------------------------------->	
+		
+                                <li>
+                                    <div class="detail" id="releaseblock">
+                                        <h2><i>public:</i> setHeader</h2>
+										<h5>Arguments:</h5>
+                                        <p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <p>void</p>
+
+                                        <h5>Description:</h5>
+                                        <p>Deletes the block from both the buffer memory and the disk.</p>
+                                        <h5><a data-toggle="collapse" href="#algo-releaseblock"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo-releaseblock" class="collapse">
+                                            <div class="code">
+                                                <pre><code>void BlockBufferBlockBuffer::releaseBlock(){
+	// get the buffer number of the buffer assigned to the block using <a href="#getbuffptr">StaticBuffer::getBufferNum()</a>.
+
+	//if the buffer number is valid, free the buffer by setting the <i>free</i> flag of its <i>metaInfo</i> entry to true.
+
+	//free the block in disk by setting the data type of the entry corresponding to the block number in <i>StaticBuffer::blockAllocMap</i> to <a href="../constants.html" target="_blank">UNUSED</a>.
+	
+	//set the object's <i>blockNum</i> to -1.
+	
+}</code></pre>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </li>
+				     
+<!-----------------------------------------------getBufferPtr------------------------------------------------------>
 								 
                                 <li>
                                     <div class="detail" id="getbuffptr">
@@ -643,81 +864,6 @@ protected:
                                 </li>
 
 				     
-				     
-<!------------------------------------------getheader--------------------------------------------------------------->				     
-				     
-                                <li>
-                                    <div class="detail" id="getheader">
-                                        <h2><i>public:</i> getHeader</h2>
-					    
-					<h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>head</td>
-                                                    <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>Pointer to which the header contents of the block is copied.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-
-                                        <h5>Description:</h5>
-                                        <p>Gives the header of the block.</p>
-					    <p><b>NOTE:</b> 
-					    <ul>
-						    <li>Any type of block(record block/ index internal block/ index leaf block) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
-						    <li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
-					    </ul></p>
-					                   
-                                        <h5><a data-toggle="collapse" href="#algo-getheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getheader" class="collapse">
-                                            <div class="code">
-                                                <pre><code>void BlockBuffer::getHeader(struct HeadInfo *head){	
-// get the starting address of the buffer containing the block using getBufferPtr. 
-        
-//copy the header of block to the memory location pointed to by the argument <i>head</i> using appropriate type casting
-
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </li>
-				     
-<!------------------------------------------------setheader------------------------------------------------------->				     
-                                <li>
-                                    <div class="detail" id="setheader">
-                                        <h2><i>public:</i> setHeader</h2>
-					<h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-                                                    <td>head</td>
-                                                    <td><a href="#block_structures">struct HeadInfo*</a></td>
-                                                    <td>Pointer whose contents are copied to the block header.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <p>void</p>
-
-                                        <h5>Description:</h5>
-                                        <p>Sets the header of the block.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-setheader"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-setheader" class="collapse">
-                                            <div class="code">
-                                                <pre><code>void BlockBuffer::setHeader(struct HeadInfo *head){
-// get the starting address of the buffer containing the block using getBufferPtr.
-
-//copy the contents of the memory location pointed to by the argument <i>head</i> to the header of block using appropriate type casting
-
-//update dirty bit using setDirtyBit().
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </li>
 				     
 				     
 <!-----------------------------------------------getblock---------------------------------------------------------->				     
@@ -823,133 +969,13 @@ protected:
 	
 				     
 				     
-<!-------------------------------------------------getBlockNum-------------------------------------------------------------->
-			     
-				     
-				      <li>
-                                    <div class="detail" id="getblkNum">
-                                        <h2><i>public:</i> getBlockNum</h2>
-                                        <h5>Arguments:</h5> Nil
-                                        <h5>Return type:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-						    <td>blockNum</td>
-                                                    <td>int</td>
-                                                    <td>Block number of the block</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                       <h5>Description:</h5>
-                                        <p>Returns the block number of the block.</p>
-                                        
-                                        <h5><a data-toggle="collapse" href="#algo-getblknum"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getblknum" class="collapse">
-                                            <div class="code">
-                                                <pre><code>int BlockBuffer::getBlockNum(){
-
-//return corresponding block number
-}</code></pre>
-                                            </div>
-                                        </div>
-                                     </div>
-                                 </li>
-					     
 				     
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
 
-<!-----------------------------------getBlockType----------------------------------------------------------------------------->
-				     
-				     	     
-				     
-				     
-                                <li>
-                                    <div class="detail" id="getblocktyper">
-                                        <h2><i>public:</i> getBlockType</h2>
-					<h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-						    <td>bufferIndex</td>
-                                                    <td>int</td>
-                                                    <td>Index of the buffer of the block whose type is required.</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-						    <td>blockType</td>
-                                                    <td>int</td>
-                                                    <td>Type of the block(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <h5>Description:</h5>
-                                        <p>Returns the type of the block corresponding to the input buffer index.</p>
-					                   
-                                        <h5><a data-toggle="collapse" href="#algo-getblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-getblktype" class="collapse">
-                                            <div class="code">
-                                                <pre><code>int BlockBuffer::getBlockType(int bufferIndex){
-
-//blocks[bufferIndex] gives the staring address of the buffer						
-
-//retrieve the first 4 bytes of the buffer that stores the block type.
-	
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </li>
-			
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
 
-<!-----------------------------------setBlockType----------------------------------------------------------------------------->
-				     
-				     	     
-				     
-				     
-                                <li>
-                                    <div class="detail" id="setblocktype">
-                                        <h2><i>public:</i> setBlockType</h2>
-					<h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-						    <td>blockType</td>
-                                                    <td>int</td>
-                                                    <td>New block type to be updated(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>)</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5> void
-                                        
-                                        <h5>Description:</h5>
-                                        <p>Sets the type of the block with the given block type.</p>
-					                   
-                                        <h5><a data-toggle="collapse" href="#algo-setblktype"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-setblktype" class="collapse">
-                                            <div class="code">
-                                                <pre><code>void BlockBuffer::setBlockType(int blockType){						
-//find the starting address of the buffer using <i>getBufferPtr()</i>
-
-//store the given block type in the first 4 bytes of the buffer
-
-//update the <i>BlockAllocMap</i> 
-
-//update dirty bit using setDirtyBit()
-	
-}</code></pre>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                </li>
-			
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
 				     
