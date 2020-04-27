@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>INdexing in NITCbase</title>
+    <title>Indexing in NITCbase</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -23,6 +23,7 @@
       });
     </script>
     <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js' async></script>
+
 </head>
     
     
@@ -95,13 +96,13 @@
                                 
                                 <p>
 
-                                On creating a database of your own, it is essential that we have access to the data stored without much time delay. Disk access is a high-latency operation. Therefore, as the size of relations increases, searching records that satisfy certain conditions by accessing every record in the disk blocks can adversely affect the performance. This paves way for indexing.
+                                On creating a database of your own, it is essential that we have access to the data stored without much time delay. Disk access is a high-latency operation. Therefore, as the size of relations increases, searching records that satisfy certain conditions by accessing every record in the disk blocks can adversely affect the performance. This necessitates indexing.
                                 </p>
                                 <p>Creating an index enables us to access the required entry with very few disk accesses. Indices are access structures that are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records. An index in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indexes such that these pointer values can be found extremely fast. And, once the database has located a desired set of pointer values, it can then turn around and quickly read the full record. So, in the end, a database index is a means to locate and read table data as quickly as possible.</p>
-                                <p>An index is a collection of attribute values and their corresponding record pointers.
+                                <p>So, an index is a collection of attribute values and their corresponding record pointers.
                                 When designing an index, the structure of the index determines how fast the index can be accessed and what kind of queries can leverage it.
                             
-                                Perhaps the most common type of index structure is the B+ Tree. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. The sorted nature of the B+ Tree lends itself well to range-based scanning and sequential access as well as equality-based access. NITCbase uses B+ Tree for indexing records. </p>
+                                Perhaps one of the most common type of index structure is the B+ Tree. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. The sorted nature of the B+ Tree lends itself well to range-based scanning and sequential access as well as equality-based access. NITCbase uses B+ Tree for indexing records. </p>
                                 <div class="card">
                                 <div class="card-header">
                                 <!--<div class="card-body">-->
@@ -109,7 +110,7 @@
                                 </div>
                                 </div>
                                 <br>
-                                <p>Let us understand indexing in NITCbase with an example. <br>Consider a relation of 10 attributes containing 1,20,000 records.
+                                <p>Let us understand indexing in NITCbase with an example. <br>Consider a relation of 10 attributes containing 12,000 records.
                                 The record block size is 2048 bytes. (Refer <a href="../storage-model.html">Physical Layer</a>)<br>
                                 Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
 
@@ -119,18 +120,18 @@
                                        = \left \lfloor \frac {2016} {((16 * 10 + 1)} \right \rfloor = 12
                                 \]</p></b>
 
-                                <p>Therefore, the number record blocks required to store the relation is: </p>
+                                <p>Therefore, the number record blocks required to store the given relation is: </p>
 
                                 <b><p> \[ 
                                 
-                                \#Record Blocks = \left \lceil \frac {120000} {12} \right \rceil = 10000
+                                \#Record Blocks = \left \lceil \frac {12000} {12} \right \rceil = 1000
                                        
                                 \]</p></b>
                                 <p>This is the number of disk accesses required to process a query in the absence of index. Suppose, we have a query based on a indexed attribute satisfying certain condition. In NITCBase, the maximum number of entries in an Internal index block and Leaf index block are 100 and 63 respectively. Similarly, the minimum number of entries are 50 and 32 respectively. We know that all the attribute values appear in any of the leaf blocks. So the maximum number of Leaf index blocks is:</p>
 
                                 <b><p> \[ 
                                 
-                                \#Leaf Index Blocks = \left \lceil \frac {120000} {32} \right \rceil = 3750
+                                \#Leaf Index Blocks = \left \lceil \frac {12000} {32} \right \rceil = 375
                                        
                                 \]</p></b>
                                 <p>
@@ -140,10 +141,10 @@
 
                                 <b><p> \[ 
                                 
-                                \#Height = \left \lceil \log_{51} {3750}  \right \rceil = 3
+                                \#Height = \left \lceil \log_{51} {375}  \right \rceil = 2
                                        
                                 \]</p></b>
-                                <p>So, the total number number of disk accesses required is 3+1= 4.<br>We notice that from 10000 disk accesses to 4 disk accesses, the performance increase is substantial</p>
+                                <p>So, the total number number of disk accesses required is 2+1= 3.<br>We notice that from 10000 disk accesses to 3 disk accesses, the performance increase is substantial.</p>
                                 
 
 
@@ -151,28 +152,70 @@
 
                                
                         
-                        </div>
-                          	     
+                        </div>     
+                                 
                         <div id="implementation" class="detail">
                             <h2>B+Tree Implementation in NITCBase</h2>
                             <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.</p>
-                            <center><img src="../img/indexing/Table.png"></center>
+                            <center><img class="img-fluid" src="../img/indexing/Table.png"></center>
                             <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCBase. Therefore, keeping all other factors same, the number of slots per block would be 4. Given Relation has 14 records. Hence number of Record blocks required is 4. The Record Block structure is as follows :</p>
 
-                            <center><img src="../img/indexing/recordblk.png"></center>
+                            <center><img class="img-fluid" src="../img/indexing/recordblk.png"></center>
                             <br>
                             <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCBase.<br>
                            We need to create an Index for the attribute RollNo. As discussed in Physical Layer, each Attribute Catalog entry contains the Root block Index which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise</p>
-                           <center><img src="../img/indexing/attrcat1.png"></center>
+                           <center><img class="img-fluid" src="./indexing/attrcat1.png"></center>
                            <p>In order to create the Index, we begin by getting a free Leaf index block, say <b>L1</b> allocated for the root block. (Why?) <br> 
                             We then update the Root Block in the Attribute Catalog Entry.
                             </p>
-                            <center><img src="../img/indexing/attrcat2.png"></center>
-                            
-                            
+                            <center><img class="img-fluid" src="../img/indexing/attrcat2.png"></center>
+                            <p>We need to insert the following set of key values with respect to each row of the table in a sequential manner.<br>
+                            1,3,8,7,6,4,11,13,10,9,5,12,14,2 <br>
+                            The main algorithm is:
+
+                            </p>
+
+
+
+
+<h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                             <div id="algo-create" class="collapse">
+                                <div class="code"><code>
+                                    <ol>
+                                        <li>Find the correct Leaf index block, say X where the key value has to be inserted by traversing down the tree starting from the Root Block.</li>
+                                        <li>Create a temporary array of indices containing entries of X. Insert the entry corresponding to the key value in the array maintaining sorted order.</li>
+                                        <ol>
+                                            <li>If the size of indices array<=3 on insertion, i.e leaf is not full, overwrite the Leaf index block X with entries of array.</li>
+                                            <li>If the size of indices array=4, i.e leaf is full, get a new free Leaf index block, say Y. Distribute the entries in indices array evenly between X and Y. X contains first two entries. Y contains next 2 entries. We must add a new entry to the parent block, say P with child pointers to X and Y . The last value of X is to be added to P, considering a left biased B+Tree. (P=parent of X)</li>
+                                            <ul>
+                                                <li>If X does not have a parent block: </li>
+                                                <ol>
+                                                    <li>Get a new free Internal index block, i.e P and insert the new entry.This is the case when root was split. P is the new Root block. Update the attribute catalog entry accordingly.</li>
+                                                </ol>
+                                                <li>Else</li>
+                                                <ol>
+                                                    <li>Insert the new entry in P using a temporary array indices containing entries of P, maintaining sorted order.</li>
+                                                    <li>If the size of indices array=5 on insertion of new entry, get a new free Internal index block, say Q. Insert the first and last 2 entries in P and Q respectively. Also, insert the middle entry in the parent block above with child pointers to  P and Q (Why?  to propagate key values up the tree) by repeating the algorithm after step 2. (X=P, P=parent block of P)</li>
+                                                </ol>
+                                                
+                                            </ul>
+                                        </ol>
+                                    </ol>
+
+                                </code>
+                                </div>
+                            </div>
+                                <p>Insert 1,3,8</p>
+                                 <center><img class="img-fluid" src="../img/indexing/1.png"></center>
+                                <p>Insert 7</p>
+                                 <center><img class="img-fluid" src="../img/indexing/2.png"></center>
+                                <p>Insert 6</p>
+                                 <center><img class="img-fluid" src="../img/indexing/3.png"></center>
+
+                        
                         </div>
                         <!-- PAGE ENDS -->
-                   
+                    
                 </div>
                 <!-- END OF MAIN CONTENT -->
             </div>
