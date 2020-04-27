@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>B+ Tree documentation</title>
+    <title>INdexing in NITCbase</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -151,17 +151,28 @@
 
                                
                         
-                               
+                        </div>
                           	     
                         <div id="implementation" class="detail">
                             <h2>B+Tree Implementation in NITCBase</h2>
-                            <p>Consider a Table Student (Name, Roll No, Batch, Marks) with 4 attributes.
-</p>
+                            <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.</p>
+                            <center><img src="../img/indexing/Table.png"></center>
+                            <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCBase. Therefore, keeping all other factors same, the number of slots per block would be 4. Given Relation has 14 records. Hence number of Record blocks required is 4. The Record Block structure is as follows :</p>
+
+                            <center><img src="../img/indexing/recordblk.png"></center>
+                            <br>
+                            <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCBase.<br>
+                           We need to create an Index for the attribute RollNo. As discussed in Physical Layer, each Attribute Catalog entry contains the Root block Index which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise</p>
+                           <center><img src="../img/indexing/attrcat1.png"></center>
+                           <p>In order to create the Index, we begin by getting a free Leaf index block, say <b>L1</b> allocated for the root block. (Why?) <br> 
+                            We then update the Root Block in the Attribute Catalog Entry.
+                            </p>
+                            <center><img src="../img/indexing/attrcat2.png"></center>
                             
                             
                         </div>
                         <!-- PAGE ENDS -->
-                    </div>
+                   
                 </div>
                 <!-- END OF MAIN CONTENT -->
             </div>
