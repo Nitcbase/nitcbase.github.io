@@ -318,7 +318,7 @@ private:
                                     </div>
                                  </li>
 				     
-				     
+<!-------------------------------------------getFreeBuffer Function----------------------------------------------------------->
 				 
                                  
                                  <li>
@@ -330,7 +330,7 @@ private:
                                                 <tr>
                                                     <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>Block number of the block to be loaded to the buffer.</td>
+                                                    <td>Block number of the block to be loaded to a buffer block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -340,30 +340,38 @@ private:
                                                 <tr>
                                                     <td>bufferNum</td>
                                                     <td>int</td>
-                                                    <td>Buffer number of the free buffer to which the block is loaded.</td>
+                                                    <td>Buffer number of the free/freed buffer block assigned to the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <h5>Description:</h5>
-                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer blocks are found, replacement is done to free a buffer block.</p>
-					<p><b>NOTE:</b> This function never fails - a buffer will always be allocated for the block.</p>
+                                        <p>Assigns a buffer to the block and returns the buffer index. If no free buffer block is found, replacement is done to free a buffer block. </p>
+										<p><b>NOTE:</b> This function never fails - a buffer will always be allocated for the block.</p>
                                         <h5><a data-toggle="collapse" href="#algo-getfreebuff"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreebuff" class="collapse">
                                             <div class="code">
 <pre><code> int StaticBuffer::getFreeBuffer(int blockNum){
-    // increase the time stamps in metainfo of all the occupied buffers.
+    // increase the <i>timeStamp</i> in <i>metaInfo</i> of all occupied buffers.
     
-    // if free buffer is available, bufferIndex is the index of the free buffer.
+	// let <i>bufferIndex</i> be used to store the buffer number of the free/freed buffer.
+	
+    // if a free buffer is available, <i>bufferIndex</i> is the index of that free buffer.
     
-    // if free buffer is not available, replace the buffer with the largest timestamp and set it as bufferIndex.
+    // if a free buffer is not available, write back the buffer with the largest <i>timeStamp</i> using <a href="../storage-model.html#disk_writeBlock" target="_blank">Disk::writeBlock()</a> and set it as <i>bufferIndex</i>.
     
-    // update the <i>metainfo</i> array corresponding to the buffer index. 
+    // update the <i>metaInfo</i> entry corresponding to bufferIndex with free:false, dirty:false, blockNum:input block number and timeStamp:0.
     
-    // return the buffer index
+    // return the bufferIndex.
 }
 </code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>This function never fails - a buffer is <i>always</i> assigned to the block.</li>
+												<li>The function allots a free buffer block, fills its <i>metaInfo</i> with relevant information, and updates the timeStamp. The caller is responsible for actually loading the block into the buffer. </li>
+											</ul>
+										</p>
                                     </div>
                                  </li>
 				 
