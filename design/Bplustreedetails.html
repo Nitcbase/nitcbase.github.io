@@ -149,7 +149,58 @@
 
                         <div id="insert" class="detail">
                             <h2>Insertion in a B+ Tree</h2>
-                            <p>Creating a B+ Tree and inserting elements into it becomes a simple task if the above-mentioned rules are followed. Let's consider a B+ tree with 4 keys in each internal node and a maximum of 3 keys in a leaf node.</p>
+                            <p>Creating a B+ Tree and inserting elements into it becomes a simple task if the above-mentioned rules are followed. Let's consider a B+ tree with 4 keys in each internal node and a maximum of 3 keys in a leaf node.<br>
+                            Every insertion guarantees that all the entries are in increasing order in the linked list created by the leaf nodes. Similar to a BST, all the entries in the left child of the entries in a node is less than or equal to itself. Likewise, all the entries in the right child of the entries in a node are greater than or equal to it.<br>
+                            You can store the copy of internal entry either at the end of its left child or at the beginning of its right child. You may use a left-biased or right-biased B+ Tree i.e, on splitting left child has more entries than a right child in left-biased and vice versa. Make sure you follow the same convention throughout the building of the tree.<br>Let’s understand B+ Tree creation and insertion using the following data.<br>
+                            <b>10, 5, 75, 20, 55, 60, 65, 15, 40, 70, 45, 25, 35, 50, 30</b><br>
+                            For inserting any new entry, first, we traverse the B+ Tree from its root node and find its position in the corresponding leaf node. If the leaf node can accommodate the new entry, it is inserted without much thought.<br>
+                            As there is no tree initially, the first entry is inserted into a leaf node. Similarly, the rest of the insertion takes place until the leaf node is full. Maintain a sorted order in every node.<br>
+                            Let's insert : <b>10, 5 </b>and <b>75</b>.
+                            </p>
+                            <center><img class="img-fluid" src="../img/bplustree/4.png"></center>
+                            <p>This leaf node is now the root node of the B+ Tree.<br>
+                                Next we must insert <b>20</b> into it. <br>
+                                As you can see the leaf node is full. Hence we must create a new leaf node and redistribute the keys. Sort the entries (<b>5,10,20,75</b>) and insert the first half (2 entries i.e <b>5</b> and <b>10</b>) in the previous leaf node followed by the second half (i.e <b>20</b> and <b>75</b>) in the new leaf node. The last entry of the first leaf node is stored in the internal node as the first entry whose left child points to the older leaf node and right child points to the new leaf node. This new internal node is the root node of the tree.<br>
+                                You may see that a copy of the internal entries is always stored in the left child of the entry. Thus all the entries on its left child will be less than or equal to it as well as all the entries in its right child will be greater than it
+                            </p>
+                            <center><img class="img-fluid" src="../img/bplustree/5.png"></center>
+                            <p>Now let’s insert <b>55</b> into the above created B+ Tree.<br>
+                                Always remember that insertion happens only in the leaf nodes. The first step is to find the child node from the root node where the new entry will belong. Here <b>55</b> is greater than <b>10</b>, hence we check the right child of <b>10</b>. Since we have reached the leaf node we can insert the new entry if there is a vacant slot. Here we can insert <b>55</b> between <b>20</b> and <b>75</b>. 
+                            </p>
+                                <center><img class="img-fluid" src="../img/bplustree/6.png"></center>
+                                <p>Next entry to be inserted is <b>60</b>.<br>
+                                    Traversing down the tree from root node, <b>60</b> is to be inserted in the right child of <b>10</b>  i.e leaf node containing <b>20,55,75 </b>. The leaf node is full hence we must split this into 2 leaf nodes and update the internal node. As explained above we can see <b>20</b> and <b>55</b> remain in the previous leaf node and <b>60</b> and <b>75</b> are stored in the new leaf node. <b>55</b> becomes the new entry to the internal node.
+                                </p>
+                                <center><img class="img-fluid" src="7.png"></center>
+                                <p>Next entry to be inserted is <b>65</b>.<br>
+                                    Traversing down the tree from the root node, we can infer that <b>65</b> must be inserted in the right child of <b>55</b>. In that leaf node we have to insert <b>65</b> between <b>60</b> and <b>75</b>. Since the leaf node is not full, we can directly insert <b>65</b>.
+                                </p>
+                                <center><img class="img-fluid" src="8.png"></center>
+                                <p>Next insertion is of <b>15</b>.<br>
+                                    At a single glance, we can see a vacant slot after <b>10</b>. But we cannot insert <b>15</b> there. On traversing down the tree from root node, <b>15</b> must be inserted in the child node between <b>10</b> and <b>55</b>. The said node is not full hence <b>15</b> can be inserted directly.
+                                </p>
+                                <center><img class="img-fluid" src="9.png"></center>
+                                <p>Next we have to insert <b>40</b>.<br>
+                                    Consider the root node. <b>40</b> must be inserted in the leaf node between <b>10</b> and <b>55</b>. Since this leaf node is full, split the leaf node into 2 and distribute the 4 entries (<b>15, 20,  40, 55</b> ) as explained before into these leaf nodes. Now the new entry to the internal node is <b>20</b>. Since the internal node has vacant slots, we can insert <b>20</b> into it. We must make sure that the entries in internal nodes are also in sorted order.
+                                </p>
+                                <center><img class="img-fluid" src="10.png"></center>
+                                <p>The next entry is <b>70</b>.<br>
+                                    The new entry is greater than all the entries in the root node. Hence it must be inserted in the child node after <b>55</b>. But the node is already full. Let’s split this node, insert the entries (<b>60,65,70,75</b>) and update the parent node accordingly.
+                                </p>
+                                <center><img class="img-fluid" src="11.png"></center>
+                                <p>We must insert <b>45</b> next.<br>
+                                    It must be inserted in the child node between <b>20</b> and <b>55</b>. Here we can directly insert <b>45</b>  between <b>40</b> and <b>55</b>.
+                                </p>
+                                <center><img class="img-fluid" src="12.png"></center>
+                                <p>Next entry is <b>25</b>.<br>At root node, we infer it must be inserted in the child node between <b>20</b>  and <b>55</b>. This leaf node is already full. Hence must be split in order to accommodate <b>25</b>. <b>25</b> and <b>40</b> remain in the leaf node. <b>45</b> and <b>55</b> are written to a new node. <b>40</b> is the new entry to the internal node. Here we can see that the internal node is full. Therefore it must be split into 2 internal nodes and use another internal node as parent to both these nodes. Sort all the internal node entries along with the new entry (<b>10, 20, 40, 55, 65<b>). Entries before the middle entry (<b>10</b> and <b>20</b>) are written back to the first (old) internal node whereas entries after the middle entry (<b>55</b> and <b>65</b>) are written to the 2nd (new) internal node. Make sure that the pointers to child nodes are updated correspondingly. The middle entry <b>40</b> becomes the first entry to the parent internal node.
+                                </p>
+                                <center><img class="img-fluid" src="13.png"></center>
+                                <p>Next insertion is <b>35</b>.<br><b>35</b> is less than the entry in the root node, and it is greater than all the entries in its left child. Hence we get the required leaf node where <b>35</b> is inserted between <b>25</b> and <b>40</b>.
+                                </p>
+
+                                <center><img class="img-fluid" src="13.png"></center>
+
+                            
                         </div>
 
 
