@@ -731,7 +731,7 @@ protected:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures_headinfo">struct HeadInfo*</a></td>
-                                                    <td>Pointer to which the header contents of the block is copied.</td>
+                                                    <td>Pointer to the <i>HeadInfo</i> structure to which the block header is copied.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -773,7 +773,7 @@ protected:
                                                 <tr>
                                                     <td>head</td>
                                                     <td><a href="#block_structures_headinfo">struct HeadInfo*</a></td>
-                                                    <td>Pointer whose contents are copied to the block header.</td>
+                                                    <td>Pointer to a  <i>HeadInfo</i> structure from which the block header is set.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1043,14 +1043,6 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                     </div>
                                  </li>
 
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
-
-				                                      
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
 <!-----------------------------------getslotmap----------------------------------------------------------------------------->
 
                                 <li>
@@ -1062,7 +1054,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td>slotMap</td>
                                                     <td>unsigned char *</td>
-                                                    <td>Pointer to an array of unsigned char to which the slot map will be loaded.</td>
+                                                    <td>Pointer to the array of unsigned char to which the slot map is copied.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1071,32 +1063,32 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
 
                                         <h5>Description:</h5>
                                         <p>Gives the slotmap of the block.</p>
-					<p><b>NOTE:</b> 
-						<ul>
-							<li>The array of unsigned char should have size equal to the size of slotmap.</li>
-							<li>Higher layer must allocate memory for the unsigned char array before calling this function.</li>
-					    	</ul>
-					</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-getslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::getSlotmap(unsigned char *slotMap){ 
-    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
-    
+
+    // get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
+	
     // get the number of slots in the block.
     
-    // using offset range copy the slotmap of the block to the memory pointed by the argument.
+    // using offset range copy the <i>slotMap</i> of the block to the memory pointed by the argument.
     
 }</code></pre>
                                             </div>
                                         </div>
-                                        
+                                        <p><b>NOTE:</b> 
+											<ul>
+												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of slotmap.</li>
+												<li>The higher layers must allocate memory for the unsigned char array before calling the function.</li>
+											</ul>
+										</p>
                                     </div> 
-                                </li>
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
+                                </li>				     
 
 <!-----------------------------------setslotmap----------------------------------------------------------------------------->
+	
                                 <li>
                                     <div class="detail" id="setslotmap" >
                                         <h2><i>public:</i> setSlotmap</h2>
@@ -1106,7 +1098,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td>slotMap</td>
                                                     <td>unsigned char *</td>
-                                                    <td>Pointer to an array of type unsigned char from which the slot map will be loaded.</td>
+                                                    <td>Pointer to the array of unsigned char from which the slot map is set.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1115,28 +1107,34 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
 
                                         <h5>Description:</h5>
                                         <p>Sets the slotmap of the block.</p>
-					<p><b>NOTE:</b> The array of unsigned char should have size equal to the size of slotmap.</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-setslotmap"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setslotmap" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::setSlotmap(unsigned char *slotMap){ 
-    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
+												
+    // get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
     
     // get the number of slots in the block.
     
-    // using offset range copy the slotmap from the memory pointed by the argument to that of the block.
+    // using offset range copy the contents of the memory pointed to by the argument to the <i>slotMap</i> of the block.
     
-    //update dirty bit using setDirtyBit().
+    //update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
     
 }</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of slotmap.</li>
+												<li>The higher layers must allocate memory for the unsigned char array before calling the function.</li>
+											</ul>
+										</p>
                                     </div> 
                                 </li>
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
 
 <!-----------------------------------getRecord----------------------------------------------------------------------------->
+
                                 <li>
                                     <div class="detail" id="getrecord" >
                                         <h2><i>public:</i> getRecord</h2>
@@ -1146,7 +1144,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td>rec</td>
                                                     <td><a href="#block_structures_attribute">union Attribute</a> *</td>
-                                                    <td>Pointer to an array of type <i>union Attribute</i> to which the record will be loaded.</td>
+                                                    <td>Pointer to the array of <i>union Attribute</i> elements to which the record entry is copied.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>slotNum</td>
@@ -1166,49 +1164,49 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
 						    <td>int</td>
-                                                    <td>The slotNum is outside the possible slot values of the block.</td>
+													<td>Input <i>slotNum</i> is outside the set of valid slot values of the block.</td>
                                                 </tr>
                                                 <tr>
                                                     <td><a href="/constants.html#constants" target="_blank">E_FREESLOT</a></td>
 						    <td>int</td>
-                                                    <td>The slot corresponding to the slotNum is free.</td>
+                                                    <td>Slot corresponding to the input <i>slotNum</i> is free.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>Gives the <i>slotNum</i><sup>th</sup> record of the block.</p>
-					<p><b>NOTE:</b> 
-						<ul>
-							<li>The array of <i>union Attribute</i> elements should have size equal to the number of attributes in the relation.</li>
-							<li>Higher layer must allocate memory for the the array of <i>union Attribute</i> elements before calling this function.</li>
-					    	</ul>
-					</p>
+                                        <p>Gives the <i>slotNum</i><sup>th</sup> record entry of the block.</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-getrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getrecord" class="collapse">
                                             <div class="code">
                                                 <pre><code>int RecBuffer::getRecord(union Attribute *rec,int slotNum){ 
-    // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
+												
+    // get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-    // get number of attributes in the block.
+    // get the number of attributes in the block.
     
     // get the number of slots in the block.
 
-    // if input slotNum is not in the permitted range return E_OUTOFBOUND
+    // if input slotNum is not in the permitted range return E_OUTOFBOUND.
     
-    // if slot corresponding to input slotNum is free return E_FREESLOT
+    // if slot corresponding to input slotNum is free return E_FREESLOT.
 
-    // using offset range copy <i>slotNum</i><sup>th</sup> record to the memory pointed by <i>rec</i>.
+    // using offset range, copy <i>slotNum</i><sup>th</sup> record to the memory pointed by <i>rec</i>.
 
-    // return SUCCESS
+    // return SUCCESS.
 	
 }</code></pre>
                                             </div>
-                                        </div>                                        
+                                        </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>The array of <i>union Attribute</i> elements should have a size equal to the number of attributes in the relation.</li>
+												<li>The higher layers must allocate memory for the the array of <i>union Attribute</i> elements before calling the function.</li>
+												</ul>
+										</p>
                                     </div> 
                                 </li>
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
 
 <!-----------------------------------setrecord----------------------------------------------------------------------------->
                                 <li>
@@ -1220,7 +1218,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td>rec</td>
                                                     <td><a href="#block_structures_attribute">union Attribute</a> *</td>
-                                                    <td>Pointer to an array of type <i>union Attribute</i> from which the record will be loaded.</td>
+                                                    <td>Pointer to the array of <i>union Attribute</i> elements from which the record entry is set.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>slotNum</td>
@@ -1240,43 +1238,46 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                                 <tr>
                                                     <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
 						    <td>int</td>
-                                                    <td>The slotNum is outside the possible slot values of the block.</td>
+                                                    <td>Input <i>slotNum</i> is outside the set of valid slot values of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>Sets the <i>slotNum</i><sup>th</sup> record of the block as the input record.</p>
-					<p><b>NOTE:</b> The array of <i>union Attribute</i> elements should have size equal to the number of attributes in the relation. </p>
+                                        <p>Sets the <i>slotNum</i><sup>th</sup> record entry of the block with the input record contents.</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-setrecord"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-setrecord" class="collapse">
                                             <div class="code">
                                                 <pre><code>void RecBuffer::setRecord(union Attribute *rec,int slotNum){ 
-     // get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>. 
+												
+     // get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
     
-    // get number of attributes in the block.
+    // get the number of attributes in the block.
     
     // get the number of slots in the block.
 
     // if input slotNum is not in the permitted range return E_OUTOFBOUND.
     
-    // using offset range copy contents of the memory pointed by <i>rec</i> to <i>slotNum</i><sup>th</sup> record.
+    // using offset range, copy contents of the memory pointed by <i>rec</i> to <i>slotNum</i><sup>th</sup> record.
 
-    // update dirty bit using setDirtyBit().
+    // update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
     
-    // return SUCCESS
+    // return SUCCESS.
 	
 }</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>The array of <i>union Attribute</i> elements should have a size equal to the number of attributes in the relation.</li>
+												<li>The higher layers must allocate memory for the the array of <i>union Attribute</i> elements before calling the function.</li>
+												</ul>
+										</p>
                                     </div> 
-                                </li>
-                                 
-                             </ul>
-                            
+                                </li>                                 
+                             </ul>                            
                          </div>
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
 
 <!-----------------------------------IndBuffer----------------------------------------------------------------------------->
                         <div id="indbuff_class" class="detail">
