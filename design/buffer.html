@@ -974,7 +974,7 @@ protected:
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>Class RecBuffer</h2>
-                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. In a <i>Record block<i>, a slot can store one record, and each record is a fixed sized set of <a href="#block_structures_attribute">Attributes</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
+                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. In a <i>Record block</i>, a slot can store one record, and each record is a fixed sized set of <a href="#block_structures_attribute">Attributes</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all its protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 
