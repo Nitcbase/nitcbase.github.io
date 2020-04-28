@@ -266,7 +266,7 @@ private:
 };</code></pre>
                              </div>
                          	<br>
-                             <p>The following are the specifications for the methods in class <i>StaticBuffer</i>. The stub code is availabe <a href="bufferStub.html" target="_blank">here</a>.</p>
+                             <p>The following are the specifications for the methods in class <i>StaticBuffer</i>. The stub code is availabe <a href="bufferStub.html#staticBuffer.h" target="_blank">here</a>.</p>
                              <ul class="methods">
 <!-------------------------------------------StaticBuffer Constructor----------------------------------------------------------->
                                  <li>
@@ -503,8 +503,8 @@ private:
 						</div>
                         <div id="blkbuff_class" class="detail">
                          	<h2>Class BlockBuffer </h2>
-                             <p>The class <i>BlockBuffer</i> is a generic class for representing a disk block of any type (Record, Internal Index, or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block object. The block has to be loaded and stored in one of the 32 buffers of the <i>StaticBuffer</i> class before its data can be accessed. Adding to the complexity is the fact that the block, once loaded, may not even be present in the buffer memory later on because of the buffer replacement algorithm implemented by Buffer Layer. In order to work with data of the block, any method of the <i>BlockBuffer</i> class or its descendent classes need to know the address of the buffer memory to which the block has been loaded. Hence any method of this class operating on the block data should first get the pointer to the buffer memory that holds the contents of the block. The <i>getBufferPtr()</i> method is used for this purpose. The public methods of <i>BlockBuffer</i> deal with the information like <a href="#block_structures_headinfo">header</a> and block type, which are generic to all blocks. <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes extend the class <i>BlockBuffer</i>, thereby inheriting all the fields and methods of <i>BlockBuffer</i>. </p>
-                             <p><b>Note:</b>If the class definition of a class (say A) declares another class (say B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a>, then an instance of class B can access the private fields and methods of class A. This friendship is, however, not inherited by the child classes of B. As per the NITCbase design, the definition of the class StaticBuffer contains the declaration: <i>friend class BlockBuffer</i>. Hence, the methods in <i>BlockBuffer</i> can access the private fields and methods of the class StaticBuffer. On the other hand, <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes can access them only through the public functions of StaticBuffer and through the public and protected functions of <i>BlockBuffer</i> class. </p>
+                             <p>The class <i>BlockBuffer</i> is a generic class for representing a disk block of any type (Record, Internal Index, or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block object. The block has to be loaded and stored in one of the 32 buffers of the StaticBuffer class before its data can be accessed. Adding to the complexity is the fact that the block, once loaded, may not even be present in the buffer memory later on because of the buffer replacement algorithm implemented by Buffer Layer. In order to work with data of the block, any method of the <i>BlockBuffer</i> class or its descendent classes need to know the address of the buffer memory to which the block has been loaded. Hence any method of this class operating on the block data should first get the pointer to the buffer memory that holds the contents of the block. The <i>getBufferPtr()</i> method is used for this purpose. The public methods of <i>BlockBuffer</i> deal with information like <a href="#block_structures_headinfo">header</a> and block type, which are generic to all blocks. <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes extend the class <i>BlockBuffer</i>, thereby, inheriting all the fields and methods of <i>BlockBuffer</i>. </p>
+                             <p><b>Note:</b>If the class definition of a class (say A) declares another class (say B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a>, then an instance of class B can access the private fields and methods of class A. This friendship is, however, not inherited by the child classes of B. As per the NITCbase design, the definition of the class StaticBuffer contains the declaration: <i>friend class BlockBuffer</i>. Hence, the methods in <i>BlockBuffer</i> can access the private fields and methods of the class StaticBuffer. On the other hand, <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes can access them only through the public functions of StaticBuffer class and through the public and protected functions of <i>BlockBuffer</i> class. </p>
                             <div class="code">
                                 <pre><code>class BlockBuffer{
 public:
@@ -529,7 +529,7 @@ protected:
 
 };</code></pre> 
                             </div>
-                            <p>The following are the specifications for the methods in class <i>BlockBuffer</i>. The stub code is availabe <a href="bufferStub.html" target="_blank">here</a>. </p>
+                            <p>The following are the specifications for the methods in class <i>BlockBuffer</i>. The stub code is availabe <a href="bufferStub.html#blockBuffer.h" target="_blank">here</a>. </p>
                              <ul class="methods">
 				     
 <!-----------------------------BlockBuffer Constructor 1 -------------------------------------------------------->	     
@@ -542,29 +542,30 @@ protected:
 												<tr>
 													<td>R</td>
 													<td>char</td>
-													<td>new <a href="../constants.html" target="_blank">REC</a> block to be alloted.</td>
+													<td>new block of <a href="../constants.html" target="_blank">REC</a> type to be alloted.</td>
 												</tr>
 												<tr>
 													<td>I</td>
 													<td>char</td>
-													<td>new <a href="../constants.html" target="_blank">IND_INTERNAL</a> block to be alloted.</td>
+													<td>new block of <a href="../constants.html" target="_blank">IND_INTERNAL</a> type to be alloted.</td>
 												</tr>
 												<tr>
 													<td>L</td>
 													<td>char</td>
-													<td>new <a href="../constants.html" target="_blank">IND_LEAF</a> block to be alloted.</td>
+													<td>new block of <a href="../constants.html" target="_blank">IND_LEAF</a> type to be alloted.</td>
 												</tr>
 											</table>
                                         </div>
                                         <h5>Return type:</h5>
                                         <p>Nil</p>
                                         <h5>Description:</h5>
-                                        <p>Called if a new block is to be allocated in the disk.</p>
+                                        <p>Called if a new block of the input type is to be allocated in the disk.</p>
 					
                                         <h5><a data-toggle="collapse" href="#algo_blk_buffer_constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo_blk_buffer_constructor1" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(char blockType){
+	
 	// allocate a block in the disk and a buffer in memory to hold the new block of given type using <a href="#getfreeblk">getFreeBlock</a>().
 
 	// set the <i>blockNum</i> field of the object to that of the allocated block number.
@@ -597,6 +598,7 @@ protected:
                                         <div id="algo_blk_buffer_constructor2" class="collapse">
                                             <div class="code">
                                                 <pre><code>Blockbuffer::BlockBuffer(int blockNum){
+	
 	// set the <i>blockNum</i> field of the object to input argument.
 
 	// copy the block into buffer memory using <a href="#getblk">getBlock()</a> (discard the return value).
@@ -633,7 +635,8 @@ protected:
                                             <div class="code">
                                                 <pre><code>int BlockBuffer::getBlockNum(){
 
-	//return corresponding block number
+	//return corresponding block number.
+	
 }</code></pre>
                                             </div>
                                         </div>
@@ -754,7 +757,7 @@ protected:
 										<p><b>NOTE:</b> 
 											<ul>
 												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has the same header structure. Therefore, <i>getHeader()</i> method is kept in abstract <i>BlockBuffer</i> class.</li>
-												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
+												<li>Higher layer must allocate memory for the <i>struct HeadInfo</i> before calling this function. </li>
 											</ul>
 								 		</p>
                                     </div> 
@@ -796,7 +799,7 @@ protected:
 										<p><b>NOTE:</b> 
 											<ul>
 												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has the same header structure. Therefore, setHeader() method is kept in the abstract <i>BlockBuffer</i> class.</li>
-												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
+												<li>Higher layer must allocate memory for the <i>struct HeadInfo</i> before calling this function. </li>
 											</ul>
 								 		</p>
                                     </div> 
@@ -859,7 +862,7 @@ protected:
                                             <div class="code">
                                                 <pre><code>unsigned char * BlockBuffer::getBufferPtr(){
 	
-	//find the buffer number of the block using <i>getBlock()</i> 
+	//find the buffer number of the block using <a href="#getblk">getBlock()</a>.
 	
 	// return the pointer to this buffer (given by <i>StaticBuffer::blocks[bufferNum]</i>).
 }</code></pre>
@@ -895,11 +898,11 @@ protected:
 
      // get the buffer number of the buffer assigned to the block using <a href="#getbuffernum">StaticBuffer::getBufferNum()</a>.
 	 
-     // if present in buffer memory(i.e., a valid buffer number), set the <i>timeStamp</i> of the corresponding buffer to 0 and increment the <i>timeStamp</i> in the <i>BufferMetaInfo</i> of all other occupied buffers.
+     // if present in buffer memory(i.e., a valid buffer number), set the <i>timeStamp</i> in the corresponding <i>BufferMetaInfo</i> entry to 0 and increment the <i>timeStamp</i> in the <i>BufferMetaInfo</i> of all other occupied buffers.
      
      //if not present in buffer memory(i.e., an invalid buffer number), get a free buffer using <a href="#getfreebuffer">StaticBuffer::getFreeBuffer()</a> and read the block into the free buffer using <a href="../storage-model.html#disk_readBlock" target="_blank">Disk::readBlock()</a>.
    
-   	//return the buffer number.
+     //return the buffer number.
 	
 }</code></pre>
                                             </div>
@@ -935,7 +938,7 @@ protected:
                                                 <tr>
 						    						<td><a href="../constants.html" target="_blank"> FAILURE </a></td>
                                                     <td>int</td>
-                                                    <td>No free block is available on the disk.</td>
+                                                    <td>No free block is available in the disk.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -971,8 +974,7 @@ protected:
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>Class RecBuffer</h2>
-                         	<p>An object of this class will be associated with a <i><a href="../storage-model.html#record_blk">record block</a></i>. Public methods of this class deal with access/retrieval of records and slotmap from a record block. <i>RecBuffer class</i> extends the <i><a href="#blkbuff_class">BlockBuffer class</a></i>.
-                         	</p>
+                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. RecBuffer class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 public:
@@ -986,18 +988,38 @@ public:
 	int setRecord(union Attribute *rec,int slotNum);
 };</code></pre>
                              </div>
-                             <p>The following is the specification of methods of RecBuffer class</p>
+                             <p>The following are the specifications for the methods in class <i>RecBuffer</i>.</p>
                              <ul class="methods">
 
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
+<!-----------------------------------RecBuffer Constructor 1----------------------------------------------------------------------------->
 
-<!-----------------------------------Constructor 1----------------------------------------------------------------------------->
                                  <li>
                                     <div class="detail" id="recbuff_constructor1">
-					    
-					    
                                         <h2><i>public:</i> RecBuffer (Constructor 1)</h2>
+                                        <h5>Arguments:</h5>
+                                        Nil
+                                        <h5>Return type:</h5>
+                                        <p>Nil</p>
+                                        <h5>Description:</h5>
+                                        <p>Called if a new record block is to be allocated in the disk.</p>
+					
+                                        <h5><a data-toggle="collapse" href="#algo_recbuff_constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_recbuff_constructor1" class="collapse">
+                                            <div class="code">
+                                                <pre><code>
+RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent non-default constructor.
+					    // 'R' used to denote RecBuffer
+</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> If the record block already exists on the disk use <a href="#recbuff_constructor2">constructor 2</a>.</p>
+                                    </div>
+                                 </li>
+								 
+<!-----------------------------------RecBuffer Constructor 2----------------------------------------------------------------------------->
+                                 <li>
+                                    <div class="detail" id="recbuff_constructor2">
+                                        <h2><i>public:</i> RecBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -1010,44 +1032,21 @@ public:
                                         <p>Nil</p>
                                         <h5>Description:</h5>
                                         <p>Called when the record block already exists on the disk.</p>
-					<p><b>NOTE:</b> If a new record block is to be allocated in the disk use <a href="#recbuff_constructor2">constructor 2</a>.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-recbuffer-constructor1" class="collapse">
+					
+                                        <h5><a data-toggle="collapse" href="#algo_recbuff_constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_recbuff_constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>RecBuffer::RecBuffer(int blockNum) : BlockBuffer(blockNum){} //this is a way to call parent non-default constructor.</code></pre>
+                                                <pre><code>RecBuffer::RecBuffer(int blockNum) : BlockBuffer(blockNum){} //this is the way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> If a new record block is to be allocated in the disk use <a href="#recbuff_constructor1">constructor 1</a>.</p>
                                     </div>
                                  </li>
 
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
 
-<!-----------------------------------Constructor 2----------------------------------------------------------------------------->
 
-                                 <li>
-                                    <div class="detail" id="recbuff_constructor2">
-					    
-					    
-                                        <h2><i>public:</i> RecBuffer (Constructor 2)</h2>
-                                        <h5>Arguments:</h5>
-                                        Nil
-                                        <h5>Return type:</h5>
-                                        <p>Nil</p>
-                                        <h5>Description:</h5>
-                                        <p>Called if a new record block is to be allocated in the disk.</p>
-					<p><b>NOTE:</b> If the record block already exists on the disk use <a href="#recbuff_constructor1">constructor 1</a>.</p>
-                                        <h5><a data-toggle="collapse" href="#algo-recbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-recbuffer-constructor2" class="collapse">
-                                            <div class="code">
-                                                <pre><code>
-RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is a way to call parent non-default constructor.
-					    // 'R' used to denote RecBuffer
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
 				                                      
 <!---------------------------------------------------------------------------------------------------------------->				     
 				     
