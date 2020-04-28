@@ -163,7 +163,7 @@
                             <center><img class="img-fluid" src="../img/indexing/recordblk.png"></center>
                             <br>
                             <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCBase.<br>
-                           We need to create an Index for the <b>attribute RollNo</b>. As discussed in Physical Layer, each <b>Attribute Catalog entry</b> contains the <b>Root block Index</b> which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise</p>
+                           We need to create an Index for the <b>attribute RollNo</b>. As discussed in <a href="../storage-model.html">Physical Layer</a>, each <b>Attribute Catalog entry</b> contains the <b>Root block Index</b> which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise</p>
                            <center><img class="img-fluid" src="../img/indexing/attrcat1.png"></center>
                            <p>In order to create the Index, we begin by getting a free Leaf index block, say <b>L1</b> allocated for the root block. (Why?) <br> 
                             We then update the Root Block in the Attribute Catalog Entry.
@@ -171,15 +171,15 @@
                             <center><img class="img-fluid" src="../img/indexing/attrcat2.png"></center>
                             <p>We need to insert the following set of key values of the attribute RollNo with respect to each row of the table in a sequential manner.<br>
                             <b>1,3,8,7,6,4,11,13,10,9,5,12,14,2 </b> <br>
-                            The main algorithm is:
+                            The algorithmic procedure for <b>inserton</b> is given below:
 
                             </p>
 
 
 
 
-<h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                             <div id="algo-create" class="collapse">
+                           <h5><b><span class="fas fa-code"></span>Algorithm:</h5></b>
+                             <div id="algo-create" >
                                 <div class="code"><code>
                                     <ol>
                                         <li>Find the correct Leaf index block, say X where the key value has to be inserted by traversing down the tree starting from the Root Block.</li>
@@ -205,6 +205,7 @@
                                 </code>
                                 </div>
                             </div>
+
                             <div class="question">
                                 <div class="card">
                                     <div class="card-header">
@@ -353,10 +354,12 @@
                                 </div>
                             </div>
 
-                        
-                        
+                            
+
+                                
+                       </div>
                         <!-- PAGE ENDS -->
-                    
+                    </div>
                 </div>
                 <!-- END OF MAIN CONTENT -->
             </div>
