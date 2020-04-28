@@ -74,7 +74,7 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a href="#indexing">Understanding Indexing</a></li>
-                            <li> <a href="#implementation">Implementation in NITCBase</a></li>
+                            <li> <a href="#implementation">Implementation in NITCbase</a></li>
                           
                         </ul>
                         </div>
@@ -87,7 +87,7 @@
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
-                            <h1>Indexing in NITCBase</h1>
+                            <h1>Indexing in NITCbase</h1>
                         </div>
                         
                             
@@ -127,7 +127,7 @@
                                 \#Record Blocks = \left \lceil \frac {12000} {12} \right \rceil = 1000
                                        
                                 \]</p></b>
-                                <p>This implies that the number of disk accesses required to process a query in the absence of index is <b>1000</b>.<br>Suppose, we have a query based on a indexed attribute satisfying certain condition. In NITCBase, the maximum number of entries in an Internal index block and Leaf index block are 100 and 63 respectively. Similarly, the minimum number of entries are 50 and 32 respectively. We know that all the attribute values appear in any of the leaf blocks. So the maximum number of Leaf index blocks is:</p>
+                                <p>This implies that the number of disk accesses required to process a query in the absence of index is <b>1000</b>.<br>Suppose, we have a query based on a indexed attribute satisfying certain condition. In NITCbase, the maximum number of entries in an Internal index block and Leaf index block are 100 and 63 respectively. Similarly, the minimum number of entries are 50 and 32 respectively. We know that all the attribute values appear in any of the leaf blocks. So the maximum number of Leaf index blocks is:</p>
 
                                 <b><p> \[ 
                                 
@@ -155,14 +155,14 @@
                         </div>     
                                  
                         <div id="implementation" class="detail">
-                            <h2>B+Tree Implementation in NITCBase</h2>
+                            <h2>B+Tree Implementation in NITCbase</h2>
                             <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.</p>
                             <center><img class="img-fluid" src="../img/indexing/Table.png"></center>
-                            <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCBase. Therefore, keeping all other factors same, the number of slots per block would be 4. Given Relation has 14 records. Hence number of Record blocks required is 4.<br> The Record Block structure is as follows :</p>
+                            <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCbase. Therefore, keeping all other factors same, the number of slots per block would be 4. Given Relation has 14 records. Hence number of Record blocks required is 4.<br> The Record Block structure is as follows :</p>
 
                             <center><img class="img-fluid" src="../img/indexing/recordblk.png"></center>
                             <br>
-                            <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCBase.<br>
+                            <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCbase.<br>
                            We need to create an Index for the <b>attribute RollNo</b>. As discussed in <a href="../storage-model.html">Physical Layer</a>, each <b>Attribute Catalog entry</b> contains the <b>Root block Index</b> which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise</p>
                            <center><img class="img-fluid" src="../img/indexing/attrcat1.png"></center>
                            <p>In order to create the Index, we begin by getting a free Leaf index block, say <b>L1</b> allocated for the root block. (Why?) <br> 
@@ -171,7 +171,7 @@
                             <center><img class="img-fluid" src="../img/indexing/attrcat2.png"></center>
                             <p>We need to insert the following set of key values of the attribute RollNo with respect to each row of the table in a sequential manner.<br>
                             <b>1,3,8,7,6,4,11,13,10,9,5,12,14,2 </b> <br>
-                            The algorithmic procedure for <b>inserton</b> is given below:
+                            The algorithmic procedure for <b>insertion</b> is given below:
 
                             </p>
 
