@@ -542,17 +542,17 @@ protected:
 												<tr>
 													<td>R</td>
 													<td>char</td>
-													<td>new block of <a href="../constants.html" target="_blank">REC</a> type to be alloted.</td>
+													<td>New block of <a href="../constants.html" target="_blank">REC</a> type to be alloted.</td>
 												</tr>
 												<tr>
 													<td>I</td>
 													<td>char</td>
-													<td>new block of <a href="../constants.html" target="_blank">IND_INTERNAL</a> type to be alloted.</td>
+													<td>New block of <a href="../constants.html" target="_blank">IND_INTERNAL</a> type to be alloted.</td>
 												</tr>
 												<tr>
 													<td>L</td>
 													<td>char</td>
-													<td>new block of <a href="../constants.html" target="_blank">IND_LEAF</a> type to be alloted.</td>
+													<td>New block of <a href="../constants.html" target="_blank">IND_LEAF</a> type to be alloted.</td>
 												</tr>
 											</table>
                                         </div>
@@ -974,7 +974,7 @@ protected:
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>Class RecBuffer</h2>
-                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
+                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. In a <i>Record block<i>, a slot can store one record, and each record is a fixed sized set of <a href="#block_structures_attribute">Attributes</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
 
@@ -1284,26 +1284,59 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
 <!-----------------------------------IndBuffer----------------------------------------------------------------------------->
                         <div id="indbuff_class" class="detail">
                             <h2>Class IndBuffer</h2>
-                            <p>IndBuffer extends <a href="#blkbuff_class">BlockBuffer class</a>. IndBuffer is a generic(abstract) class for Index Blocks. It has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank"><b>pure virtual methods</b></a>- getEntry() and setEntry(). These methods will be overridden in the child classes. The constructors of this class simply calls the constructor of the parent class with the argument received.</p>
+                            <p><i>IndBuffer</i> class is a generic class for representing an <i>Index</i> block. <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ Trees</a> are constructed using <i>Index</i> blocks and can be either <a href="../storage-model.html#intind_blk" target="_blank">Index Internal blocks</a> or <a href="../storage-model.html#leafind_blk" target="_blank">Index Leaf blocks</a>.  B+ Tree helps in faster data access as compared to sequentially searching the data through <a href="../storage-model.html#record_blk" target="_blank">Record</a> blocks. <i>IndBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer</a> class. Thus, all the protected fields and methods can be accessed by <i>IndBuffer</i> class. In addition to these, <i>IndBuffer</i> class has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank">pure virtual methods</a>- <i>getEntry()</i> and <i>setEntry()</i>.These methods take an argument of type <i>void *</i> so that arguments of both struct <a href="#block_structures_internal_entry">InternalEntry</a> and <a href="#block_structures_index">struct Index</a> type can be passed to it. This is based on the fact that a <a href="https://en.wikipedia.org/wiki/Void_type" target="_blank">void pointer</a> can hold address of any type and can be typcasted to any type. The children classes, <a href="#intbuff_class">IndInternal</a> and <a href="#leafbuff_class">IndLeaf</a>,  extend the class <i>IndBuffer</i> and override the virtual functions. The constructors of <i>IndBuffer</i> class simply calls the constructor of the parent class with the received argument. </p>
                             <div class="code">
                                 <pre><code>class IndBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
+
 public:
-	IndBuffer(int blockNum);
+	//methods
 	IndBuffer(char blockType);
+	IndBuffer(int blockNum);	
 	virtual int getEntry(void *ptr, int indexNum) = 0;
 	virtual int setEntry(void *ptr, int indexNum) = 0;
+	
 };</code></pre>
                             </div>
-			    <p>The following is the specification of methods of IndBuffer class</p>
-                            <ul class="methods">
+							<p>The following are the specifications for the methods in class <i>IndBuffer</i>.</p>
+                            <ul class="methods">		     				     
 
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
-<!-----------------------------------Constructor 1----------------------------------------------------------------------------->
-                                <li>
+<!-----------------------------------IndBuffer Constructor 1----------------------------------------------------------------------------->
+                                 <li>
                                     <div class="detail" id="indbuff_constructor1">
                                         <h2>IndBuffer (Constructor 1)</h2>
+                                        <h5>Arguments:</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover">
+                                                <tr>
+													<td>I</td>
+													<td>char</td>
+													<td>New block of <a href="../constants.html" target="_blank">IND_INTERNAL</a> type to be alloted.</td>
+												</tr>
+												<tr>
+													<td>L</td>
+													<td>char</td>
+													<td>New block of <a href="../constants.html" target="_blank">IND_LEAF</a> type to be alloted.</td>
+												</tr>
+                                            </table>
+                                        </div>
+                                        <h5>Return type:</h5>
+                                        <p>Nil</p>
+					    
+                                        <h5>Description:</h5>
+										<p> Called if a new index block of the input type is to be allocated in the disk.</p>
+                                        <h5><a data-toggle="collapse" href="#algo_indbuff_constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_indbuff_constructor1" class="collapse">
+                                            <div class="code">
+                                                <pre><code>IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){} //this is the way to call parent non-default constructor.</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> If the index block already exists on the disk use <a href="#indbuff_constructor2">constructor 2</a>.</p>
+                                    </div>
+                                 </li>                        
+<!-----------------------------------IndBuffer Constructor 2----------------------------------------------------------------------------->
+                                <li>
+                                    <div class="detail" id="indbuff_constructor2">
+                                        <h2>IndBuffer (Constructor 2)</h2>
                                         <h5>Arguments:</h5>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
@@ -1316,75 +1349,39 @@ public:
                                         <p>Nil</p>
 					    
                                         <h5>Description:</h5>
-					<p>Called when the index block already exists on the disk.</p>
-					<p><b>NOTE:</b> If a new index block is to be allocated in the disk use <a href="#indbuff_constructor2">constructor 2</a>.</p>
-                                        
-                                        <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-indbuffer-constructor1" class="collapse">
+										<p>Called when the index block already exists on the disk.</p>
+					                    <h5><a data-toggle="collapse" href="#algo_indbuff_constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_indbuff_constructor2" class="collapse">
                                             <div class="code">
                                                 <pre><code>IndBuffer::IndBuffer(int blockNum) : BlockBuffer(blockNum){} //this is a way to call parent non-default constructor.</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> If a new index block is to be allocated in the disk use <a href="#indbuff_constructor1">constructor 1</a>.</p>
                                     </div>
                                  </li>
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
-<!-----------------------------------Constructor 2----------------------------------------------------------------------------->
-                                 <li>
-                                    <div class="detail" id="indbuff_constructor2">
-                                        <h2>IndBuffer (Constructor 2)</h2>
-                                        <h5>Arguments:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <tr>
-							<td>N</td>
-							<td>char</td>
-							<td><a href="../constants.html" target="_blank">IND_INTERNAL</a> block to be alloted</td>
-						</tr>
-						<tr>
-							<td>L</td>
-							<td>char</td>
-							<td><a href="../constants.html" target="_blank">IND_LEAF</a> block to be alloted</td>
-						</tr>
-                                            </table>
-                                        </div>
-                                        <h5>Return type:</h5>
-                                        <p>Nil</p>
-					    
-                                        <h5>Description:</h5>
-					<p>Called if a index new block is to be allocated in the disk.</p>
-					<p><b>NOTE:</b> If the index block already exists on the disk use <a href="#indbuff_constructor1">constructor 1</a>.</p>
-					    
-                                        <h5><a data-toggle="collapse" href="#algo-indbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-indbuffer-constructor2" class="collapse">
-                                            <div class="code">
-                                                <pre><code>IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){} //this is a way to call parent non-default constructor.</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
+<!---------------------------------------------------------------------------------------------------------------->
                             </ul>
                         </div>
-                        
+
 <!---------------------------- IndInternal BEGINS------------------------------------------------------------------------->				     
 				     
 				     
                          <div id="intbuff_class" class="detail">
                          	<h2>Class IndInternal</h2>
-                             <p>An object of this class will be associated with an <a href="../storage-model.html#intind_blk">internal index</a> buffer block. Public Methods of this class deal with the entries of <a href="../storage-model.html#intind_blk">Internal Index</a> (<a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a>) nodes in the buffer. IndInternal class extends <a href="#indbuff_class">IndBuffer</a> class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.
-                         	</p>
+                             <p>An object of the class <i>IndInternal</i> is associated with an <a href="../storage-model.html#intind_blk" target="_blank">Internal Index block</a>. An <i>Internal Index</i> block stores entries of type  <a href="#block_structures_internal_entry">struct InternalEntry</a> and make up the internal nodes of a <i>B+ Tree</i>. Public methods of this class deal with the access/modification of the <i>InternalEntry</i> entries. <i>IndInternal</i> class extends <a href="#indbuff_class">IndBuffer</a> class and overrides its virtual methods. The constructor of the <i>IndInternal</i> class calls the constructor of the parent class by passing suitable argument.</p>
                              <div class="code">
                                  <pre><code>class IndInternal : public <a href="#indbuff_class">IndBuffer</a>{
+
 public:
 	//methods
 	IndInternal();
 	IndInternal(int blockNum);
-	int getEntry(void *ptr, int indexNum) ;
-	int setEntry(void *ptr, int indexNum) ;
+	int getEntry(void *ptr, int indexNum);
+	int setEntry(void *ptr, int indexNum);
+	
 };</code></pre>
                              </div>
-                             <p>The following is the specification of methods of IndInternal class</p>
+                             <p>The following are the specifications for the methods in class <i>IndInternal</i>.</p>
                              <ul class="methods">
 <!------------------------------------Constructor 1------------------------------------------------------>
 				     <li>
