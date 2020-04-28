@@ -75,6 +75,7 @@
                         <ul class="nav flex-column sidemenu">
                             <li> <a href="#indexing">Understanding Indexing</a></li>
                             <li> <a href="#implementation">Implementation in NITCBase</a></li>
+                            <li> <a href="#insertion">B+ Tree Insertion in NITCBase</a></li>
                           
                         </ul>
                         </div>
@@ -155,7 +156,7 @@
                         </div>     
                                  
                         <div id="implementation" class="detail">
-                            <h2>B+Tree Implementation in NITCBase</h2>
+                            <h2>B+ Tree Implementation in NITCBase</h2>
                             <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.</p>
                             <center><img class="img-fluid" src="../img/indexing/Table.png"></center>
                             <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCBase. Therefore, keeping all other factors same, the number of slots per block would be 4. Given Relation has 14 records. Hence number of Record blocks required is 4. The Record Block structure is as follows :</p>
@@ -173,7 +174,7 @@
                             
                         <div id="insertion" class="detail">
                             
-                                <h2>B+Tree Insertion in NITCBase</h2>
+                                <h2>B+ Tree Insertion in NITCBase</h2>
                             
                             <p>We need to insert the following set of key values with respect to each row of the table in a sequential manner : <br>
                             1,3,8,7,6,4,11,13,10,9,5,12,14,2 <br>
