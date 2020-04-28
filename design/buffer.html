@@ -706,7 +706,7 @@ protected:
 
 	//store the input block type in the first 4 bytes of the buffer.
 
-	//update the <i>StaticBuffer::blockAllocMap</i>. 
+	//update the <i>StaticBuffer::blockAllocMap</i> entry corresponding to the object's block number. 
 
 	//update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
 	
@@ -753,7 +753,7 @@ protected:
                                         </div>
 										<p><b>NOTE:</b> 
 											<ul>
-												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore <i>getheader()</i> function is kept in abstract class <i>BlockBuffer</i>.</li>
+												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has the same header structure. Therefore, <i>getHeader()</i> method is kept in abstract <i>BlockBuffer</i> class.</li>
 												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
 											</ul>
 								 		</p>
@@ -783,6 +783,7 @@ protected:
                                         <div id="algo-setheader" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBuffer::setHeader(struct HeadInfo *head){
+
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">getBufferPtr()</a>.
 
 	//copy the contents of the memory location pointed to by <i>head</i> to the header of block using appropriate type casting.
@@ -794,7 +795,7 @@ protected:
                                         </div>
 										<p><b>NOTE:</b> 
 											<ul>
-												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has same header structure, therefore getheader(),setheader() functions are kept in abstract class BlockBuffer.</li>
+												<li>Any type of block(Record, Internal Index, or Leaf Index) of NITCbase has the same header structure. Therefore, setHeader() method is kept in the abstract <i>BlockBuffer</i> class.</li>
 												<li>Higher layer must allocate memory for the pointer to <i>struct HeadInfo</i> before calling this function. </li>
 											</ul>
 								 		</p>
@@ -805,7 +806,7 @@ protected:
 		
                                 <li>
                                     <div class="detail" id="releaseblock">
-                                        <h2><i>public:</i> setHeader</h2>
+                                        <h2><i>public:</i> releaseBlock</h2>
 										<h5>Arguments:</h5>
                                         <p>Nil</p>
                                         <h5>Return type:</h5>
@@ -817,7 +818,8 @@ protected:
                                         <div id="algo-releaseblock" class="collapse">
                                             <div class="code">
                                                 <pre><code>void BlockBufferBlockBuffer::releaseBlock(){
-	// get the buffer number of the buffer assigned to the block using <a href="#getbuffptr">StaticBuffer::getBufferNum()</a>.
+
+	// get the buffer number of the buffer assigned to the block using <a href="#getbuffernum">StaticBuffer::getBufferNum()</a>.
 
 	//if the buffer number is valid, free the buffer by setting the <i>free</i> flag of its <i>metaInfo</i> entry to true.
 
@@ -859,10 +861,11 @@ protected:
 	
 	//find the buffer number of the block using <i>getBlock()</i> 
 	
-	// return the pointer to this buffer (i.e., return <i>blocks[bufferNum]</i>).
+	// return the pointer to this buffer (given by <i>StaticBuffer::blocks[bufferNum]</i>).
 }</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b>All get and set methods accessing the block's data should call the <i>getBufferPtr()</i> method to get the starting address of the buffer block holding the block's data. This also ensures that the block is reloaded back to buffer memory if it had been replaced by the buffer replacement algorithm since the last data access. </p>
                                     </div> 
                                 </li>
 				     
@@ -889,34 +892,32 @@ protected:
                                         <div id="algo-getblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>int BlockBuffer::getBlock(){
-						
-     //check whether the block is already present in the buffer using <i>StaticBuffer::getBufferNum</i>() .
+
+     // get the buffer number of the buffer assigned to the block using <a href="#getbuffernum">StaticBuffer::getBufferNum()</a>.
+	 
+     // if present in buffer memory(i.e., a valid buffer number), set the <i>timeStamp</i> of the corresponding buffer to 0 and increment the <i>timeStamp</i> in the <i>BufferMetaInfo</i> of all other occupied buffers.
      
-     //if present, set the timestamp of the corresponding buffer to 0 and increment the <i>timpeStamps</i> in the <i>BufferMetaInfo</i> of all other occupied buffers.
-     
-     //if not present, get a free buffer using <i>StaticBuffer::getFreeBuffer</i>() and read the block into the free buffer using <i>readBlock()</i>.
+     //if not present in buffer memory(i.e., an invalid buffer number), get a free buffer using <a href="#getfreebuffer">StaticBuffer::getFreeBuffer()</a> and read the block into the free buffer using <a href="../storage-model.html#disk_readBlock" target="_blank">Disk::readBlock()</a>.
    
+   	//return the buffer number.
+	
 }</code></pre>
                                             </div>
                                         </div>
-					<p><b>NOTE:</b> This function never fails - a buffer will always be alloted to the block doing replacement if necessary.</p>
+										<p><b>NOTE:</b> This function never fails - a buffer is <i>always</i> alloted to the block doing replacement, if necessary.</p>
                                      </div>
                                  </li>
 		
+<!--------------------------------------------getFreeBlock------------------------------------------------------------------->			     
 				     
-				     
-				     
-<!--------------------------------------------getFreeBlock------------------------------------------------------------------->
-			     
-				     
-				      <li>
+				      			<li>
                                     <div class="detail" id="getfreeblk">
                                         <h2><i>protected:</i> getFreeBlock</h2>
                                         <h5>Arguments:</h5> 
-					    <div class="table-responsive">
+					    				<div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <tr>
-						    <td>blockType</td>
+						    						<td>blockType</td>
                                                     <td>int</td>
                                                     <td>Type of the required block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF</a>).</td>
                                                 </tr>
@@ -928,61 +929,44 @@ protected:
                                                 <tr>
 						    <td>blockNum</td>
                                                     <td>int</td>
-                                                    <td>Block number of a free block</td>
+                                                    <td>Block number of the free block.</td>
                                                 </tr>
 						    
                                                 <tr>
-						    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
+						    						<td><a href="../constants.html" target="_blank"> FAILURE </a></td>
                                                     <td>int</td>
-                                                    <td>No free block available on the disk.</td>
+                                                    <td>No free block is available on the disk.</td>
                                                 </tr>
                                             </table>
                                         </div>
                                        <h5>Description:</h5>
-                                        <p>Returns the block number of a free block in the disk and allots a buffer for the block. If free block is not available FAILURE is returned.</p>
+                                        <p>Returns the block number of a free block of the input type in the disk and allots a buffer to that block. If free block is not available FAILURE is returned.</p>
                                         
                                         <h5><a data-toggle="collapse" href="#algo-getfreeblk"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-getfreeblk" class="collapse">
                                             <div class="code">
                                                 <pre><code>int BlockBuffer::getFreeBlock(int blockType){
-//iterate through the <i>StaticBuffer.blockAllocMap</i> and find the index of a free block in the disk.
-   
-//if no block is free, return FAILURE.
-   
-//find a free buffer using <i>StaticBuffer.getFreeBuffer()</i> 
 
-//update <i>StaticBuffer.blockAllocMap</i>.
-   
-//update the block type of the block to the input block type using <i>setBlockType()</i>.
-   
-//return block number of the free block.
+	//iterate through the <i>StaticBuffer::blockAllocMap</i> and find the block number of a free block in the disk.
+
+	//if no block is free, return FAILURE.
+	
+	//set the object's <i>blockNum</i> to the block number of the free block.
+
+	//find a free buffer using <a href="#getfreebuffer">StaticBuffer::getFreeBuffer()</a> .
+	
+	//initialize the <a href="#block_structures_headinfo">header</a> of the block with pblock: -1, lblock: -1, rblock: -1, numEntries: 0, numAttrs: 0 and numSlots: 0 using <a href="#setheader">setHeader()</a>.	
+
+	//update the block type of the block to the input block type using <a href="#setblocktype">setBlockType()</a>.
+
+	//return block number of the free block.
 
 }</code></pre>
                                             </div>
                                         </div>
                                      </div>
                                  </li>
-					     
-				     
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-	
-				     
-				     
-				     
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-
-<!---------------------------------------------------------------------------------------------------------------->				     
-				     
-				     
-				     
-				     
-			    </ul>
-                                                
+			    			</ul>                    
                          </div>
                          
                          <div id="recbuff_class" class="detail">
