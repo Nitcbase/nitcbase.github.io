@@ -974,9 +974,10 @@ protected:
                          
                          <div id="recbuff_class" class="detail">
                          	<h2>Class RecBuffer</h2>
-                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. RecBuffer class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
+                         	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap of a record block. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all the protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
                              <div class="code">
                                 <pre><code>class RecBuffer : public <a href="#blkbuff_class">BlockBuffer</a>{
+
 public:
 
 	//methods
@@ -986,6 +987,7 @@ public:
 	void setSlotmap(unsigned char *slotMap);
 	int getRecord(union Attribute *rec,int slotNum);
 	int setRecord(union Attribute *rec,int slotNum);
+	
 };</code></pre>
                              </div>
                              <p>The following are the specifications for the methods in class <i>RecBuffer</i>.</p>
@@ -1008,7 +1010,7 @@ public:
                                             <div class="code">
                                                 <pre><code>
 RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent non-default constructor.
-					    // 'R' used to denote RecBuffer
+					    // 'R' is used to denote <i>RecBuffer</i>.
 </code></pre>
                                             </div>
                                         </div>
@@ -1073,14 +1075,14 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
 	
     // get the number of slots in the block.
     
-    // using offset range copy the <i>slotMap</i> of the block to the memory pointed by the argument.
+    // using offset range, copy the <i>slotMap</i> of the block to the memory pointed by the argument.
     
 }</code></pre>
                                             </div>
                                         </div>
                                         <p><b>NOTE:</b> 
 											<ul>
-												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of slotmap.</li>
+												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of the block's slotmap.</li>
 												<li>The higher layers must allocate memory for the unsigned char array before calling the function.</li>
 											</ul>
 										</p>
@@ -1117,7 +1119,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
     
     // get the number of slots in the block.
     
-    // using offset range copy the contents of the memory pointed to by the argument to the <i>slotMap</i> of the block.
+    // using offset range, copy the contents of the memory pointed to by the argument to the <i>slotMap</i> of the block.
     
     //update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
     
@@ -1126,7 +1128,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                                         </div>
 										<p><b>NOTE:</b> 
 											<ul>
-												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of slotmap.</li>
+												<li>The array of unsigned char to which the pointer in the argument points to should have a size equal to the size of the block's slotmap.</li>
 												<li>The higher layers must allocate memory for the unsigned char array before calling the function.</li>
 											</ul>
 										</p>
