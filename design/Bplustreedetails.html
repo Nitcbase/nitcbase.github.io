@@ -1,1 +1,169 @@
-TO BE ADDED
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>B+ Trees</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="/js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js" charset="utf-8"></script>
+    <!-- MATHJAX CONFIG AND SCRIPT -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX","output/HTML-CSS"],
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+      });
+    </script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js' async></script>
+
+</head>
+    
+    
+<body>
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-sm-2">
+                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+                            <li> <a href="#intro">Introduction</a></li>
+                            <li> <a href="#bplustree">B+ Tree</a></li>
+                            <li> <a href="#insert">Insertion in B+ Tree</a></li>
+                          
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-sm-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle">
+                            <h1>B+ Trees</h1>
+                        </div>
+                        
+                            
+                            <div class="detail" id="intro">
+                                <h2>Introduction</h2>
+                                
+                                <p>B Trees and B+ Trees are m-way search trees confined to rules of insertion and deletion. As you might already know, search becomes very easy in the case of a BST. Locating an entry in a BST accesses very few entries. In this case, the number of entries in each node is restricted to 1. Suppose we can increase this number and can introduce more branches to a single node so that the height of the tree as well as the number of accesses decreases. Such a tree is called the m-way search tree. Suppose you have 2 entries on a single node, then it can have at most 3 child nodes. For Example,
+                                </p>
+                                <center><img class="img-fluid" src="../img/bplustree/1.png"></center>
+
+                                <p> This is known as a 3-way search tree with 2 keys.<br>
+                                    Since there are no rules for insertion of elements into an m-way search tree, the order of search can expand to n. (why? Because we do not know if the elements should be inserted in the same node or as a child i.e height of the tree is not defined.) <br> According to Knuth's definition, a <b>B-tree</b> of<b> order m</b> is a tree which satisfies the following properties:
+                                    <ol>
+                                        <li>Every node has at most m children. </li>
+                                        <li>Every non-leaf node (except root) has at least ⌈m/2⌉ child nodes.</li>
+                                        <li>The root has at least two children if it is not a leaf node.</li>
+                                        <li>A non-leaf node with k children contains k − 1 keys. </li>
+                                        <li>All leaves appear in the same level.</li>
+                                    </ol>
+                                </p>
+
+                                <p>The creation of a B Tree is bottom-up. We can visualize the tree as a multi-level index. The bottom layer can be considered the first level indexing, the layer above it as the second level indexing, so on. A pointer to access each of these entries is stored along with the key of the indices.</p>
+                                <p>Consider a table of 9 records which needs to be indexed by a particular attribute. Let’s use a left-biased B-tree of order 4. If the attribute values corresponding to each record are inserted, we get a B Tree as shown below. 
+                                <br> Entries : <b>15, 20, 22, 30, 33, 45, 10, 53, 28.</b></p>
+                                <center><img class="img-fluid" src="../img/bplustree/2.png"></center>
+                                <p>R1-R9 are the data pointers pointing to the records corresponding to each entry on its left.  C1-C3 are the pointers to each of the child nodes from the internal node.<br>
+                                Have you noticed, you get a different tree if the order of insertion is changed. 
+                                <br>Entries : <b>10, 15, 20, 30, 53, 28, 45, 33, 22.</b></p>
+                                <center><img class="img-fluid" src="../img/bplustree/3.png"></center>
+                                <p>As you can see, a data pointer is required at each node. This is a disadvantage because it reduces the number of entries that can be stored in a single node. It also increases the number of levels in the tree thereby increasing the complexity of the search. A solution to this problem is <b>B+ Tree.</b> </p>
+
+                        
+                        </div>     
+                                 
+                        <div id="bplustree" class="detail">
+                            <h2>B+ Tree </h2>
+                            <p>In a B+ Tree, a copy of all the internal nodes is stored in the leaf nodes. When a leaf node is split, a copy of the middle node becomes the new parent node and no data pointer is stored with it. The leaf nodes are connected as a linked list. Therefore the leaf nodes can be considered as a dense index.<br>The advantages of a B+ Tree are:
+                                <ul>
+                                    <li>Search keys can be repeated.</li>
+                                    <li>Data is stored only in the leaf nodes. Searching is slow in B Tree due to data stored on Leaf and internal nodes. </li>
+                                    <li>Linked leaf nodes make the search efficient and quick. </li>
+                                </ul>
+                            ------EXAMPLE------------
+                            <br>
+                            A valid B+ Tree obeys the following rules :
+                                <ul>
+                                    <li>Every leaf is at the same distance from the root (i.e it is a balanced tree).</li>
+                                    <li>If a node has ‘m’ pointers, it must have ‘m-1’ keys.</li>
+                                    <li>Every root has at least 2 children.</li>
+                                    <li>If there are m-1 is the maximum number of keys possible, then each of the non-leaf and non-root nodes has at least m/2 children.</li>
+                                    <li>Every leaf contains at least ⌊m/2⌋ children.</li>
+                                    <li>Every key must appear in a leaf.</li>
+
+                                </ul>
+
+                            </p>
+                        </div>
+
+                        <div id="insert" class="detail">
+                            <h2>Insertion in a B+ Tree</h2>
+                            <p>Creating a B+ Tree and inserting elements into it becomes a simple task if the above-mentioned rules are followed. Let's consider a B+ tree with 4 keys in each internal node and a maximum of 3 keys in a leaf node.</p>
+                        </div>
+
+
+
+
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+        
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>
