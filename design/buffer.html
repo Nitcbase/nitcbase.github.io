@@ -1362,7 +1362,7 @@ public:
                             </ul>
                         </div>
 
-<!---------------------------- IndInternal BEGINS------------------------------------------------------------------------->				     
+<!---------------------------- IndInternal------------------------------------------------------------------------->				     
 				     
 				     
                          <div id="intbuff_class" class="detail">
@@ -1382,16 +1382,43 @@ public:
                              </div>
                              <p>The following are the specifications for the methods in class <i>IndInternal</i>.</p>
                              <ul class="methods">
-<!------------------------------------Constructor 1------------------------------------------------------>
-				     <li>
+
+<!------------------------------------IndInternal Constructor 1------------------------------------------------------>
+                                 <li>
                                     <div class="detail" id="intindbuff_constructor1">
                                         <h2>IndInternal (Constructor 1)</h2>
+                                        <h5>Arguments:</h5>
+										<p>Nil</p>
+                                        <h5>Return type:</h5>
+                                        <p>Nil</p>
+					    
+                                        <h5>Description:</h5>
+                                        <p>Called if a new internal index block is to be allocated in the disk.</p>
+					    
+                                        <h5><a data-toggle="collapse" href="#algo_intindbuff_constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_intindbuff_constructor1" class="collapse">
+                                            <div class="code">
+                                                <pre><code>
+IndInternal::IndInternal() : IndBuffer('I'){}  //this is the way to call parent non-default constructor.
+					       // 'I' used to denote <i>IndInternal</i>.
+</code></pre>
+                                            </div>
+                                        </div>
+										<p><b>NOTE:</b> If the internal index block already exists on the disk use <a href="#intindbuff_constructor1">constructor 1</a>.</p>
+                                    </div>
+                                 </li>
+								 
+<!------------------------------------IndInternal Constructor 2------------------------------------------------------>
+								 
+							     <li>
+                                    <div class="detail" id="intindbuff_constructor2">
+                                        <h2>IndInternal (Constructor 2)</h2>
                                         <h5>Arguments:</h5> 
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-hover">
                                                 <td>blockNum</td>
                                                 <td>int</td>
-                                                <td>Block number of the internal index block</td>
+                                                <td>Block number of the internal index block.</td>
                                             </table>
                                         </div>
                                         <h5>Return type:</h5>
@@ -1399,45 +1426,20 @@ public:
 					    
                                         <h5>Description:</h5>
                                         <p>Called when the internal index block already exists on the disk.</p>
-					<p><b>NOTE:</b> If a new internal index block is to be allocated in the disk use <a href="#intindbuff_constructor2">constructor 2</a>.</p>
 					    
-                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor1"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-intindbuffer-constructor1" class="collapse">
+                                        <h5><a data-toggle="collapse" href="#algo_intindbuff_constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                                        <div id="algo_intindbuff_constructor2" class="collapse">
                                             <div class="code">
-                                                <pre><code>IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){} //this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(int blockNum)</i>.
+                                                <pre><code>IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){} //this is the way to call parent non-default constructor.
 </code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> If a new internal index block is to be allocated in the disk use <a href="#intindbuff_constructor1">constructor 1</a>.</p>
                                     </div>
                                  </li>
 				     
-<!------------------------------------Constructor 2------------------------------------------------------>
-                                 <li>
-                                    <div class="detail" id="intindbuff_constructor2">
-                                        <h2>IndInternal (Constructor 2)</h2>
-                                        <h5>Arguments:</h5>
-					<p>Nil</p>
-                                        <h5>Return type:</h5>
-                                        <p>Nil</p>
-					    
-                                        <h5>Description:</h5>
-                                        <p>Called if a new internal index block is to be allocated in the disk.</p>
-					<p><b>NOTE:</b> If the internal index block already exists on the disk use <a href="#intindbuff_constructor1">constructor 1</a>.</p>
-					    
-                                        <h5><a data-toggle="collapse" href="#algo-intindbuffer-constructor2"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                                        <div id="algo-intindbuffer-constructor2" class="collapse">
-                                            <div class="code">
-                                                <pre><code>
-IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent non-default constructor <i>IndBuffer::IndBuffer(char blockType)</i>.
-					       // 'N' used to denote IndInternal Buffer
-</code></pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 </li>
-
-				     
-<!---------------------------------------------getEntry-------------------------------------------------------------->                                 
+<!---------------------------------------------getEntry-------------------------------------------------------------->
+								 
                                  <li>
                                     <div class="detail" id="intgetentry">
                                         <h2><i>public:</i> getEntry</h2>
@@ -1447,12 +1449,12 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry*</a> to which the contents of the specified entry of internal index block are copied.</td>
+                                                    <td>Pointer to the <a href="#block_structures_internal_entry">struct InternalEntry</a> to which the specified internal index entry of the block is copied.</td>
                                                 </tr>
                                                 <tr>
-							<td>indexNum</td>
+													<td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>Index number of entry in internal index block.</td>
+                                                    <td>Index number of the entry in the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1464,38 +1466,40 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                     <td>Successful copy of the internal index entry.</td>
                                                 </tr>
                                                 <tr>
-						    <td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
-                                                    <td>indexNum is outside valid range.</td>
+						    						<td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
+													<td>Input <i>indexNum</i> is outside the valid range of index numbers of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>Gives the indexNum'th <i>InternalEntry</i> of the IndInternal block.</p>
-					<p><b>NOTE:</b> <ul>
-					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
-							    However, because the void pointer does not know what type of object it is pointing to, 
-							    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
-						    <li>Higher layer must pass the argument of type <i>struct InternalEntry *</i>.</li>
-						    <li>Higher layer must also allocate memory for <i>struct InternalEntry</i> before calling this function.</li>
-						    </ul>
-					</p>
+                                        <p>Gives the indexNum'th entry of the block.</p>
+					
                                         <h5><a data-toggle="collapse" href="#algo-intgetentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                                         <div id="algo-intgetentry" class="collapse">
                                             <div class="code">
                                                 <pre><code>int IndInternal::getEntry(void *ptr, int indexNum){
 	
-// get the starting address of the buffer containing the block using <i>BlockBuffer.getBufferPtr()</i>.
-  
-// if the indexNum is not in range of 0-(#Entries(in block)-1) return E_OUTOFBOUND
+	// get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-// copy the indexNum'th Internalentry in block to memory ptr(ptr can be type casted appropriately if needed). 
-    
-// return SUCCESS.
+	// if the indexNum is not in the valid range of 0-(<a href="/constants.html#constants" target="_blank">MAX_ENTRIES_INTERNAL</a>-1) return E_OUTOFBOUND.
+
+	// using offset range, copy the indexNum'th entry to memory pointed to by <i>ptr</i>. 
+
+	// return SUCCESS.
 	
 }</code></pre>
                                             </div>
                                         </div>
+										<p><b>NOTE:</b> 
+											<ul>
+												<li>The <a href="https://en.wikipedia.org/wiki/Void_type" target="_blank">void pointer</a> is a generic pointer that can be pointed at objects of any data type. 
+                                                    However, because the void pointer does not know what type of object it is pointing to, 
+                                                    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+												<li>The higher layers calling the <i>getEntry()</i> function of the <i>IndInternal</i> class must ensure that the argument of type <i>struct InternalEntry *</i> is passed.</li>
+                                                <li>The higher layers must allocate memory for the <i>struct InternalEntry</i> before calling this function.</li>
+											</ul>
+										</p>
                                     </div>
                                 </li>
 <!---------------------------------------------setEntry-------------------------------------------------------------->                                  
@@ -1508,12 +1512,12 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 <tr>
                                                     <td>ptr</td>
                                                     <td>void *</td>
-                                                    <td>Pointer of type <a href="#block_structures_internal_entry">struct InternalEntry*</a> whose contents are copied to the specified entry of internal index block.</td>
+                                                    <td>Pointer to the <a href="#block_structures_internal_entry">struct InternalEntry</a> from which the specified internal index entry of the block is set.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>indexNum</td>
                                                     <td>int</td>
-                                                    <td>Index number of entry in internal index block.</td>
+                                                    <td>Index number of the entry in the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1526,13 +1530,13 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
                                                 </tr>
                                                 <tr>
                                                     <td>E_OUTOFBOUND</td>
-                                                    <td>indexNum is outside valid range.</td>
+                                                    <td>Input <i>indexNum</i> is outside the valid range of index numbers of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
 
                                         <h5>Description:</h5>
-                                        <p>Sets the indexNum'th <i>InternalEntry</i> of the IndInternal block with the <i>InternalEntry</i> sent as argument.</p>
+                                        <p>Sets the <i>indexNum</i><sup>th</sup> entry of the block with the input <i>struct InternalEntry</i> contents.</p>
 					<p><b>NOTE:</b> <ul>
 					    	    <li>The void pointer is a generic pointer that can be pointed at objects of any data type. 
 							    However, because the void pointer does not know what type of object it is pointing to, 
@@ -1558,14 +1562,22 @@ IndInternal::IndInternal() : IndBuffer('N'){}  //this is a way to call parent no
 }</code></pre>
                                             </div>
                                         </div>
+									 	<p><b>NOTE:</b> 
+											<ul>
+												<li>The <a href="https://en.wikipedia.org/wiki/Void_type" target="_blank">void pointer</a> is a generic pointer that can be pointed at objects of any data type. 
+                                                    However, because the void pointer does not know what type of object it is pointing to, 
+                                                    the void pointer must first be explicitly cast to another pointer type before it is dereferenced.</li>
+                                                <li>The higher layers calling the <i>setEntry()</i> method of the <i>IndInternal</i> class must ensure that the argument of type <i>struct InternalEntry *</i> is passed.</li>
+                                                <li>The higher layers must allocate memory for the <i>struct InternalEntry</i> before calling this function.</li>
+											</ul>
+										</p>
                                      </div>
                                  </li>
                              </ul>
                         
-                         </div>
- <!----------------------------------------IndInternal ENDS-------------------------------------------------------------------->                     
+                         </div>                    
  
-<!----------------------------------------IndLeaf BEGINS-------------------------------------------------------------------->                     
+<!----------------------------------------IndLeaf-------------------------------------------------------------------->                     
                          <div id="leafbuff_class" class="detail">
                          	<h2>Class IndLeaf</h2>
                              <p>An object of this class will be associated with an <a href="../storage-model.html#leafind_blk">leaf index</a> buffer block. Public Methods of this class deal with the entries of <a href="../storage-model.html#leafind_blk">leaf index</a> (<a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree</a>) nodes in the buffer. IndLeaf class extends <a href="#indbuff_class">IndBuffer</a> class and overrides the virtual methods in IndBuffer class. The constructor calls the constructor of the parent class by passing the argument.</p>
