@@ -1482,7 +1482,7 @@ IndInternal::IndInternal() : IndBuffer('I'){}  //this is the way to call parent 
 	
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-	// if the indexNum is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_INTERNAL</a>-1), return E_OUTOFBOUND.
+	// if the <i>indexNum</i> is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_INTERNAL</a>-1), return E_OUTOFBOUND.
 
 	// using offset range, copy the <i>indexNum</i><sup>th</sup> entry to memory pointed to by <i>ptr</i>. 
 
@@ -1544,7 +1544,7 @@ IndInternal::IndInternal() : IndBuffer('I'){}  //this is the way to call parent 
 						
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-	// if the indexNum is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_INTERNAL</a>-1), return E_OUTOFBOUND.
+	// if the <i>indexNum</i> is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_INTERNAL</a>-1), return E_OUTOFBOUND.
 
 	// using offset range, copy contents of the memory pointed to by <i>ptr</i> to <i>indexNum</i><sup>th</sup> entry.
 
@@ -1673,7 +1673,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
                                                 </tr>
                                                 <tr>
 						    						<td><a href="/constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
-                                                    <td>Input indexNum is outside the valid range of index numbers of the block.</td>
+													<td>Input <i>indexNum</i> is outside the valid range of index numbers of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1688,7 +1688,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
 						
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-	// if the indexNum is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_LEAF</a>-1), return E_OUTOFBOUND.
+	// if the <i>indexNum</i> is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_LEAF</a>-1), return E_OUTOFBOUND.
 
 	// using offset range, copy the <i>indexNum</i><sup>th</sup> entry to memory pointed to by <i>ptr</i>.    
 
@@ -1738,7 +1738,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
                                                 </tr>
                                                 <tr>
 													<td><a href="../constants.html#constants" target="_blank">E_OUTOFBOUND</a></td>
-                                                    <td>Input indexNum is outside the valid range of index numbers of the block.</td>
+                                                    <td>Input <i>indexNum</i> is outside the valid range of index numbers of the block.</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -1753,9 +1753,9 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
 						
 	// get the starting address of the buffer containing the block using <a href="#getbuffptr">BlockBuffer::getBufferPtr()</a>. 
 
-	// if the indexNum is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_LEAF</a>-1), return E_OUTOFBOUND.
+	// if the <i>indexNum</i> is not in the valid range of 0-(<a href="../constants.html#constants" target="_blank">MAX_ENTRIES_LEAF</a>-1), return E_OUTOFBOUND.
 
-	// using offset range, copy contents of the memory pointed to by ptr to indexNumth entry.
+	// using offset range, copy contents of the memory pointed to by ptr to <i>indexNum</i><sup>th</sup> entry.
 
 	//update dirty bit using <a href="#setdirtybit">StaticBuffer::setDirtyBit()</a>.
 
@@ -1777,89 +1777,98 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
                                 </li>
                              </ul>           
                          </div>
-                        
+<!----------------------------------Miscellaneous------------------------------------------------------------------>                              
                         <div class="detail" id="misc">
                             <h2>Miscellaneous</h2>
-                            <p>Here we give the definition of <i>RecId</i> and <i>IndexId</i> structures which will be of use in several modules of NITCbase. Variables of these structures will be declared in <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a> and <a href="b+tree.html">B+ tree layer</a>. </p>
-							<div id = "#recid">
+                            <p>Relations in NITCbase are made up of records. Every record of any relation in NITCbase can be referenced using an id called <i>recId</i>. <i>recId</i> is a combination of the block number of the corresponding record block and the slot number of the slot occupied by the record. It is used to locate where the record is stored in the disk. </p>
+							<div id = "recid">
 								<h4>RecId</h4>
-								<p>Every record in a relation in NITCbase is referenced using an id called <i>recId</i>. <i>recId</i> is a combination of block# and slot# where the record is stored in the disk.</p>
+								<p>Every record of any relation in NITCbase is referenced using an id called <i>recId</i>. <i>recId</i> is a combination of block number and slot number. It is used to locate where the record is stored in the disk.</p>
 								<div class="code">
-									<pre><code>typedef struct recId{
-		int block;
-		int slot;
-	} recId;</code></pre>
+									<pre><code>struct recId{
+	int block;
+	int slot;
+	};</code></pre>
 								</div>
 							</div>
-                            <h4>IndexId</h4>
-                            <p>An <i><a href="#block_structures">Index</a></i> for a relation is a tuple (Attribute value, block#, slot#), which is present in a <i><a href="../storage-model.html#leafind_blk">Leaf Index Block</a></i> of a <a href="https://en.wikipedia.org/wiki/B-tree">B+ tree</a>. Any such index can be referenced using an id called <i>IndexId</i>. <i>IndexId</i> is a combination of block#(block number of the corresponding leaf index block) and index#(offset of index in that block). </p>
-                            <div class="code">
-                                <pre><code>typedef struct IndexId{
+							<div id = "indexid">
+								<h4>IndexId</h4>
+								<p>The <i>Leaf Index</i> blocks of a B+ Tree are made of <a href="#block_structures_index">Index</a> entries. Every <i>Index</i> entry of any <i>Leaf Index</i> block can be referenced using an id called <i>indexId</i>. <i>IndexId</i> is a combination of block number of the corresponding leaf index block and index number, which is the offset of the index in that block. It is used to locate where the index is stored in the disk. </p>
+								<div class="code">
+									<pre><code>struct IndexId{
 	int block;
 	int index;
-} IndexId;</code></pre>
-                            </div>
-                            
-                            <h4>compare()</h4>
-                            <p></p>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>attr1</td>
-                                        <td>union Attribute</td>
-                                        <td>first attribute value to be compared</td>
-                                    </tr>
-                                    <tr>
-                                        <td>attr2</td>
-                                        <td>union Attribute</td>
-                                        <td>second attribute value to be compared</td>
-                                    </tr>
-                                    <tr>
-                                        <td>attrType</td>
-                                        <td>int</td>
-                                        <td>type of the attribute (INT/FLOAT/STR)</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
+};</code></pre>
+                            	</div>
+							</div>
+							<div id = "compare">
+								<h4>compare Function</h4>
+								<h5>Arguments:</h5>
+								<div class="table-responsive">
+									<table class="table table-bordered table-hover">
+										<tr>
+											<td>attr1</td>
+											<td><a href="#block_structures_attribute">union Attribute</a></td>
+											<td>First attribute value to be compared.</td>
+										</tr>
+										<tr>
+											<td>attr2</td>
+											<td><a href="#block_structures_attribute">union Attribute</a></td>
+											<td>Second attribute value to be compared.</td>
+										</tr>
+										<tr>
+											<td>attrType</td>
+											<td>int</td>
+											<td>Type of the attribute <a href="/constants.html#constants" target="_blank">(INT/FLOAT/STRING)</a>.</td>
+										</tr>
+									</table>
+								</div>
+								<h5>Return value:</h5>
+								<div class="table-responsive">
 
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>Negative integer</td>
-                                        <td>Value in attr1 is less than the value in attr2<span style="color: dodgerblue">*</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>0</td>
-                                        <td>Value in attr1 is equal to the value in attr2 *</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Positive integer</td>
-                                        <td>Value in attr1 is greater to the value in attr2 *</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <p><span style="color: dodgerblue">*</span> For string types, the comparision is performed with respect to lexicographic order.</p>
-                            <h5>Description:</h5>
-                            <p>This function compares two attributes of type <i><a href="#block_structures">union Attribute</a></i> depending on the type of the value.</p>
-                            <h5><a data-toggle="collapse" href="#algo-compare"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-compare" class="collapse">
-                                <div class="code">
-<pre><code>int compare(union Attribute attr1, union Attribute attr2, int AttrType){
-    /* if attrType == <a href="/constants.html#constants" target="_blank">STRING</a>
+									<table class="table table-bordered table-hover">
+										<tr>
+											<td>Negative integer</td>
+											<td>Value in attr1 is less than the value in attr2.</td>
+										</tr>
+										<tr>
+											<td>0</td>
+											<td>Value in attr1 is equal to the value in attr2.</td>
+										</tr>
+										<tr>
+											<td>Positive integer</td>
+											<td>Value in attr1 is greater to the value in attr2.</td>
+										</tr>
+									</table>
+								</div>
+
+								<h5>Description:</h5>
+								<p>This function compares two attributes of type <i>union Attribute</i> depending on the input attribute type.</p>
+								<h5><a data-toggle="collapse" href="#algo-compare"><span class="fas fa-code"></span>Algorithm:</a></h5>
+								<div id="algo-compare" class="collapse">
+									<div class="code">
+	<pre><code>int compare(union Attribute attr1, union Attribute attr2, int attrType){
+    /* if attrType == <i>STRING</i>
        return strcmp(attr1.strval, attr2.strval); */
     
-    /* else if attrType == <a href="/constants.html#constants" target="_blank">INT</a> -1, 0, 1 depending on whether the value attr1.ival
-       is less than, equal to or greater than the value attr2.ival */ 
+    /* else if attrType == <i>INT</i> 
+		return -1, 0, 1 depending on whether the value attr1.ival is
+		less than, equal to or greater than the value attr2.ival */ 
     
-    /* else if attrType== <a href="/constants.html#constants" target="_blank">FLOAT</a> return -1, 0, 1 depending on whether the value attr1.fval
+    /* else if attrType== <i>FLOAT</i> 
+		return -1, 0, 1 depending on whether the value attr1.fval
        is less than, equal to or greater than the value attr2.fval */ 
 }
-</code></pre>
-                                </div>
-                            </div>
-                            
+	</code></pre>
+									</div>
+								</div>
+								<p><b>NOTE:</b> 
+									<ul>
+										<li>Both the attributes in the input must be of the same type as the input type.</li>
+										<li>For string types, the comparision is performed with respect to lexicographic order.</li>
+									</ul>
+								</p>
+							</div>
                         </div>
                                                 
                         <!-- PAGE ENDS -->
