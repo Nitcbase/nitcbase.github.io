@@ -217,9 +217,9 @@
                                         <div class="card-body"> 
                                         <center><img class="img-fluid" src="../img/indexing/1.png"></center>
                                         <center><img class="img-fluid" src="../img/indexing/01.JPG"></center>  
-Foremost the attribute catalog entry of the entry 1 is obtained from the cache layer. The root block number of the attribute is checked and since it is not -1 , we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. 
+Foremost the attribute catalog entry of the entry 1 is obtained from the cache layer. The root block number of the attribute is checked and since it is not -1 , we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. <br>
 
-A temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in a sorted order. Since the size of the array is less than three ,we rewrite the entries of the leaf index block in the sorted order from the array.
+A temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in a sorted order. Since the size of the array is less than three ,we rewrite the entries of the leaf index block in the sorted order from the array. <br>
 
 Similarly 3 and 8 are inserted. The pblock value remains -1 throughout these insertions as there is no parent block introduced in the B+ tree yet.                                         
                                         </div>
