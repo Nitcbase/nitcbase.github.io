@@ -247,7 +247,7 @@ Similarly 3 and 8 are inserted. The pblock value remains -1 throughout these ins
 
 <p>The left and right child of this new internal index block is set as L1 and L2 respectively. The parent block value in the header of these child blocks are updated as I1. </p>
 
-The attribute catalog in the physical layer will be updated with the changes.
+The attribute catalog will be updated with the changes including the new root block number.
                                                                                  
                                         </div>
                                     </div>
@@ -395,6 +395,18 @@ When 12 is to be inserted ,we traverse down the tree starting from the root bloc
                                         <div class="card-body">
                                             <center><img class="img-fluid" src="../img/indexing/11.jpg"></center>
                                             <center><img class="img-fluid" src="../img/indexing/011.JPG"></center>
+
+When 14 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 14 is greater the 10 , we traverse down to the right child of 10 in I1 which is L5. The entries are sorted however in this case the number of entries in the leaf block L5 will become greater than three if the entry 14 is to be included. Hence a new leaf block L6 is introduced. The first half of the sorted entries in the array (11,12) are set in the block L5 and the rest (13,14) are set in L6. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
+
+<p>L5 already has a parent block I1. The last value in L5 and the current entries in I1 are sorted in a temporary array. However the block I1 has reached the maximum number of entries possible in an internal index block i.e the parent block is full. Hence we obtain a new internal index block I2. We copy the first two entries (3,6) from the sorted entries into the old internal block I1 and the last two entries (10,12) are copied into the new internal block I2. The middle value (8) is stored in a temporary variable. The number of entries attribute in the headers of these two blocks are updated and the parent block (pblock) attribute of both are kept the same i.e -1.</p>
+
+<p>Since the previous root has now been split , a new internal index block I3 is introduced. The middle value (8) of the previous root which had been stored in a temporary variable is now inserted into I3. The left and right child of 8 in I3 is set as I1 and I2 respectively. The number of entries in the new internal index block is incremented to 1. The parent block of I1 and I2 is set to I3.</p>
+
+<p>The root block number of this B+ Tree in the attribute catalog is updated to the new root block number.</p>
+
+<p> The entry 2 is inserted in the similar manner as demonstrated in the previous steps.</p>
+
+
                                         </div>
                                     </div>
                                 </div>
