@@ -217,7 +217,7 @@
                                         <div class="card-body"> 
                                         <center><img class="img-fluid" src="../img/indexing/1.png"></center>
                                         <center><img class="img-fluid" src="../img/indexing/01.JPG"></center>  
-Foremost the attribute catalog entry of the entry 1 is obtained from the cache layer. The root block number of the attribute is checked and since it is not -1 , we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. <br>
+When 1 is to be inserted , foremost the attribute catalog entry is obtained from the cache layer. The root block number of the attribute is checked and since it is not -1 , we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. <br>
 
 A temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in a sorted order. Since the size of the array is less than three ,we rewrite the entries of the leaf index block in the sorted order from the array. The header of the block will be updated. <br>
 
@@ -239,7 +239,7 @@ Similarly 3 and 8 are inserted. The pblock value remains -1 throughout these ins
 
 
 
-<p>When the entry 7 is to be inserted , the entries are sorted in the array however it cannot be inserted or written into the same block as now the existing leaf block has 3 entries i.e the leaf block is full. A new leaf block is obtained. </p>
+<p>When the entry 7 is to be inserted , the entries are sorted in the array however it cannot be inserted or written into the same block L1 as now the existing leaf block has 3 entries i.e the leaf block is full. A new leaf block is hence obtained. </p>
 
 <p>Iterate through all the sorted four entries. The first two entries (the half of the entries) are set in the current block L1 and the next two entries are set in the new leaf block L2. The headers of the both the blocks are updated to incorporate the changes.The RBlock value of L1 is set as L2 and the LBlock value of L2 is set as L1. This is to maintain a linked list of leaf blocks. </p>
 
