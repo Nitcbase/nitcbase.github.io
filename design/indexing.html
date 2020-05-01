@@ -346,6 +346,12 @@ When 10 is to be inserted ,we traverse down the tree starting from the root bloc
                                         <div class="card-body">
                                             <center><img class="img-fluid" src="../img/indexing/8.jpg"></center>
                                             <center><img class="img-fluid" src="../img/indexing/08.JPG"></center>
+
+<p>When 9 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 9 is greater the 8 , we traverse down to the right child of 8 in I1 which is L4. The entries are sorted however in this case the number of entries in the leaf block L4 will become greater than three if the entry 9 is to be included. Hence a new leaf block L5 is introduced. The first half of the sorted entries in the array (9,10) are set in the block L4 and the rest (11,13) are set in L5. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
+
+<p>Since L4 already had a parent block I1 and the number of entries in the parent block is less than four , we take the last value in the current L4 and the current entries in I1 into a temporary array for the purpose of sorting. The sorted entries are then written back into I1 and the number of entries in I1 is incremented. The left and right child of the entry 10 in the parent block are set as L4 and L5 respectively.</p>
+
+<p>The parent block of L5 is set as I1.</p>
                                         </div>
                                     </div>
                                 </div>
