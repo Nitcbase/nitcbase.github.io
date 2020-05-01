@@ -236,6 +236,18 @@ Similarly 3 and 8 are inserted. The pblock value remains -1 throughout these ins
                                         <div class="card-body">
                                         <center><img class="img-fluid" src="../img/indexing/2.png"></center>
                                         <center><img class="img-fluid" src="../img/indexing/02.JPG"></center> 
+
+
+
+<p>When the entry 7 is to be inserted , the entries are sorted in the array however it cannot be inserted or written into the same block as now the existing leaf block has 3 entries i.e the leaf block is full. A new leaf block is obtained. </p>
+
+<p>Iterate through all the sorted four entries. The first two entries (the half of the entries) are set in the current block L1 and the next two entries are set in the new leaf block L2. The headers of the both the blocks are updated to incorporate the changes.The RBlock value of L1 is set as L2 and the LBlock value of L2 is set as L1. This is to maintain a linked list of leaf blocks. </p>
+
+<p>A parent block is now required since there has been a split. A new internal index block I1 is obtained for the same. The last value of the first block obtained on splitting the node , in this example the value 3 is made the entry of the internal index block. This also does not violate the requirement that the maximum number of entries in an internal index block is four. </p>
+
+<p>The left and right child of this new internal index block is set as L1 and L2 respectively. The parent block value in the header of these child blocks are updated as I1. </p>
+
+The attribute catalog in the physical layer will be updated with the changes.
                                                                                  
                                         </div>
                                     </div>
