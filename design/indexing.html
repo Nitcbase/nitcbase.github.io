@@ -393,7 +393,7 @@ When 12 is to be inserted ,we traverse down the tree starting from the root bloc
                                     </div>
                                     <div id="collapse11" class="collapse">
                                         <div class="card-body">
-                                            <center><img class="img-fluid" src="../img/indexing/11.jpg"></center>
+                                            <center><img class="img-fluid" src="../img/indexing/12.jpg"></center>
                                             <center><img class="img-fluid" src="../img/indexing/011.JPG"></center>
 
 When 14 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 14 is greater the 10 , we traverse down to the right child of 10 in I1 which is L5. The entries are sorted however in this case the number of entries in the leaf block L5 will become greater than three if the entry 14 is to be included. Hence a new leaf block L6 is introduced. The first half of the sorted entries in the array (11,12) are set in the block L5 and the rest (13,14) are set in L6. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
