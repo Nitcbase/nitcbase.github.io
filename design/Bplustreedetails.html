@@ -103,11 +103,11 @@
                                     Since there are no rules for insertion of elements into an m-way search tree, the order of search can expand to n. (Why? Because we do not know if the elements should be inserted in the same node or as a child i.e height of the tree is not defined.) <br> According to Knuth's definition, a <b>B tree</b> of<b> order m</b> is a tree which satisfies the following properties:
                                     <ol>
                                         <li>All leaves appear on the same level.</li>
-                                        <li>Every node has at most m children. </li>
-                                        <li>Every non-leaf node (except root) has at least ⌈m/2⌉ child nodes.</li>
+                                        <li>Every node has at most $m$ children. </li>
+                                        <li>Every non-leaf node (except root) has at least $\lceil m/2 \rceil$ child nodes.</li>
                                         <li>The root has at least two children if it is not a leaf node.</li>
-                                        <li>A non-leaf node with m children contains m − 1 keys. </li>
-                                        <li>A leaf node can store between $\lfloor m/2 \rfloor$ and m-1 keys.</li>
+                                        <li>A non-leaf node with $m$ children contains $m−1$ keys. </li>
+                                        <li>A leaf node can store between $\lfloor m/2 \rfloor$ and $m-1$ keys.</li>
                                     </ol>
                                 </p>
 
@@ -164,7 +164,7 @@
                             <ul>
                                     <li>Every key must appear in a leaf.</li>                              
                                     <li>There can be 2 orders i.e. one for internal nodes and one for leaf nodes.</li>
-                                    <li>If a leaf node can store upto k keys, then it must contain at least $\lceil k/2 \rceil$ keys.</li>
+                                    <li>If a leaf node can store upto $k$ keys, then it must contain at least $\lceil k/2 \rceil$ keys.</li>
 
                                 </ul>
 
