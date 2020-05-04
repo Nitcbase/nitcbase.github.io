@@ -98,7 +98,7 @@
 
                                 On creating a database of your own, it is essential that we have access to the data stored without much time delay. Disk access is a high-latency operation. Therefore, as the size of relation increases, searching records that satisfy certain conditions by accessing every record in the disk blocks can adversely affect the performance. This necessitates indexing.
                                 </p>
-                                <p>Creating an index enables us to access the required entry with very few disk accesses. Indices are access structures that are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indexes such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. Ultimately, a database index is a means to locate and read table data as quickly as possible.</p>
+                                <p>Creating an index enables us to access the required entry with very few disk accesses. Indices are access structures that are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indices such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. Ultimately, a database index is a means to locate and read table data as quickly as possible.</p>
                                 <p>So, an index is a collection of attribute values and their corresponding record pointers.
                                 When designing an index, the <b>structure of the index</b> determines how fast the index can be accessed and what kind of queries can leverage it.
                             
@@ -186,15 +186,15 @@
                                         <li>Create a temporary array of indices containing entries of X. Insert the entry corresponding to the key value in the array maintaining sorted order.</li>
                                         <ol type="A">
                                             <li>If the size of indices array<=3 on insertion, i.e leaf is not full, overwrite the Leaf index block X with entries of the array.</li>
-                                            <li>If the size of indices array=4, i.e leaf is full, get a new free Leaf index block, say Y. Distribute the entries in indices array evenly between X and Y. X contains the first two entries. Y contains the next 2 entries. We must add a new entry to the parent block, say P with child pointers to X and Y . The last value of X is to be added to P (P=parent of X).</li>
+                                            <li>If the size of indices array=4, i.e leaf is full, get a new free Leaf index block, say Y. Distribute the entries in indices array evenly between X and Y. X contains the first two entries. Y contains the next 2 entries. We must add a new entry to the parent block, say P with child pointers to X and Y. The last value of X is to be added to P (P=parent of X).</li>
                                             <ol type="i">
                                                 <li>If X does not have a parent block: </li>
                                                 <ul>
-                                                    <li>Get a new free Internal index block, i.e P and insert the new entry.This is the case when root was split. P is the new Root block. Update the attribute catalog entry accordingly.</li>
+                                                    <li>Get a new free Internal index block, i.e P, and insert the new entry. This is the case when the root is split. P is the new Root block. Update the attribute catalog entry accordingly.</li>
                                                 </ul>
                                                 <li>Else</li>
                                                 <ul>
-                                                    <li>Insert the new entry in P using a temporary array of indices containing entries of P, maintaining a sorted order.</li>
+                                                    <li>Insert the new entry in P using a temporary array of indices containing entries of P, maintaining sorted order.</li>
                                                     <li>If the size of indices array=5 on insertion of new entry, get a new free Internal index block, say Q. Insert the first and last 2 entries in P and Q respectively. Also, insert the middle entry in the parent block above with child pointers to  P and Q (Why?  to propagate key values up the tree) by repeating the algorithm from step 2.B.i (X=P, P=parent block of P).</li>
                                                 </ul>
                                                 
@@ -206,7 +206,7 @@
                                 </div>
                             </div>
                           <div>
-                              Before the first entry insertion is performed in a B+ tree , the attribute catalog entry is obtained from the cache layer. The root block number of the attribute is checked and if not -1 , we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. <br>
+                              Before the first entry insertion is performed in a B+ tree, the attribute catalog entry is obtained from the cache layer. The root block number of the attribute is checked and if not -1, we proceed further. We obtain a free buffer for the block containing the entry. The first entry will always be a leaf entry. <br>
  
                           </div>
                             <div class="question">
@@ -220,9 +220,9 @@
                                         <div class="card-body"> 
                                         <center><img class="img-fluid" src="../img/indexing/1.png"></center>
 
-When 1 is to be inserted , a temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in a sorted order. Since the size of the array is less than three, we rewrite the entries of the leaf index block in the sorted order from the array. The header of the block will be updated. <br>
+When 1 is to be inserted, a temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in sorted order. Since the size of the array is less than three, we rewrite the entries of the leaf index block in the sorted order from the array. The header of the block will be updated. <br>
 
-Similarly 3 and 8 are inserted. The parent block (PBlock) value remains -1 throughout these insertions as there is no parent block introduced in the B+ tree yet.                                         
+Similarly, 3 and 8 are inserted. The parent block (PBlock) value remains -1 throughout these insertions as there is no parent block introduced in the B+ tree yet.                                         
                                         <center><img class="img-fluid" src="../img/indexing/01.JPG"></center>                                         </div>
                                     </div>
                                 </div>
@@ -240,13 +240,13 @@ Similarly 3 and 8 are inserted. The parent block (PBlock) value remains -1 throu
 
 
 
-<p>When the entry 7 is to be inserted , the entries are sorted in the array. However, it cannot be inserted or written into the same block L1 as now the existing leaf block has 3 entries i.e the leaf block is full. A new leaf block, L2 is hence obtained. </p>
+<p>When the entry 7 is to be inserted, the entries are sorted in the array. However, it cannot be inserted or written into the same block L1 as now the existing leaf block has 3 entries i.e the leaf block is full. A new leaf block, L2 is hence obtained. </p>
 
-<p>Iterate through all the sorted four entries. L1 is overwritten by the first two entries (the first half of the entries) of current block L1 and the next two entries are wriiten into the new leaf block, L2. The headers of the both the blocks are updated to incorporate the changes. The RBlock value of L1 is set as L2 and the LBlock value of L2 is set as L1. This is to maintain a linked list of leaf blocks. </p>
+<p>Iterate through all the sorted four entries. L1 is overwritten by the first two entries (the first half of the entries) of current block L1 and the next two entries are written into the new leaf block, L2. The headers of both the blocks are updated to incorporate the changes. The RBlock value of L1 is set as L2 and the LBlock value of L2 is set as L1. This is to maintain a linked list of leaf blocks. </p>
 
 <p>A parent block is now required since there has been a split. A new internal index block, I1 is obtained for the same. The last value of the first block obtained on splitting the node, in this example the value 3 is made the entry of the internal index block. This also does not violate the requirement that the maximum number of entries in an internal index block is four. </p>
 
-<p>The left and right child of this new internal index block are set as L1 and L2 respectively. The parent block value of the child blocks is updated as I1. </p>
+<p>The left child and right child of this new internal index block are set as L1 and L2 respectively. The parent block value of the child blocks is updated as I1. </p>
 
 The attribute catalog will be updated with the changes including the new root block number.
                                         <center><img class="img-fluid" src="../img/indexing/attrcat3.png"></center> 
@@ -266,7 +266,7 @@ The attribute catalog will be updated with the changes including the new root bl
                                         <div class="card-body">       
                                         <center><img class="img-fluid" src="../img/indexing/3.png"></center>
 
-When 6 is to be inserted, we traverse down the tree starting from the root block, I1 to find the appropriate leaf index block. Since 6 is greater than 3 , we traverse down to the right child of I1. As seen previously, the entries are sorted and since the maximum number of entries in a leaf block is not violated , the entries including the new entry 6 are written back into the block L2 and the number of entries in the header of L2 is updated. 
+When 6 is to be inserted, we traverse down the tree starting from the root block, I1 to find the appropriate leaf index block. Since 6 is greater than 3, we traverse down to the right child of I1. As seen previously, the entries are sorted and since the maximum number of entries in a leaf block is not violated, the entries including the new entry 6 are written back into the block L2 and the number of entries in the header of L2 is updated. 
                                         <center><img class="img-fluid" src="../img/indexing/03.JPG"></center> 
                                         </div>
                                     </div>
@@ -281,9 +281,9 @@ When 6 is to be inserted, we traverse down the tree starting from the root block
                                         <div class="card-body">
                                             <center><img class="img-fluid" src="../img/indexing/4.jpg"></center>
 
-<p>When 4 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 4 is greater than 3, we traverse down to the right child of I1. The entries are sorted. However, in this case the number of entries in the leaf block will become greater than three if the entry 4 is to be included in L2. Hence a new leaf block, L3 is introduced. L2 is overwritten with the first half of the sorted entries in the array (4,6) and the rest (7,8) are written into L3. The LBlock and RBlock values of the blocks are updated to maintain the linked list. </p>
+<p>When 4 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 4 is greater than 3, we traverse down to the right child of I1. The entries are sorted. However, in this case, the number of entries in the leaf block will become greater than three if the entry 4 is to be included in L2. Hence a new leaf block, L3 is introduced. L2 is overwritten with the first half of the sorted entries in the array (4,6) and the rest (7,8) are written into L3. The LBlock and RBlock values of the blocks are updated to maintain the linked list. </p>
 
-<p>Since L2 already has a parent block I1 and the number of entries in the parent block is less than four, the last value in the current L2 is the new entry to the parent block. The parent block entries are then sorted and written back into I1. The number of entries in I1 is incremented. The left and right child of the new entry 6 in the parent block are set as L2 and L3 respectively. </p>
+<p>Since L2 already has a parent block I1 and the number of entries in the parent block is less than four, the last value in the current L2 is the new entry to the parent block. The parent block entries are then sorted and written back into I1. The number of entries in I1 is incremented. The left child and right child of the new entry 6 in the parent block are set as L2 and L3 respectively. </p>
 
 <p>The parent block of L3 is set as I1.</p>
                                             <center><img class="img-fluid" src="../img/indexing/04.JPG"></center>
@@ -302,7 +302,7 @@ When 6 is to be inserted, we traverse down the tree starting from the root block
                                             <center><img class="img-fluid" src="../img/indexing/5.jpg"></center>
 
 
-When 11 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 11 is greater than 6 , we traverse down to the right child of 6 in I1. The entries in L3 and the new entry 11 are sorted. Since the maximum number of entries in a leaf block is not violated , the entries are written back into the block L3 and the number of entries in the header of L3 is updated.
+When 11 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 11 is greater than 6, we traverse down to the right child of 6 in I1. The entries in L3 and the new entry 11 are sorted. Since the maximum number of entries in a leaf block is not violated, the entries are written back into the block L3 and the number of entries in the header of L3 is updated.
                                             <center><img class="img-fluid" src="../img/indexing/05.JPG"></center>
                                         </div>
                                     </div>
@@ -318,9 +318,9 @@ When 11 is to be inserted ,we traverse down the tree starting from the root bloc
                                             <center><img class="img-fluid" src="../img/indexing/6.jpg"></center>
 
 
-<p>When 13 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 13 is greater than 6, we traverse down to the right child of 6 in I1. The entries are sorted. However, in this case the number of entries in the leaf block L3 will become greater than three if the entry 13 is to be included. Hence a new leaf block, L4 is introduced. L3 is ocerwritten with the first half of the sorted entries in the array (7,8) and the rest (11,13) are written into L4. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
+<p>When 13 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 13 is greater than 6, we traverse down to the right child of 6 in I1. The entries are sorted. However, in this case, the number of entries in the leaf block L3 will become greater than three if the entry 13 is to be included. Hence a new leaf block, L4 is introduced. L3 is overwritten with the first half of the sorted entries in the array (7,8) and the rest (11,13) are written into L4. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
 
-<p>Since L3 already has a parent block I1 and the number of entries in the parent block is less than four, the last value in the current L3 is the new entry to the parent block. This new entry along with the current entries in I1 are sorted. The sorted entries are then written back into I1 and the number of entries in I1 is incremented. The left and right child of the entry 8 in the parent block are set as L3 and L4 respectively.</p>
+<p>Since L3 already has a parent block I1 and the number of entries in the parent block is less than four, the last value in the current L3 is the new entry to the parent block. This new entry along with the current entries in I1 are sorted. The sorted entries are then written back into I1 and the number of entries in I1 is incremented. The left child and right child of the entry 8 in the parent block are set as L3 and L4 respectively.</p>
 
 <p>The parent block of L4 is set as I1.</p>
                                             <center><img class="img-fluid" src="../img/indexing/06.JPG"></center>
@@ -355,9 +355,9 @@ When 10 is to be inserted, we traverse down the tree starting from the root bloc
                                             <center><img class="img-fluid" src="../img/indexing/8.jpg"></center>
 
 
-<p>When 9 is to be inserted ,we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 9 is greater the 8 , we traverse down to the right child of 8 in I1 which is L4. The entries are sorted. However, in this case the number of entries in the leaf block L4 will become greater than three if the entry 9 is to be included. Hence a new leaf block L5 is introduced. The first half of the sorted entries in the array (9,10) are set in the block L4 and the rest (11,13) are set in L5. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
+<p>When 9 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 9 is greater than 8, we traverse down to the right child of 8 in I1 which is L4. The entries are sorted. However, in this case, the number of entries in the leaf block L4 will become greater than three if the entry 9 is to be included. Hence a new leaf block L5 is introduced. The first half of the sorted entries in the array (9,10) are set in the block L4 and the rest (11,13) are set in L5. The LBlock and RBlock values of the headers of the blocks are updated to maintain the linked list. </p>
 
-<p>Since L4 already had a parent block I1 and the number of entries in the parent block is less than four , we take the last value in the current L4 and the current entries in I1 into a temporary array for the purpose of sorting. The sorted entries are then written back into I1 and the number of entries in I1 is incremented. The left and right child of the entry 10 in the parent block are set as L4 and L5 respectively.</p>
+<p>Since L4 already had a parent block I1 and the number of entries in the parent block is less than four, we take the last value in the current L4 and the current entries in I1 into a temporary array for the purpose of sorting. The sorted entries are then written back into I1 and the number of entries in I1 is incremented. The left child and right child of the entry 10 in the parent block are set as L4 and L5 respectively.</p>
 
 <p>The parent block of L5 is set as I1.</p>
                                             <center><img class="img-fluid" src="../img/indexing/08.JPG"></center>
@@ -375,7 +375,7 @@ When 10 is to be inserted, we traverse down the tree starting from the root bloc
                                             <center><img class="img-fluid" src="../img/indexing/9.jpg"></center>
 
 
-When 5 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 5 is greater than 3 but less than 6 , we traverse down to the left child of 6 in I1 which is L2. The entries in L2 along with the new entry 5 are sorted and since the maximum number of entries in a leaf block is not violated, the entries are written back into the block L2 and the number of entries in the header of L2 is updated.
+When 5 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 5 is greater than 3 but less than 6, we traverse down to the left child of 6 in I1 which is L2. The entries in L2 along with the new entry 5 are sorted and since the maximum number of entries in a leaf block is not violated, the entries are written back into the block L2 and the number of entries in the header of L2 is updated.
                                             <center><img class="img-fluid" src="../img/indexing/09.JPG"></center>
                                         </div>
                                     </div>
@@ -406,11 +406,11 @@ When 12 is to be inserted, we traverse down the tree starting from the root bloc
                                         <div class="card-body">
                                             <center><img class="img-fluid" src="../img/indexing/11.jpg"></center>
 
-When 14 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 14 is greater than 10, we traverse down to the right child of 10 in I1 which is L5. The entries are sorted. However, in this case the number of entries in the leaf block L5 will become greater than three if the entry 14 is to be included. Hence a new leaf block, L6 is introduced. L5 is overwitten by the first half of the sorted entries in the array (11,12) and the rest (13,14) are written into L6. The LBlock and RBlock values of the blocks are updated to maintain the linked list. </p>
+When 14 is to be inserted, we traverse down the tree starting from the root block I1 to find the appropriate leaf index block. Since 14 is greater than 10, we traverse down to the right child of 10 in I1 which is L5. The entries are sorted. However, in this case, the number of entries in the leaf block L5 will become greater than three if the entry 14 is to be included. Hence a new leaf block, L6 is introduced. L5 is overwritten by the first half of the sorted entries in the array (11,12) and the rest (13,14) are written into L6. The LBlock and RBlock values of the blocks are updated to maintain the linked list. </p>
 
-<p>L5 already has a parent block I1. The last value in L5 and the current entries in I1 are sorted. However, the block I1 has reached the maximum number of entries possible in an internal index block i.e the parent block is full. Hence we obtain a new internal index block, I2. We copy the first two entries (3,6) from the sorted entries into the old internal block I1 and the last two entries (10,12) are copied into the new internal block I2. The number of entries attribute of these two blocks are updated and the PBlock attribute of both are kept the same i.e -1.</p>
+<p>L5 already has a parent block I1. The last value in L5 and the current entries in I1 are sorted. However, block I1 has reached the maximum number of entries possible in an internal index block i.e the parent block is full. Hence we obtain a new internal index block, I2. We copy the first two entries (3,6) from the sorted entries into the old internal block I1 and the last two entries (10,12) are copied into the new internal block I2. The #Entries attribute of these two blocks is updated and the PBlock attribute of both are kept the same i.e -1.</p>
 
-<p>Since the previous parent block has now been split, a new internal index block, I3 is introduced. The middle value (8) of the previous root which had been stored in a temporary variable is now inserted into I3. The left and right child of 8 in I3 are set as I1 and I2 respectively. The number of entries in the new internal index block is incremented to 1. The parent block of I1 and I2 is set to I3.</p>
+<p>Since the previous parent block has now been split, a new internal index block, I3 is introduced. The middle value (8) of the previous root which had been stored in a temporary variable is now inserted into I3. The left child and right child of 8 in I3 are set as I1 and I2 respectively. The number of entries in the new internal index block is incremented to 1. The parent block of I1 and I2 is set to I3.</p>
 
 <p>The root block number of this B+ Tree in the attribute catalog is updated to the new root block number.</p>
                                         <center><img class="img-fluid" src="../img/indexing/attrcat4.png"></center>
@@ -433,7 +433,7 @@ When 14 is to be inserted, we traverse down the tree starting from the root bloc
                                             <center><img class="img-fluid" src="../img/indexing/12.jpg"></center>
 
 
-<p> The entry 2 is inserted in the similar manner as demonstrated in the previous steps.</p>
+<p> Entry 2 is inserted in a similar manner as demonstrated in the previous steps.</p>
                                             <center><img class="img-fluid" src="../img/indexing/012.JPG"></center>
 
                                         </div>
