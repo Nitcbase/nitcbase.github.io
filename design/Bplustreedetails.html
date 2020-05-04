@@ -100,7 +100,7 @@
                                 <center><img class="img-fluid" src="../img/bplustree/1.png"></center>
                                 <br><br>
                                 <p> This is known as a 3-way search tree with 2 keys.<br>
-                                    Since there are no rules for insertion of elements into an m-way search tree, the order of search can expand to n. (Why? Because we do not know if the elements should be inserted in the same node or as a child i.e height of the tree is not defined.) <br> According to Knuth's definition, a <b>B tree</b> of<b> order m</b> is a tree which satisfies the following properties:
+                                    Since there are no rules for insertion of elements into an m-way search tree, the order of search can expand to n. (Why? Because we do not know if the elements should be inserted in the same node or as a child i.e height of the tree is not defined.) <br> A <b>B tree</b> of<b> order m</b> is a tree which satisfies the following properties:
                                     <ol>
                                         <li>All leaves appear on the same level.</li>
                                         <li>Every node has at most $m$ children. </li>
@@ -126,14 +126,21 @@
                                  
                         <div id="bplustree" class="detail">
                             <h2>B+ Tree </h2>
-                            <p>In a B+ Tree, a copy of all the internal nodes is stored in the leaf nodes. When a leaf node is split, a copy of the middle node becomes the new parent node and no data pointer is stored with it. The leaf nodes are connected as a linked list. Therefore the leaf nodes can be considered as a dense index.<br>The advantages of a B+ Tree are:
+                            <p>B+ Tree is an extension of the B Tree. In a B+ Tree, a copy of all the internal nodes is stored in the leaf nodes. When a leaf node is split, a copy of the middle node becomes the new parent node and no data pointer is stored with it. The distinguishing features of a B+ Tree are:
+                                <ul>
+                                    <li>Every key must appear in a leaf.</li>
+                                    <li>The leaf nodes are connected as a linked list. Therefore the leaf nodes can be considered as a dense index.</li>
+                                    <li>In B+ Tree, the record pointers are stored in leaf nodes and only the keys are stored in the internal nodes. Whereas, in a B Tree, the keys and record pointers can be stored in internal as well as leaf node.</li>
+                                    <li>There can be 2 orders i.e. one for the internal nodes and one for the leaf nodes.</li>
+                                </ul>
+                            <p> The advantages of a B+ Tree are: </p>
                                 <ul>
                                     <li>Search keys can be repeated.</li>
                                     <li>The height of a B+ Tree is less compared to a B Tree.</li>
                                     <li>The number of disk accesses required to fetch any record is equal.</li>
-                                    <li>The Data pointer is stored only in the leaf nodes. Searching is slow in B Tree due to data pointers stored on both Leaf and internal nodes. </li>
-                                    <li>Linked leaf nodes make the search efficient and quick. </li>
+                                    <li>Search is quicker and efficient as the record pointers are stored in leaf nodes only and as a linked list.</li>
                                 </ul>
+                            <br>
                             
                             <div class="question">
                                 <div class="card">
@@ -160,14 +167,7 @@
                                 </div>
                             </div>
                             <br>
-                            A B+ Tree is an extension of a B Tree. The distinguishing features of a B+ Tree from B Tree are :  
-                            <ul>
-                                    <li>Every key must appear in a leaf.</li>                              
-                                    <li>There can be 2 orders i.e. one for internal nodes and one for leaf nodes.</li>
-                                    <li>If a leaf node can store upto $k$ keys, then it must contain at least $\lceil k/2 \rceil$ keys.</li>
-
-                                </ul>
-
+                           
                             <p>The above B Tree, when converted to a B+ Tree will look something like this. As discussed earlier, each of the entries in the B+ Tree corresponds to a particular attribute value in the relation. </p>
                              <center><img class="img-fluid" src="../img/bplustree/0.png"></center><br><br>
 
