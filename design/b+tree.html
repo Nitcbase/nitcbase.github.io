@@ -112,10 +112,99 @@
 		                   
 		            <h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              	     <div id="algo-create" class="collapse">
-                            	     	<div class="code"><pre><code>BPlusTree(relId relid, char attrName[ATTR_SIZE])
-					{
-	        
-					}</code></pre>
+                            	     	<div class="code"><pre><code>BPlusTree(relId relid, char attrName[ATTR_SIZE]){
+					
+    //initialise the object instance member fields: relid and attrName with the given relid and attrName	
+    
+    //let attrCatEntry be used to store the attribute cache entry for attrName
+	AttrCatEntry attrCatEntry;
+    
+    //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
+    int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
+    
+	if( status != SUCCESS)
+		//update member field rootBlock of the class with the status and return
+	
+	//let rootBlockNum be used to store the root block number of the B+ Tree
+	int rootBlockNum;
+	
+	if(rootBlockNum != -1) //index already exists for the attribute
+		//update the rootBlock member field of the class with rootBlockNum and return
+	
+	/******Creeating a new B+ Tree ******/
+	
+	//get a free leaf block
+	IndLeaf rootBlock;
+	
+	if(rootBlock.getBlockNum()==FAILURE) //disk is full, i.e,  unable to get new block from the disk
+		//update the rootBlock member field of the class with E_DISKFULL and return
+	
+	else 
+		//update rootBlock member field of the class with the block number of rootBlock
+	
+		
+	//update the rootBlock in the attribute cache, attrCatBuf,  using OpenRelTable::setAttrCatEnty()
+
+	//let the relCatBuf hold the relation catalog entry corresponding to relid
+	RelCatEntry relCatBuf;
+	
+	//load the relation catalog entry into relCatBuf using OpenRelTable::getRelCatEntry()
+	
+	//get the first record block of the relation, number of attributes of the relation and number of slots in the corresponding record block in variables block, numAttr and numSlots respectively using relCatBuf.
+	int block;
+	int numAttr;
+	int numSlots;
+	
+	//let attrOffset hold the offset of the attribute in the relation- obtained from attrCatBuf
+	int attrOffset;
+	
+	/******traverse all the blocks in the relation and insert them one by one into the B+ Tree.******/
+	while(block!=-1) 
+	{
+	    
+	    //load the the block of the relation into a RecBuffer
+		RecBuffer recBlock(block);
+		
+		//let slotMap hold the header of the block	
+		unsigned char slotMap[numSlots];
+		
+		//load the slot map into slotMap using RecBuffer::getSlotMap()
+		
+		
+		for slot = 0 to numSlots - 1:
+		{
+			if(slotMap[slot]=='1') //if there is an entry
+			{
+			
+				//let rec hold the contents of the record
+				union Attribute rec[numAttr];
+			
+				//load the record corresponding to the slot into rec using RecordBuffer::getRecord()
+				
+				//let rec_id hold the record id {block,slot}
+				struct recId recordId;
+
+				//insert the attribute value of the record corresponding to attrName using bplus_insert
+				status = bPlusInsert(rec[attrOffset], recordId);
+			
+				if(status == E_DISKFULL) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree
+				{
+					//update the rootBlock member field of the class with E_DISKFULL and return
+				 }
+			}
+		    else //all records in the relaton has been traversed
+				break;
+		}
+		
+		//let blockHead be used to hold the header of block.
+		HeadInfo blockHead;
+		
+		//load the header of recBlock into blockHead using BlockBuffer::getHeader()
+		
+		//update the block with rblock of the header.
+			
+	}	
+}</code></pre>
 					</div>
                             	     </div> 
                         </div>
