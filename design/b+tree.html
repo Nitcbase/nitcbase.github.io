@@ -166,9 +166,9 @@
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-		                    			<td>block_num</td>
+		                    			<td>blockNum</td>
 		                    			<td>int</td>
-		                    			<td>Block no. of head of bplus tree which need to be destroyed.</td>
+		                    			<td>Block number of the index block which is to be destroyed.</td>
 		                			</tr>
 		                        </table>
                             </div>
@@ -177,51 +177,76 @@
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-		                        		<td>SUCCESS</td>
-		                        		<td>On successful deletion of b+ tree</td>
+										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+		                        		<td>Successful deletion of index block.</td>
 		                    		</tr>
 		                    		<tr>
-		                    		    <td>E_OUTOFBOUND</td>
-		                    		    <td>If the block_num is less than 0 or greater than or equal to DISK_BLOCKS</td>
+										<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+		                    		    <td>Input blockNum is outside the valid range of block numbers.</td>
 		                    		</tr>
 		                    		<tr>
-		                    		    <td>E_INVALIDBLOCK</td>
-		                    		    <td>If the block is not an index block</td>
+										<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
+		                    		    <td>Input blockNum do not correspond to an index block.</td>
 		                    		</tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>This method deletes/frees the bplus-tree whose head block_num is given as argument.</p>
+                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#create">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destroy" class="collapse">
-                            	<div class="code"><pre><code>int bplus_destroy(int block_num){
-	//all the index blocks are deleted recursively
-	
-	if(block_num &lt; 0 || block_num &gt;= DISK_BLOCKS){ //if the block_num is invalid
-		E_OUTOFBOUND;
+                            	<div class="code"><pre><code>int BplusTree::bplusDestroy(int blockNum){
+
+	if blockNum lies outside the valid range [0,<a href="../constants.html#constants" target="_blank">DISK_BLOCKS</a>-1]:
+	{
+		return E_OUTOFBOUND;
 	}
 	
-	//get the block_type from header of the block
-	if(block_type != INDINT || block_type != INDLEAF){ //if the block is not index block
+	if type of the block obtained using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a> is <a href="../constants.html#constants" target="_blank">IND_LEAF</a>:
+	{
+		//let leafBlk be used to hold block of blockNum using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+		IndLeaf leafBlk(blockNum);
+		
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+		
+		return SUCCESS;
+	}
+	else if type of the block is <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>:
+	{
+		//let internalBlk be used to hold block of blockNum using IndInternal::IndInternal()
+		IndInternal internalBlk(blockNum);
+		
+		//let internalHead be used to store header of internalBlk
+		HeadInfo internalHead;
+		
+		//load the header using BlockBuffer::getHeader()
+		
+		//let entry be used to hold an entry of the internalBlk
+		InternalEntry entry;
+		
+		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild of all entries using BplusTree::bplusDestroy(). (take care not to delete overlapping children more than once)*/
+		
+		//release the block using BlockBuffer::releaseBlock()
+		
+		return SUCCESS;
+		
+	}
+	else //block is not an index block
+	{
 		return E_INVALIDBLOCK;
 	}
-	
-	if(block_type == INDLEAF){ //if the block is leaf index block
-		//delete the block from the disk
-	}
-	else if(block_type == INDINT){ 	//if the block is internal index block
-		//iterate over all the internal index entries{
-			//delete all the child index blocks corresponding to each internal index block by calling
-			bplus_destroy(child_block);
-		//}
-	}	
-	
-	return SUCCESS;
-}</code></pre>
+		
+}
+</code></pre>
 								</div>
                             </div>
+							<p><b>NOTE:</b> 
+								<ul>
+									<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to -1 after deletion.</li>
+									<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to -1 after  deletion.</li>
+								</ul>
+							</p>
                         </div>
                         
                         <div id="insert" class="detail">
