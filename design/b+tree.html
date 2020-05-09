@@ -138,10 +138,8 @@
 	
 	if(rootBlock.getBlockNum()==FAILURE) //disk is full, i.e,  unable to get new block from the disk
 		//update the rootBlock member field of the class with E_DISKFULL and return
-	
 	else 
 		//update rootBlock member field of the class with the block number of rootBlock
-	
 		
 	//update the rootBlock in the attribute cache, attrCatBuf,  using OpenRelTable::setAttrCatEnty()
 
@@ -161,7 +159,6 @@
 	/******traverse all the blocks in the relation and insert them one by one into the B+ Tree.******/
 	while(block!=-1) 
 	{
-	    
 	    //load the the block of the relation into a RecBuffer
 		RecBuffer recBlock(block);
 		
@@ -169,7 +166,6 @@
 		unsigned char slotMap[numSlots];
 		
 		//load the slot map into slotMap using RecBuffer::getSlotMap()
-		
 		
 		for slot = 0 to numSlots - 1:
 		{
@@ -198,8 +194,7 @@
 		
 		//load the header of recBlock into blockHead using BlockBuffer::getHeader()
 		
-		//update the block with rblock of the header.
-			
+		//update the block with rblock of the header.		
 	}	
 }</code></pre>
 					</div>
