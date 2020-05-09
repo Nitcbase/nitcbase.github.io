@@ -96,12 +96,12 @@
 		                        	<tr>
 		                    			<td>relid</td>
 		                    			<td>int</td>
-		                    			<td>Relation Id of the Relation in which target attribute is contained.</td>
+		                    			<td>Relation Id of the relation which contains the target attribute.</td>
 		                			</tr>
 		                			<tr>
 		                    			<td>attrName</td>
 		                    			<td>char[ATTR_SIZE]</td>
-		                    			<td>name of attribute with which B+ tree has to be created.</td>
+		                    			<td>Name of attribute with which B+ tree has to be created.</td>
 		                			</tr>
 		                        </table>
                             </div>
@@ -174,25 +174,22 @@
 		for slot = 0 to numSlots - 1:
 		{
 			if(slotMap[slot]=='1') //if there is an entry
-			{
-			
+			{			
 				//let rec hold the contents of the record
 				union Attribute rec[numAttr];
 			
 				//load the record corresponding to the slot into rec using RecordBuffer::getRecord()
 				
-				//let rec_id hold the record id {block,slot}
+				//let recordId hold the record id {block, slot}
 				struct recId recordId;
 
-				//insert the attribute value of the record corresponding to attrName using bplus_insert
+				//insert the attribute value of the record corresponding to attrName using bPlusInsert
 				status = bPlusInsert(rec[attrOffset], recordId);
 			
-				if(status == E_DISKFULL) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree
-				{
-					//update the rootBlock member field of the class with E_DISKFULL and return
-				 }
+				if(status == E_DISKFULL) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree				
+					//update the rootBlock member field of the class with E_DISKFULL and return				
 			}
-		    else //all records in the relaton has been traversed
+		    	else //all records in the relaton has been traversed
 				break;
 		}
 		
