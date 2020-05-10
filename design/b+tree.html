@@ -452,7 +452,7 @@
 									<tr>
 								        <td>op</td>
 								        <td>int</td>
-								        <td>One amongst the 6 relation operators(EQ,LE,LT,GE,GT,NE corresponds to equal,less than equal, lesst han ,greater than equal, greater than, not equal operators respectively).</td>
+								        <td>One amongst the 6 relation operators(EQ, LE, LT, GE, GT, NE corresponds to equal, less than equal, less than, greater than equal, greater than, not equal operators respectively).</td>
 									</tr>
 		                        </table>
                             </div>
@@ -462,20 +462,20 @@
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
 						                <td><a href="buffer.html#recid" target="_blank">RecId</a></td>
-										<td>Record id of the first/next block entry in the relation that satisfies <i>op</i> for <i>attrVal</i>.</td>
+										<td>Record id of the first/ next block entry in the relation that satisfies <i>op</i> for <i>attrVal</i>.</td>
 						            </tr>
 						            <tr>
 						                <td>Invalid RecId {-1,-1}</td>
-										<td>No first/next block entry found satisfisying <i>op</i> for <i>attrVal</i>.</td>
+										<td>No first/ next block entry found satisfisying <i>op</i> for <i>attrVal</i>.</td>
 						            </tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Used to search the first/ next record entry in the relation that satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the Attribute Catalog Cache for this purpose. It holds the index id of the entry in  a leaf block of the B+ Tree that corresponds to a hit in a previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time.</p>
+                            <p>Used to search the first/ next record entry in the relation that satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. It holds the index id of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time.</p>
                             <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-search" class="collapse">
-                            	<div class="code"><pre><code>struct recId BplusTree::bplusSearch(union Attribute attrVal, int op){
+                            	<div class="code"><pre><code>struct RecId BplusTree::bplusSearch(union Attribute attrVal, int op){
 	
 	//let prevIndexid be used to store previous index id for attrName.
 	IndexId prevIndexid;
