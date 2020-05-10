@@ -63,10 +63,10 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                             <ul class="nav flex-column sidemenu">
-                                <li> <a class="sec" href="#create"> B+ Create</a></li>
-                                <li> <a class="sec" href="#destroy"> B+ Destroy</a></li>
-                                <li> <a class="sec" href="#insert"> B+ Insert</a></li>
-                                <li> <a class="sec" href="#search"> B+ search</a></li>
+                                <li> <a class="sec" href="#constructor"> BPlusTree Constructor</a></li>
+                                <li> <a class="sec" href="#destroy"> bPlusDestroy()</a></li>
+                                <li> <a class="sec" href="#insert"> bPlusInser()t</a></li>
+                                <li> <a class="sec" href="#search"> bPlusSearch()</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -87,8 +87,8 @@
                         	</p>
                         </div>
 			    
-<!----------------------BPLUS CONSTRUCTOR STARTS -------------------------------------------------------------------------->                        
-                         <div id="create" class="detail">
+<!----------------------BPlusTree Constructor-------------------------------------------------------------------------->                        
+                         <div id="constructor" class="detail">
                             <h2>public: BPlusTree (Constructor)</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
@@ -100,96 +100,100 @@
 		                			</tr>
 		                			<tr>
 		                    			<td>attrName</td>
-		                    			<td>char[ATTR_SIZE]</td>
-		                    			<td>Name of attribute with which B+ tree has to be created.</td>
+										<td>char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+		                    			<td>Name of attribute whose B+ tree is to be created.</td>
 		                			</tr>
 		                        </table>
                             </div>
                             <h5>Return value:</h5> Nil
 		                     
 		            <h5>Description:</h5>
-		            <p>This method creates the bplus-tree(Indexing) on the attribute of a relation specified in the arguments and also updates the object instance's member fileds with the given arguments.</p>
+		            <p>Creates the B+ Tree(Indexing) for the input attribute of the specified relation. It also sets the object instance's member fileds with the given arguments.</p>
 		                   
-		            <h5><a data-toggle="collapse" href="#algo-create"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                             	     <div id="algo-create" class="collapse">
-                            	     	<div class="code"><pre><code>BPlusTree(relId relid, char attrName[ATTR_SIZE]){
+		            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                             	     <div id="algo-constructor" class="collapse">
+                            	     	<div class="code"><pre><code>BPlusTree::BPlusTree(int relid, char attrName[ATTR_SIZE])
 					
-    //initialise the object instance member fields: relid and attrName with the given relid and attrName	
+    //initialise the object instance member fields, relid and attrName, with the given relid and attrName.
     
-    //let attrCatEntry be used to store the attribute cache entry for attrName
+    //let attrCatEntry be used to store the attribute cache entry for attrName.
     AttrCatEntry attrCatEntry;
     
     //get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a>  method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
     
     if( status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
-    	//update member field rootBlock of the class with the status and return
+    	//update member field rootBlock of the class with the status and return.
 	
-	//let rootBlockNum be used to store the root block number of the B+ Tree
+	//let rootBlockNum be used to store the root block number of the B+ Tree.
 	int rootBlockNum;
 	
-	if(rootBlockNum != -1) //index already exists for the attribute
-		//update the rootBlock member field of the class with rootBlockNum and return
+	if(rootBlockNum != -1) //index already exists for the attribute.
+		//update the rootBlock member field of the class with rootBlockNum and return.
 	
 	/******Creeating a new B+ Tree ******/
 	
-	//get a free leaf block
+	//get a free leaf block.
 	IndLeaf rootBlock;
 	
-	if(rootBlock.getBlockNum()==<a href="../constants.html#errors" target="_blank">FAILURE</a>) //disk is full, i.e,  unable to get new block from the disk
-		//update the rootBlock member field of the class with E_DISKFULL and return
+	if(rootBlock.getBlockNum()==<a href="../constants.html#errors" target="_blank">FAILURE</a>) //disk is full, i.e,  unable to get new block from the disk.
+		//update the rootBlock member field of the class with E_DISKFULL and return.
 	else 
-		//update rootBlock member field of the class with the block number of rootBlock
+		//update rootBlock member field of the class with the block number of rootBlock.
 		
-	//update the rootBlock in the attribute cache, attrCatBuf,  using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::setAttrCatEntry()</a> 
+	//update the rootBlock in the attribute cache, attrCatBuf, using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::setAttrCatEntry()</a>.
 
-	//let the relCatBuf hold the relation catalog entry corresponding to relid
+	//let the relCatBuf hold the relation catalog entry corresponding to relid.
 	RelCatEntry relCatBuf;
 	
-	//load the relation catalog entry into relCatBuf using <a href="cache.html#getrelcatentry" target="_blank"> OpenRelTable::getRelCatEntry()</a>
+	//load the relation catalog entry into relCatBuf using <a href="cache.html#getrelcatentry" target="_blank"> OpenRelTable::getRelCatEntry()</a>.
 	
-	//get the first record block of the relation, number of attributes of the relation and number of slots in the corresponding record block in variables block, numAttr and numSlots respectively using relCatBuf.
+	/*get the first record block of the relation, number of attributes of the relation and number of slots
+	  in a record block of the relation in variables block, numAttr and numSlots respectively using relCatBuf.*/
 	int block;
 	int numAttr;
 	int numSlots;
 	
-	//let attrOffset hold the offset of the attribute in the relation- obtained from attrCatBuf
+	//let attrOffset hold the offset of the attribute in the relation; obtained from attrCatBuf
 	int attrOffset;
 	
-	/******traverse all the blocks in the relation and insert them one by one into the B+ Tree.******/
+	/******Traverse all the blocks in the relation and insert them one by one into the B+ Tree******/
 	while(block!=-1) {	
-		//load the the block of the relation into a RecBuffer
+		
+		//load the the block of the relation into recBlock using <a href="buffer.html#recbuff_constructor2" target="_blank">RecBuffer::RecBuffer()</a>.
 		RecBuffer recBlock(block);
 		
-		//let slotMap hold the header of the block	
+		//let slotMap hold the slot map of the block.
 		unsigned char slotMap[numSlots];
 		
-		//load the slot map into slotMap using RecBuffer::getSlotMap()
+		//load the slot map into slotMap using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotMap()</a>.
 		
-		for slot = 0 to numSlots - 1:{	
-			if(slotMap[slot]=='1') //if there is an entry {				
-				//let rec hold the contents of the record
+		for slot = 0 to (numSlots - 1):
+		{
+			if(slotMap[slot]=='1') //there is an entry occupying the slot.
+			{				
+				//let rec hold the contents of the record.
 				union Attribute rec[numAttr];
 			
-				//load the record corresponding to the slot into rec using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a>
+				//load the record corresponding to the slot into rec using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a>.
 				
-				//let recordId hold the record id {block, slot}
+				//let recordId hold the record id {block, slot}.
 				struct recId recordId;
 
-				//insert the attribute value of the record corresponding to attrName using <a href="#insert">bPlusInsert</a>
+				//insert the attribute value of the record corresponding to attrName using <a href="#insert">bPlusInsert</a>.
 				status = bPlusInsert(rec[attrOffset], recordId);
 			
-				if(status == <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree				
-					//update the rootBlock member field of the class with <a href="../constants.html#errors" target="_blank">E_DISKFULL</a> and return				
+				if(status == <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree.
+					//update the rootBlock member field of the class with <a href="../constants.html#errors" target="_blank">E_DISKFULL</a> and return.
 			}
-		    	else //all records in the relaton has been traversed
+		    else //all records in the relaton has been traversed.
 				break;
 		}
 		
 		//let blockHead be used to hold the header of block.
 		HeadInfo blockHead;
 		
-		//load the header of recBlock into blockHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>
+		//load the header of recBlock into blockHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
 		//update the block with rblock of the header.		
 	}	
@@ -230,7 +234,7 @@
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#create">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
+                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#constructor">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destroy" class="collapse">
