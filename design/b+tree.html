@@ -328,7 +328,7 @@
     HeadInfo blockHeader;
 	
 	/******Traverse the B+ Tree to reach the appropriate leaf where insertion can be done******/
-    while block is not LEAF: // StaticBuffer::getStaticBlockType() can be used {  
+    while block is not LEAF: { // StaticBuffer::getStaticBlockType() can be used 
     	//load the block
         block = new IndInternal(blockNum);
         
@@ -460,8 +460,7 @@
 				//obtain a new internal index block in dummy
 			    	class IndInternal* dummy = new IndInternal();
 
-			    	if(dummy->getBlockNum()==FAILURE) //failed to obtain an empty leaf index becauase the disk is full
-			    	{
+			    	if(dummy->getBlockNum()==FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
 					//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree. 
 					//destroy the remaining B+ tree too which was built till now.
 					//update rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
@@ -493,8 +492,7 @@
 			    	//let type be the block type of a child of any entry( say, the rchild of 50th entry) in the internalEntries array, using StaticBuffer::getStaticBlockType method.
 			    	int type;
 
-			     	//iterate from 50 to 100:
-			     	{
+			     	//iterate from 50 to 100:{
 					//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff 
 					if(type == IND_LEAF)
 						childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
