@@ -117,7 +117,7 @@
     //initialise the object instance member fields: relid and attrName with the given relid and attrName	
     
     //let attrCatEntry be used to store the attribute cache entry for attrName
-	AttrCatEntry attrCatEntry;
+    AttrCatEntry attrCatEntry;
     
     //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
@@ -158,8 +158,8 @@
 	
 	/******traverse all the blocks in the relation and insert them one by one into the B+ Tree.******/
 	while(block!=-1) 
-	{
-	    //load the the block of the relation into a RecBuffer
+	{	
+	        //load the the block of the relation into a RecBuffer
 		RecBuffer recBlock(block);
 		
 		//let slotMap hold the header of the block	
@@ -168,9 +168,9 @@
 		//load the slot map into slotMap using RecBuffer::getSlotMap()
 		
 		for slot = 0 to numSlots - 1:
-		{
+		{	
 			if(slotMap[slot]=='1') //if there is an entry
-			{			
+			{				
 				//let rec hold the contents of the record
 				union Attribute rec[numAttr];
 			
@@ -309,12 +309,12 @@
                             	<div class="code"><pre><code>int bPlusInsert(union Attribute val,recId recordId){
 	
     //let attrCatBuf be used to store the attribute cache entry for attrName
-	AttrCatEntry attrCatEntry;
-    
+    AttrCatEntry attrCatEntry;
+
     //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
-	int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
+    int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
-	if( status != SUCCESS)
+    if( status != SUCCESS)
 		return status;
     
     //let blockNum be the rootBlock of AttrCatEntry 
@@ -350,7 +350,7 @@
         }      
         else  
         {
-         	  //update blockNum with lChild of the entry of block.
+         	 //update blockNum with lChild of the entry of block.
                  //delete block. 
          }
     }
@@ -361,6 +361,7 @@
     
     //load the block 
     block = new IndLeaf(blockNum);
+    
     Index indexval; //(stores Index entry to be inserted in B+ Tree)
     //update indexval with as that of recid, val.
 
@@ -513,8 +514,8 @@
 			         else
 			            	childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
                         
-                        //update pblock field in header of the childBuff block to newRightBlkNum making use of BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
-  						delete childBuff;                    
+                       		//update pblock field in header of the childBuff block to newRightBlkNum making use of BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
+  				delete childBuff;                    
                   
                     }
 
@@ -529,32 +530,32 @@
             }
             else //when parBlkNum is invalid 
             { 
-				//NOTE: Need to allot a new block which would be the root of the B+ Tree
-				
-				//load a new internal index block to newRootBlk
+		//NOTE: Need to allot a new block which would be the root of the B+ Tree
+			
+		//load a new internal index block to newRootBlk
                 class IndInternal* newRootBlk = new IndInternal();
                 
                 //store the block number of newRootBlk in newRootBlkNum using BlockBuffer::getBlockNum() function.
                 int newRootBlkNum;
                 
                 if(newRootBlkNum == FAILURE) //failed to obtain an empty internal index block becauase the disk is full
-                {
-                		//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree.
-				//destroy the remaining B+ tree too which was built till now.
-				//update the rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
-                		this->rootBlock = E_DISKFULL;
-				return E_DISKFULL;
+                {	
+                	//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree.
+			//destroy the remaining B+ tree too which was built till now.
+			//update the rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
+                	this->rootBlock = E_DISKFULL;
+			return E_DISKFULL;
                	}
                	
                	//let newRootHeader be the header of newRootBlk
                 struct HeadInfo newRootHeader; 
                 
-				//update number of enteries in newRootBlk as 1 using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods.
+		//update number of enteries in newRootBlk as 1 using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods.
 				
                 //add the InternalEntry entry with lChild as leftBlkNum, attrVal as newAttrval and rChild as newRightBlkNum as the first entry to newRootBlk using IndBuffer::setEntry();
 
-				//update the pblock both leftBlkNum and newRightBlkNum to newBlkNum using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods
-				/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using StaticBuffer::getStaticBlockType()) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances */
+		//update the pblock both leftBlkNum and newRightBlkNum to newBlkNum using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods
+		/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using StaticBuffer::getStaticBlockType()) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances */
 
                 //update rootBlock of attrcatEntry variable (into which the attribute catalog was earlier loaded) as newBlkNum using OpenRelTable::setAttrCatEntry() method.
                 
@@ -565,7 +566,7 @@
     	}
     
        return SUCCESS;
-	}
+}
 				
  
 }</code></pre>
