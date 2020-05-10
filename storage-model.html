@@ -73,21 +73,28 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a class="sec" href="#disk_model">Disk Model</a></li>
-                            <li> <a class="sec" href="#disk_class">Disk class</a></li>
-                            <ul>
-                                <li><a href="#disk_constructor">Disk</a> </li>
-                                 <li><a href="#disk_destructor">~Disk</a> </li>
-                                 <li><a href="#disk_readBlock">readBlock()</a> </li>
-                                 <li><a href="#disk_writeBlock">writeBlock()</a> </li>
-                            </ul>
+                            <li> <a class="sec" data-toggle="collapse" href="#diskClassCard" role="button" aria-expanded="false" aria-controls="diskClassCard">Disk Class</a></li>
+                                <div class="collapse" id="diskClassCard"><div class="card card-body">
+                                <ul>
+                                    <li><a href="#disk_class">Disk class details</a> </li>
+                                    <li><a href="#disk_constructor">Disk</a> </li>
+                                    <li><a href="#disk_destructor">~Disk</a> </li>
+                                    <li><a href="#disk_readBlock">readBlock()</a> </li>
+                                    <li><a href="#disk_writeBlock">writeBlock()</a> </li>
+                                </ul>
+                                </div></div>
+                            
                             <li> <a class="sec" href="#record_blk">Record block structure</a></li>
                             <li> <a class="sec" href="#intind_blk">Internal Index Block Structure</a></li>
                             <li> <a class="sec" href="#leafind_blk">Leaf Index Block Structure</a></li>
-                            <li> <a class="sec" href="#catalogs">Catalog Structures</a></li>
-			    <ul>
+                            <li> <a class="sec" data-toggle="collapse" href="#catalogCard" role="button" aria-expanded="false" aria-controls="catalogCard">Catalogs</a></li>
+                            <div class="collapse" id="catalogCard"><div class="card card-body">
+			                 <ul>
+                                <li><a href="#catalogs">Catalog Structures</a> </li>
                                 <li><a href="#relcat">Relation Catalog</a> </li>
                                 <li><a href="#attrcat">Attribute Catalog</a> </li>
-			    </ul>
+			                 </ul>
+                            </div></div>
                         </ul>
                         </div>
                     </nav>

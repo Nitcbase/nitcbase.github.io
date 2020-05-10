@@ -64,16 +64,21 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a class="sec" href="#layout"> Layout</a></li>
-                            <li> <a class="sec" href="#block_structures"> Block Structures</a></li>
-							<ul>
-                                <li><a href="#block_structures_headinfo">HeadInfo</a> </li>
+                            <li> <a class="sec" data-toggle="collapse" href="#block_structures_card" role="button" aria-expanded="false" aria-controls="block_structures_card"> Block Structures</a></li>
+				            <div class="collapse" id="block_structures_card"><div class="card card-body">
+                            <ul>
+                                 <li><a href="#block_structures">All Block Structures</a> </li>
+                                 <li><a href="#block_structures_headinfo">HeadInfo</a> </li>
                                  <li><a href="#block_structures_attribute">Attribute</a> </li>
                                  <li><a href="#block_structures_internal_entry">InternalEntry</a> </li>
                                  <li><a href="#block_structures_index">Index</a> </li>
                             </ul>
-							<li> <a class="sec" href="#block_structures"> Buffer Structure</a></li>
-                            <li> <a class="sec" href="#static_buffer_class"> Class StaticBuffer</a></li>
+                                </div></div>
+							<li> <a class="sec" href="#buffer_structures"> Buffer Structure</a></li>
+                            <li> <a class="sec" data-toggle="collapse" href="#static_buffer_card" role="button" aria-expanded="false" aria-controls="static_buffer_card"> StaticBuffer</a></li>
+                            <div class="collapse" id="static_buffer_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#static_buffer_class">Class StaticBuffer</a> </li>
                                 <li><a href="#static_buffer_constructor">StaticBuffer constructor</a> </li>
                                  <li><a href="#static_buffer_destructor">StaticBuffer destructor</a> </li>
 								<li><a href="#getstaticblocktype">getStaticBlockType()</a> </li>
@@ -81,8 +86,11 @@
                                 <li><a href="#getbuffernum">getBufferNum()</a> </li> 
 								<li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
                             </ul>
-                            <li> <a class="sec" href="#blkbuff_class"> Class BlockBuffer</a></li>
+                                </div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#blkbuff_card" role="button" aria-expanded="false" aria-controls="blkbuff_card"> BlockBuffer</a></li>
+                            <div class="collapse" id="blkbuff_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#blkbuff_class">Class BlockBuffer</a> </li>
                                 <li><a href="#blk_buffer_constructor1">BlockBuffer constructor 1</a> </li>
                                 <li><a href="#blk_buffer_constructor2">BlockBufferconstructor 2</a> </li>
 								<li><a href="#getblkNum">getBlockNum()</a> </li>
@@ -95,8 +103,11 @@
 								<li><a href="#getblk">getBlock()</a> </li>
 								<li><a href="#getfreeblk">getFreeBlock()</a> </li>
                             </ul>
-                            <li> <a class="sec" href="#recbuff_class"> Class RecBuffer</a></li>
+                                </div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#recbuff_card" role="button" aria-expanded="false" aria-controls="recbuff_card"> RecBuffer</a></li>
+                            <div class="collapse" id="recbuff_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#recbuff_class">Class RecBuffer</a> </li>
                                 <li><a href="#recbuff_constructor1">RecBuffer constructor 1</a> </li>
                                 <li><a href="#recbuff_constructor2">RecBuffer constructor 2</a> </li>
                                 <li><a href="#getslotmap">getSlotmap()</a> </li>
@@ -104,31 +115,40 @@
                                 <li><a href="#getrecord">getRecord()</a> </li>
                                 <li><a href="#setrecord">setRecord()</a> </li>
                             </ul>
-                            <li> <a class="sec" href="#indbuff_class"> Class IndBuffer</a></li>
+                                </div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#indbuff_card" role="button" aria-expanded="false" aria-controls="indbuff_card"> IndBuffer</a></li>
+                            <div class="collapse" id="indbuff_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#indbuff_class">Class IndBuffer</a> </li>
                                 <li><a href="#indbuff_constructor1">IndBuffer constructor 1</a> </li>
                                 <li><a href="#indbuff_constructor2">IndBuffer constructor 2</a> </li>
-                            </ul>
-                            <li> <a class="sec" href="#intbuff_class"> Class IndInternal</a></li>
+                            </ul></div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#intbuff_card" role="button" aria-expanded="false" aria-controls="intbuff_card"> IndInternal</a></li>
+                            <div class="collapse" id="intbuff_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#intbuff_class">Class IndInternal</a> </li>
                                 <li><a href="#intindbuff_constructor1">IndInternal constructor 1</a> </li>
                                 <li><a href="#intindbuff_constructor2">IndInternal constructor 2</a> </li>
                                 <li><a href="#intgetentry">getEntry()</a> </li>
 								<li><a href="#intsetentry">setEntry()</a> </li>
-                            </ul>
-                            <li> <a class="sec" href="#leafbuff_class"> Class IndLeaf</a></li>
+                            </ul></div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#leafbuff_card" role="button" aria-expanded="false" aria-controls="leafbuff_card"> IndLeaf</a></li>
+                            <div class="collapse" id="leafbuff_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#leafbuff_class">Class IndLeaf</a> </li>
                                 <li><a href="#leafindbuff_constructor1">IndLeaf constructor 1</a> </li>
                                 <li><a href="#leafindbuff_constructor2">IndLeaf constructor 2</a> </li>
                                 <li><a href="#leafgetentry">getEntry()</a> </li>
                                 <li><a href="#leafsetentry">setEntry()</a> </li>
-                            </ul>
-                            <li> <a class="sec" href="#misc"> Miscellaneous</a></li>
+                            </ul></div></div>
+                            <li> <a class="sec" data-toggle="collapse" href="#misc_card" role="button" aria-expanded="false" aria-controls="misc_card"> Miscellaneous</a></li>
+                            <div class="collapse" id="misc_card"><div class="card card-body">
                             <ul>
+                                <li><a href="#misc">Miscellaneous</a> </li>
                                 <li><a href="#recid">RecId</a> </li>
                                 <li><a href="#indexid">IndexId</a> </li>
                                 <li><a href="#compare">compare()</a> </li>
-                            </ul>
+                            </ul></div></div>
                         </ul>
                         </div>
                     </nav>
