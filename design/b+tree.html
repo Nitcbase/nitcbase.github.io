@@ -65,7 +65,7 @@
                             <ul class="nav flex-column sidemenu">
                                 <li> <a class="sec" href="#constructor"> BPlusTree Constructor</a></li>
                                 <li> <a class="sec" href="#destroy"> bPlusDestroy()</a></li>
-                                <li> <a class="sec" href="#insert"> bPlusInser()t</a></li>
+                                <li> <a class="sec" href="#insert"> bPlusInsert()</a></li>
                                 <li> <a class="sec" href="#search"> bPlusSearch()</a></li>
                             </ul>
                         </div>
@@ -109,7 +109,7 @@
 							<p>Nil</p>
 		                     
 		            <h5>Description:</h5>
-		            <p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. This method also sets the object instance's member fileds with the input arguments.</p>
+		            <p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. It inserts the attribute value corresponding to <i>attrName</i> of all entries in the relation into the B+Tree using <i>bPlusInsert()</i>. If in between the insertion, the disk runs out of space, then the B+ Tree will not be created. This method also sets the object instance's member fields with the input arguments. </p>
 		                   
 		            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              	     <div id="algo-constructor" class="collapse">
@@ -205,8 +205,13 @@
 		//update the block to the next block in the linked list.		
 	}	
 }</code></pre>
-					</div>
-                            	     </div> 
+								</div>
+                   			</div>
+							 <p><b>NOTE:</b> 
+								<ul>
+									<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to -1. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
+								</ul>
+							</p>
                         </div>
 <!-----------------------------------BPlusDestroy------------------------------------------------------------------------------------>                       
                         <div id="destroy" class="details">
@@ -299,7 +304,7 @@
 								</ul>
 							</p>
                         </div>
-<!-- -------------------------------BPLUS INSERT BEGINS HERE-------------------------------------------------------------------------------- -->                        
+<!-- -------------------------------bPlusInsert-------------------------------------------------------------------------------- -->                        
                         <div id="insert" class="detail">
                         	<h2>public: bPlusInsert</h2>
                         	<h5>Arguments:</h5>
@@ -309,12 +314,12 @@
 								    <tr>
 								        <td>attrval</td>
 									    <td><a href="buffer.html#block_structures_attribute" target="_blank" >union Attribute</a></td>
-								        <td>value corresponding to attrName attribute of target record that need to be inserted in to bplus tree.</td>
+								        <td>Attribute value corresponding to <i>attrName</i> in the target record.</td>
 								    </tr>
 								    <tr>
 								        <td>recordId</td>
-								        <td>recId</td>
-								        <td>The <a href="buffer.html#recid" target="_blank" >record id</a> of target record that need to be inserted in to bplus tree.</td>
+								        <td><a href="buffer.html#recid" target="_blank" >recId</a></td>
+										<td>The record id of the target record whose <i>Index</i> entry is to be inserted into B+ Tree.</td>
 								    </tr>
 		                        </table>
                             </div>
@@ -322,71 +327,78 @@
                             <h5>Return value:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
-		                        		    <tr>
-								    <td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
-						                <td>On successful insert of the recid.</td>
+		                        	<tr>
+										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+						                <td>Successful insertion of <i>Index</i> entry into B+ tree.</td>
 						            </tr>
 						            <tr>
 								    <td><a href="../constants.html#errors" target="_blank">E_NOINDEX</a></td>
-						                <td>If B+ tree has not been created on the given attribute.</td>
+										<td>B+ Tree does not exist for <i>attrName</i>.</td>
 						            </tr>
 						            <tr>
 								    <td><a href="../constants.html#errors" target="_blank">E_DISKFULL</a></td>
-						                <td>If disk space is not sufficient to insert into the B+ tree.</td>
+						                <td>Disk space insufficient for insertion of <i>Index</i> entry into B+ tree.</td>
 						            </tr>
 		                     	</table>
-		             </div>
-			    <h5>Description:</h5>
-                            <p>This method inserts the <i>Index</i> of the record corresponding to the given attribute value and record id into the B+ tree.</p>
+		             		</div>
+			    			<h5>Description:</h5>
+                            <p>Inserts a <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entry corresponding to the input attribute value and record id into the B+ tree. The disk might run out of memory during the insertion of the <i>Index</i> entry in which case the entire B+ Tree is destroyed.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-insert" class="collapse">
-                            	<div class="code"><pre><code>int bPlusInsert(union Attribute val,recId recordId){
-	
-    //let attrCatBuf be used to store the attribute cache entry for attrName
+                            	<div class="code"><pre><code>int BPlusTree::bPlusInsert(union Attribute val,recId recordId)
+{
+
+    //let attrCatBuf store the attribute cache entry for attrName
     AttrCatEntry attrCatEntry;
 
-
-    //get the attribute catalog entry of target attribute using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a> method.
-
-    int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
+    //get the attribute catalog entry of <i>attrName</i> using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a> method.
+	int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
     if( status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
     	return status;
     
-    //let blockNum be the rootBlock of AttrCatEntry 
+    //store the rootBlock of B+ Tree in blockNum. 
     int blockNum;
     
-    if blockNum of target attribute is -1:
+    if blockNum of target attribute is -1: //B+ Tree does not exist for <i>attrName</i>
+	{
     	return <a href="../constants.html#errors" target="_blank">E_NOINDEX</a>;
-    
-    //let attrType store type of attribute
+    }
+	
+    //store type of attribute in attrType.
     int attrType;
    
-    class IndBuffer *block = NULL;
+   	//let block be a buffer of type IndBuffer; as IndBuffer is the parent class of IndLeaf and IndInternal, block can be used to store disk block of either type.
+    class IndBuffer *block;
     
+	//let blockHeader be used the header of block.
     HeadInfo blockHeader;
 	
 	/******Traverse the B+ Tree to reach the appropriate leaf where insertion can be done******/
-    while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: { //  <a href="buffer.html#getstaticblktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used 
-    	//load the block
+    while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: //  <a href="buffer.html#getstaticblktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used.
+	{
+	
+    	//load the block using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
         block = new IndInternal(blockNum);
         
-        //load header of block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> method.
+        //load header of block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
         
-        //let nEntries be no. of entries in block (can be found from blockHeader)
+        //store number of entries in block, obtained from blockHeader, in nEntries.
         int nEntries;
         
-        //iterate through all the entries, to find first entry whose attibute value >= value to be inserted.
+        //iterate through all the entries, to find first the entry whose attibute value >= value to be inserted.
         //NOTE: the helper function compare() can be used to compare two Union Attribute values based on attrType.
         
-        if no such entry is found: {      
+        if no such entry is found: 
+		{      
         	//update blockNum with rChild of nEntries-1'th (i.e. last) entry of the block.  
         	//delete block.
         }      
-        else {
+        else 
+		{
          	 //update blockNum with lChild of the entry of block.
-                 //delete block. 
+         	 //delete block. 
          }
     }
 
@@ -394,153 +406,169 @@
     
     /******Insertion of entry in the appropriate leaf block******/
     
-    //load the block 
+    //load the block using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
     block = new IndLeaf(blockNum);
     
-    Index indexval; //(stores Index entry to be inserted in B+ Tree)
+	//let indexval be used to store the Index entry to be inserted into B+ Tree.
+    Index indexval;
+	
     //update indexval with as that of recid, val.
 
-    //load header of the block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> method.
+    //load header of the block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 
-    //let nEntries be no. of entries in block pointing by block(can be found from blockHeader)
+    //store number of entries in block in nEntries.
     int nEntries;
 
-    //let indices[nEntries+1] be an array of type struct Index.
+    //let indices[nEntries+1] be an array of struct Index of size numEntries+1.
     Index indices[nEntries+1];
     
-    //iterate through 0 to nEntries-1 and copy all the entries in the block to the array indices. Also insert indexval at appropriate position in the indices array.
+    //iterate through all the entries in the block and copy them to the array indices. Also insert indexval at appropriate position in the indices array.
     
-    if (nEntries!= 63){
-    	//NOTE: leaf block has not reached max limit
-    	
+    if (nEntries!= 63) //leaf block has not reached max limit
+    {
         //update blockHeader.numEntries as nEntries+1 and set this as header of block using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> method. 
         
-        //iterate through 0 to nEntries and populate the entries of block with entries in indices array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a> method.
+        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a> method.
         
         //delete block.
         
         return <a href="../constants.html#errors" target="_blank">SUCCESS</a>;
     } 
-    else {
-    	//NOTE: leaf block is full- need a new leaf to make the entry; split the entries between the two blocks
-    	
-    	//obtain new leaf index block as the right block in the splitting
+    else //leaf block is full- need a new leaf to make the entry; split the entries between the two blocks.
+    {
+    	//obtain new leaf index block to be used as the right block in the splitting.
         class IndBuffer * newRightBlk = new IndLeaf();
         
-        //assign the existing block as the left block in the splitting
+        //assign the existing block as the left block in the splitting.
         class IndBuffer * leftBlk = block;
         
-	//store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum using  <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a> method
+		//store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum using  <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a>.
         int newRightBlkNum;
         int leftBlkNum;
 		
-        if(newRightBlkNum == FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
- 		//delete the B+ tree created till now using <a href="#destroy">bPlusDestroy</a>.
-		//update the rootBlock of attrCatEntry as -1 using  <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry</a>
-		this->rootBlock = <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-		return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+        if(newRightBlkNum == FAILURE){ //failed to obtain an empty leaf index becauase the disk is full.
+			
+				//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
+				
+				//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+				
+				//update the rootBlock of attribute cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry</a>.
+				
+				return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
         }
-        //let leftBlkHeader be the header of the left block(which is presently stored in blockHeader)
+        
+		//let leftBlkHeader be the header of the left block(which is presently stored in blockHeader)
         struct HeadInfo leftBlkHeader = blockHeader;
 		
-	//let prevRblock be the right block after leftBlk
-	int prevRblock = leftBlkHeader.rblock;
+		//let prevRblock store the block after leftBlk that appears in the linked list.
+		int prevRblock = leftBlkHeader.rblock;
 			
-        //update number of enteries in leftBlkHeader as 32 and its rblock as newRightBlkNum using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader</a> method.
+        //update number of enteries in leftBlkHeader as 32 and its rblock as newRightBlkNum using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-	//let newRightBlkHeader be of type struct HeadInfo
-        struct HeadInfo newRightBlkHeader;
+		//let newRightBlkHeader be the header of the right block.
+		struct HeadInfo newRightBlkHeader;
+
+		//load the header of newRightBlk in newRightBlkHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
-	//load the header of block newRightBlkHeader in newRightBlkHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader</a>
-		
-        //update number of enteries in newRightBlkHeader as 32, its plbock as the plbock of leftBlk, its lblock as leftBlkNum and its rblock as prevRblock using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader</a> methods.
+        //update number of enteries in newRightBlkHeader as 32, its pblock as the pblock of leftBlk, its lblock as leftBlkNum and its rblock as prevRblock using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-     	//set the first 32 entries of leftBlk as the first 32 entries of indices array and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a> method.
+     	//set the first 32 entries of leftBlk as the first 32 entries of indices array and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
 
-        //let parBlkNum be the pblock of leftBlk.
+        //store pblock of leftBlk in parBlkNum.
         int parBlkNum;
         
         delete leftBlk;
         delete newRightBlk; 
         
-        //let newAttrval hold the attribute value of indices[31]; this is attribute value which needs to be inserted in the parent block
+        //store the attribute value of indices[31] in newAttrval; this is attribute value which needs to be inserted in the parent block.
         union Attribute newAttrval;
 		
-	/******Traverse the internal index blocks of the B+ Tree bottom up making insertions where ever required******/
+		/******Traverse the internal index blocks of the B+ Tree bottom up making insertions where ever required******/
 
-	//let done indicate whether the insertion is complete or not
+		//let done indicate whether the insertion is complete or not.
         bool done = false;
         
-        while(!done){
-        	if (parBlkNum!=-1){ //parBlkNum is a valid parent block
-			//load the block corresponding to parBlkNum to parblk
-			class IndInternal *parblk= new IndInternal(parBlkNum);
+        while(!done)
+		{
+        	if (parBlkNum!=-1) //parBlkNum is a valid parent block
+			{
+				//load the block corresponding to parBlkNum to parblk.
+				class IndInternal *parblk= new IndInternal(parBlkNum);
 
-			//let parheader be of type struct HeadInfo
-			struct HeadInfo parheader;
+				//let parheader be used to store the header of parblk.
+				struct HeadInfo parheader;
 
-			//load parheader with header of parblk using  <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader</a> method.
+				//load parheader with header of parblk using  <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 
-			//let internalEntries be an array of InternalEntries of size parheader.numEntries+1
-			struct InternalEntry internalEntries[parheader.numEntries+1];
+				//let internalEntries be an array of <i>struct InternalEntries</i> of size parheader.numEntries+1.
+				struct InternalEntry internalEntries[parheader.numEntries+1];
 
-			//iterate through 0 to parheader.nEntries-1 and copy all the entries in the parblk to the array internalEntries. Also insert an InternalEntry entry with attrVal as newAttrval, lChild as leftBlkNum and rChild as newRightBlkNum at an appropriate position in the internalEntries array.				
+				//iterate through all the entries of the parblk and copy them to the array internalEntries. Also insert an InternalEntry entry with attrVal as newAttrval, lChild as leftBlkNum and rChild as newRightBlkNum at an appropriate position in the internalEntries array.				
 
-			if(parheader.numEntries!=100){ //parBlkNum has not reached max limit	
-				//increment parheader.numEntries and update it as header of parblk  <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader</a> method. 
+				if(parheader.numEntries != 100) //parBlkNum has not reached max limit	.
+				{
+					//increment parheader.numEntries and update it as header of parblk using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
 
-				//iterate through 0 to parheader.numEntries-1 and populate the enties of parblk with entries in internalEntries array using  <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a> method.
+					//iterate through all entries in internalEntries array and populate the entries of parblk with them using  <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
 
-				//delete parblk.
+					delete parblk;
 
-				//set done to true;
-
-			}
-			else { //the parent internal index is full- need a new internal index to make the entry; split the entries between the two blocks
-				//obtain a new internal index block in dummy
+					//set done to true;
+					
+				}
+				else  //the parent internal index is full- need a new internal index to make the entry; split the entries between the two blocks
+				{
+					//obtain a new internal index block in dummy
 			    	class IndInternal* dummy = new IndInternal();
 
-			    	if(dummy->getBlockNum()==FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
-					//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy</a>.
-					//destroy the remaining B+ tree too which was built till now, using <a href="#destroy">bPlusDestroy</a>.
-					//update rootBlock of attrCatEntry as -1 using <a href="cache.html#setattrcatentry">OpenRelTable::setAttrCatEntry()</a>
-					this->rootBlock = <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-					return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+			    	if(dummy->getBlockNum()==FAILURE) //failed to obtain an empty internal index becauase the disk is full.
+					{
+						//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy()</a>.
+						
+						//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
+						
+						//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+						
+						//update the rootBlock of attribute cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry</a>.
+						
+						return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
 			     	}
 
-			    	//assign dummy as the left block in the splitting
+			    	//assign dummy as the left block in the splitting.
 			    	newRightBlk= (class IndInternal* )dummy;
 
-			        //assign the dummy block as the left block in the splitting
+			        //assign parblk as the right block in the splitting.
 			        leftBlk= (class IndInternal* )parblk;
 
-			        //udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a> method.
-
 			        //update leftBlkNum with parBlkNum
+					
+					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a> method.
 
 			        //update leftBlkHeader with parheader
 
-			        //update number of enteries of leftBlkHeader as 50 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> method.
+			        //update number of enteries of leftBlkHeader as 50 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-			        //update number of enteries of newRightBlkHeader as 50 using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> methods.
+			        //update number of enteries of newRightBlkHeader as 50 using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-			    	//set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and set the first 50 entries of newRightBlk as the entries from 51 to 100 of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>
+			    	//set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and set the first 50 entries of newRightBlk as the entries from 51 to 100 of internalEntries array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
 
 			        IndBuffer *childBuff;
 			    	struct HeadInfo childBuffHead;
 
-			    	//let type be the block type of a child of any entry( say, the rchild of 50th entry) in the internalEntries array, using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType</a> method.
+			    	//store the block type of a child of any entry( say, the rchild of 50th entry) in the internalEntries array in type, using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a>.
 			    	int type;
 
-			     	//iterate from 50 to 100:{
-					//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff 
-					if(type == <a href="../constants.html#constants" target="_blank">IND_LEAF</a>)
-						childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
-					 else
-						childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
+			     	//iterate from 50 to 100:
+					{
+						//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff
+						if(type == <a href="../constants.html#constants" target="_blank">IND_LEAF</a>)
+							childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
+						 else
+							childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
 
-					//update pblock field in header of the childBuff block to newRightBlkNum making use of <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> methods.
-					delete childBuff;                    
+						//update pblock in header of the childBuff block to newRightBlkNum using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
+
+						delete childBuff;                    
 			    	}
 
 			    	delete leftBlk;
@@ -548,49 +576,53 @@
 
 			    	//update parBlkNum to the pblock of leftBlk
 
-			    	//update newAttrval to the attribute value of 50th entry in the internalEntries array;  
-	
-			}
-                }		
-        	else { //when parBlkNum is invalid          	 
-			//NOTE: Need to allot a new block which would be the root of the B+ Tree
+			    	//update newAttrval to the attribute value of 50th entry in the internalEntries array; this is attribute value which needs to be inserted in the parent block.	
+				}
+            }		
+        	else  //when parBlkNum is invalid
+			{
+				//NOTE: Need to allot a new block which would be the root of the B+ Tree.
 
-			//load a new internal index block to newRootBlk
-			class IndInternal* newRootBlk = new IndInternal();
+				//load a new internal index block to newRootBlk.
+				class IndInternal* newRootBlk = new IndInternal();
 
-			//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a> function.
-			int newRootBlkNum;
+				//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a>.
+				int newRootBlkNum;
 
-			if(newRootBlkNum ==<a href="../constants.html#errors" target="_blank">FAILURE</a>){ //failed to obtain an empty internal index block becauase the disk is full	
-				//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy</a>.
-				//destroy the remaining B+ tree too which was built till now, using <a href="#destroy">bPlusDestroy</a>.
-				//update the rootBlock of attrCatEntry as -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
-				this->rootBlock = <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-				return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-			}
+				if(newRootBlkNum == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty internal index block becauase the disk is full	
+				{
+					
+					//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy()</a>.
+						
+					//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
 
-			//let newRootHeader be the header of newRootBlk
-			struct HeadInfo newRootHeader; 
+					//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
 
-			//update number of enteries in newRootBlk as 1 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> methods.
+					//update the rootBlock of attribute cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry</a>.
 
-			//add the InternalEntry entry with lChild as leftBlkNum, attrVal as newAttrval and rChild as newRightBlkNum as the first entry to newRootBlk using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>;
+					return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+				}
 
-			//update the pblock both leftBlkNum and newRightBlkNum to newBlkNum using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> methods.
-			/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using <a href="buffer.html#getstaticblktype" target="_blank">StaticBuffer::getStaticBlockType()</a>) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances */
+				//let newRootHeader be the header of newRootBlk.
+				struct HeadInfo newRootHeader;
 
-			//update rootBlock of attrcatEntry variable (into which the attribute catalog was earlier loaded) as newBlkNum using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a> method.
+				//update number of enteries in newRootBlk as 1 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 
-			delete newRootBlk;
+				//add the <i>struct InternalEntry</i> entry with lChild as leftBlkNum, attrVal as newAttrval and rChild as newRightBlkNum as the first entry to newRootBlk using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
 
-			//set done to true.
-        	}
-        }
-        return SUCCESS;
-}
-				
- 
-}</code></pre>
+				//update the pblock of blocks corresponding to both leftBlkNum and newRightBlkNum to newBlkNum using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+				/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using <a href="buffer.html#getstaticblktype" target="_blank">StaticBuffer::getStaticBlockType()</a>) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances. */
+
+				//update rootBlock of attrcatEntry variable (into which the attribute catalog was earlier loaded) as newBlkNum using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
+
+				delete newRootBlk;
+
+				//set done to true.
+				}
+	        }
+		}
+		return SUCCESS;		
+ }</code></pre>
                             	</div>
                             </div>
                         </div>
