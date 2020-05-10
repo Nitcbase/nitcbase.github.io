@@ -122,8 +122,8 @@
     //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
     
-	if( status != SUCCESS)
-		//update member field rootBlock of the class with the status and return
+    if( status != SUCCESS)
+    	//update member field rootBlock of the class with the status and return
 	
 	//let rootBlockNum be used to store the root block number of the B+ Tree
 	int rootBlockNum;
@@ -157,9 +157,8 @@
 	int attrOffset;
 	
 	/******traverse all the blocks in the relation and insert them one by one into the B+ Tree.******/
-	while(block!=-1) 
-	{	
-	        //load the the block of the relation into a RecBuffer
+	while(block!=-1) {	
+		//load the the block of the relation into a RecBuffer
 		RecBuffer recBlock(block);
 		
 		//let slotMap hold the header of the block	
@@ -167,10 +166,8 @@
 		
 		//load the slot map into slotMap using RecBuffer::getSlotMap()
 		
-		for slot = 0 to numSlots - 1:
-		{	
-			if(slotMap[slot]=='1') //if there is an entry
-			{				
+		for slot = 0 to numSlots - 1:{	
+			if(slotMap[slot]=='1') //if there is an entry {				
 				//let rec hold the contents of the record
 				union Attribute rec[numAttr];
 			
@@ -315,24 +312,24 @@
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
     if( status != SUCCESS)
-		return status;
+    	return status;
     
     //let blockNum be the rootBlock of AttrCatEntry 
     int blockNum;
     
     if blockNum of target attribute is -1:
-	    return E_NOINDEX;
+    	return E_NOINDEX;
     
     //let attrType store type of attribute
     int attrType;
    
     class IndBuffer *block = NULL;
-	HeadInfo blockHeader;
+    
+    HeadInfo blockHeader;
 	
 	/******Traverse the B+ Tree to reach the appropriate leaf where insertion can be done******/
-    while block is not LEAF: // StaticBuffer::getStaticBlockType() can be used 
-     {  
-     	//load the block
+    while block is not LEAF: // StaticBuffer::getStaticBlockType() can be used {  
+    	//load the block
         block = new IndInternal(blockNum);
         
         //load header of block into blockHeader using BlockBuffer::getHeader() method.
@@ -343,13 +340,11 @@
         //iterate through all the entries, to find first entry whose attibute value >= value to be inserted.
         //NOTE: the helper function compare() can be used to compare two Union attribute values based on attrType.
         
-        if no such entry is found: 
-        {       
-         	//update blockNum with rChild of nEntries-1'th (i.e. last) entry of the block.  
+        if no such entry is found: {      
+        	//update blockNum with rChild of nEntries-1'th (i.e. last) entry of the block.  
         	//delete block.
         }      
-        else  
-        {
+        else {
          	 //update blockNum with lChild of the entry of block.
                  //delete block. 
          }
@@ -375,8 +370,7 @@
     
     //iterate through 0 to nEntries-1 and copy all the entries in the block to the array indices. Also insert indexval at appropriate position in the indices array.
     
-    if (nEntries!= 63) 
-    {
+    if (nEntries!= 63){
     	//NOTE: leaf block has not reached max limit
     	
         //update blockHeader.numEntries as nEntries+1 and set this as header of block using BlockBuffer::setHeader() method. 
@@ -387,8 +381,7 @@
         
         return SUCCESS;
     } 
-    else 
-    {
+    else {
     	//NOTE: leaf block is full- need a new leaf to make the entry; split the entries between the two blocks
     	
     	//obtain new leaf index block as the right block in the splitting
@@ -401,8 +394,7 @@
 	int newRightBlkNum;
 	int leftBlkNum;
 		
-	if(newRightBlkNum == FAILURE) //failed to obtain an empty leaf index becauase the disk is full
-	{	
+	if(newRightBlkNum == FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
 		//delete the B+ tree created till now.
 		//update the rootBlock of attrCatEntry as -1 using  OpenRelTable::setAttrCatEntry
 		this->rootBlock = E_DISKFULL;
@@ -439,133 +431,124 @@
 	//let done indicate whether the insertion is complete or not
         bool done = false;
         
-        while(!done)
-       	{
-            if (parBlkNum!=-1) //parBlkNum is a valid parent block
-            {
-            	//load the block corresponding to parBlkNum to parblk
-                class IndInternal *parblk= new IndInternal(parBlkNum);
-                            
-                //let parheader be of type struct HeadInfo
-                struct HeadInfo parheader;
-                
-                //load parheader with header of parblk using BlockBuffer::getHeader() method.
-                
-		//let internalEntries be an array of InternalEntries of size parheader.numEntries+1
-                struct InternalEntry internalEntries[parheader.numEntries+1];
-                
-                //iterate through 0 to parheader.nEntries-1 and copy all the entries in the parblk to the array internalEntries. Also insert an InternalEntry entry with attrVal as newAttrval, lChild as leftBlkNum and rChild as newRightBlkNum at an appropriate position in the internalEntries array.				
-			
-                if(parheader.numEntries!=100) //parBlkNum has not reached max limit
-                {
-                	//increment parheader.numEntries and update it as header of parblk BlockBuffer::setHeader() method. 
-				
-			//iterate through 0 to parheader.numEntries-1 and populate the enties of parblk with entries in internalEntries array using IndBuffer::setEntry() method.
-				
-			//delete parblk.
-                    
-                    	//set done to true;
+        while(!done){
+        	if (parBlkNum!=-1){ //parBlkNum is a valid parent block
+			//load the block corresponding to parBlkNum to parblk
+			class IndInternal *parblk= new IndInternal(parBlkNum);
 
-                }
-                else //the parent internal index is full- need a new internal index to make the entry; split the entries between the two blocks
-                {
-		
-		    //obtain a new internal index block in dummy
-                    class IndInternal* dummy = new IndInternal();
-                     
-                    if(dummy->getBlockNum()==FAILURE) //failed to obtain an empty leaf index becauase the disk is full
-                    {
-                    	//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree. 
-			//destroy the remaining B+ tree too which was built till now.
-			//update rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
-			this->rootBlock = E_DISKFULL;
-			return E_DISKFULL;
-                    }
-                    
-                    //assign dummy as the left block in the splitting
-                    newRightBlk= (class IndInternal* )dummy;
-                    
-                    //assign the dummy block as the left block in the splitting
-                    leftBlk= (class IndInternal* )parblk;
-                    
-                    //udpate newRightBlkNum with block number of newRightBlk using BlockBuffer::getBlockNum() method.
-                    
-                    //update leftBlkNum with parBlkNum
-                    
-                    //update leftBlkHeader with parheader
-                    
-                    //update number of enteries of leftBlkHeader as 50 using BlockBuffer::setHeader() method.
-                    
-                    //update number of enteries of newRightBlkHeader as 50 using BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
-                     
-		    //set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and set the first 50 entries of newRightBlk as the entries from 51 to 100 of indices array using IndBuffer::setEntry()
-					
-                    IndBuffer *childBuff;
-                    struct HeadInfo childBuffHead;
-                    
-                    //let type be the block type of a child of any entry( say, the rchild of 50th entry) in the internalEntries array, using StaticBuffer::getStaticBlockType method.
-                    int type;
-                	
-                     //iterate from 50 to 100:
-                     {
-                		//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff 
-                		if(type == IND_LEAF)
-                			childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
-			         else
-			            	childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
-                        
-                       		//update pblock field in header of the childBuff block to newRightBlkNum making use of BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
-  				delete childBuff;                    
-                  
-                    }
+			//let parheader be of type struct HeadInfo
+			struct HeadInfo parheader;
 
-                    delete leftBlk;
-                    delete newRightBlk;
-                    
-                    //update parBlkNum to the pblock of leftBlk
+			//load parheader with header of parblk using BlockBuffer::getHeader() method.
 
-                    //update newAttrval to the attribute value of 50th entry in the internalEntries array;  
+			//let internalEntries be an array of InternalEntries of size parheader.numEntries+1
+			struct InternalEntry internalEntries[parheader.numEntries+1];
 
-            	}
-            }
-            else //when parBlkNum is invalid 
-            { 
-		//NOTE: Need to allot a new block which would be the root of the B+ Tree
-			
-		//load a new internal index block to newRootBlk
-                class IndInternal* newRootBlk = new IndInternal();
-                
-                //store the block number of newRootBlk in newRootBlkNum using BlockBuffer::getBlockNum() function.
-                int newRootBlkNum;
-                
-                if(newRootBlkNum == FAILURE) //failed to obtain an empty internal index block becauase the disk is full
-                {	
-                	//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree.
-			//destroy the remaining B+ tree too which was built till now.
-			//update the rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
-                	this->rootBlock = E_DISKFULL;
-			return E_DISKFULL;
-               	}
-               	
-               	//let newRootHeader be the header of newRootBlk
-                struct HeadInfo newRootHeader; 
-                
-		//update number of enteries in newRootBlk as 1 using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods.
-				
-                //add the InternalEntry entry with lChild as leftBlkNum, attrVal as newAttrval and rChild as newRightBlkNum as the first entry to newRootBlk using IndBuffer::setEntry();
+			//iterate through 0 to parheader.nEntries-1 and copy all the entries in the parblk to the array internalEntries. Also insert an InternalEntry entry with attrVal as newAttrval, lChild as leftBlkNum and rChild as newRightBlkNum at an appropriate position in the internalEntries array.				
 
-		//update the pblock both leftBlkNum and newRightBlkNum to newBlkNum using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods
-		/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using StaticBuffer::getStaticBlockType()) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances */
+			if(parheader.numEntries!=100){ //parBlkNum has not reached max limit	
+				//increment parheader.numEntries and update it as header of parblk BlockBuffer::setHeader() method. 
 
-                //update rootBlock of attrcatEntry variable (into which the attribute catalog was earlier loaded) as newBlkNum using OpenRelTable::setAttrCatEntry() method.
-                
-                delete newRootBlk;
-                
-                //set done to true.
+				//iterate through 0 to parheader.numEntries-1 and populate the enties of parblk with entries in internalEntries array using IndBuffer::setEntry() method.
+
+				//delete parblk.
+
+				//set done to true;
+
+			}
+			else { //the parent internal index is full- need a new internal index to make the entry; split the entries between the two blocks
+				//obtain a new internal index block in dummy
+			    	class IndInternal* dummy = new IndInternal();
+
+			    	if(dummy->getBlockNum()==FAILURE) //failed to obtain an empty leaf index becauase the disk is full
+			    	{
+					//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree. 
+					//destroy the remaining B+ tree too which was built till now.
+					//update rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
+					this->rootBlock = E_DISKFULL;
+					return E_DISKFULL;
+			     	}
+
+			    	//assign dummy as the left block in the splitting
+			    	newRightBlk= (class IndInternal* )dummy;
+
+			        //assign the dummy block as the left block in the splitting
+			        leftBlk= (class IndInternal* )parblk;
+
+			        //udpate newRightBlkNum with block number of newRightBlk using BlockBuffer::getBlockNum() method.
+
+			        //update leftBlkNum with parBlkNum
+
+			        //update leftBlkHeader with parheader
+
+			        //update number of enteries of leftBlkHeader as 50 using BlockBuffer::setHeader() method.
+
+			        //update number of enteries of newRightBlkHeader as 50 using BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
+
+			    	//set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and set the first 50 entries of newRightBlk as the entries from 51 to 100 of indices array using IndBuffer::setEntry()
+
+			        IndBuffer *childBuff;
+			    	struct HeadInfo childBuffHead;
+
+			    	//let type be the block type of a child of any entry( say, the rchild of 50th entry) in the internalEntries array, using StaticBuffer::getStaticBlockType method.
+			    	int type;
+
+			     	//iterate from 50 to 100:
+			     	{
+					//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff 
+					if(type == IND_LEAF)
+						childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
+					 else
+						childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
+
+					//update pblock field in header of the childBuff block to newRightBlkNum making use of BlockBuffer::getHeader() and BlockBuffer::setHeader() methods.
+					delete childBuff;                    
+			    	}
+
+			    	delete leftBlk;
+			    	delete newRightBlk;
+
+			    	//update parBlkNum to the pblock of leftBlk
+
+			    	//update newAttrval to the attribute value of 50th entry in the internalEntries array;  
+	
+			}
+                }		
+        	else { //when parBlkNum is invalid          	 
+			//NOTE: Need to allot a new block which would be the root of the B+ Tree
+
+			//load a new internal index block to newRootBlk
+			class IndInternal* newRootBlk = new IndInternal();
+
+			//store the block number of newRootBlk in newRootBlkNum using BlockBuffer::getBlockNum() function.
+			int newRootBlkNum;
+
+			if(newRootBlkNum == FAILURE){ //failed to obtain an empty internal index block becauase the disk is full	
+				//destroy the right subtree, given by newRightBlkNum, build up till now that has yet been connected to the existing B+ Tree.
+				//destroy the remaining B+ tree too which was built till now.
+				//update the rootBlock of attrCatEntry as -1 using OpenRelTable::setAttrCatEntry()
+				this->rootBlock = E_DISKFULL;
+				return E_DISKFULL;
+			}
+
+			//let newRootHeader be the header of newRootBlk
+			struct HeadInfo newRootHeader; 
+
+			//update number of enteries in newRootBlk as 1 using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods.
+
+			//add the InternalEntry entry with lChild as leftBlkNum, attrVal as newAttrval and rChild as newRightBlkNum as the first entry to newRootBlk using IndBuffer::setEntry();
+
+			//update the pblock both leftBlkNum and newRightBlkNum to newBlkNum using BlockBuffer::setHeader() and BlockBuffer::getHeader() methods
+			/*NOTE : the type of leftBlkNum and newRightBlkNum has to be checked first (using StaticBuffer::getStaticBlockType()) before loading it into leftBlk and newRightBlk with appropriate IndLeaf or IndInternal instances */
+
+			//update rootBlock of attrcatEntry variable (into which the attribute catalog was earlier loaded) as newBlkNum using OpenRelTable::setAttrCatEntry() method.
+
+			delete newRootBlk;
+
+			//set done to true.
         	}
-    	}
-    
-       return SUCCESS;
+        }
+        return SUCCESS;
 }
 				
  
