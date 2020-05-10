@@ -390,12 +390,12 @@
         //assign the existing block as the left block in the splitting
         class IndBuffer * leftBlk = block;
         
-        //store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum using BlockBuffer::getBlockNum() method
-	int newRightBlkNum;
-	int leftBlkNum;
+	//store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum using BlockBuffer::getBlockNum() method
+        int newRightBlkNum;
+        int leftBlkNum;
 		
-	if(newRightBlkNum == FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
-		//delete the B+ tree created till now.
+        if(newRightBlkNum == FAILURE){ //failed to obtain an empty leaf index becauase the disk is full
+ 		//delete the B+ tree created till now.
 		//update the rootBlock of attrCatEntry as -1 using  OpenRelTable::setAttrCatEntry
 		this->rootBlock = E_DISKFULL;
 		return E_DISKFULL;
