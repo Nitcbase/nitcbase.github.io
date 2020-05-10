@@ -214,20 +214,20 @@
 	}
 	else if type of the block is <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>:
 	{
-		//let internalBlk be used to hold block of blockNum using IndInternal::IndInternal()
+		//let internalBlk be used to hold block of blockNum using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
 		IndInternal internalBlk(blockNum);
 		
-		//let internalHead be used to store header of internalBlk
+		//let internalHead be used to store header of internalBlk.
 		HeadInfo internalHead;
 		
-		//load the header using BlockBuffer::getHeader()
+		//load the header using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
-		//let entry be used to hold an entry of the internalBlk
+		//let entry be used to hold an entry of the internalBlk.
 		InternalEntry entry;
 		
-		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild of all entries using BplusTree::bplusDestroy(). (take care not to delete overlapping children more than once)*/
+		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild of all entries using <a href="#destroy" target="_blank">BplusTree::bplusDestroy()</a>. (take care not to delete overlapping children more than once)*/
 		
-		//release the block using BlockBuffer::releaseBlock()
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
 		
 		return SUCCESS;
 		
