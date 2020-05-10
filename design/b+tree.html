@@ -105,56 +105,63 @@
 		                			</tr>
 		                        </table>
                             </div>
-                            <h5>Return value:</h5> Nil
+                            <h5>Return value:</h5> 
+							<p>Nil</p>
 		                     
 		            <h5>Description:</h5>
-		            <p>Creates the B+ Tree(Indexing) for the input attribute of the specified relation. It also sets the object instance's member fileds with the given arguments.</p>
+		            <p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. This method also sets the object instance's member fileds with the input arguments.</p>
 		                   
 		            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              	     <div id="algo-constructor" class="collapse">
                             	     	<div class="code"><pre><code>BPlusTree::BPlusTree(int relid, char attrName[ATTR_SIZE])
-					
-    //initialise the object instance member fields, relid and attrName, with the given relid and attrName.
+{					
+    //initialise the object instance member fields, relid and attrName, with the input relid and attrName.
     
     //let attrCatEntry be used to store the attribute cache entry for attrName.
     AttrCatEntry attrCatEntry;
     
-    //get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a>  method.
+    //get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a> method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
     
-    if( status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
+    if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
+	{
     	//update member field rootBlock of the class with the status and return.
+	}
 	
-	//let rootBlockNum be used to store the root block number of the B+ Tree.
+	//let rootBlockNum be used to store the root block number of the B+ Tree, obtained from attrCatBuf.
 	int rootBlockNum;
 	
 	if(rootBlockNum != -1) //index already exists for the attribute.
+	{
 		//update the rootBlock member field of the class with rootBlockNum and return.
+	}
 	
 	/******Creeating a new B+ Tree ******/
 	
 	//get a free leaf block.
 	IndLeaf rootBlock;
 	
-	if(rootBlock.getBlockNum()==<a href="../constants.html#errors" target="_blank">FAILURE</a>) //disk is full, i.e,  unable to get new block from the disk.
+	if(rootBlock.getBlockNum() == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //disk is full, i.e,  unable to get new block from the disk.
+	{
 		//update the rootBlock member field of the class with E_DISKFULL and return.
-	else 
-		//update rootBlock member field of the class with the block number of rootBlock.
+	}
+
+	//update rootBlock member field of the class with the block number of rootBlock.
 		
-	//update the rootBlock in the attribute cache, attrCatBuf, using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::setAttrCatEntry()</a>.
+	//update the rootBlock field of the attribute cache using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
 
 	//let the relCatBuf hold the relation catalog entry corresponding to relid.
 	RelCatEntry relCatBuf;
 	
-	//load the relation catalog entry into relCatBuf using <a href="cache.html#getrelcatentry" target="_blank"> OpenRelTable::getRelCatEntry()</a>.
+	//load the relation catalog entry into relCatBuf using <a href="cache.html#getrelcatentry" target="_blank">OpenRelTable::getRelCatEntry()</a>.
 	
 	/*get the first record block of the relation, number of attributes of the relation and number of slots
-	  in a record block of the relation in variables block, numAttr and numSlots respectively using relCatBuf.*/
+	  in a record block of the relation in variables block, numAttr and numSlots respectively from relation catalog.*/
 	int block;
 	int numAttr;
 	int numSlots;
 	
-	//let attrOffset hold the offset of the attribute in the relation; obtained from attrCatBuf
+	//let attrOffset hold the offset of the attribute in the relation; obtained from attribute catalog
 	int attrOffset;
 	
 	/******Traverse all the blocks in the relation and insert them one by one into the B+ Tree******/
@@ -170,7 +177,7 @@
 		
 		for slot = 0 to (numSlots - 1):
 		{
-			if(slotMap[slot]=='1') //there is an entry occupying the slot.
+			if(slotMap[slot] == '1') //occupied slot.
 			{				
 				//let rec hold the contents of the record.
 				union Attribute rec[numAttr];
@@ -195,7 +202,7 @@
 		
 		//load the header of recBlock into blockHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
-		//update the block with rblock of the header.		
+		//update the block to the next block in the linked list.		
 	}	
 }</code></pre>
 					</div>
