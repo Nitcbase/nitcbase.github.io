@@ -626,7 +626,8 @@
 	//get the previous index id from the attribute cache using the <a href="cache.html#getprevindexid" target="_blank">OpenRelTable::getPrevIndexId()</a>.
 	
 	//reset the previous index id to {-1,-1} using <a href="cache.html#setprevindexid" target="_blank">OpenRelTable::setPrevIndexId()</a>.
-	//(this will be set to the correct index id if an entry satisfying op for given attrVal is found in the course of the search.)
+	  (this will be set to the correct index id if an entry satisfying op for given attrVal is found in the course
+	   of the search.)
 	
 	//let attrcatEntry be used to store the attribute cache entry for attrName.
 	AttrCatEntry attrcatEntry;
@@ -649,7 +650,8 @@
 	}
 	else 
 	{
-		//NOTE: a valid prevIndexid points to an entry in the leaf index of the attribute's B+ Tree which had previously satisfied the op for the given attrVal.
+		/*NOTE: a valid prevIndexid points to an entry in the leaf index of the attribute's B+ Tree which had 
+		  previously satisfied the op for the given attrVal.*/
 		
 		block = prevIndexid.block;
 		index = prevIndexid.index + 1; //search is resumed from the next index.
@@ -662,7 +664,8 @@
 		
 		//load header into leafHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
-		if index exceeds the maximum number of entries present in the leaf index block: //all the entries in the block has been searched; search from the beginning of the next leaf index block.
+		if index exceeds the maximum number of entries present in the leaf index block: 
+		//all the entries in the block has been searched; search from the beginning of the next leaf index block.
 		{
 					
 			//update block to rblock of current block and index to 0.
@@ -704,9 +707,9 @@
 		
 			int flag = comparison between intEntry's attribute value and the input attrVal using <a href="buffer.html#compare" target="_blank">compare()</a>.
 		
-			/*NOTE: the B+ Tree has been constructed in such a way that if an internal index has an attribute value satisying 
-			the op (except for the NE op) for the given attrVal, then there is atleast one entry in its left child that also 
-			satisfies op.*/
+			/*NOTE: the B+ Tree has been constructed in such a way that if an internal index has an attribute value 
+			satisying the op (except for the NE op) for the given attrVal, then there is atleast one entry in its 
+			left child that also satisfies op.*/
 			switch(op){
 				case  EQ:
 					if(flag >=0) //move to the left child of the first entry that is greater than or equal to attrVal.
@@ -843,7 +846,8 @@
 		
 		if(op!=NE) 
 		/*only for NE do we have to check the entire linked list;
-		for all the other op it is guaranteed that the block being searched will have an entry,if it exists, satisying that op.*/
+		for all the other op it is guaranteed that the block being searched will have an entry,if it exists, 
+		satisying that op.*/
 			break;
 		
 		//block = next block in the linked list, i.e., the rblock in the leafHead.
@@ -855,8 +859,7 @@
 	
 	delete leafBlk;
 	
-	//no entry satisying the op was found
-	//return the recId {-1,-1};
+	//no entry satisying the op was found; return the recId {-1,-1}
 }</code></pre>
                             	</div>
                             </div>
