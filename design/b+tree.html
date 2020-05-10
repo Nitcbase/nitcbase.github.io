@@ -119,10 +119,10 @@
     //let attrCatEntry be used to store the attribute cache entry for attrName
     AttrCatEntry attrCatEntry;
     
-    //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
+    //get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a>  method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
     
-    if( status != SUCCESS)
+    if( status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
     	//update member field rootBlock of the class with the status and return
 	
 	//let rootBlockNum be used to store the root block number of the B+ Tree
@@ -136,17 +136,17 @@
 	//get a free leaf block
 	IndLeaf rootBlock;
 	
-	if(rootBlock.getBlockNum()==FAILURE) //disk is full, i.e,  unable to get new block from the disk
+	if(rootBlock.getBlockNum()==<a href="../constants.html#errors" target="_blank">FAILURE</a>) //disk is full, i.e,  unable to get new block from the disk
 		//update the rootBlock member field of the class with E_DISKFULL and return
 	else 
 		//update rootBlock member field of the class with the block number of rootBlock
 		
-	//update the rootBlock in the attribute cache, attrCatBuf,  using OpenRelTable::setAttrCatEnty()
+	//update the rootBlock in the attribute cache, attrCatBuf,  using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::setAttrCatEntry()</a> 
 
 	//let the relCatBuf hold the relation catalog entry corresponding to relid
 	RelCatEntry relCatBuf;
 	
-	//load the relation catalog entry into relCatBuf using OpenRelTable::getRelCatEntry()
+	//load the relation catalog entry into relCatBuf using <a href="cache.html#getrelcatentry" target="_blank"> OpenRelTable::getRelCatEntry()</a>
 	
 	//get the first record block of the relation, number of attributes of the relation and number of slots in the corresponding record block in variables block, numAttr and numSlots respectively using relCatBuf.
 	int block;
@@ -171,16 +171,16 @@
 				//let rec hold the contents of the record
 				union Attribute rec[numAttr];
 			
-				//load the record corresponding to the slot into rec using RecordBuffer::getRecord()
+				//load the record corresponding to the slot into rec using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a>
 				
 				//let recordId hold the record id {block, slot}
 				struct recId recordId;
 
-				//insert the attribute value of the record corresponding to attrName using bPlusInsert
+				//insert the attribute value of the record corresponding to attrName using <a href="#insert">bPlusInsert</a>
 				status = bPlusInsert(rec[attrOffset], recordId);
 			
-				if(status == E_DISKFULL) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree				
-					//update the rootBlock member field of the class with E_DISKFULL and return				
+				if(status == <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree				
+					//update the rootBlock member field of the class with <a href="../constants.html#errors" target="_blank">E_DISKFULL</a> and return				
 			}
 		    	else //all records in the relaton has been traversed
 				break;
@@ -189,7 +189,7 @@
 		//let blockHead be used to hold the header of block.
 		HeadInfo blockHead;
 		
-		//load the header of recBlock into blockHead using BlockBuffer::getHeader()
+		//load the header of recBlock into blockHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>
 		
 		//update the block with rblock of the header.		
 	}	
@@ -335,7 +335,7 @@
     //let attrCatBuf be used to store the attribute cache entry for attrName
     AttrCatEntry attrCatEntry;
 
-    //get the attribute catalog entry of target attribute using OpenRelTable::getAttrCatEntry() method.
+    //get the attribute catalog entry of target attribute using <a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a>  method.
     int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
     if( status != SUCCESS)
