@@ -204,9 +204,9 @@
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-		                    			<td>block_num</td>
+		                    			<td>blockNum</td>
 		                    			<td>int</td>
-		                    			<td>Block no. of head of bplus tree which need to be destroyed.</td>
+		                    			<td>Block number of the index block which is to be destroyed.</td>
 		                			</tr>
 		                        </table>
                             </div>
@@ -215,51 +215,76 @@
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-		                        		<td>SUCCESS</td>
-		                        		<td>On successful deletion of b+ tree</td>
+										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+		                        		<td>Successful deletion of index block.</td>
 		                    		</tr>
 		                    		<tr>
-		                    		    <td>E_OUTOFBOUND</td>
-		                    		    <td>If the block_num is less than 0 or greater than or equal to DISK_BLOCKS</td>
+										<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+		                    		    <td>Input blockNum is outside the valid range of block numbers.</td>
 		                    		</tr>
 		                    		<tr>
-		                    		    <td>E_INVALIDBLOCK</td>
-		                    		    <td>If the block is not an index block</td>
+										<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
+		                    		    <td>Input blockNum do not correspond to an index block.</td>
 		                    		</tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>This method deletes/frees the bplus-tree whose head block_num is given as argument.</p>
+                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#create">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
                             
                             <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destroy" class="collapse">
-                            	<div class="code"><pre><code>int bplus_destroy(int block_num){
-	//all the index blocks are deleted recursively
-	
-	if(block_num &lt; 0 || block_num &gt;= DISK_BLOCKS){ //if the block_num is invalid
-		E_OUTOFBOUND;
+                            	<div class="code"><pre><code>int BplusTree::bplusDestroy(int blockNum){
+
+	if blockNum lies outside the valid range [0,<a href="../constants.html#constants" target="_blank">DISK_BLOCKS</a>-1]:
+	{
+		return E_OUTOFBOUND;
 	}
 	
-	//get the block_type from header of the block
-	if(block_type != INDINT || block_type != INDLEAF){ //if the block is not index block
+	if type of the block obtained using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a> is <a href="../constants.html#constants" target="_blank">IND_LEAF</a>:
+	{
+		//let leafBlk be used to hold block of blockNum using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+		IndLeaf leafBlk(blockNum);
+		
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+		
+		return SUCCESS;
+	}
+	else if type of the block is <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>:
+	{
+		//let internalBlk be used to hold block of blockNum using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
+		IndInternal internalBlk(blockNum);
+		
+		//let internalHead be used to store header of internalBlk.
+		HeadInfo internalHead;
+		
+		//load the header using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+		
+		//let entry be used to hold an entry of the internalBlk.
+		InternalEntry entry;
+		
+		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild of all entries using <a href="#destroy" target="_blank">BplusTree::bplusDestroy()</a>. (take care not to delete overlapping children more than once)*/
+		
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+		
+		return SUCCESS;
+		
+	}
+	else //block is not an index block.
+	{
 		return E_INVALIDBLOCK;
 	}
-	
-	if(block_type == INDLEAF){ //if the block is leaf index block
-		//delete the block from the disk
-	}
-	else if(block_type == INDINT){ 	//if the block is internal index block
-		//iterate over all the internal index entries{
-			//delete all the child index blocks corresponding to each internal index block by calling
-			bplus_destroy(child_block);
-		//}
-	}	
-	
-	return SUCCESS;
-}</code></pre>
+		
+}
+</code></pre>
 								</div>
                             </div>
+							<p><b>NOTE:</b> 
+								<ul>
+									<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to -1 after deletion.</li>
+									<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to -1 after  deletion.</li>
+								</ul>
+							</p>
                         </div>
 <!-- -------------------------------BPLUS INSERT BEGINS HERE-------------------------------------------------------------------------------- -->                        
                         <div id="insert" class="detail">
@@ -560,25 +585,15 @@
                         	<h5>Arguments:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-								        <td>relid</td>
-								        <td>int</td>
-								        <td>Relation Id of Relation in which target attribute is contained.</td>
-									</tr>
 									<tr>
-								        <td>attrname</td>
-								        <td>char[ATTR_SIZE]</td>
-								        <td>name of colomumn/attribute(containing b+ tree) to which search has to be made.</td>
-									</tr>
-									<tr>
-								        <td>attrval</td>
-								        <td>union Attribute</td>
-								        <td>value of attribute that to be checked against the operater.</td>
+								        <td>attrVal</td>
+										<td><a href="buffer.html#block_structures_attribute" target="_blank">union Attribute</a></td>
+								        <td>Attribute that is to be checked against the operater.</td>
 								    </tr>
 									<tr>
 								        <td>op</td>
 								        <td>int</td>
-								        <td>Conditional Operator(can be one among EQ,LE,LT,GE,GT,NE corresponding to equal,lesthan equal, lessthan ,greaterthan equal, greaterthan, Not equal operators respectively).</td>
+								        <td>One amongst the 6 relation operators(EQ, LE, LT, GE, GT, NE corresponds to equal, less than equal, less than, greater than equal, greater than, not equal operators respectively).</td>
 									</tr>
 		                        </table>
                             </div>
@@ -587,62 +602,244 @@
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-						                <td>RecId (block#, slot#)</td>
-						                <td>returns (block#, slot#) of the record corresponding to the next hit.</td>
+						                <td><a href="buffer.html#recid" target="_blank">RecId</a></td>
+										<td>Record id of the first/ next block entry in the relation that satisfies <i>op</i> for <i>attrVal</i>.</td>
 						            </tr>
 						            <tr>
-						                <td>(-1, -1)</td>
-						                <td>If no valid next hit is found.</td>
+						                <td>Invalid RecId {-1,-1}</td>
+										<td>No first/ next block entry found satisfisying <i>op</i> for <i>attrVal</i>.</td>
 						            </tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>If the attribute specified has an indexing, this method searches for the next hit record fallowing the condition given on attribute(based on op, Attrval). to find the next hit record fallowing bplus tree, it uses the sid(previous hit) from attribute cache, after finding the next hit updates the sid in cache.
-(NOTE:previous hit in attribute cache(sid) is used only if there is b+ indexing on that attribute)</p>
+                            <p>Used to search the first/ next record entry in the relation that satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. It holds the index id of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time.</p>
                             <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-search" class="collapse">
-                            	<div class="code"><pre><code>struct recId bplus_search(relId relid, char AttrName[ATTR_SIZE], union Attribute AttrVal, int op){
-	AttrCatEntry attrcat_entry;
+                            	<div class="code"><pre><code>struct RecId BplusTree::bplusSearch(union Attribute attrVal, int op){
 	
-	//get the previous index id from the attribute cache (corresponds to relid, AttrName) by calling
-	OpenRelTable::<a href="cache.html#getattrcatentry" target="_blank">getAttrCatEntry</a>(relid, AttrName, &amp;attrcat_entry);
-	prev_indexid = OpenRelTable::<a href="cache.html#getprevindexid" target="_blank">getPrevIndexId</a>(relid, AttrName);
+	//let prevIndexid be used to store previous index id for attrName.
+	IndexId prevIndexid;
 	
-	//prev_indexid is set only if the search proccessed through leaf index blocks (search has been done before atleast once)
-	//otherwise prev_indexid is unset ({-1,-1})
+	//get the previous index id from the attribute cache using the <a href="cache.html#getprevindexid" target="_blank">OpenRelTable::getPrevIndexId()</a>.
 	
-	//if prev_indexid is unset then assign block as root block and index as 0 (i.e seach from the root block)
-	//if prev_indexid is set then assign block as prev_indexid's block and index as prev_indexid's index + 1
+	//reset the previous index id to {-1,-1} using <a href="cache.html#setprevindexid" target="_blank">OpenRelTable::setPrevIndexId()</a>; this will be set to the correct index id if an entry satisfying op for given attrVal is found in the course of the search.
 	
-	//if assigned index exceeds the indices present in the leaf index block{
-		//assign block as block right's block (i.e next leaf index block)
-		//if(block == -1) (i.e, search is done )then return {-1,-1}
-	//} 
+	//let attrcatEntry be used to store the attribute cache entry for attrName.
+	AttrCatEntry attrcatEntry;
 	
-	//if(block_num == root_block &amp;&amp; index == 0){
-		//traverse through all the internal nodes according to the attribute value AttrVal and the operator op
-		//Accordingly update block and index variables
-	//}
+	//load the attribute cache entry using <a href="cache.html#getattrcatentry" target="_blank">OpenRelTable::getAttrCatEntry()</a>.
 	
-	//NOTE: From Index blocks are leaf index blocks (WHY!!!)	 
+	//store root block num and attribute type of the B+ Tree in rootBlock and attrType respectively.
+	int rootBlock;
+	int attrType;
 	
-	//Traverse through leaf index entries in the leaf index block (block) from index entry numbered as index
 	
-	//if no index entry in the leaf block satisfies the given condition{
-		//then there are two possiblities:
-		// 1. Search is Completed 
-		// 2. No record in the relation with relid satisfies the given condition
-		// update prev_recid in the attribute cache as {-1, -1}
-		// return recid = {-1, -1}
-	//} 
+	//let block and index variables be used to locate the entry to be searched.
+	int block, index;
 	
-	//otherwise{
-		//update prev_recid in the attribute cache as 
-		//prev_recid = {block (leaf index block), index (index entry that satisfied the given conditon)}
-		//get record id (recid) from the index entry
-		//return record id
-	//}
+	if prevIndexid=={-1,-1}:
+	{
+		//NOTE: an invalid prevIndexid means that the search is done for the first time.
+		
+		block = rootBlock;
+		index = 0; //start the search from the root.
+	}
+	else 
+	{
+		//NOTE: a valid prevIndexid points to an entry in the leaf index of the attribute's B+ Tree which had previously satisfied the op for the given attrVal.
+		
+		block = prevIndexid.block;
+		index = prevIndexid.index + 1; //search is resumed from the next index.
+		
+		//load block into leaf using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+		IndLeaf leaf(block);
+		
+		//let leafHead be used to hold the header of leaf.
+		HeadInfo leafHead;
+		
+		//load header into leafHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+		
+		if index exceeds the maximum number of entries present in the leaf index block: //all the entries in the block has been searched; search from the beginning of the next leaf index block.
+		{
+					
+			//update block to rblock of current block and index to 0.
+			
+			if(block == -1) //end of linked list reach - the search is done.
+			{
+				//return the recId {-1, -1};
+			}	
+			
+		}
+	}
+	
+	//let internalBlk be used to store an internal index block.
+	IndInternal * internalBlk;
+	
+	//let intHead be used to store the header of the internalBlk.
+	HeadInfo intHead;
+	
+	//let intEntry be used to store an internal entry of the internalBlk.
+	InternalEntry intEntry;
+	
+	//let cond be used to decide which child to search; if 1 move to left child else move to right child after going through all the internal entries.
+	int cond;
+	
+	/******Traverse through all the internal nodes according to value of AttrVal and the operator op******/
+	while block is of type <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>: { //checked using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a>.
+			
+		//load the block into internalBlk using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
+		internalBlk = new IndInternal(block);
+		
+		//load header to intHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+		
+		//set cond to 0(condition not met)
+		
+		for i from 0 to (numEntries in  block - 1):
+		{
+			//load entry in block corresponding to slot i into intEntry using <a href="buffer.html#intgetentry" target="_blank">IndInternal::getEntry()</a>.
+		
+			int flag = comparison between intEntry's attribute value and the input attrVal using <a href="buffer.html#compare" target="_blank">compare()</a>.
+		
+			//NOTE: the B+ Tree has been constructed in such a way that if an internal index has an attribute value satisying the op (except for the NE op) for the given attrVal, then there is atleast one entry in its left child that also satisfies op.
+			switch(op){
+				case  EQ:
+					if(flag >=0) //move to the left child of the first entry that is greater than or equal to attrVal.
+						cond = 1;
+					break;
+				case LE:
+					//the attribute values are arranged in ascending order in the leaf indices of the B+ Tree. Values that satisfy LE condition, if any exist,  will always be found in the left-most leaf index. Thus, always move to the left.
+					cond = 1;
+					break;
+				case LT:
+					//the attribute values are arranged in ascending order in the leaf indices of the B+ Tree. Values that satisfy LT condition, if any exist,  will always be found in the left-most leaf index. Thus, always move to the left.
+					cond = 1;
+					break;
+				case GE:
+					if(flag >=0) //move to the left child of the first entry that is greater than or equal to attrVal.
+						cond = 1;
+					break;
+				case GT:
+					if(flag >0) //move to the left child of the first entry that is greater than the attrVal.
+						cond = 1;
+					break;
+				case NE:
+					//need to search the entire linked list of leaf indices of the B+ Tree, starting from the leftmost leaf index. Thus, always move to the left.
+					cond = 1;
+					break;
+			}
+		
+			if(cond == 1) //op condition met; proceed to search in the left child.
+			{
+				//update block to left child of intEntry;
+				
+				delete internalBlk;
+				
+				break;
+			}
+		}
+		
+		if(cond == 0) //traversed all the entries of internalBlk without satisfying op condition; proceed to search the right child.
+		{	
+			//update block to right child of intEntry;
+
+			delete internalBlk;
+		}
+	}
+	
+	//NOTE: the block is now a leaf index block.
+	
+	//let leafBlk be used to store an leaf index block.
+	IndLeaf * leafBlk;
+	
+	//let leafHead be used to store the header of the leafBlk.
+	HeadInfo leafHead;
+	
+	//let leafEntry be used to store an index entry of the leafBlk.
+	Index leafEntry;
+	
+	//used to store the state of search; cond = 0: not found but need to search more; cond = 1: got a right answer; cond = -1 : stop searching.
+	cond = 0;
+	
+	/******Traverse through index entries in the leaf index block from the index entry numbered as index******/
+	while(block !=-1) {
+	
+		//load the block into leafBlk using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+		leafBlk = new IndLeaf(block);
+		
+		//load the header to leafHead using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+		
+		while (index < numEntries in leafBlk) { //numEntries can be obtained from leafHead.
+			
+			//load entry corresponding to block and slot into leafEntry using <a href="buffer.html#leafgetentry" target="_blank">IndLeaf::getEntry()</a>.
+			
+			int flag = comparison between leafEntry's attribute value and input attrVal using <a href="buffer.html#compare" target="_blank">compare()</a>.
+			
+			switch(op){
+				case  EQ:
+					if(flag == 0) //entry satisfying EQ condition found.
+						cond = 1;
+					else if(flag > 0) //future entries will not satisfy EQ conditions as the values are arranged in ascending order in the leaves.
+						cond = -1;
+					break;
+				case LE:
+					if(flag <= 0) //entry satisfying LE condition found.
+						cond = 1;
+					else //future entries will not satisfy LE conditions as the values are arranged in ascending order in the leaves.
+						cond = -1;
+					break;
+				case LT:
+					if(flag < 0) //entry satisfying LT condition found.
+						cond = 1;
+					else //future entries will not satisfy LT conditions as the values are arranged in ascending order in the leaves.
+						cond = -1;
+					break;
+				case GE:
+					if(flag >= 0) //entry satisfying GE condition found.
+						cond = 1;
+					break;
+				case GT:
+					if(flag > 0) //entry satisfying GT condition found.
+						cond = 1;
+					break;
+				case NE:
+					if(flag != 0) //entry satisfying NE condition found.
+						cond = 1;
+					break;
+			}
+			if(cond == 1){ //an entry satisying op for the given attrVal found.
+			
+				//set previous index id to {block, index} using <a href="cache.html#setprevindexid" target="_blank">OpenRelTable::setPrevIndexId()</a>.
+				
+				delete leafBlk;
+				
+				//return the recId {leafEntry.block, leafEntry.slot}.
+			}
+			else if(cond == -1){ //no entry satisfies op for the given attrVal.
+				
+				delete leafBlk;
+				
+				//return the recId {-1,-1}.
+			}
+			
+			//search next index.
+			++index;
+		}
+		
+		if(op!=NE) //only for NE do we have to check the entire linked list; for all the other op it is guaranteed that the block being searched will have an entry,if it exists, satisying that op.
+			break;
+		
+		//block = next block in the linked list, i.e., the rblock in the leafHead.
+		
+		delete leafBlk;
+		
+		//update index to 0.
+	}
+	
+	delete leafBlk;
+	
+	//no entry satisying the op was found
+	//return the recId {-1,-1};
 }</code></pre>
                             	</div>
                             </div>
