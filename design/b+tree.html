@@ -703,7 +703,7 @@
 									<tr>
 								        <td>op</td>
 								        <td>int</td>
-								        <td>One amongst the 6 relation operators(EQ, LE, LT, GE, GT, NE corresponds to equal, less than equal, less than, greater than equal, greater than, not equal operators respectively).</td>
+								        <td>One amongst the 6 relation operators(<a href="../constants.html#constant" target="_blank">EQ, LE, LT, GE, GT, NE</a> corresponds to equal, less than equal, less than, greater than equal, greater than, not equal operators respectively).</td>
 									</tr>
 		                        </table>
                             </div>
@@ -723,7 +723,7 @@
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Used to search the first/ next record entry in the relation that satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. It holds the <a href="buffer.html#indexid" target="_blank">index id</a> of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time.</p>
+                            <p>Used to search the first/ next record entry in the relation whose attribute value corresponding to <i>attrName</i> member field satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. A valid index id holds the <a href="buffer.html#indexid" target="_blank">index id</a> of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time. This method can be called multiple times to get all the records in the relation that satisfy op for input attrVal.</p>
                             <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-search" class="collapse">
                             	<div class="code"><pre><code>struct RecId BPlusTree::BPlusSearch(union Attribute attrVal, int op){
@@ -737,10 +737,10 @@
 	  (this will be set to the correct index id if an entry satisfying op for given attrVal is found in the course
 	   of the search.)
 	
-	//let attrcatEntry be used to store the attribute cache entry for attrName.
+	//let attrcatEntry be used to store the attribute catalog cache entry for attrName.
 	AttrCatEntry attrcatEntry;
 	
-	//load the attribute cache entry using <a href="cache.html#getattrcatentry" target="_blank">OpenRelTable::getAttrCatEntry()</a>.
+	//load the attribute catalog cache entry using <a href="cache.html#getattrcatentry" target="_blank">OpenRelTable::getAttrCatEntry()</a>.
 	
 	//store root block num and attribute type of the B+ Tree in rootBlock and attrType respectively.
 	int rootBlock;
@@ -749,7 +749,7 @@
 	//let block and index variables be used to locate the entry to be searched.
 	int block, index;
 	
-	if prevIndexid=={-1,-1}:
+	if prevIndexid == {-1,-1}:
 	{
 		//NOTE: an invalid prevIndexid means that the search is done for the first time.
 		
@@ -825,13 +825,13 @@
 					break;
 				case LE:
 					/*the attribute values are arranged in ascending order in the leaf indices of the B+ Tree. 
-					Values that satisfy LE condition, if any exist,  will always be found in the left-most leaf index. 
+					Values that satisfy LE condition, if any exist, will always be found in the left-most leaf index. 
 					Thus, always move to the left.*/
 					cond = 1;
 					break;
 				case LT:
 					/*the attribute values are arranged in ascending order in the leaf indices of the B+ Tree. 
-					Values that satisfy LT condition, if any exist,  will always be found in the left-most leaf index. 
+					Values that satisfy LT condition, if any exist, will always be found in the left-most leaf index. 
 					Thus, always move to the left.*/
 					cond = 1;
 					break;
@@ -871,7 +871,7 @@
 	
 	//NOTE: the block is now a leaf index block.
 	
-	//let leafBlk be used to store an leaf index block.
+	//let leafBlk be used to store a leaf index block.
 	IndLeaf * leafBlk;
 	
 	//let leafHead be used to store the header of the leafBlk.
@@ -885,7 +885,7 @@
 	cond = 0;
 	
 	/******Traverse through index entries in the leaf index block from the index entry numbered as index******/
-	while(block !=-1) {
+	while(block != -1) {
 	
 		//load the block into leafBlk using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
 		leafBlk = new IndLeaf(block);
