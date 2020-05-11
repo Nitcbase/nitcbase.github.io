@@ -85,8 +85,30 @@
 				<h5>Pre-requisite Reading : <a href="./indexing.html">Indexing in NITCbase</a></h5>
                         	<p>As you might already know, we use indexing to reduce disk access and to implement search queries faster. NITCBase uses B+ Tree for indexing an attribute in a relation. To implement B+ Tree layer you must require a thorough understanding of the Physical layer, Buffer layer and Cache layer.
                         	</p>
+				<p>NITCbase follows Object Oriented design for implementing B+ Tree. The class diagram is as shown below.</p>
                         </div>
-			    
+<!-------------------------------------B+ tree class--------------------------------------------> 
+			<div id="bplustree_class" class="detail">
+				    <h2>class BPlusTree</h2>
+                             	    <div class="code">
+                                    <pre><code>class BPlusTree{
+    private :
+    int rootBlock, relId;
+    char attrName[ATTR_SIZE];
+    int bplusDestroy(int blockNum);
+    
+    public:
+    BplusTree(int relId, char attrName[ATTR_SIZE]);
+    int bplusInsert(union Attribute val, recId recordId);
+    struct recId bplusSearch(union Attribute attrVal, int op);
+    int getRootBlock();  
+    
+};</code></pre>
+                                </div>
+                         	<br>
+                             <p>The following are the specifications for the methods in class <i>BPlusTree</i>. The stub code is availabe <a href="bufferStub.html#staticBuffer.h" target="_blank">here</a>.</p>
+				<ul class="methods">
+					<li>
 <!----------------------BPlusTree Constructor-------------------------------------------------------------------------->                        
                          <div id="constructor" class="detail">
                             <h2>public: BPlusTree (Constructor)</h2>
@@ -213,6 +235,11 @@
 								</ul>
 							</p>
                         </div>
+			<!----Constructor ends --->	
+				</li>
+			    
+			    <li>
+			
 <!-----------------------------------BPlusDestroy------------------------------------------------------------------------------------>                       
                         <div id="destroy" class="details">
                         	<h2>private: bPlusDestroy</h2>
@@ -304,6 +331,12 @@
 								</ul>
 							</p>
                         </div>
+	    <!-----Destroy ends here----->
+			    </li>
+		    
+			    
+			    <li>
+			    
 <!-- -------------------------------bPlusInsert-------------------------------------------------------------------------------- -->                        
                         <div id="insert" class="detail">
                         	<h2>public: bPlusInsert</h2>
@@ -642,7 +675,12 @@
 									<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to -1. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
 								</ul>
 							</p>
-                        </div>
+                        </div>		
+	<!---Insert ends here--->			    
+			    </li>
+			    
+			    <li>
+				
 <!-- -------------------------------BPlusSearch-------------------------------------------------------------------------------- -->                                                
                         <div id="search" class="detail">
                         	<h2>public: BPlusSearch<h2>
@@ -926,7 +964,16 @@
                             	</div>
                             </div>
                         </div>                            
-                                  
+            
+		<!--------Search rnds here--->		    
+			    </li>
+				</ul>
+
+			</div>
+			
+			    
+			    
+	                          
                         <!-- PAGE ENDS -->
                     </div>
                 </div>
