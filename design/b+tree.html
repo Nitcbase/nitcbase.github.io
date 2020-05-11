@@ -106,7 +106,7 @@
 };</code></pre>
                                 </div>
                          	<br>
-				<p>The class contains three private field members: rootBlock, relId and attrName. The rootBlock field of the object will store the parent/root block number of the B+ tree, if created successfully. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_DISKFULL</a>, <a href="../constants.html#errors" target="_blank">SUCCESS</a>, <a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a>, <a href="../constants.html#errors" target="_blank">E_NOTOPEN</a>, <a href="../constants.html#errors" target="_blank">E_ATTRNOTEXIST</a>) that arises while creating the B+ tree will be stored in the rootBlock field. The relId field stores the relation Id of the relation which contains the attribute whose B+ tree has to be created, while the attrName field stores the attribute’s name. Both relId and attrName have to be provided to create B+ tree for an attribute.</p>
+				<p>The class contains three private field members: rootBlock, relId and attrName. The rootBlock field of the object will store the parent/root block number of the B+ tree, if created successfully. Otherwise, the status (E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST) that arises while creating the B+ tree will be stored in the rootBlock field. The relId field stores the relation Id of the relation which contains the attribute whose B+ tree has to be created, while the attrName field stores the attribute’s name. Both relId and attrName have to be provided to create B+ tree for an attribute.</p>
 <p>For creating B+ tree on any attribute, an instance of the class BPlusTree has to be declared. When an object is instantiated, the constructor of the class creates a new B+ tree and updates the member fields of the object. If B+ tree already exists for that attribute, the member fields of the object are updated with appropriate values. 
 
 				</p>
@@ -465,7 +465,7 @@
     {
         //increment blockHeader.numEntries and set this as header of block using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
         
-        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#indbuff_class" target="_blank">IndLeaf::setEntry()</a>.
+        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>.
         
         delete block;
         
@@ -473,14 +473,14 @@
     } 
     else //leaf block is full- need a new leaf to make the entry; split the entries between the two blocks.
     {
-    	//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::IndLeaf()</a>.
+    	//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafindbuff_constructor1" target="_blank">IndLeaf::IndLeaf()</a>.
         class IndBuffer * newRightBlk = new IndLeaf();
         
         //assign the existing block as the left block in the splitting.
         class IndBuffer * leftBlk = block;
         
 		/*store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum 
-		  using  <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.*/
+		  using  <a href="buffer.html#getblkNum" target="_blank">BlockBuffer::getBlockNum()</a>.*/
         int newRightBlkNum;
         int leftBlkNum;
 		
@@ -513,7 +513,7 @@
 		  its lblock as leftBlkNum and its rblock as prevRblock using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.*/
 
      	/*set the first 32 entries of leftBlk as the first 32 entries of indices array 
-   		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndLeaf::setEntry()</a>..*/
+   		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>..*/
 
         //store pblock of leftBlk in parBlkNum.
         int parBlkNum;
@@ -587,7 +587,7 @@
 
 			        //update leftBlkNum with parBlkNum.
 					
-					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.
+					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblkNum" target="_blank">BlockBuffer::getBlockNum()</a>.
 
 			        //update leftBlkHeader with parheader.
 
@@ -636,7 +636,7 @@
 				//load a new internal index block to newRootBlk using <a href="buffer.html#intindbuff_constructor1" target="_blank">IndInternal::IndInternal()</a>.
 				class IndInternal* newRootBlk = new IndInternal();
 
-				//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.
+				//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblkNum" target="_blank">BlockBuffer::getBlockNum()</a>.
 				int newRootBlkNum;
 
 				if(newRootBlkNum == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty internal index block becauase the disk is full.
