@@ -376,7 +376,7 @@
     HeadInfo blockHeader;
 	
 	/******Traverse the B+ Tree to reach the appropriate leaf where insertion can be done******/
-    while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: // <a href="buffer.html#getstaticblktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used.
+    while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: // <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used.
 	{
 	
     	//load the block using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
@@ -428,7 +428,7 @@
     {
         //increment blockHeader.numEntries and set this as header of block using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
         
-        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
+        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#indbuff_class" target="_blank">IndLeaf::setEntry()</a>.
         
         delete block;
         
@@ -436,14 +436,14 @@
     } 
     else //leaf block is full- need a new leaf to make the entry; split the entries between the two blocks.
     {
-    	//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafindbuff_constructor1" target="_blank">IndLeaf::IndLeaf()</a>.
+    	//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::IndLeaf()</a>.
         class IndBuffer * newRightBlk = new IndLeaf();
         
         //assign the existing block as the left block in the splitting.
         class IndBuffer * leftBlk = block;
         
 		/*store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum 
-		  using  <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a>.*/
+		  using  <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.*/
         int newRightBlkNum;
         int leftBlkNum;
 		
@@ -476,7 +476,7 @@
 		  its lblock as leftBlkNum and its rblock as prevRblock using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.*/
 
      	/*set the first 32 entries of leftBlk as the first 32 entries of indices array 
-   		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.*/
+   		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#indbuff_class" target="_blank">IndLeaf::setEntry()</a>..*/
 
         //store pblock of leftBlk in parBlkNum.
         int parBlkNum;
@@ -516,7 +516,7 @@
 				{
 					//increment parheader.numEntries and update it as header of parblk using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
 
-					//iterate through all entries in internalEntries array and populate the entries of parblk with them using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.
+					//iterate through all entries in internalEntries array and populate the entries of parblk with them using <a href="buffer.html#intsetentry" target="_blank">IndInternal::setEntry()</a>.
 
 					delete parblk;
 
@@ -550,7 +550,7 @@
 
 			        //update leftBlkNum with parBlkNum.
 					
-					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a>.
+					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.
 
 			        //update leftBlkHeader with parheader.
 
@@ -560,7 +560,7 @@
 
 			    	/*set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and 
 					  set the first 50 entries of newRightBlk as the entries from 51 to 100 of internalEntries array 
-					  using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.*/
+					  using <a href="buffer.html#intsetentry" target="_blank">IndInternal::setEntry()</a>.*/
 
 			        IndBuffer *childBuff;
 			    	struct HeadInfo childBuffHead;
@@ -599,7 +599,7 @@
 				//load a new internal index block to newRootBlk using <a href="buffer.html#intindbuff_constructor1" target="_blank">IndInternal::IndInternal()</a>.
 				class IndInternal* newRootBlk = new IndInternal();
 
-				//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblknum" target="_blank">BlockBuffer::getBlockNum()</a>.
+				//store the block number of newRootBlk in newRootBlkNum using <a href="buffer.html#getblocknum" target="_blank">BlockBuffer::getBlockNum()</a>.
 				int newRootBlkNum;
 
 				if(newRootBlkNum == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty internal index block becauase the disk is full.
@@ -622,7 +622,7 @@
 				//update number of enteries in newRootBlk as 1 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 
 				/*add the <i>struct InternalEntry</i> entry with lChild as leftBlkNum, attrVal as newAttrval,
-				  and rChild as newRightBlkNum as the first entry to newRootBlk using <a href="buffer.html#indbuff_class" target="_blank">IndBuffer::setEntry()</a>.*/
+				  and rChild as newRightBlkNum as the first entry to newRootBlk using <a href="buffer.html#intsetentry" target="_blank">IndInternal::setEntry()</a>.*/
 
 				/*update the pblock of blocks corresponding to both leftBlkNum and newRightBlkNum to newBlkNum
 				  using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a> and <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
