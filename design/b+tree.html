@@ -82,34 +82,44 @@
                         </div>
                         
                         <div class="detail">
-				<h5>Pre-requisite Reading : <a href="./indexing.html">Indexing in NITCbase</a></h5>
-                        	<p>As you might already know, we use indexing to reduce disk access and to implement search queries faster. NITCBase uses B+ Tree for indexing an attribute in a relation. To implement B+ Tree layer you must require a thorough understanding of the Physical layer, Buffer layer and Cache layer.
-                        	</p>
-				<p>NITCbase follows Object Oriented design for implementing B+ Tree. The class diagram is as shown below.</p>
+						<h5>Pre-requisite Reading : 
+							<ul>
+								<li> <a href="./indexing.html">Indexing in NITCbase</a></li>
+								<li> <a href="../storage-model.html">Physical Layer</a></li>
+								<li> <a href="buffer.html">Buffer Layer</a></li>
+								<li> <a href="cache.html">Cache Layer</a></li>
+							</ul>
+						</h5>
+						<p>Indexing is used to quickly locate and access the data in a database. It reduces the number of disk accesses needed when a search query is processed. NITCbase uses B+ Trees for indexing an attribute in a relation. The B+ Tree organizes the data in <a href="../storage-model.html#intind_blk" target="_blank">Internal Index blocks</a> and <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index blocks</a>. An Internal Index block contains a maximum of 100 <a href="buffer.html#block_structures_internal_entry">struct InternalEntry</a> entries. Each struct InternalEntry entry contains an attribute value, a left child pointer, and a right child pointer. The attribute values in the left child are smaller or equal to, and the attribute values in the right child are larger than the attribute value of its parent. This property allows systematic traversal of the B+ Tree. The record id of all records in a relation are stored in Leaf Index blocks. A Leaf Index block contains a maximum of 63 < a href="buffer.html#block_structures_index">struct Index</a> entries. Each Index entry contains an attribute value and the record id of the block containing that attribute value. The Index entries are ordered in ascending order of attribute values. The Leaf Index blocks are also connected as a linked list. This allows easy access to an entry in the next Leaf Index block rather than traversing the Internal Index blocks again to reach that entry. </p>
+						<p>NITCbase follows Object Oriented design for implementing B+ Tree. The class diagram is as shown below.</p>
                         </div>
 <!-------------------------------------B+ tree class--------------------------------------------> 
-			<div id="bplustree_class" class="detail">
-				    <h2>class BPlusTree</h2>
-                             	    <div class="code">
-                                    <pre><code>class BPlusTree{
-    private :
+					<div id="bplustree_class" class="detail">
+					    <h2>class BPlusTree</h2>
+						<p>The <i>BPlusTree</i> class is used to access/ modify the B+ Tree created for a particular attribute of a relation. The class contains three private member fields: <i>rootBlock</i>, <i>relId</i>, and <i>attrName</i>. The <i>BPlusTree</i> class constructor sets the <i>rootBlock</i> field of the object to the parent/root block number of the B+ Tree on the successful creation of the B+ Tree. Otherwise, the status (<a href="../constants.html#constant" target="_blank">E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST</a>) that arises during the creation of B+ Tree is stored in the <i>rootBlock</i> field. The <i>relId</i> field stores the relation id of the relation in the <a href="cache.html#openrel_table" target="_blank">Open Relation Table</a>. The <i>attrName</i> field stores the attribute's name for which the B+ Tree is created. Both <i>relId</i> and <i>attrName</i> are provided as inputs to the <i>BPlusTree</i> class constructor.</p>
+						<p>For creating/accessing/modifying the B+ Tree of any attribute, an instance of the <i>BPlusTree</i> class has to be declared. When an object is instantiated, the constructor of the class creates a new B+ Tree and sets the member fields of the object. If a B+ Tree already exists for that attribute, it assigns the root block of the existing B+ Tree to <i>rootBlock</i> member field. During creation, the bPlusCreate() calls <i>bPlusInsert()</i> repeatedly and inserts entries for all records in the relation. <i>bPlusInsert()</i> can also be called independently to enter new entries to an existing B+ Tree. <i>bPlusDestroy()</i> is a private function that is called only by bPlusInsert() when the disk runs out of memory during the insertion of an entry. In such a case, the existing B+ Tree is destroyed and <i>rootBlock</i> is set to E_DISKFULL. Thus, declaring an object of <i>BPlusTree</i> class for an attribute does not guarantee the existence of a B+ Tree for it. All functions accessing/ modifying the B+ Tree should make sure that the object instance has a valid <i>rootBlock</i>. Also, as <i>bPlusDestroy()</i> is private, NITCbase does not allow the deletion of a created B+ Tree. </p>
+						<div class="code">
+						<pre><code>class BPlusTree{
+    
+public:
+	//methods
+    BPlusTree(int relid, char attrName[ATTR_SIZE]);
+	int getRootBlock();
+    int bPlusInsert(union Attribute val,recId recordId);
+    struct recId BPlusSearch(union Attribute attrVal, int op); 
+	
+private :
+	//fields
     int rootBlock, relId;
     char attrName[ATTR_SIZE];
-    int bplusDestroy(int blockNum);
-    
-    public:
-    BplusTree(int relId, char attrName[ATTR_SIZE]);
-    int bplusInsert(union Attribute val, recId recordId);
-    struct recId bplusSearch(union Attribute attrVal, int op);
-    int getRootBlock();  
-    
+	
+	//method
+    int bPlusDestroy(int blockNum);
+         
 };</code></pre>
                                 </div>
                          	<br>
-				<p>The class contains three private field members: rootBlock, relId and attrName. The rootBlock field of the object will store the parent/root block number of the B+ tree, if created successfully. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_DISKFULL</a>, <a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a>, <a href="../constants.html#errors" target="_blank">E_NOTOPEN</a>, <a href="../constants.html#errors" target="_blank">E_ATTRNOTEXIST</a>) that arises while creating the B+ tree will be stored in the rootBlock field. The relId field stores the relation Id of the relation which contains the attribute whose B+ tree has to be created, while the attrName field stores the attribute’s name. Both relId and attrName have to be provided to create B+ tree for an attribute.</p>
-<p>For creating B+ tree on any attribute, an instance of the class BPlusTree has to be declared. When an object is instantiated, the constructor of the class creates a new B+ tree and updates the member fields of the object. If B+ tree already exists for that attribute, the member fields of the object are updated with appropriate values. 
-
-				</p>
+				
                              <p>The following are the specifications for the methods in class <i>BPlusTree</i>.</p>
 				<ul class="methods">
 					<li>
