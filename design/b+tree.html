@@ -106,7 +106,7 @@
 };</code></pre>
                                 </div>
                          	<br>
-				<p>The class contains three private field members: rootBlock, relId and attrName.The rootBlock field of the object will store the parent/root block number of the B+ tree, if created successfully. Otherwise, the status (E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST) that arises while creating the B+ tree will be stored in the rootBlock field. The relId field stores the relation Id of the relation which contains the attribute with which B+ tree has to be created, while the attrName field stores the attribute’s name. Both relId and attrName have to be provided to create B+ tree on a particular attribute.</p>
+				<p>The class contains three private field members: rootBlock, relId and attrName. The rootBlock field of the object will store the parent/root block number of the B+ tree, if created successfully. Otherwise, the status (E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST) that arises while creating the B+ tree will be stored in the rootBlock field. The relId field stores the relation Id of the relation which contains the attribute whose B+ tree has to be created, while the attrName field stores the attribute’s name. Both relId and attrName have to be provided to create B+ tree for an attribute.</p>
 <p>For creating B+ tree on any attribute, an instance of the class BPlusTree has to be declared. When an object is instantiated, the constructor of the class creates a new B+ tree and updates the member fields of the object. If B+ tree already exists for that attribute, the member fields of the object are updated with appropriate values. 
 
 				</p>
