@@ -990,6 +990,41 @@ private :
             
 		<!--------Search rnds here--->		    
 			    </li>
+				    
+			    <li>
+			
+<!-----------------------------------getRootBlock------------------------------------------------------------------------------------>                       
+                        <div id="getrootblock" class="details">
+                        	<h2>public: getRootBlock</h2>
+                        	<h5>Arguments:</h5>
+                            Nil
+                            
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+										<td>rootBlock</td>
+		                        		<td>int</td>
+		                        		<td>Root block number of the B+ tree.</td>
+		                    		</tr>
+		                     	</table>
+		                     </div>
+
+                            <h5>Description:</h5>
+                            <p>Returns the root block number of the B+ tree.</p>
+                            
+                            <h5><a data-toggle="collapse" href="#algo-getrootblock"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getrootblock" class="collapse">
+                            	<div class="code"><pre><code>int BPlusTree::getRootBlock()
+{
+    return this->rootBlock;
+}
+</code></pre>
+								</div>
+                            </div>
+                        </div>
+	    <!-----getRootBlock ends here----->
+			    </li>   
 				</ul>
 
 			</div>
