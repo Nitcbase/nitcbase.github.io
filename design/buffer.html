@@ -264,7 +264,7 @@
                              </div>
                         </div>
 			    
-                         <div id="static_buffer_class" class="detail">
+                         <div id="static_buffer_class" class="details">
                          	<h2>class StaticBuffer</h2>
                              
 							 <p>The class <i>StaticBuffer</i> contains as its member field, <i>blocks[32][<a href="../constants.html" target="_blank">BLOCK_SIZE</a>]</i>, a two-dimensional array of unsigned characters with size sufficient to store 32 disk blocks in memory at any given time. Logically <i>blocks[i]</i> can be used to buffer one disk block for each 0 ≤ i ≤ 31. Each entry of <i>blocks</i>, i.e., <i>blocks[i]</i>, is referred to as <b>buffer block</b> in the NITCbase documentation. Buffer blocks will be committed back to the disk as and when required. In addition to storing the data of a block, class <i>StaticBuffer</i> also maintains meta-information for each loaded block in an array of <a href="#buffer_structures">BufferMetaInfo</a> structures through the <i>metaInfo[32]</i> field. <i>StaticBuffer</i> class also maintains a copy of the <a href="../storage-model.html#disk_model" target="_blank">Block Allocation Map</a> in its <i>blockAllocMap[<a href="../constants.html" target="_blank">DISK_BLOCKS</a>]</i> field. The i<sup>th</sup> entry      of the Block Allocation Map specifies whether the i<sup>th</sup> block is occupied or free. If occupied, it stores the type(<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>) of the block.  </p>
@@ -534,7 +534,7 @@ private:
                                  </li>
 							</ul>
 						</div>
-                        <div id="blkbuff_class" class="detail">
+                        <div id="blkbuff_class" class="details">
                          	<h2>Class BlockBuffer </h2>
                              <p>The class <i>BlockBuffer</i> is a generic class for representing a disk block of any type (Record, Internal Index, or Leaf Index). Its only field is <i>blockNum</i>. The field <i>blockNum</i> stores the disk block number corresponding to the block object. The block has to be loaded and stored in one of the 32 buffers of the StaticBuffer class before its data can be accessed. Adding to the complexity is the fact that the block, once loaded, may not even be present in the buffer memory later on because of the buffer replacement algorithm implemented by Buffer Layer. In order to work with data of the block, any method of the <i>BlockBuffer</i> class or its descendent classes need to know the address of the buffer memory to which the block has been loaded. Hence any method of this class operating on the block data should first get the pointer to the buffer memory that holds the contents of the block. The <i>getBufferPtr()</i> method is used for this purpose. The public methods of <i>BlockBuffer</i> deal with information like <a href="#block_structures_headinfo">header</a> and block type, which are generic to all blocks. <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes extend the class <i>BlockBuffer</i>, thereby, inheriting all the fields and methods of <i>BlockBuffer</i>. </p>
                              <p><b>Note:</b>If the class definition of a class (say A) declares another class (say B) as a <a href="https://en.wikipedia.org/wiki/Friend_class" target="_blank">friend class</a>, then an instance of class B can access the private fields and methods of class A. This friendship is, however, not inherited by the child classes of B. As per the NITCbase design, the definition of the class StaticBuffer contains the declaration: <i>friend class BlockBuffer</i>. Hence, the methods in <i>BlockBuffer</i> can access the private fields and methods of the class StaticBuffer. On the other hand, <a href="#recbuff_class">RecBuffer</a> and <a href="#indbuff_class">IndBuffer</a> classes can access them only through the public functions of StaticBuffer class and through the public and protected functions of <i>BlockBuffer</i> class. </p>
@@ -1005,7 +1005,7 @@ protected:
 			    			</ul>                    
                          </div>
                          
-                         <div id="recbuff_class" class="detail">
+                         <div id="recbuff_class" class="details">
                          	<h2>Class RecBuffer</h2>
                          	<p>An object of the <i>RecBuffer</i> class is associated with a <a  href="../storage-model.html#record_blk" target="_blank">record block</a>. In a <i>Record block</i>, a slot can store one record, and each record is a fixed sized set of <a href="#block_structures_attribute">Attributes</a>. Ordering of data as records and making use of slotmap are done only in a record block. Public methods of this class deal with access/modification of the records and the slotmap. <i>RecBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer class</a>. Thus, all its protected fields and methods can be accessed by <i>RecBuffer</i> class. </p>
                              <div class="code">
@@ -1315,7 +1315,7 @@ RecBuffer::RecBuffer() : BlockBuffer('R'){}  //this is the way to call parent no
                          </div>
 
 <!-----------------------------------IndBuffer----------------------------------------------------------------------------->
-                        <div id="indbuff_class" class="detail">
+                        <div id="indbuff_class" class="details">
                             <h2>Class IndBuffer</h2>
                             <p><i>IndBuffer</i> class is a generic class for representing an <i>Index</i> block. <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ Trees</a> are constructed using <i>Index</i> blocks which can be either <a href="../storage-model.html#intind_blk" target="_blank">Index Internal blocks</a> or <a href="../storage-model.html#leafind_blk" target="_blank">Index Leaf blocks</a>. B+ Tree helps in faster data access as compared to sequentially accessing the data through <a href="../storage-model.html#record_blk" target="_blank">Record</a> blocks. <i>IndBuffer</i> class extends the <a href="#blkbuff_class">BlockBuffer</a> class. Thus, all its protected fields and methods can be accessed by <i>IndBuffer</i> class. In addition to these, <i>IndBuffer</i> class has two <a href="https://en.wikipedia.org/wiki/Virtual_function#Abstract_classes_and_pure_virtual_functions" target="_blank">pure virtual methods</a>- <i>getEntry()</i> and <i>setEntry()</i>.These methods take an argument of type <i>void *</i> so that arguments of both struct <a href="#block_structures_internal_entry">InternalEntry</a> and <a href="#block_structures_index">struct Index</a> type can be passed to it. This is based on the fact that a <a href="https://en.wikipedia.org/wiki/Void_type" target="_blank">void pointer</a> can hold address of any type and can be typcasted to any type. The children classes, <a href="#intbuff_class">IndInternal</a> and <a href="#leafbuff_class">IndLeaf</a>,  extend the class <i>IndBuffer</i> and override the virtual functions. The constructors of <i>IndBuffer</i> class simply calls the constructor of the parent class with the received argument. </p>
                             <div class="code">
@@ -1398,7 +1398,7 @@ public:
 <!---------------------------- IndInternal------------------------------------------------------------------------->				     
 				     
 				     
-                         <div id="intbuff_class" class="detail">
+                         <div id="intbuff_class" class="details">
                          	<h2>Class IndInternal</h2>
                              <p>An object of the class <i>IndInternal</i> is associated with an <a href="../storage-model.html#intind_blk" target="_blank">Internal Index block</a>. An <i>Internal Index</i> block stores entries of type  <a href="#block_structures_internal_entry">struct InternalEntry</a> and is used as the internal nodes of a <i>B+ Tree</i>. Public methods of this class deal with the access/modification of the <i>InternalEntry</i> entries. <i>IndInternal</i> class extends <a href="#indbuff_class">IndBuffer</a> class and overrides its virtual methods. The constructor of the <i>IndInternal</i> class calls the constructor of the parent class by passing suitable argument.</p>
                              <div class="code">
@@ -1604,7 +1604,7 @@ IndInternal::IndInternal() : IndBuffer('I'){}  //this is the way to call parent 
                          </div>                    
  
 <!----------------------------------------IndLeaf-------------------------------------------------------------------->                     
-                         <div id="leafbuff_class" class="detail">
+                         <div id="leafbuff_class" class="details">
                          	<h2>Class IndLeaf</h2>
                              <p>An object of the <i>IndLeaf</i> class will be associated with a <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index block</a>. A <i>Leaf Index</i> block stores entries of type <a href="#block_structures_index">struct Index</a> and is used as the leaf nodes of a <i>B+ Tree</i>. Public methods of this class deal with the access/modification of the <i>Index</i> entries. <i>IndLeaf</i> class extends <a href="#indbuff_class">IndBuffer</a> class and overrides its virtual methods. The constructor of the <i>IndLeaf</i> class calls the constructor of the parent class by passing suitable argument.</p>
                              <div class="code">
