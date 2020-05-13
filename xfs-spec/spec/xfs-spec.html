@@ -1,0 +1,818 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>XFS Interface Specification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="../js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js" charset="utf-8"></script>
+</head>
+    
+    
+<body>
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <!-- SIDEBAR BEGIN -->
+                <div class="col-sm-2">
+                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+		    <li> <a class="sec" href="#xfs_commands">External File System Commands</a></li>
+                            <ul>
+                                <li> <a href="#format_disk">Format Disk</a></li>
+                                <li> <a href="#import_relation"> Import Relation </a></li>
+                                <li> <a href="#export_relation">Export Relation </a></li>
+                                <li> <a href="#list_rel">List Relation Names<relation_name> </a></li>
+                                <li> <a href="#db"> Dump Block allocation map</a></li>
+                                <li> <a href="#dump_relcat"> Dump Relation Catalog</a></li>
+                                <li> <a href="#dump_attrcat">Dump Attribute Catalog</a></li>
+			  <li> <a href="#exit">Exit</a></li>
+                            </ul>
+			
+		    <li> <a class="sec" href="#ddl_commands">DDL commands</a></li>
+                            <ul>
+                                <li> <a href="#create_table">CREATE TABLE</a></li>
+                                <li> <a href="#drop_table">DROP TABLE</a></li>
+                                <li> <a href="#open_table">OPEN TABLE</a></li>
+                                <li> <a href="#create_index">CREATE INDEX</a></li>
+                                <li> <a href="#drop_index">DROP INDEX</a></li>
+                                <li> <a href="#rename_table">ALTER TABLE RENAME</a></li>
+                                <li> <a href="#rename_column">ALTER TABLE RENAME COLUMN</a></li>
+                            </ul>
+		
+                            <li> <a class="sec" href="#dml_commands">DML commands</a></li>
+                            <ul>
+                                <li> <a href="#insert_single">INSERT INTO TABLE VALUES </a></li>
+                                <li> <a href="#insert_from_file">INSERT INTO TABLE FROM FILE</a></li>
+                                <li> <a href="#select*">SELECT * FROM TABLE</a></li>
+                                <li> <a href="#select_attr">SELECT <i>Attrlist</i> FROM TABLE</a></li>
+                                <li> <a href="#select_*where">SELECT * FROM TABLE WHERE</a></li>
+                                <li> <a href="#select_attr_where">SELECT <i>Attrlist</i> FROM TABLE WHERE</a></li>
+                                <li> <a href="#select_*join">SELECT * FROM JOIN WHERE</a></li>
+                                <li> <a href="#select_attr_join">SELECT <i>Attrlist</i> FROM JOIN WHERE</a></li>
+                            </ul>   
+
+                            
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+                
+                <!--MAIN CONTENT START-->
+                <div class="col-sm-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle"><br>
+                            <h1>XFS Interface Specification</h1>
+                        </div>
+                        <p>
+		       
+XFS Interface is a command line external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a binary file. This interface aims to provide the functionality of transferring relations from/to the host system to/from the disk and can be helpful in debugging the system during implementation. .There are three types of commands that can be given as input to the XFS interface:
+                        </p>
+                        <ol>
+		        <li> External File System Commands</li>
+                            <li> Data Definition Language Commands</li>
+                            <li>Data Manipulation Language Commands</li>
+                        </ol>
+<br>
+                        <div id="xfs_commands">
+                            <h2>External File System Commands</h2>
+                          The External File System commands are used to format the disk, dump data structures like Block allocation map,Relation catalog and Attribute catalog, load/remove relations, list relations and copy specified block of a relation on the XFS disk to a UNIX file. The following are the  External File System commands that can be queried into NITCbase :
+                          
+                         <div id="format_disk" class="detail">
+                            <h4>Format Disk</h4>
+                            <h5>Syntax :</h5>
+                            <p>fdisk</p>
+                           
+                            <h5> Description:</h5>
+                            <p>It is used to create the disk (”disk.txt”) or to format the disk if already created. On a newly created/formatted disk default entries for the Block allocation map, Relation Catalog and Attribute Catalog are initialized according to the specification for the physical layer of NITCBase. </p>
+                        
+                         </div>
+                          <div id="import_relation" class="detail">
+                            <h4>Import Relation</h4>
+                            <h5>Syntax :</h5>
+                            <p>  import  <i>filepath</i> </p>
+                          
+                            <h5> Description:</h5>
+                            <p>The command import is used to load relations from the UNIX filesystem to the XFS disk.The argument <i>filepath</i> specifies the path of the file which contains the contents of the relation to be uploaded. The command checks the size of the relation in the csv file, allocates the required number of blocks for the relation, updates the Block allocation map, Relation catalog and Attribute catalog.</p>
+		       <h5>File Format:</h5>
+                            <p>The contents of the relation must be in a file and must follow CSV (comma separated values) format.The first line of the CSV file must contain the names of the attributes of the relation. The data types of the attributes in the first line are inferred from the values of the corresponding attributes on the second line of the CSV file. Name of the relation that will be used to identify the relation in the catalogs will be the name of the CSV file.
+</p>
+                           <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; line-height: 125%">
+                                                	<p>  Consider the contents of the file 'Students.csv'.</p>
+				           No, Name, Cgpa</br>
+                                                	 3,Sunny,8.2<br>
+					5,Sania,6.0<br>
+					7,Ralph,7.5
+                                                </p>
+				
+				     "import Students.csv" command will import relation 'Students' into the disk. <br></br>
+                                            The first line in the csv file represents the list of attributes in the relation which in this case are No, Name, Cgpa.
+The datatypes of the attributes are determined from the values of the attributes in the second line. An attribute can be an integer,float or a string. In this example the datatypes will be integer, string, float respectively.  
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="export_relation" class="detail">
+                            <h4>Export Relation</h4>
+                            <h5>Syntax :</h5>
+                            <p> export <i> tablename</i> <i> pathname </i></p>
+                           
+                            <h5> Description:</h5>
+                            <p>This command is used to export a relation from XFS disk to UNIX file system.The contents of the relation are written to the specified location as per the argument <i>pathname</i> in the CSV format specified above.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">export Students Marks</pre>
+                                            </td>
+                                        </tr>
+				The following command will export relation "Students" to a csv file named "Marks".
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="list_rel" class="detail">
+                            <h4>List Relation Names</h4>
+                            <h5>Syntax :</h5>
+                            <p> ls</p>
+                           
+                            <h5> Description:</h5>
+                            <p>This command is used to list the names of all relations in the xfs disk.</p>
+                           </div>
+                         <div id="db" class="detail">
+                            <h4>Dump Block allocation map</h4>
+                            <h5>Syntax :</h5>
+                            <p> db</p>
+                            
+                            <h5> Description:</h5>
+                            <p>This will create a file named bmap.txt and dump the contents of the block allocation map into the file.</p>
+                            </div>
+                         <div id="dump_relcat" class="detail">
+                            <h4>Dump Relation Catalog</h4>
+                            <h5>Syntax :</h5>
+                            <p>  dump relcat</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command is used to copy the contents of relation catalog to an external file named relationcatalog.txt.</p>  
+                         </div>
+			 <div id="dump_attrcat" class="detail">
+                            <h4>Dump Attribute Catalog</h4>
+                            <h5>Syntax :</h5>
+                            <p>  dump attrcat</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command is used to copy the contents of attribute catalog to an external file named attributecatalog.txt.</p>  
+                         </div>
+                       
+		       <div id="exit" class="detail">
+                            <h4>Exit</h4>
+                            <h5>Syntax :</h5>
+                            <p> exit</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command is used to exit the XFS interface.</p>  
+                         </div>
+                       			
+                        <div id="ddl_commands">
+                            <h2>DDL Commands</h2>
+                            <p> The Data Definition Language commands are used to define the database schema. They are used to create and modify the structure of relations in the database. The following are the DDL commands that can be queried into NITCbase :
+                            </p> 
+                         <div id="create_table" class="detail">
+                            <h4>CREATE TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> CREATE TABLE <i> tablename</i>(<i>attr1_name attr1_type attr2_name</i>,<i>attr2_name attr2_type</i>....);</p>
+                          
+                            <h5> Description:</h5>
+                            <p>This command is used to create a relation of the given name, with given attribute names and types.The type of an attribute can be INT, STR or FLOAT.</p>
+                            <h5>Note:</h5>
+                            <p>In NITCBase, the maximum size of an attribute is 16 bytes. Since relation names and attribute names are attributes themselves in the catalog structures, the table name and attribute names in the queries must only have a maximum of 15 characters. If the length is greater than 16, only the first 15 characters will be taken.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">CREATE TABLE sample (Rollno INT,Name STR,CGPA FLOAT);</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                          <div id="drop_table" class="detail">
+                            <h4>DROP TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> DROP TABLE <i> tablename</i> ;</p>
+                        
+                            <h5> Description:</h5>
+                            <p>This command is used to delete the relation of the given name. It deletes all the record and index blocks corresponding to the relations, and also delete the entries corresponding to the relation in the relation catelog and attribute catalog.The entries corresponding to the deleted blocks in the block allocation map are also reset.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">DROP TABLE sample ;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="open_table" class="detail">
+                            <h4>OPEN TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> OPEN TABLE <i> tablename</i> ;</p>
+                     
+                            <h5> Description:</h5>
+                            <p>This command is used to open the relation specified in cache/OpenRelTable.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">OPEN TABLE sample;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="close_table" class="detail">
+                            <h4>CLOSE TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> CLOSE TABLE <i> tablename</i> ;</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command is used to close the relation specified, in cache/OpenRelTable.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">CLOSE TABLE sample;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="create_index" class="detail">
+                            <h4>CREATE INDEX</h4>
+                            <h5>Syntax :</h5>
+                            <p> CREATE INDEX ON <i> tablename</i>.<i>attributename</i> ;</p>
+                          
+                            <h5> Description:</h5>
+                            <p>This command is used to create an index on a given attribute of a relation.Before executing this query,the relation must be opened first using the OPEN TABLE query.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">CREATE INDEX ON sample.Rollno ;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="drop_index" class="detail">
+                            <h4>DROP INDEX</h4>
+                            <h5>Syntax :</h5>
+                            <p> DROP INDEX ON <i> tablename</i>.<i>attributename</i> ;</p>
+                    
+                            <h5> Description:</h5>
+                            <p>This command is used to drop/delete the B+ tree indexing on the given attribute of the given relation.Before executing this query,the relation must be opened first using the OPEN TABLE query.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">DROP INDEX ON sample.Rollno ;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="rename_table" class="detail">
+                            <h4>ALTER TABLE RENAME</h4>
+                            <h5>Syntax :</h5>
+                            <p> ALTER TABLE RENAME<i> tablename</i> TO <i>new_tablename</i> ;</p>
+                                                      <h5> Description:</h5>
+                            <p>This command is used to rename an existing relation to a given new name.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">ALTER TABLE RENAME sample TO Students;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="rename_column" class="detail">
+                            <h4>ALTER TABLE RENAME COLUMN</h4>
+                            <h5>Syntax :</h5>
+                            <p> ALTER TABLE RENAME<i> tablename</i> COLUMN <i>column_name</i> TO <i>new_column_name</i> ;</p>
+                           
+                            <h5> Description:</h5>
+                            <p>This command is used to rename an attribute of an existing relation.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">ALTER TABLE RENAME sample COLUMN CGPA TO SGPA;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                     </div>
+		<br>
+                    <div id="dml_commands">
+                        <h2>DML Commands</h2>
+                        <p> The Data Manipulation Language commands are used to manipulate the data stored in the relations of the database. The following are the DML commands that can be queried into NITCbase :
+                        </p> 
+                        <div id="insert_single" class="detail">
+                            <h4>INSERT INTO TABLE VALUES</h4>
+                            <h5>Syntax :</h5>
+                            <p> INSERT INTO TABLE<i> tablename</i> VALUES ( <i>value1</i>,<i>value2</i>,<i>value3</i>,... );</p>
+                        
+                            <h5> Description:</h5>
+                            <p>This command is used to insert a single record into the given relation. The attribute values of the record are to be given as comma separated values. The order of the values must be the same as the order of attributes of the relation. For example, if a relation Students was created </p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; line-height: 125%">
+                                                	<p> Given below are the records of the relation <i>Students</i>.</p>
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			<td>CGPA</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			<td>9.01</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>4</td>
+                                                			<td>Cody</td>
+                                                			<td>7</td>
+                                                		</tr>
+                                                	</table>
+                                                </p>
+                                                <p style="margin: 0; line-height: 125%">Suppose that we need to insert a new record "2, Amy, 9.5" into the relation Students.<p> The query will look as follows:<br>
+ 
+ 												INSERT INTO Students VALUES (2,Amy,9.5);
+												</p>
+                                                <p>The relation <i>Students</i> now looks like:
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			<td>CGPA</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			<td>9.01</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>4</td>
+                                                			<td>Cody</td>
+                                                			<td>7</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>Amy</td>
+                                                			<td>9.5</td>
+                                                		</tr>
+                                                	</table>
+                                                </p>
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="insert_from_file" class="detail">
+                            <h4>INSERT INTO TABLE FROM FILE</h4>
+                            <h5>Syntax :</h5>
+                            <p>INSERT INTO TABLE <i>tablename</i> VALUES FROM <i>filepath</i>;</p>
+                          
+                       
+                            <h5> Description:</h5>
+                            <p>This command is used to insert multiple records into the relation from a csv file containing the values for the corresponding attributes. The order of values in the csv file must be the same as the attributes of the relation. Each line in the csv file corresponds to a record to be inserted in to the relation.
+							</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; line-height: 125%">Here is an example of how a csv file containing records for insertion looks like:<br><br>
+                                            	<i>students.csv</i><br><br>
+                                            	<p style="margin: 0; line-height: 125%"> 3,Sunny,8</p>
+                                            	<p style="margin: 0; line-height: 125%"> 5,Sania,6 </p>
+                                            	<p style="margin: 0; line-height: 125%"> 7,Ralph,7.5</p>
+                                            	<br>
+                                                </p>
+                                            	<p> The query to insert all records from <i>students.csv</i> into the relation <i>Students</i> is :<br>
+                                            	INSERT INTO Students VALUES FROM students.csv;
+                                            	</p>		    
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+
+                         <div id="select*" class="detail">
+                            <h4>SELECT * FROM TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT * FROM TABLE<i> source_relation</i> INTO <i>target_relation</i> ;</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command creates a new target relation with the same attributes as that of source relation,and inserts into it all records from the source relation</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">SELECT * FROM Students INTO Target_Students;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="select_attr" class="detail">
+                            <h4>SELECT<i> Attrlist</i> FROM TABLE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT <i>Attribute1,Attribute2,....</i>FROM TABLE<i> source_relation</i> INTO <i>target_relation</i> ;</p>
+                          
+                            <h5> Description:</h5>
+                            <p>This command creates a new target relation with the attributes specified in <i>Attrlist</i>,and inserts all records(only the values corresponding to the specified attributes) of the source relation, into the newly created target relation.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">SELECT Name,CGPA FROM Students INTO Target_Students;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="select_*where" class="detail">
+                            <h4>SELECT * FROM TABLE WHERE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT * FROM TABLE<i> source_relation</i> INTO <i>target_relation</i> WHERE <i>attrname OP value</i>;</p>
+                      
+                            <h5> Description:</h5>
+                            <p>This command is used to retrieve all records of a given source relation, and insert them into a target relation, based on the the given condition. All records in the source relation that satisfy the condition, will be inserted into the newly created target relation.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">SELECT * FROM Students INTO Target_Students WHERE CGPA > 8;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                             <h5>Note:</h5>
+                             <p>Here, <i>OP</i> can only take a value from the set {=,>,<.>=,<=,!=}.</p>
+                         </div>
+                          <div id="select_attr_where" class="detail">
+                            <h4>SELECT<i> Attrlist</i> FROM TABLE WHERE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT <i>Attribute1,Attribute2,....</i>FROM TABLE<i>source_relation</i> INTO <i>target_relation</i> ;</p>
+                           
+                            <h5> Description:</h5>
+                            <p>This command creates a new target relation with the attributes specified in <i>Attrlist</i> ,and inserts those records(only the values corresponding to the attributes specified in the <i>Attrlist</i>) from the source relation which satisfy the given condition.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <pre style="margin: 0; line-height: 125%">SELECT Name,CGPA FROM Students INTO Target_Students WHERE CGPA>8;</pre>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="select_*join" class="detail">
+                            <h4>SELECT * FROM JOIN WHERE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT * FROM <i>source_relation1</i> JOIN <i>source_relation2</i> INTO <i>target_relation</i> WHERE <i>source_relation1.attribute1</i> =<i> source_relation2.attribute2</i> ;</p>
+                         
+                            <h5> Description:</h5>
+                            <p>This command creates a new target relation with attributes constituting from both the source relations(excluding specified attribute from 2nd src relation).It inserts the records obtained by equi-join of both the source relations(an attribute from each relation specified in arguments are used for equi-join) into the target relation.
+							</p>
+							<p>Note that <i>attribute1</i> should belong to <i>source_relation1</i> and <i>attribute2</i> should belong to <i>source_relation2</i>.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; line-height: 125%">
+                                                	<p> Given below are the records of the relation <i>Student1</i>.</p>
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			<td>Batch</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			<td>A</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>Cody</td>
+                                                			<td>B</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>Amy</td>
+                                                			<td>B</td>
+                                                		</tr>
+
+                                                	</table>
+                                                </p>
+                                                <p> Given below are the records of the relation <i>Student2</i>.</p>
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Marks</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>98</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>80</td>
+                                                	
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>97</td>
+                                                			
+                                                		</tr>
+                                                		<tr>
+                                                			<td>4</td>
+                                                			<td>67</td>
+                                                			
+                                                		</tr>
+
+                                                	</table>
+                                                </p>
+                                                <p>An example for a join query is:<p>
+                                                <p> SELECT * FROM Students1 JOIN Students2 INTO Students WHERE Students1.Rollno = Students2.Rollno;</p>
+                                                 <p> Equi-join on these two relations based on the attribute <i>Rollno</i> would result in the following target relation,<i>Students</i>.
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			<td>Batch</td>
+                                                			<td>Marks</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			<td>A</td>
+                                                			<td>98</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>Cody</td>
+                                                			<td>B</td>
+                                                			<td>80</td>
+                                                	
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>Amy</td>
+                                                			<td>B</td>
+                                                			<td>97</td>
+                                                			
+                                                		</tr>
+                                                		
+
+                                                	</table>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                         <div id="select_attr_join" class="detail">
+                            <h4>SELECT <i>Attrlist</i> FROM JOIN WHERE</h4>
+                            <h5>Syntax :</h5>
+                            <p> SELECT<i> Attribute1,Attribute2,..</i> FROM <i>source_relation1</i> JOIN <i>source_relation2</i> INTO <i>target_relation</i> WHERE <i>source_relation1.attribute1</i> =<i> source_relation2.attribute2</i> ;</p>
+                           
+                            <h5> Description:</h5>
+                            <p>This command creates a new target relation with attributes given in <i>Attrlist</i>.It inserts the records(only the values of the specified attributes in <i>Attrlist</i> obtained by equi-join of both the source relations(an attribute from each relation specified in arguments are used for equi-join) into the target relation.
+							</p>
+							<p>Note that <i>attribute1</i> should belong to <i>source_relation1</i> and <i>attribute2</i> should belong to <i>source_relation2</i>.</p>
+                            <h5> Example:</h5>
+                            <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; line-height: 125%">Example to be given
+                                                	<p style="margin: 0; line-height: 125%">
+                                                	<p> Given below are the records of the relation <i>Student1</i>.</p>
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			<td>Batch</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			<td>A</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>Cody</td>
+                                                			<td>B</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>Amy</td>
+                                                			<td>B</td>
+                                                		</tr>
+
+                                                	</table>
+                                                </p>
+                                                <p> Given below are the records of the relation <i>Student2</i>.</p>
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Marks</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>98</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>80</td>
+                                                	
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>97</td>
+                                                			
+                                                		</tr>
+                                                		<tr>
+                                                			<td>4</td>
+                                                			<td>67</td>
+                                                			
+                                                		</tr>
+
+                                                	</table>
+                                                </p>
+                                                <p>An example for a join query is:<p>
+                                                <p> SELECT Rollno,Name,Marks FROM Students1 JOIN Students2 INTO Students WHERE Students1.Rollno = Students2.Rollno;</p>
+                                                 <p> Equi-join on these two relations based on the attribute <i>Rollno</i> would result in the following target relation,<i>Students</i>.
+                                                	<table class="table table-bordered table-hover">
+                                                		<tr>
+                                                			<td>Rollno</td>
+                                                			<td>Name</td>
+                                                			
+                                                			<td>Marks</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>1</td>
+                                                			<td>Anu</td>
+                                                			
+                                                			<td>98</td>
+                                                		</tr>
+                                                		<tr>
+                                                			<td>2</td>
+                                                			<td>Cody</td>
+                                                			
+                                                			<td>80</td>
+                                                	
+                                                		</tr>
+                                                		<tr>
+                                                			<td>3</td>
+                                                			<td>Amy</td>
+                                                			<td>97</td>                                                			
+                                                			
+                                                		</tr>
+                                                		
+
+                                                	</table>
+                                                </p>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </div>
+                             </div>
+                         </div>
+                      
+                     </div>
+                       
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+        
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>
