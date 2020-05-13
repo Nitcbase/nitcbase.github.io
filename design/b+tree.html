@@ -63,11 +63,12 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                             <ul class="nav flex-column sidemenu">
-                                <li> <a class="sec" href="#constructor"> BPlusTree Constructor</a></li>
-                                <li> <a class="sec" href="#destroy"> bPlusDestroy()</a></li>
+                                <li> <a class="sec" href="#constructor"> class BPlusTree</a></li>
+								<li> <a class="sec" href="#constructor"> BPlusTree Constructor</a></li>
+								<li> <a class="sec" href="#getrootblock"> getRootBlock()</a></li>
                                 <li> <a class="sec" href="#insert"> bPlusInsert()</a></li>
                                 <li> <a class="sec" href="#search"> bPlusSearch()</a></li>
-				<li> <a class="sec" href="#getrootblock"> getRootBlock()</a></li>
+                                <li> <a class="sec" href="#destroy"> bPlusDestroy()</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -106,15 +107,15 @@
     
 public:
 	//methods
-    BPlusTree(int relid, char attrName[ATTR_SIZE]);
+    BPlusTree(int relid, unsigned char attrName[ATTR_SIZE]);
 	int getRootBlock();
-    int bPlusInsert(union Attribute val,recId recordId);
+    int bPlusInsert(union Attribute val, struct recId recordId);
     struct recId BPlusSearch(union Attribute attrVal, int op); 
 	
 private :
 	//fields
     int rootBlock, relId;
-    char attrName[ATTR_SIZE];
+    unsigned char attrName[ATTR_SIZE];
 	
 	//method
     int bPlusDestroy(int blockNum);
@@ -138,7 +139,7 @@ private :
 		                			</tr>
 		                			<tr>
 		                    			<td>attrName</td>
-										<td>char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+										<td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
 		                    			<td>Name of attribute whose B+ tree is to be created.</td>
 		                			</tr>
 		                        </table>
@@ -247,111 +248,48 @@ private :
                    			</div>
 							 <p><b>NOTE:</b> 
 								<ul>
-									<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to -1. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
+									<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
 								</ul>
 							</p>
                         </div>
 			<!----Constructor ends --->	
 				</li>
-			    
+						
+<!-----------------------------------getRootBlock------------------------------------------------------------------------------------>                       				    
 			    <li>
-			
-<!-----------------------------------BPlusDestroy------------------------------------------------------------------------------------>                       
-                        <div id="destroy" class="detail">
-                        	<h2>private: bPlusDestroy</h2>
+
+                        <div id="getrootblock" class="detail">
+                        	<h2>public: getRootBlock</h2>
                         	<h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-		                    			<td>blockNum</td>
-		                    			<td>int</td>
-		                    			<td>Block number of the index block to be destroyed.</td>
-		                			</tr>
-		                        </table>
-                            </div>
+                            Nil
                             
                             <h5>Return value:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
-		                        		<td>Successful deletion of index block.</td>
-		                    		</tr>
-		                    		<tr>
-										<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-		                    		    <td>Input blockNum is outside the valid range of block numbers.</td>
-		                    		</tr>
-		                    		<tr>
-										<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
-		                    		    <td>Input blockNum do not correspond to an index block.</td>
+										<td>rootBlock</td>
+		                        		<td>int</td>
+		                        		<td>Root block number of the B+ tree.</td>
 		                    		</tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#constructor">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
+                            <p>Returns the root block number of the B+ tree.</p>
                             
-                            <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-destroy" class="collapse">
-                            	<div class="code"><pre><code>int BPlusTree::bPlusDestroy(int blockNum)
+                            <h5><a data-toggle="collapse" href="#algo-getrootblock"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getrootblock" class="collapse">
+                            	<div class="code"><pre><code>int BPlusTree::getRootBlock()
 {
-	if blockNum lies outside the valid range [0,<a href="../constants.html#constants" target="_blank">DISK_BLOCKS</a>-1]:
-	{
-		return E_OUTOFBOUND;
-	}
-	
-	if type of the block, obtained using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a>, is <a href="../constants.html#constants" target="_blank">IND_LEAF</a>:
-	{
-		//let leafBlk be used to hold block of blockNum using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
-		IndLeaf leafBlk(blockNum);
-		
-		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
-		
-		return SUCCESS;
-	}
-	else if type of the block is <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>:
-	{
-		//let internalBlk be used to hold block of blockNum using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
-		IndInternal internalBlk(blockNum);
-		
-		//let internalHead be used to store header of internalBlk.
-		HeadInfo internalHead;
-		
-		//load the header using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
-		
-		//let entry be used to hold an entry of the internalBlk.
-		InternalEntry entry;
-		
-		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild
-		of all entries using <a href="#destroy" target="_blank">BPlusTree::bPlusDestroy()</a>. 
-		(take care not to delete overlapping children more than once)*/
-		
-		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
-		
-		return SUCCESS;
-		
-	}
-	else //block is not an index block.
-	{
-		return E_INVALIDBLOCK;
-	}
-		
+    return this->rootBlock;
 }
 </code></pre>
 								</div>
                             </div>
-							<p><b>NOTE:</b> 
-								<ul>
-									<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to -1 after deletion.</li>
-									<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to -1 after  deletion.</li>
-								</ul>
-							</p>
                         </div>
-	    <!-----Destroy ends here----->
-			    </li>
-		    
-			    
-			    <li>
+	    <!-----getRootBlock ends here----->
+			    </li>   
+<li>
 			    
 <!-- -------------------------------bPlusInsert-------------------------------------------------------------------------------- -->                        
                         <div id="insert" class="detail">
@@ -692,7 +630,7 @@ private :
                             </div>
 							<p><b>NOTE:</b> 
 								<ul>
-									<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to -1. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
+									<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
 								</ul>
 							</p>
                         </div>		
@@ -992,41 +930,102 @@ private :
             
 		<!--------Search rnds here--->		    
 			    </li>
-				    
 			    <li>
 			
-<!-----------------------------------getRootBlock------------------------------------------------------------------------------------>                       
-                        <div id="getrootblock" class="detail">
-                        	<h2>public: getRootBlock</h2>
+<!-----------------------------------BPlusDestroy------------------------------------------------------------------------------------>                       
+                        <div id="destroy" class="detail">
+                        	<h2>private: bPlusDestroy</h2>
                         	<h5>Arguments:</h5>
-                            Nil
+                            <div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+		                    			<td>blockNum</td>
+		                    			<td>int</td>
+		                    			<td>Block number of the index block to be destroyed.</td>
+		                			</tr>
+		                        </table>
+                            </div>
                             
                             <h5>Return value:</h5>
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-										<td>rootBlock</td>
-		                        		<td>int</td>
-		                        		<td>Root block number of the B+ tree.</td>
+										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+		                        		<td>Successful deletion of index block.</td>
+		                    		</tr>
+		                    		<tr>
+										<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+		                    		    <td>Input blockNum is outside the valid range of block numbers.</td>
+		                    		</tr>
+		                    		<tr>
+										<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
+		                    		    <td>Input blockNum do not correspond to an index block.</td>
 		                    		</tr>
 		                     	</table>
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Returns the root block number of the B+ tree.</p>
+                            <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is private and is only called in a situation where no further disk blocks can be allotted during the <a href="#constructor">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This means that under normal circumstances, NITCbase does not allow the deletion of a B+ Tree once created.</p>
                             
-                            <h5><a data-toggle="collapse" href="#algo-getrootblock"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-getrootblock" class="collapse">
-                            	<div class="code"><pre><code>int BPlusTree::getRootBlock()
+                            <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-destroy" class="collapse">
+                            	<div class="code"><pre><code>int BPlusTree::bPlusDestroy(int blockNum)
 {
-    return this->rootBlock;
+	if blockNum lies outside the valid range [0,<a href="../constants.html#constants" target="_blank">DISK_BLOCKS</a>-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if type of the block, obtained using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a>, is <a href="../constants.html#constants" target="_blank">IND_LEAF</a>:
+	{
+		//let leafBlk be used to hold block of blockNum using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+		IndLeaf leafBlk(blockNum);
+		
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+		
+		return SUCCESS;
+	}
+	else if type of the block is <a href="../constants.html#constants" target="_blank">IND_INTERNAL</a>:
+	{
+		//let internalBlk be used to hold block of blockNum using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
+		IndInternal internalBlk(blockNum);
+		
+		//let internalHead be used to store header of internalBlk.
+		HeadInfo internalHead;
+		
+		//load the header using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+		
+		//let entry be used to hold an entry of the internalBlk.
+		InternalEntry entry;
+		
+		/*iterate through all the entries of the internalBlk and destroy the lChild of the first entry and rChild
+		of all entries using <a href="#destroy" target="_blank">BPlusTree::bPlusDestroy()</a>. 
+		(take care not to delete overlapping children more than once)*/
+		
+		//release the block using <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+		
+		return SUCCESS;
+		
+	}
+	else //block is not an index block.
+	{
+		return E_INVALIDBLOCK;
+	}
+		
 }
 </code></pre>
 								</div>
                             </div>
+							<p><b>NOTE:</b> 
+								<ul>
+									<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to E_DISKFULL after deletion.</li>
+									<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to E_DISKFULL after  deletion.</li>
+								</ul>
+							</p>
                         </div>
-	    <!-----getRootBlock ends here----->
-			    </li>   
+	    <!-----Destroy ends here----->
+			    </li>
+		    
 				</ul>
 
 			</div>
