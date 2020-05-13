@@ -101,6 +101,10 @@ header h3 {
     padding-top: 50px;  
 }
 
+.subsec {
+    padding-top:60px;
+}
+
 .code {
     display: block;
     margin: 0px 0px 10px;
