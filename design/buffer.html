@@ -81,7 +81,7 @@
                                 <li><a href="#static_buffer_class">Class StaticBuffer</a> </li>
                                 <li><a href="#static_buffer_constructor">StaticBuffer constructor</a> </li>
                                  <li><a href="#static_buffer_destructor">StaticBuffer destructor</a> </li>
-								<li><a href="#getstaticblocktype">getStaticBlockType()</a> </li>
+								<li><a href="#getstaticblocktype">getStaticBlock Type()</a> </li>
 								<li><a href="#setdirtybit">setDirtyBit()</a> </li>
                                 <li><a href="#getbuffernum">getBufferNum()</a> </li> 
 								<li><a href="#getfreebuffer">getFreeBuffer()</a> </li>
@@ -92,7 +92,7 @@
                             <ul>
                                 <li><a href="#blkbuff_class">Class BlockBuffer</a> </li>
                                 <li><a href="#blk_buffer_constructor1">BlockBuffer constructor 1</a> </li>
-                                <li><a href="#blk_buffer_constructor2">BlockBufferconstructor 2</a> </li>
+                                <li><a href="#blk_buffer_constructor2">BlockBuffer constructor 2</a> </li>
 								<li><a href="#getblkNum">getBlockNum()</a> </li>
 								<li><a href="#getblocktyper">getBlockType()</a> </li>
 								<li><a href="#setblocktype">setBlockType()</a> </li>
@@ -189,7 +189,7 @@
                             </ol>
                             <p>Each structure is designed to store a subset of the data stored in a disk block. A disk block contains 2048 bytes of data. Higher layer functions, however, instead of processing the whole block data together, typically request access to a particular set of related data in a disk block at a time. Whenever such a <i>selective access</i> request is made, the method in the Buffer Layer implementing the access functionality will pack the requested data into the corresponding block structure designed to store that particular type of data. Variables of these structures will be declared and used in the <a href="cache.html" target="_blank">Cache Layer</a>, the <a href="blockaccess.html" target="_blank">Block Access Layer</a>, and the <a href="b+tree.html" target="_blank">B+ Tree Layer</a>. </p>
                             
-							<div id="block_structures_headinfo">
+							<div id="block_structures_headinfo" class="subsec">
 								<h4>HeadInfo</h4>
 								<p>NITCbase maintains a 32 bytes fixed-size header for every disk block. This header stores meta-information, like the type of the block, and a few block specific information, like #Attrs and #Slots. Though the header has many fields, usage of the fields depends on the type of the block. The structure <i>HeadInfo</i> is used to collect all the entries of the header, as shown below. The <i><a href="#setheader">setHeader()</a></i>  and the <i><a href="#getheader">getHeader()</a></i> methods take a pointer to <i>struct HeadInfo</i> as argument. </p> 
 
@@ -205,11 +205,10 @@
 	int32_t numSlots;
 	unsigned char reserved[4];
 };
-	/* #include &lt;cstdint&gt; must be done */ 
-	</code></pre>
+	/* #include &lt;cstdint&gt; must be done */ </code></pre>
 								</div>
 							</div>
-			    			<div id="block_structures_attribute">
+			    			<div id="block_structures_attribute" class="subsec">
                             	<h4>Attribute</h4>
                             	<p>According to the Physical Layer storage model, a <a href="../storage-model.html#record_blk" target="_blank">Record</a> block has slots for storing records, and each record contains a set of attributes. The <i>Attribute</i> block data structure is used to hold an attribute in memory. Since an attribute can have one amongst different types (integer/ float/ string), <i>Attribute</i> is a union of all the three types. The size of an <i>Attribute</i> is fixed at 16 bytes. A record will be an array of <i>Attributes</i> whose size is equal to the number of attributes in the relation. An attribute being a fundamental unit of data in a record, the <i>Attribute</i> block data structure is used in several functions of NITCbase. </p>
                             	<div class="code">
@@ -220,7 +219,7 @@
 } Attribute;</code></pre>
                             	</div>
 			    			</div>
-							<div id="block_structures_internal_entry">
+							<div id="block_structures_internal_entry" class="subsec">
 								<h4>InternalEntry</h4>
 								<p>Each <a href="../storage-model.html#intind_blk" target="_blank">Internal Index</a> block of a <a href="https://en.wikipedia.org/wiki/B%2B_tree" target="_blank">B+ Tree</a> consists of many attribute values and child pointers. This data is arranged in the block in such a way that an attribute value is stored between its left child and right child pointers. The right child pointer of one attribute value will be the same as the left child pointer of the next attribute value. Hence to avoid redundancy, only one copy is stored, making the data overlapped. The combination of left child, attribute value, and right child makes up the <i>InternalEntry</i> structure, as shown below. An Internal Index block is a combination of 100 such overlapped entries. The <i><a href="#intgetentry">getEntry()</a></i> and <i><a href="#intsetentry">setEntry()</a></i> methods of the class <a href="#intbuff_class">IndInternal</a> take a pointer to <i>struct InternalEntry</i> as an argument. </p>
 								<p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#intbuff_class">IndInternal</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct InternalEntry</i> before calling them. </p>
@@ -233,7 +232,7 @@
 /* #include &lt;cstdint&gt; must be done */ </code></pre>
                             		</div>
 							</div>
-						   <div id="block_structures_index">
+						   <div id="block_structures_index" class="subsec">
 								<h4>Index</h4>
 								<p>An index of a relation should store a reference to its record along with the corresponding attribute value. NITCbase uses <a href="#recid">RecId</a>, which is a (block#, slot#) pair, for referencing any record. In NITCbase, an <i>Index</i> structure is a combination of attribute value, block#, and slot#, followed by some unused space left for future use, as shown below. Each <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index</a> block is a combination of 63 such <i>Index</i> entries.  The <i><a href="#leafgetentry">getEntry()</a></i> and the <i><a href="#leafsetentry">setEntry()</a></i> methods of the class <a href="#leafbuff_class">IndLeaf</a> take a pointer to <i>struct Index</i> as an argument. </p>
 								<p><b>Implementation Note:</b> The <i>getEntry()</i> and <i>setEntry()</i> methods are declared in the class <a href="#indbuff_class">IndBuffer</a> but are <a href="https://en.wikipedia.org/wiki/Method_overriding" target="_blank">overridden</a> in the class <a href="#leafbuff_class">LeafBuffer</a>. <i>getEntry()</i> and <i>setEntry()</i> methods expect the higher layers to allocate memory for <i>struct Index</i> before calling them. </p>
@@ -1814,7 +1813,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
                         <div class="detail" id="misc">
                             <h2>Miscellaneous</h2>
                             <p>Given below are the definitions of <i>RecId</i> and <i>IndexId</i> structures. Variables of these structures will be of use in several layers of NITCbase, such as <a href="cache.html">Cache layer</a>, <a href="blockaccess.html">Block access layer</a>, and <a href="b+tree.html">B+ tree layer</a>, to name a few.</p>
-							<div id = "recid">
+							<div id = "recid" class="subsec">
 								<h4>RecId</h4>
 								<p>Relations in NITCbase are made up of records. Every record of any relation can be referenced using an id called <i>RecId</i>. <i>RecId</i> is a combination of the block number of the corresponding record block and the slot number of the slot occupied by the record in the block. It is used to locate where the record is stored in the disk.</p>
 								<div class="code">
@@ -1824,7 +1823,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
 };</code></pre>
 								</div>
 							</div>
-							<div id = "indexid">
+							<div id = "indexid" class="subsec">
 								<h4>IndexId</h4>
 								<p>The <i>Leaf Index</i> blocks of a B+ Tree are made of <a href="#block_structures_index">Index</a> entries. Every <i>Index</i> entry of any <i>Leaf Index</i> block can be referenced using an id called <i>IndexId</i>. <i>IndexId</i> is a combination of block number of the corresponding leaf index block and index number, which is the offset of the index in that block. It is used to locate where the index is stored in the disk. </p>
 								<div class="code">
@@ -1834,7 +1833,7 @@ IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-defa
 };</code></pre>
                             	</div>
 							</div>
-							<div id = "compare">
+							<div id = "compare" class="subsec">
 								<h4>compare()</h4>
 								<h5>Arguments:</h5>
 								<div class="table-responsive">
