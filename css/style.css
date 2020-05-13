@@ -96,6 +96,11 @@ header h3 {
     border-bottom: 1px solid #DDD; 
 }
 
+.details { 
+    padding-bottom: 20px; 
+    padding-top: 50px;  
+}
+
 .code {
     display: block;
     margin: 0px 0px 10px;
