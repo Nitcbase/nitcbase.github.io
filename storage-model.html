@@ -273,7 +273,7 @@ public:
                             <p> The <b>slotmap</b>, which appears at the end of the header is used for indicating whether a slot is occupied or free. Size of the slotmap is equal to the number of slots, L, that fits in the block. If a slot is free, its corresponding entry in slotmap will be 0 else it will be 1. Slotmap starts from 32<sup>nd</sup>byte of the header followed by the slots which store actual records. Some amount of space may be left unused at the end whose size is less than the size of a record.</p>
 			    <p> The record block must be loaded from the disk to the main memory before its data can be accessed/modified. The <a href="design/buffer.html" target="_blank">Buffer Layer</a> provides the necessary data structures for this purpose. The <a href="design/buffer.html#recbuff_class" target="_blank">RecBuffer class</a> is used to access a record block. The header of the block is stored in the <a href="design/buffer.html#block_structures_headinfo" target="_blank">struct HeadInfo</a>. Each record in a record block is treated as an array of <a href="design/buffer.html#block_structures_attribute" target="_blank">union Attributes</a>.</p>
                             <div class="question">
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse1">
                                             <b>Q1.</b> Calculate the number of slots and slotmap size for a relation with 5 attributes
@@ -288,7 +288,7 @@ public:
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse2">
                                             <b>Q2.</b> What is the maximum number of attributes possible for a relation in Nitcbase?
@@ -304,7 +304,7 @@ public:
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse3">
                                             <b>Q3.</b> What is the maximum number of slots possible for a record block in Nitcbase?
@@ -364,7 +364,7 @@ public:
 								<br>
 								<br>
 								<div class="question">
-									<div class="card">
+									<div class="ques_card">
 										<div class="card-header">
 											<a data-toggle="collapse" href="#collapse4">
 												<b>Q1.</b> What are the values of the header fields #Attrs and #Slots for a Relation Catalog block?
@@ -383,7 +383,7 @@ public:
 											</div>
 										</div>
 									</div>
-									<div class="card">
+									<div class="ques_card">
 										<div class="card-header">
 											<a data-toggle="collapse" href="#collapse5">
 												<b>Q2.</b> What is the minimum number of entries allowed in the Relation Catalog? What relations do these entries correspond to?
@@ -415,7 +415,7 @@ public:
 
 
 								<div class="question">
-									<div class="card">
+									<div class="ques_card">
 										<div class="card-header">
 											<a data-toggle="collapse" href="#collapse6">
 												<b>Q1.</b> What is the minimum number of entries allowed in the Attribute Catalog? What relations and attributes do these entries correspond to?
