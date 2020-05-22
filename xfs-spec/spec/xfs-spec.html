@@ -63,7 +63,7 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-		    <li> <a class="sec" href="#xfs_commands">External File System Commands</a></li>
+		    <li> <a class="sec" href="#xfs_commands"><u>External File System Commands</u></a></li>
                             <ul>
                                 <li> <a href="#format_disk">Format Disk</a></li>
                                 <li> <a href="#import_relation"> Import Relation </a></li>
@@ -75,7 +75,7 @@
 			  <li> <a href="#exit">Exit</a></li>
                             </ul>
 			
-		    <li> <a class="sec" href="#ddl_commands">DDL commands</a></li>
+		    <li> <a class="sec" href="#ddl_commands"><u>DDL commands</u></a></li>
                             <ul>
                                 <li> <a href="#create_table">CREATE TABLE</a></li>
                                 <li> <a href="#drop_table">DROP TABLE</a></li>
@@ -86,7 +86,7 @@
                                 <li> <a href="#rename_column">ALTER TABLE RENAME COLUMN</a></li>
                             </ul>
 		
-                            <li> <a class="sec" href="#dml_commands">DML commands</a></li>
+                            <li> <a class="sec" href="#dml_commands"><u>DML commands</u></a></li>
                             <ul>
                                 <li> <a href="#insert_single">INSERT INTO TABLE VALUES </a></li>
                                 <li> <a href="#insert_from_file">INSERT INTO TABLE FROM FILE</a></li>
@@ -132,7 +132,7 @@ XFS Interface is a command line external interface to access the NITCBase filesy
                             <p>fdisk</p>
                            
                             <h5> Description:</h5>
-                            <p>It is used to create the disk (”disk.txt”) or to format the disk if already created. On a newly created/formatted disk default entries for the Block allocation map, Relation Catalog and Attribute Catalog are initialized according to the specification for the physical layer of NITCBase. </p>
+                            <p>It is used to create the disk (”disk”) or to format the disk if already created. On a newly created/formatted disk default entries for the Block allocation map, Relation Catalog and Attribute Catalog are initialized according to the specification for the physical layer of NITCBase. </p>
                         
                          </div>
                           <div id="import_relation" class="detail">
@@ -143,7 +143,7 @@ XFS Interface is a command line external interface to access the NITCBase filesy
                             <h5> Description:</h5>
                             <p>The command import is used to load relations from the UNIX filesystem to the XFS disk.The argument <i>filepath</i> specifies the path of the file which contains the contents of the relation to be uploaded. The command checks the size of the relation in the csv file, allocates the required number of blocks for the relation, updates the Block allocation map, Relation catalog and Attribute catalog.</p>
 		       <h5>File Format:</h5>
-                            <p>The contents of the relation must be in a file and must follow CSV (comma separated values) format.The first line of the CSV file must contain the names of the attributes of the relation. The data types of the attributes in the first line are inferred from the values of the corresponding attributes on the second line of the CSV file. Name of the relation that will be used to identify the relation in the catalogs will be the name of the CSV file.
+                            <p>The contents of the relation must be in a file and must follow CSV (comma separated values) format.The first line of the CSV file must contain the names of the attributes of the relation. The data types of the attributes in the first line are inferred from the values of the corresponding attributes on the second line of the CSV file. Name of the relation that will be used to identify the relation in the catalogs will be the name of the CSV file.If a relation with name as the name of the CSV file already exists, then the import will not happen. 
 </p>
                            <h5> Example:</h5>
                             <div class="algo">
@@ -236,7 +236,7 @@ The datatypes of the attributes are determined from the values of the attributes
                          <div id="create_table" class="detail">
                             <h4>CREATE TABLE</h4>
                             <h5>Syntax :</h5>
-                            <p> CREATE TABLE <i> tablename</i>(<i>attr1_name attr1_type attr2_name</i>,<i>attr2_name attr2_type</i>....);</p>
+                            <p> CREATE TABLE <i> tablename</i>(<i>attr1_name attr1_type </i>,<i>attr2_name attr2_type</i>....);</p>
                           
                             <h5> Description:</h5>
                             <p>This command is used to create a relation of the given name, with given attribute names and types.The type of an attribute can be INT, STR or FLOAT.</p>
@@ -261,7 +261,7 @@ The datatypes of the attributes are determined from the values of the attributes
                             <p> DROP TABLE <i> tablename</i> ;</p>
                         
                             <h5> Description:</h5>
-                            <p>This command is used to delete the relation of the given name. It deletes all the record and index blocks corresponding to the relations, and also delete the entries corresponding to the relation in the relation catelog and attribute catalog.The entries corresponding to the deleted blocks in the block allocation map are also reset.</p>
+                            <p>This command is used to delete the relation of the given name. It deletes all the record and index blocks corresponding to the relations, and also delete the entries corresponding to the relation in the relation catalog and attribute catalog.The entries corresponding to the deleted blocks in the block allocation map are also reset.</p>
                             <h5> Example:</h5>
                             <div class="algo">
                                 <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
