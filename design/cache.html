@@ -108,8 +108,8 @@
                         <div id="relation_cache" class="detail">
                         <h2>Relation Catalog Structures</h2>
                             <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
-                		<div id="rel_cat_entry" class="detail">
-						<h4>RelCatEntry<\h4>
+                		<div id="rel_cat_entry" class="subsec">
+						<h4>RelCatEntry</h4>
 							<p></p>
 					<div class="code"><pre><code>typedef struct RelCatEntry {
 						    char rel_name[ATTR_SIZE];
@@ -120,8 +120,8 @@
 						} RelCatEntry ;</code></pre>
 					</div>
               			</div>
-				<div id="rel_cache_entry" class="detail">
-					<h4>RelCacheEntry<\h4>
+				<div id="rel_cache_entry" class="subsec">
+					<h4>RelCacheEntry</h4>
 							<p></p>
 					<div class="code"><pre><code>typedef struct RelCacheEntry {
 						    RelCatEntry entry;
