@@ -249,7 +249,22 @@
 				<p></p>
 				<div class="code">
 					<pre><code>class AttrCacheTable{
-
+					private:
+						//fields
+						AttrCacheEntry* attrCacheTable[MAX_OPEN];
+						//methods
+						AttrCatEntry recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE]);
+						union Attribute attrCacheEntryToRecord(AttrCatEntry attrCatEntry);
+					public:
+						//methods
+						int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+						int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+						int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+						int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+						IndexId getSearchIndex(int relId, char attrName[ATTR_SIZE]);
+						IndexId getSearchIndex(int relId, int attrOffset);
+						int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId searchIndex);
+						int setSearchIndex(int relId, int attrOffset, IndexId searchIndex);
 					};</code></pre>
 				</div>
 				<ul class="methods">
