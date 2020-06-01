@@ -480,7 +480,8 @@ private:
 	}
 	
 	/* read the record entry corresponding to relcatRecId and use it to set the relId<sup>th</sup> entry 
-	of the RelCacheTable using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().*/
+	   of the RelCacheTable using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of the relation cache entry to relcatRecId.*/
 	
 	/****** Setting up attribute cache entry for the relation ******/
 	
@@ -497,7 +498,8 @@ private:
 		RecId attrcatRecId;
 	
          	/* read the record entry corresponding to attrcatRecId and add it to linked list of listHead 
-		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().*/
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of the attribute cache entry to attrcatRecId.*/
 	}
 	
 	// set the relId<sup>th</sup> entry of the RelCacheTable to listHead.
@@ -569,7 +571,7 @@ private:
 	// if the relation catalog entry in the relation cache corresponding to the relation had been modified: 
 	{
 		/* write back the entry to the relation catalog using 
-		   RelCacheTable::relCacheEntryToRecord() and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 	}
 	
 	/****** Releasing the attribute cache entry of the relation ******/
@@ -578,8 +580,8 @@ private:
 	{
 		if the entry had been modified:
 		{
-			/* write back the entry to the attribute catalog using 
-			   AttrCacheTable::attrCacheEntryToRecord() and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			/* write back the entry to the attribute catalog using recId member field
+			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 			
 		}
 		
@@ -599,6 +601,118 @@ private:
 					</li>
          <!-------------------------------deleteRel------------------------------------------------------------>
 					<li>
+						<div class="detail" id="deleterel">
+							<h2><i>public:</i> deleteRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
+								    <td>int</td>
+								    <td>Successfully deleted the relation from the database.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
+								    <td>int</td>
+								    <td>Input relId is outside the valid set of possible relation id.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_FREESLOT </a></td>
+								    <td>int</td>
+								    <td>Entry in the relation corresponding to relId is free.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_deleterel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_deleterel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::deleteRel(int relId){
+
+	if relid is outside the range [0, MAXOPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the open relation table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Deleting from relation cache******/
+	
+	//delete the record entry corresponding to the relation in the relation catalog using the recId member field and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
+	
+	/****** Deleting from attribute cache ******/
+	
+	// iterate over all the entries in the linked list of attribute cache corresponding to the relation
+	{
+		
+		//delete the record entry corresponding to the attribute cache entry in the attribute catalog using the recId member field and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
+		
+		// free the memory dynamically alloted to this entry in attribute cache linked list.
+	}
+	
+	/****** Deleting from open relation table ******/
+	
+	//free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</li>
+
+         <!-------------------------------getFreeOpenRelTableEntry------------------------------------------------------------>
+					<li>
+						<div class="detail" id="get_free_open_rel_table_entry">
+							<h2><i>private:</i> getFreeOpenRelTableEntry</h2>
+							<h5>Arguments:</h5>
+							<p>void</p>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+									<td>relId</td>
+									<td>int</td>
+									<td>Index of a free entry in the open relation table.</td>
+								</tr>
+								<tr>
+									<td><a href="../constants.html" target="_blank"> FAILURE </a></td>
+									<td>int</td>
+									<td>No free entries in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_get_free_open_rel_table_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_get_free_open_rel_table_entry" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::getFreeOpenRelTableEntry(){
+
+	//traverse through the tableMetaInfo array,
+		find a free entry in the open relation table.
+    
+	//if found return the relation id, else indicate failure.
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
 					</li>
 				</ul>
 			</div>
