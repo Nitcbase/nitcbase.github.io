@@ -278,7 +278,7 @@ public:
 							    <tr>
 								<td>record</td>
 								<td>union Attribute[ATTRCAT_SIZE]</td>
-								<td>Record which has to be converted to struct AttrCache Entry</td>
+								<td>Record which has to be converted to struct AttrCacheEntry</td>
 							    </tr>
 							</table>
 					    </div>
@@ -288,7 +288,7 @@ public:
 								<tr>
 									<td> attrCacheEntry </td>
 									<td>AttrCacheEntry*</td>
-									<td>Pointer to struct AttrCache Entry created using the given record.</td>
+									<td>Pointer to struct AttrCacheEntry created using the given record.</td>
 								 </tr>
 							</table>
 						     </div>
@@ -351,7 +351,7 @@ public:
 						    </tr>
 						</table>
 					    </div>
-					    <p><b>Note:</b>This method is overloaded in type of the second argument.</p>
+					    <p><b>Note: </b>This method is overloaded in type of the second argument.</p>
 
 					    <h5>Return value:</h5>
 					    <div class="table-responsive">
@@ -376,7 +376,7 @@ public:
 						</table>
 					    </div>
 					    <h5>Description:</h5>
-					    <p>This methods gives the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
+					    <p>This methods gives the Attribute catalog entry (AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
 
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
@@ -384,7 +384,7 @@ public:
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCacheTable[relid] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
 		return E_NOTOPEN;
 	}
 	
@@ -425,7 +425,7 @@ public:
                                     </tr>
                                 </table>
                             </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
 
                             <h5>Return value:</h5>
                             <div class="table-responsive">
@@ -455,16 +455,16 @@ public:
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
                                 <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE/int attrOffset, AttrCatEntry *attrCatBuf){
-	if(relId&lt; 0 || relId&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relid) lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCacheTable[relId] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
 		return E_NOTOPEN;
 	}
 	
 	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
 		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			//copy the attrCatBbuf to the corresponding attibute node in the attribute cache
+			//copy the attrCatBuf to the corresponding attibute node in the attribute cache
 			//set the dirty flag corresponding to the attribute in the attribute cache
 			return SUCCESS;
 		//}
@@ -496,11 +496,11 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
                                         <td>IndexId *</td>
-                                        <td>pointer to buffer of type IndexId where the index id is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>pointer to buffer of type IndexId where the seaech index has to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
                                     </tr>
                                 </table>
                              </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
                                 <h5>Return value:</h5>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover">
@@ -514,7 +514,7 @@ public:
                                         </tr>
                                         <tr>
                                             <td>E_NOTOPEN</td>
-                                            <td>If there is no open relation exist corresponding to the id given by relId</td>
+                                            <td>If no open relation exists corresponding to the id given by relId</td>
                                         </tr>
                                         <tr>
                                             <td>E_ATTRNOTEXIST</td>
@@ -529,18 +529,18 @@ public:
 
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *searchIndex){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(int relId, char attrName[ATTR_SIZE/int attrOffset, IndexId *searchIndex){
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relid) lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	if(attrCahe[relid] == NULL){ //slot corresponding to the relid in the relation is free
 		return E_NOTOPEN;
 	}
 	
 	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
 		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
 			/*copy the previous search index id (in meta informatiom) corresponding to 
-			  the attribute in the attribute cache to the searchIndex*/
+			  the attribute in the attribute cache to searchIndex*/
 			return SUCCESS;
 		//}
 	//}
@@ -575,7 +575,7 @@ public:
                                     </tr>
                                 </table>
                             </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
                             <h5>Return value:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -585,7 +585,7 @@ public:
                                     </tr>
                                     <tr>
                                         <td>E_OUTOFBOUND</td>
-                                        <td>If the relId is out of the range 0-MAXOPEN</td>
+                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
                                     </tr>
                                     <tr>
                                         <td>E_NOTOPEN</td>
@@ -607,7 +607,7 @@ public:
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCacheTable[relId] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
 		return E_NOTOPEN;
 	}
 	
