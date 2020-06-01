@@ -214,17 +214,43 @@
 					    <div class="table-responsive">
 							<table class="table table-bordered table-hover">
 								<tr>
-										<td>RelCatEntry</td>
+										<td>RelCacheEntry</td>
 										<td></td>
 									    </tr>
 							</table>
 						     </div>
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#relation_cache">RelCatEntry</a> structure. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#relation_cache">RelCacheEntry</a> structure. The details of the implementation are left to you.</p>
 						</div>	
 					</li>
 	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
 					<li>
+						<div class="detail" id="relcachetorec">
+                            			<h2><i>private</i> relCacheEntrytoRecord</h2>
+                            			<h5>Arguments:</h5>
+                            			<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+		                            		<tr>
+								<td>relCacheEntry</td>
+							        <td>RelCacheEntry</td>
+							        <td></td>
+						    	</tr>
+		                        	</table>
+		                   		 </div>
+                            
+                            		<h5>Return value:</h5>
+                            		<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+		                        		<tr>
+						                <td>union Attribute *</td>
+						                <td></td>
+						        </tr>
+		                     		</table>
+		                     	</div>
+
+                            	<h5>Description:</h5>
+                            	<p>This is an utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to the array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
+                        	</div>
 					</li>
 	<!--------getRelCatEntry--------------------------------------------------------------->
 					<li>
