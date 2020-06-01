@@ -104,20 +104,37 @@
                              <p> The job of this module is to cache the  <a href="../storage-model.html#relcat">relation catalog</a> and  <a href="../storage-model.html#attrcat">attribute catalog</a> of opened relations in memory. Some meta data related to open relations is also managed by the cache layer.  Since catalog information is frequently required by any query processing module, caching reduces the number of disk accesses for accessing the catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module showing its private and public methods. </p>
                             <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
                         </div>
-                        
+                <!----------------Relation catalog structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
-                        <h2>Relation Catalog Entry</h2>
-                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache (also called as Open Relation Table). A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
-                		<div class="code"><pre><code>typedef struct RelCatEntry {
-    char rel_name[ATTR_SIZE];
-    int num_attr;
-    int num_rec;
-    int first_blk;          //Head of linked list of blocks
-    int num_slots_blk;      //Number of slots in a block
-} RelCatEntry ;</code></pre></div>
-                            <p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openrel_table">open relation table</a>. <i>RelCatEntry</i> for an open relation is part of the open relation table entry for the relation.</p>
-                        </div>
-                        
+                        <h2>Relation Catalog Structures</h2>
+                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
+                		<div id="rel_cat_entry" class="detail">
+						<h4>RelCatEntry<\h4>
+							<p></p>
+					<div class="code"><pre><code>typedef struct RelCatEntry {
+						    char rel_name[ATTR_SIZE];
+						    int num_attr;
+						    int num_rec;
+						    int first_blk;          //Head of linked list of blocks
+						    int num_slots_blk;      //Number of slots in a block
+						} RelCatEntry ;</code></pre>
+					</div>
+              			</div>
+				<div id="rel_cache_entry" class="detail">
+					<h4>RelCacheEntry<\h4>
+							<p></p>
+					<div class="code"><pre><code>typedef struct RelCacheEntry {
+						    RelCatEntry entry;
+						    bool dirty;
+						    RecId recId;
+						    RecId searchIndex;
+						} RelCacheEntry ;</code></pre>
+					</div>
+              			</div>
+						
+		      </div>
+		
+	<!----------------Attribute catalog structues--------------------------------------------------------------->
                         <div id="attribute_cache" class="detail">
                             <h2>Attribute Cache</h2>
                             <p>The <a href="../storage-model.html#attrcat">Attribute catalog</a>, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information of all open relations is also cached in the main memory for performance reasons and easy access. For each opened relation, NITCbase maintains an attribute cache. The Attribute cache of an open relation is a list of Attribute catalog entries, where each entry corresponds to an attribute of the relation. (Thus for each open relation there is an Attribute cache and for each attribute of an open relation, there is an entry in the corresponding attribute cache). Since at most MAXOPEN=12 relations can be opened at a time, there are at most MAXOPEN Attribute Caches exist at a time. </p>
