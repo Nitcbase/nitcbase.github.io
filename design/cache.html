@@ -480,7 +480,7 @@ private:
 	}
 	
 	/* read the record entry corresponding to relcatRecId and use it to set the relId<sup>th</sup> entry 
-	of the RelCacheTable using RecBuffer::getRecord() and RelCacheTable::recordToRelCacheEntry().*/
+	of the RelCacheTable using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().*/
 	
 	/****** Setting up attribute cache entry for the relation ******/
 	
@@ -497,12 +497,12 @@ private:
 		RecId attrcatRecId;
 	
          	/* read the record entry corresponding to attrcatRecId and add it to linked list of listHead 
-		   using RecBuffer::getRecord() and AttrCacheTable::recordToAttrCacheEntry().*/
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().*/
 	}
 	
 	// set the relId<sup>th</sup> entry of the RelCacheTable to listHead.
 	
-	/****** Setting up metadata the relation ******/
+	/****** Setting up metadata in the open relation table for the relation******/
 	
 	//update the relId<sup>th</sup> entry of the tableMetaInfo with free as true and relName as the input.
 	
@@ -521,9 +521,9 @@ private:
 							<div class="table-responsive">
 							    <table class="table table-bordered table-hover">
 								<tr>
-								    <td>relName</td>
-								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
-								    <td>Name of the relation whose entry is to be created in the open relation table.</td>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the open relation table.</td>
 								</tr>
 							    </table>
 							</div>
@@ -531,19 +531,19 @@ private:
 							<div class="table-responsive">
 							    <table class="table table-bordered table-hover">
 								<tr>
-								    <td>relId</td>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
 								    <td>int</td>
-								    <td>The relId of the relation in the open relation table.</td>
+								    <td>Successfully closed the relation in the open relation table.</td>
 								</tr>
 								<tr>
-								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
 								    <td>int</td>
-								    <td>No relation with name, relName, exists in the disk.</td>
+								    <td>Input relId is outside the valid set of possible relation id.</td>
 								</tr>
 								<tr>
-								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
+								    <td><a href="../constants.html" target="_blank"> E_FREESLOT </a></td>
 								    <td>int</td>
-								    <td>No free entries in the open relation table.</td>
+								    <td>Entry in the relation corresponding to relId is free.</td>
 								</tr>
 							    </table>
 							</div>
@@ -554,10 +554,43 @@ private:
 								<div class="code">
 									<pre><code>int OpenRelTable::closeRel(int relId){
 
-	//traverse through the tableMetaInfo array,
-		find the entry in the open relation table corresponding to <i>relName</i>.
-    
-	//if found return the relation id, else indicate failure.
+	if relid is outside the range [0, MAXOPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the open relation table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Releasing the relation cache entry of the relation ******/
+	
+	// if the relation catalog entry in the relation cache corresponding to the relation had been modified: 
+	{
+		/* write back the entry to the relation catalog using 
+		   RelCacheTable::relCacheEntryToRecord() and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+	}
+	
+	/****** Releasing the attribute cache entry of the relation ******/
+	
+	// iterate over all the entries in the linked list of attribute cache corresponding to the relation
+	{
+		if the entry had been modified:
+		{
+			/* write back the entry to the attribute catalog using 
+			   AttrCacheTable::attrCacheEntryToRecord() and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			
+		}
+		
+		// free the memory dynamically alloted to this entry in attribute cache linked list.
+	}
+	
+	/****** Updating metadata in the open relation table of the relation  ******/
+	
+	//free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
 	
 }</code></pre>
 								</div>
