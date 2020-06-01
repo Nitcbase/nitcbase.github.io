@@ -374,9 +374,120 @@
 					</li>
 	<!--------getSearchIndex--------------------------------------------------------------->
 					<li>
+						<div id="getsearchindex0" class="detail">
+                            <h2><i>public:</i> getSearchIndex</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>recidbuff_ptr</td>
+                                        <td>recId *</td>
+                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The record id field of the previous hit stored in the meta information of the relation cache is to be copied into recid_ptr.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If record id of previous hit is copied to recid. It means that the id pointed by recid is valid.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method gives the value of <i>prevrecid</i> field corresponding to the specified relation in cache.(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getprevrecid" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::getSearchIndex(relId relid, recId *recidbuff_ptr){
+	if(relid&lt; 0 || relid&gt;= MAXOPEN){//check whether relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation in the relation cache to the recidbuff_ptr*/
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------setsearchIndex--------------------------------------------------------------->
 					<li>
+						<div id="setsearchindex0" class="detail">
+                            <h2><i>public:</i> setSearchIndex</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>recidbuff_ptr</td>
+                                        <td>recId *</td>
+                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The record id field of the previous hit is to be stored to the meta information of the relation cache from  recid_ptr.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If the record id is successfully copied into the Relation Catalog Cache.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method sets the value of <i>prevrecid</i> field corresponding to the specified relation in cache.</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setprevrecid" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::setSearchIndex(relId rel_id, recId *recidbuff_ptr){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation from the recidbuff_ptr to the relation cache*/
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!----------------------------------------------------------------------->
 					
