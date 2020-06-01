@@ -251,7 +251,7 @@
 <pre><code>class AttrCacheTable{
 private:
 	//fields
-	AttrCacheEntry* attrCacheTable[MAX_OPEN];
+	AttrCacheEntry* attrCache[MAX_OPEN];
 	//methods
 	AttrCatEntry* recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE]);
 	union Attribute* attrCacheEntryToRecord(AttrCatEntry attrCatEntry);
@@ -261,10 +261,10 @@ public:
 	int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
 	int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
 	int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
-	int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId searchIndex);
-	int getSearchIndex(int relId, int attrOffset, IndexId searchIndex);
-	int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId searchIndex);
-	int setSearchIndex(int relId, int attrOffset, IndexId searchIndex);
+	int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+	int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
 };</code></pre>
 				</div>
 				<ul class="methods">
