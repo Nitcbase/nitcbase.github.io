@@ -332,7 +332,7 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::OpenRelTable(){
 
-			// initialize <i>tableMetaInfo</i> of all the entries of the open relation table with <i>free</i> as true and <i>relName</i> as an empty string.
+	// initialize <i>tableMetaInfo</i> of all the entries of the open relation table with <i>free</i> as true and <i>relName</i> as an empty string.
 
 }</code></pre>
 							    </div>
@@ -354,7 +354,7 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::~OpenRelTable(){
 
-			// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
+	// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
 
 }</code></pre>
 							    </div>
@@ -377,25 +377,32 @@ private:
 							    </table>
 							</div>
 							<h5>Return type:</h5>
-							<tr>
-							    <td>relId</td>
-							    <td>int</td>
-							    <td>The relId of the relation in the open relation table.</td>
-							</tr>
-							<tr>
-							    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
-							    <td>int</td>
-							    <td>The relation corresponding to relationName do not have an open entry in the open relation table.</td>
-							</tr>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>The relId of the relation in the open relation table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
+								    <td>int</td>
+								    <td>The relation corresponding to relationName do not have an open entry in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
 							<h5>Description:</h5>
 							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
 							<h5><a data-toggle="collapse" href="#algo_getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_getrelid" class="collapse">
 							    <div class="code">
-								<pre><code>OpenRelTable::getRelId(){
+								<pre><code>int OpenRelTable::getRelId(unsigned char relName[ATTR_SIZE]){
 
-			// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
-
+	//traverse through the tableMetaInfo array,
+		find the entry in the open relation table corresponding to <i>relName</i>.
+    
+	//if found return the relation id, else indicate failure.
+	
 }</code></pre>
 							    </div>
 							</div>
@@ -403,9 +410,159 @@ private:
 					</li>
          <!-------------------------------openRel------------------------------------------------------------>
 					<li>
+					<div class="detail" id="openrel">
+							<h2><i>public:</i> openRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose entry is to be created in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>The relId of the relation in the open relation table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
+								    <td>int</td>
+								    <td>No relation with name, relName, exists in the disk.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
+								    <td>int</td>
+								    <td>No free entries in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_openrel" class="collapse">
+							    <div class="code">
+								<pre><code>int OpenRelTable::openRel(unsigned char relName[ATTR_SIZE]){
+	
+	if the relation, <i>relName</i>, already has an entry in the open relation table:
+	{ // checked using OpenRelTable::getRelId().
+	
+		// return that relation id;
+	}
+	
+	// find a free slot in the open relation table using OpenRelTable::getFreeOpenRelTableEntry().
+	if free slot not available:
+	{
+		return E_CACHEFULL;
+	}
+	
+	//let relId be the free slot
+	int relId;
+	
+	/****** Setting up relation cache entry for the relation ******/
+	
+	/* search for the entry with relation name, <i>relName</i>, in the relation catalog using linear_search().
+	   care should be taken to reset the searchIndex of the relation, RELCAT_RELID, corresponding to 
+	   relation catalog before calling linear_search().*/
+	   
+	// let relcatRecId store the record id of the relation, <i>relName</i>, in the relation catalog.
+	RecId relcatRecId;
+	
+	if relcatRecId == {-1, -1} :
+	{ 
+		// the relation is not found in the relation catalog
+		return E_RELNOTEXIST;
+	}
+	
+	/* read the record entry corresponding to relcatRecId and use it to set the relId<sup>th</sup> entry 
+	of the RelCacheTable using RecBuffer::getRecord() and RelCacheTable::recordToRelCacheEntry().*/
+	
+	/****** Setting up attribute cache entry for the relation ******/
+	
+	// let listHead be used to hold the head of the linked list of attribute cache entries.
+	AttrCacheEntry listHead;
+	
+	/* iterate over all the entries in the attribute catalog corresponding to each attribute of
+	   the relation, <i>relName</i> by multiple calls of linear_search().
+	   care should be taken to reset the searchIndex of the relation, ATTRCAT_RELID, corresponding to 
+	   attribute catalog before the first call to linear_search().*/
+	{
+            	/* let attrcatRecId store a valid record id an entry of the relation, <i>relName</i>, 
+		   in the attribute catalog.*/
+		RecId attrcatRecId;
+	
+         	/* read the record entry corresponding to attrcatRecId and add it to linked list of listHead 
+		   using RecBuffer::getRecord() and AttrCacheTable::recordToAttrCacheEntry().*/
+	}
+	
+	// set the relId<sup>th</sup> entry of the RelCacheTable to listHead.
+	
+	/****** Setting up metadata the relation ******/
+	
+	//update the relId<sup>th</sup> entry of the tableMetaInfo with free as true and relName as the input.
+	
+	return relId;
+	
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
 					</li>
          <!-------------------------------closeRel------------------------------------------------------------>
 					<li>
+						<div class="detail" id="closerel">
+							<h2><i>public:</i> closeRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose entry is to be created in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>The relId of the relation in the open relation table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
+								    <td>int</td>
+								    <td>No relation with name, relName, exists in the disk.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
+								    <td>int</td>
+								    <td>No free entries in the open relation table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_closerel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::closeRel(int relId){
+
+	//traverse through the tableMetaInfo array,
+		find the entry in the open relation table corresponding to <i>relName</i>.
+    
+	//if found return the relation id, else indicate failure.
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
 					</li>
          <!-------------------------------deleteRel------------------------------------------------------------>
 					<li>
