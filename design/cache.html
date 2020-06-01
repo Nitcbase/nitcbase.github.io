@@ -190,7 +190,7 @@
 				<h2>class RelCacheTable</h2>
 				<p></p>
 				<div class="code">
-					<pre><code>class StaticBuffer{
+					<pre><code>class RelCacheTable{
 
 					};</code></pre>
 				</div>
@@ -237,8 +237,127 @@
 			</div>
 <!-----------------------------------class AttrCacheTable----------------------------------------------------------------------------------->
 
-				
-<!-------------------------------	
+			<div id="attr_cache_table_class" class="details">
+				<h2>class AttrCacheTable</h2>
+				<p></p>
+				<div class="code">
+					<pre><code>class AttrCacheTable{
+
+					};</code></pre>
+				</div>
+				<ul class="methods">
+	     <!----------------------Method1--------------------------->
+					<li>
+						<div class="detail" id="record_to_relcache_entry">
+						<h2><i>private:</i> RecordToRelCacheEntry </h2>
+						 <h5>Arguments:</h5>
+							 <div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							  <tr>
+							  <td></td>
+							  <td></td>
+							  <td>Block number of the block whose type is required.</td>
+							  </tr>
+							  </table>
+							  </div>
+						<h5>Return type:</h5>
+							<div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							   <tr>
+							    <td>blockType</td>
+							    <td>int</td>
+							    <td>Block type of the block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>).</td>
+							    </tr>
+							    </table>
+							</div>
+						<h5>Description:</h5>
+							<p></p>
+							<h5><a data-toggle="collapse" href="#algo_record_to_relcache_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+						<div id="algo_record_to_relcache_entry" class="collapse">
+							    <div class="code">
+								<pre><code>StaticBuffer::StaticBuffer(){
+							    
+							}</code></pre>
+							   </div>
+							</div>
+							
+						</div>
+					</li>
+         <!-------------------------------method2------------------------------------------------------------>
+					<li>
+					</li>
+				</ul>
+			</div>
+<!---------------------------------------------------------------------------------------------------------->
+            
+<!-----------------------------------class OpenRelTable----------------------------------------------------------------------------------->
+
+			<div id="open_rel_table_class" class="details">
+				<h2>class OpenRelTable</h2>
+				<p></p>
+				<div class="code">
+					<pre><code>class OpenRelTable{
+
+					};</code></pre>
+				</div>
+				<ul class="methods">
+	     <!----------------------Method1--------------------------->
+					<li>
+						<div class="detail" id="record_to_relcache_entry">
+						<h2><i>private:</i> RecordToRelCacheEntry </h2>
+						 <h5>Arguments:</h5>
+							 <div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							  <tr>
+							  <td></td>
+							  <td></td>
+							  <td>Block number of the block whose type is required.</td>
+							  </tr>
+							  </table>
+							  </div>
+						<h5>Return type:</h5>
+							<div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							   <tr>
+							    <td>blockType</td>
+							    <td>int</td>
+							    <td>Block type of the block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>).</td>
+							    </tr>
+							    </table>
+							</div>
+						<h5>Description:</h5>
+							<p></p>
+							<h5><a data-toggle="collapse" href="#algo_record_to_relcache_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+						<div id="algo_record_to_relcache_entry" class="collapse">
+							    <div class="code">
+								<pre><code>StaticBuffer::StaticBuffer(){
+							    
+							}</code></pre>
+							   </div>
+							</div>
+							
+						</div>
+					</li>
+         <!-------------------------------method2------------------------------------------------------------>
+					<li>
+					</li>
+				</ul>
+			</div>
+<!---------------------------------------------------------------------------------------------------------->
+                                  
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>	
+	
+<!------PREV CODE	
 			<div id = "openrel_table" class="detail">
                         	<h2>Open Relation Table</h2>
                         	<p>Cache layer stores the catalog caches in a tabular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in the open relation table is considered as the relation identifier (relId). Any layer that wishes to access the catalog information of an open relation needs to supply relId as an argument for the access functions of cache layer (access functions are described below). Each entry in the Open Relation Table has the following fields:</p>
@@ -1249,15 +1368,4 @@ public:
                             </div>
                         </div>
                         ------------------------------------------------------------------>
-                       
-                        <!-- PAGE ENDS -->
-                    </div>
-                </div>
-                <!-- END OF MAIN CONTENT -->
-            </div>
-        </div>
-    </div>
-    <!-- END OF CONTENT -->
-</body>
 
-</html>
