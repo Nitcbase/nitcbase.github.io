@@ -255,34 +255,360 @@
 				<ul class="methods">
 	     <!----------------------RecordToAttrCacheEntry--------------------------->
 					<li>
-						
+					<div class="detail" id="rectoattrcache">
+					    <h2><i>private</i> recordToAttrCacheEntry</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+							    <tr>
+								<td>record</td>
+								<td>union Attribute[ATTRCAT_SIZE]</td>
+								<td></td>
+							    </tr>
+							</table>
+					   </div>
+
+					    <h5>Return value:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<td>AttrCacheEntry</td>
+									<td></td>
+								 </tr>
+							</table>
+						     </div>
+
+					    <h5>Description:</h5>
+					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attribute_cache">AttrCacheEntry</a> structure. The details of the implementation are left to you.</p>
+					</div>
 					</li>
          <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
 					<li>
+					    <div class="detail" id="attrcachetorec">
+					    <h2><i>private</i> attrCacheEntryToRec</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<td>attrCatEntry</td>
+									<td>AttrCacheEntry</td>
+									<td></td>
+								 </tr>
+							</table>
+					   </div>
+
+					    <h5>Return value:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<td>record</td>
+									<td>union Attribute[ATTRCAT_SIZE]</td>
+									<td></td>
+								 </tr>
+							</table>
+						     </div>
+
+					    <h5>Description:</h5>
+					    <p>This is an utility function that converts <a href="#attribute_cache">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
+					</div>
 					</li>
          <!-------------------------------getAttrCatEntry1------------------------------------------------------------>
 					<li>
-					</li>
-         <!-------------------------------getAttrCatEntry2------------------------------------------------------------>
-					<li>
+						<div id="getattrcatentry" class="detail">
+                            <h2><i>public:</i> getAttrCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrName/attr_offset</td>
+                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrcat_buf</td>
+                                        <td>AttrCatEntry *</td>
+                                        <td>pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful copy of the attribute catalog entry corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRNOTEXIST</td>
+                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This methods gives the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getattrcatentry" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::getAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			//copy the attribute catalog in the attribute cache to the attrcat_buf
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+</div>
 					</li>
          <!-------------------------------setAttrCatEntry1------------------------------------------------------------>
 					<li>
+						<div id="setattrcatentry" class="detail">
+                            <h2><i>public:</i> setAttrCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrName/attr_offset</td>
+                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrcat_buf</td>
+                                        <td>AttrCatEntry *</td>
+                                        <td>pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover ">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful copy of the attribute catalog entry into the cache corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRNOTEXIST</td>
+                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This methods sets the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div class="collapse" id="algo-setattrcatentry">
+                                <div class="code"><pre><code>int OpenRelTable::setAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			//copy the attrcat_buf to the corresponding attibute node in the attribute cache
+			//set the dirty flag corresponding to the attribute in the attribute cache
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+</div>
 					</li>
-         <!-------------------------------setAttrCatEntry2------------------------------------------------------------>
+         <!-------------------------------getSearchIndex------------------------------------------------------------>
 					<li>
-					</li>
-         <!-------------------------------getSearchIndex1------------------------------------------------------------>
-					<li>
-					</li>
-         <!-------------------------------getSearchIndex2----------------------------------------------------------->
-					<li>
+						<div id="getsearchindexid" class="detail">
+                            <h2><i>public:</i> getSearchIndexId</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrName/attr_offset</td>
+                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>indid</td>
+                                        <td>IndexId *</td>
+                                        <td>pointer to buffer of type IndexId where the index id is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                             </div>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                                <h5>Return value:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>SUCCESS</td>
+                                            <td>If index id of previous hit is copied to indid. It means that the id pointed by indid is valid.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_OUTOFBOUND</td>
+                                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_NOTOPEN</td>
+                                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_ATTRNOTEXIST</td>
+                                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+
+                            <h5>Description:</h5>
+                            <p>This method gives the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.<br>(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getsearchindexid" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::getSearchIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			/*copy the previous index id (in meta informatiom) corresponding to 
+			  the attribute in the attribute cache to the indid*/
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                             </div>
+</div>
 					</li>
          <!-------------------------------setSearchIndex1------------------------------------------------------------>
 					<li>
-					</li>
-         <!-------------------------------setSearchIndex2------------------------------------------------------------>
-					<li>
+						<div id="setsearchindexid" class="detail">
+                            <h2><i>public:</i> setSearchIndexId</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>attrName/attr_offset</td>
+                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>searchIndex</td>
+                                        <td>IndexId *</td>
+                                        <td>pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If index id pointed by indid is successfully copied to the Attribute catalog cache.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_ATTRNOTEXIST</td>
+                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method sets the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setsearchindexid" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::setPrevIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
+		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
+			/*copy the indid to the previous index id (in meta informatiom)
+			  corresponding to the attribute in the attribute cache*/
+			return SUCCESS;
+		//}
+	//}
+	return E_ATTRNOTEXIST;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+</div>
 					</li>
 	<!----------------------------------------------------------------------->
 				</ul>
