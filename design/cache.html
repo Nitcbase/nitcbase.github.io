@@ -185,7 +185,60 @@
 				    } OpenRelTableMetaInfo ;</code></pre></div>
 			    </div>
 			</div>
-<!---------------------------------------------------------------------------------------------------------------------->
+<!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
+			<div id="rel_cache_table_class" class="details">
+				<h2>class RelCacheTable</h2>
+				<p></p>
+				<div class="code">
+					<pre><code>class StaticBuffer{
+
+					};</code></pre>
+				</div>
+				<ul class="methods">
+	     <!----------------------recordToRelCacheEntry--------------------------->
+					<li>
+						<div class="detail" id="record_to_relcache_entry">
+						<h2><i>private:</i> RecordToRelCacheEntry </h2>
+						 <h5>Arguments:</h5>
+							 <div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							  <tr>
+							  <td></td>
+							  <td></td>
+							  <td>Block number of the block whose type is required.</td>
+							  </tr>
+							  </table>
+							  </div>
+						<h5>Return type:</h5>
+							<div class="table-responsive">
+							  <table class="table table-bordered table-hover">
+							   <tr>
+							    <td>blockType</td>
+							    <td>int</td>
+							    <td>Block type of the block (<a href="../constants.html" target="_blank">REC/IND_INTERNAL/IND_LEAF/UNUSED</a>).</td>
+							    </tr>
+							    </table>
+							</div>
+						<h5>Description:</h5>
+							<p></p>
+							<h5><a data-toggle="collapse" href="#algo_record_to_relcache_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+						<div id="algo_record_to_relcache_entry" class="collapse">
+							    <div class="code">
+								<pre><code>StaticBuffer::StaticBuffer(){
+							    
+							}</code></pre>
+							   </div>
+							</div>
+							
+						</div>
+					</li>
+         <!------------------------------------------------------------------------------------------->		
+				</ul>
+			</div>
+<!-----------------------------------class AttrCacheTable----------------------------------------------------------------------------------->
+
+				
+<!-------------------------------	
 			<div id = "openrel_table" class="detail">
                         	<h2>Open Relation Table</h2>
                         	<p>Cache layer stores the catalog caches in a tabular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in the open relation table is considered as the relation identifier (relId). Any layer that wishes to access the catalog information of an open relation needs to supply relId as an argument for the access functions of cache layer (access functions are described below). Each entry in the Open Relation Table has the following fields:</p>
@@ -240,7 +293,6 @@ public:
                             
                         </div>
                         
-                        <!-- METHODS OF CACHE LAYER -->
                         
                         <div class="pagetitle" id="methods">
                             <h1>Methods of Cache Layer</h1>
@@ -729,7 +781,7 @@ public:
 	//copy the relation catalog in the relation cache to the relcat_buf
 	return SUCCESS;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                             </div>
                         </div>
@@ -789,7 +841,7 @@ public:
 	//set the dirty flag corresponding to the relation with Id relid in the relation cache
 	return SUCCESS;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                             </div>
                         </div>
@@ -846,7 +898,7 @@ public:
 	/*copy the previous record id of the relation in the relation cache to the recidbuff_ptr*/
 	return SUCCESS;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                             </div>
                         </div>
@@ -902,7 +954,7 @@ public:
 	/*copy the previous record id of the relation from the recidbuff_ptr to the relation cache*/
 	return SUCCESS;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div>
                                 
                             </div>
                         </div>
@@ -974,7 +1026,7 @@ public:
 	//}
 	return E_ATTRNOTEXIST;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                             </div>
                         </div>
@@ -1047,7 +1099,7 @@ public:
 	//}
 	return E_ATTRNOTEXIST;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                             </div>
                         </div>
@@ -1120,7 +1172,7 @@ public:
 	//}
 	return E_ATTRNOTEXIST;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div> 
                                 
                              </div>
                         </div>
@@ -1192,11 +1244,11 @@ public:
 	//}
 	return E_ATTRNOTEXIST;
 }</code></pre>
-                                </div> <!-- End of algo div -->
+                                </div>
                                 
                             </div>
                         </div>
-                        
+                        ------------------------------------------------------------------>
                        
                         <!-- PAGE ENDS -->
                     </div>
