@@ -295,20 +295,111 @@
 				<h2>class OpenRelTable</h2>
 				<p></p>
 				<div class="code">
-					<pre><code>class OpenRelTable{
+                                <pre><code>class OpenRelTable{
 
-					};</code></pre>
+public:
+
+	//methods
+	OpenRelTable();
+	~OpenRelTable();
+	int getRelId(unsigned char relName[ATTR_SIZE]);
+	int openRel(unsigned char relName[ATTR_SIZE]);
+	int closeRel(int relId);
+	int deleteRel(int relId);
+	
+private:
+	//field
+	OpenRelTableMetaInfo tableMetaInfo[MAXOPEN];
+	
+	//method
+	int getFreeOpenRelTableEntry();
+	
+};</code></pre>
 				</div>
 				<ul class="methods">
 	     <!----------------------Constructor--------------------------->
 					<li>
-						
+						<div class="detail" id="open_rel_table_constructor">
+							<h2><i>public:</i> OpenRelTable (Constructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_constructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::OpenRelTable(){
+
+			// initialize <i>tableMetaInfo</i> of all the entries of the open relation table with <i>free</i> as true and <i>relName</i> as an empty string.
+
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>	
 					</li>
          <!-------------------------------Destructor------------------------------------------------------------>
 					<li>
+						<div class="detail" id="open_rel_table_destructor">
+							<h2><i>public:</i> ~OpenRelTable (Destructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_destructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::~OpenRelTable(){
+
+			// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
+
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>	
+
 					</li>
          <!-------------------------------getRelId------------------------------------------------------------>
 					<li>
+					<div class="detail" id="getrelid">
+							<h2><i>public:</i> getRelId</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose relId corresponding to its entry in the open relation table is required.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<tr>
+							    <td>relId</td>
+							    <td>int</td>
+							    <td>The relId of the relation in the open relation table.</td>
+							</tr>
+							<tr>
+							    <td><a href="../constants.html" target="_blank"> FAILURE </a></td>
+							    <td>int</td>
+							    <td>The relation corresponding to relationName do not have an open entry in the open relation table.</td>
+							</tr>
+							<h5>Description:</h5>
+							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<h5><a data-toggle="collapse" href="#algo_getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_getrelid" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::getRelId(){
+
+			// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
+
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
 					</li>
          <!-------------------------------openRel------------------------------------------------------------>
 					<li>
