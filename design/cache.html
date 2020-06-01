@@ -254,9 +254,123 @@
 					</li>
 	<!--------getRelCatEntry--------------------------------------------------------------->
 					<li>
+						<div id="getrelcatentry" class="detail">
+                            <h2><i>public:</i> getRelCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>relcat_buf</td>
+                                        <td>RelCatEntry *</td>
+                                        <td>pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method gives the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getrelcatentry" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::getRelCatEntry(relId relid, RelCatEntry *relcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relation catalog in the relation cache to the relcat_buf
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------setRelCatEntry--------------------------------------------------------------->
 					<li>
+						<div id="setrelcatentry" class="detail">
+                            <h2><i>public:</i> setRelCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relid</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>relcat_buf</td>
+                                        <td>RelCatEntry *</td>
+                                        <td>pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache. <br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class=retval>
+                                <h5>Return value:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>SUCCESS</td>
+                                            <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_OUTOFBOUND</td>
+                                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_NOTOPEN</td>
+                                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                            <h5>Description:</h5>
+                            <p>This method sets the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setrelcatentry" class="collapse">
+                                <div class="code"><pre><code>int OpenRelTable::setRelCatEntry(relId relid, RelCatEntry *relcat_buf){
+	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relcat_buf to the relation catalog in the relation cache
+	//set the dirty flag corresponding to the relation with Id relid in the relation cache
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------getSearchIndex--------------------------------------------------------------->
 					<li>
