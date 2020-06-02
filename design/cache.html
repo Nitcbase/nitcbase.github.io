@@ -253,8 +253,8 @@ private:
 	//fields
 	AttrCacheEntry* attrCache[MAX_OPEN];
 	//methods
-	AttrCatEntry* recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE]);
-	union Attribute* attrCacheEntryToRecord(AttrCatEntry attrCatEntry);
+	void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
 public:
 	//methods
 	int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
@@ -278,53 +278,47 @@ public:
 							    <tr>
 								<td>record</td>
 								<td>union Attribute[ATTRCAT_SIZE]</td>
-								<td>Record which has to be converted to struct AttrCacheEntry</td>
+								<td>Record which has to be converted in to the form of <a href="#attr_cache_entry">struct AttrCacheEntry</a></td>
 							    </tr>
-							</table>
-					    </div>
-					    <h5>Return value:</h5>
-					    <div class="table-responsive">
-							<table class="table table-bordered table-hover">
 								<tr>
 									<td> attrCacheEntry </td>
 									<td>AttrCacheEntry*</td>
-									<td>Pointer to struct AttrCacheEntry created using the given record.</td>
+									<td>Pointer to which <a href="#attr_cache_entry">struct AttrCacheEntry</a> created using the given record has to be copied.</td>
 								 </tr>
 							</table>
-						     </div>
+					    </div>
+					    <h5>Return value:</h5>
+						<p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attribute_cache">AttrCacheEntry</a> structure. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the corresponding records from Attribute Catalog to Attribute Cache Entry. The details of the implementation are left to you.</p>
 					</div>
 					</li>
          <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
 					<li>
 					    <div class="detail" id="attrcachetorec">
-					    <h2><i>private</i> attrCacheEntryToRec</h2>
+					    <h2><i>private</i> attrCacheEntryToRecord</h2>
 					    <h5>Arguments:</h5>
 					    <div class="table-responsive">
 							<table class="table table-bordered table-hover">
 								<tr>
 									<td>attrCacheEntry</td>
-									<td>AttrCacheEntry</td>
-									<td>struct AttrCacheEntry which has to be converted to record.</td>
+									<td>AttrCacheEntry*</td>
+									<td>Pointer to  <a href="#attr_cache_entry">struct AttrCacheEntry</a> which has to be converted to record.</td>
+								 </tr>
+								<tr>
+									<td>record</td>
+									<td>union Attribute[ATTRCAT_SIZE]</td>
+									<td>Array of union Attributes to which record created using the given AttrCacheEntry has to be copied.</td>
 								 </tr>
 							</table>
 					   </div>
 
 					    <h5>Return value:</h5>
-					    <div class="table-responsive">
-							<table class="table table-bordered table-hover">
-								<tr>
-									<td>record</td>
-									<td>union Attribute[ATTRCAT_SIZE]</td>
-									<td>record (array of union Attribute) created using the given AttrCacheEntry</td>
-								 </tr>
-							</table>
-						     </div>
+						    <p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts <a href="#attribute_cache">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache Entries to corresponding records to be written back to Attribute Catalog. The details of the implementation are left to you.</p>
 					</div>
 					</li>
          <!-------------------------------getAttrCatEntry------------------------------------------------------------>
@@ -337,17 +331,17 @@ public:
 						    <tr>
 							<td>relId</td>
 							<td>int</td>
-							<td>Relation Id of the Relation</td>
+							<td>The relation id of the relation in the Attribute Cache Table.</td>
 						    </tr>
 						    <tr>
 							<td>attrName / attrOffset</td>
 							<td>char[ATTR_SIZE] / int</td>
-							<td>Name of the attribute / offset of target attribute (this is an overloaded funtion).</td>
+							<td>The name/offset of the target attribute (this is an overloaded funtion).</td>
 						    </tr>
 						    <tr>
 							<td>attrCatBuf</td>
 							<td>AttrCatEntry*</td>
-							<td>pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> where the attribute catalog entry corresponding to the given attribute is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
 						    </tr>
 						</table>
 					    </div>
@@ -358,42 +352,43 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							<td>SUCCESS</td>
-							<td>On successful copy of the attribute catalog entry corresponding to the relation with id relId and attribute with name attrName or having offset attrOffset</td>
+							<td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully.</td>
 						    </tr>
 						    <tr>
 							<td>E_OUTOFBOUND</td>
-							<td>If the relId is out of the range 0-MAX_OPEN</td>
+							<td>If the relId is out of the range 0-MAX_OPEN.</td>
 						    </tr>
 						    <tr>
 							<td>E_NOTOPEN</td>
-							<td>If no open relation exists corresponding to the id given by relId</td>
+							<td>If no open relation exists corresponding to the given by relId.</td>
 						    </tr>
 						    <tr>
 							<td>E_ATTRNOTEXIST</td>
-							<td>If there is no attribute with name attrName or having offset attrOffset</td>
+							<td>If no attribute exists with the given attribute name or offset.</td>
 						    </tr>
 
 						</table>
 					    </div>
 					    <h5>Description:</h5>
-					    <p>This methods gives the Attribute catalog entry (AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
+					    <p>This methods gives the Attribute catalog entry (<a href="#attr_cat_entry">struct AttrCatEntry</a>) corresponding to the given attribute.</p>
 
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
 					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attr_offset, AttrCatEntry *attrCatBuf){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCache[relId] == NULL){ // the attribute catalog entry corresponding to the relId is not open
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
-		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			//copy the attribute catalog in the attribute cache to the attrCatBuf
+	// Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
+		// if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
+			// copy the attribute catalog in the attribute cache to the attrCatBuf
 			return SUCCESS;
-		//}
-	//}
+		// }
+	// }
+	
 	return E_ATTRNOTEXIST;
 }</code></pre>
                                 </div> <!-- End of algo div -->
