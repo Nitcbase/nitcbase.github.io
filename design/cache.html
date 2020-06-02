@@ -294,7 +294,7 @@
 			<div id="open_rel_table_class" class="details">
 				<h2>class OpenRelTable</h2>
 				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. Thus, any operation on a relation requires it to be first loaded to the cache memory. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. The relation id, relId, of a relation is defined as the index of the relation's entry in the OpenRelTable. relId is required to access member fields and to call the functions of OpenRelTable, RelCacheTable, and AttrCacheTable specific to a relation. As per the NITCbase design,  the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
-				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the open relation table, close its entry in the open relation table, and to delete the relation from the database.</p>
+				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database.</p>
 				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
@@ -336,7 +336,7 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::OpenRelTable(){
 
-	// initialize <i>tableMetaInfo</i> of all the entries of the open relation table with <i>free</i> as true and <i>relName</i> as an empty string.
+	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
 
 }</code></pre>
 							    </div>
@@ -377,7 +377,7 @@ private:
 								<tr>
 								    <td>relName</td>
 								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
-								    <td>Name of the relation whose relation id in the open relation table is required.</td>
+								    <td>Name of the relation whose relation id in the Open Relation Table is required.</td>
 								</tr>
 							    </table>
 							</div>
@@ -387,26 +387,26 @@ private:
 								<tr>
 								    <td>relId</td>
 								    <td>int</td>
-								    <td>The relation id of the relation in the open relation table.</td>
+								    <td>The relation id of the relation in the Open Relation Table.</td>
 								</tr>
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
 								    <td>int</td>
-								    <td>The relation corresponding to relationName do not have an open entry in the open relation table.</td>
+								    <td>The relation corresponding to relationName do not have an open entry in the Open Relation Table.</td>
 								</tr>
 							    </table>
 							</div>
 							<h5>Description:</h5>
-							<p>Returns the relation id, i.e., the index, of the entry corresponding to the input relation in the open relation table. </p>
+							<p>Returns the relation id, i.e., the index, of the entry corresponding to the input relation in the Open Relation Table. </p>
 							<h5><a data-toggle="collapse" href="#algo_getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_getrelid" class="collapse">
 							    <div class="code">
 								<pre><code>int OpenRelTable::getRelId(unsigned char relName[ATTR_SIZE]){
 
 	/* traverse through the tableMetaInfo array,
-		find the entry in the open relation table corresponding to <i>relName</i>.*/
+		find the entry in the Open Relation Table corresponding to <i>relName</i>.*/
     
-	// if found return the relation id, else indicate that the relation do not have an entry in the open relation table.
+	// if found return the relation id, else indicate that the relation do not have an entry in the Open Relation Table.
 	
 }</code></pre>
 							    </div>
@@ -423,7 +423,7 @@ private:
 								<tr>
 								    <td>relName</td>
 								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
-								    <td>Name of the relation whose entry is to be created in the open relation table.</td>
+								    <td>Name of the relation whose entry is to be created in the Open Relation Table.</td>
 								</tr>
 							    </table>
 							</div>
@@ -433,7 +433,7 @@ private:
 								<tr>
 								    <td>relId</td>
 								    <td>int</td>
-								    <td>Relation id of the relation in the open relation table.</td>
+								    <td>Relation id of the relation in the Open Relation Table.</td>
 								</tr>
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
@@ -443,24 +443,24 @@ private:
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
 								    <td>int</td>
-								    <td>No free entries left in the open relation table.</td>
+								    <td>No free entries left in the Open Relation Table.</td>
 								</tr>
 							    </table>
 							</div>
 							<h5>Description:</h5>
-							<p>Creates an entry for the input relation in the open relation table. </p>
+							<p>Creates an entry for the input relation in the Open Relation Table and returns the corresponding relation id. </p>
 							<h5><a data-toggle="collapse" href="#algo_openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_openrel" class="collapse">
 							    <div class="code">
 								<pre><code>int OpenRelTable::openRel(unsigned char relName[ATTR_SIZE]){
 	
-	if the relation, <i>relName</i>, already has an entry in the open relation table:
+	if the relation, <i>relName</i>, already has an entry in the Open Relation Table:
 	{ // checked using OpenRelTable::getRelId().
 	
 		// return that relation id;
 	}
 	
-	// find a free slot in the open relation table using OpenRelTable::getFreeOpenRelTableEntry().
+	// find a free slot in the Open Relation Table using OpenRelTable::getFreeOpenRelTableEntry().
 	if free slot not available:
 	{
 		return E_CACHEFULL;
@@ -511,7 +511,7 @@ private:
 	
 	// set the relId<sup>th</sup> entry of the RelCacheTable to listHead.
 	
-	/****** Setting up metadata in the open relation table for the relation******/
+	/****** Setting up metadata in the Open Relation Table for the relation******/
 	
 	//update the relId<sup>th</sup> entry of the tableMetaInfo with free as true and relName as the input.
 	
@@ -532,7 +532,7 @@ private:
 								<tr>
 								    <td>relId</td>
 								    <td>int</td>
-								    <td>Relation id of a relation in the open relation table.</td>
+								    <td>Relation id of a relation in the Open Relation Table.</td>
 								</tr>
 							    </table>
 							</div>
@@ -542,7 +542,7 @@ private:
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
 								    <td>int</td>
-								    <td>Successfully closed the entry of the relation in the open relation table.</td>
+								    <td>Successfully closed the entry of the relation in the Open Relation Table.</td>
 								</tr>
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
@@ -552,12 +552,12 @@ private:
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_FREESLOT </a></td>
 								    <td>int</td>
-								    <td>Entry corresponding to input relId is free in the open relation table.</td>
+								    <td>Entry corresponding to input relId is free in the Open Relation Table.</td>
 								</tr>
 							    </table>
 							</div>
 							<h5>Description:</h5>
-							<p>Closes the entry of the input relation in the open relation table.</p>
+							<p>Closes the entry of the input relation in the Open Relation Table.</p>
 							<h5><a data-toggle="collapse" href="#algo_closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_closerel" class="collapse">
 								<div class="code">
@@ -709,7 +709,7 @@ private:
 							    </table>
 							</div>
 							<h5>Description:</h5>
-							<p>Returns an unoccupied entry in the Open Relation Table. </p>
+							<p>Returns index of an unoccupied entry in the Open Relation Table. </p>
 							<h5><a data-toggle="collapse" href="#algo_get_free_open_rel_table_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_get_free_open_rel_table_entry" class="collapse">
 								<div class="code">
