@@ -295,7 +295,7 @@
 				<h2>class OpenRelTable</h2>
 				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. Thus, any operation on a relation requires it to be first loaded to the cache memory. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. The relation id, relId, of a relation is defined as the index of the relation's entry in the OpenRelTable. relId is required to access member fields and to call the functions of OpenRelTable, RelCacheTable, and AttrCacheTable specific to a relation. As per the NITCbase design,  the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
 				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the open relation table, close its entry in the open relation table, and to delete the relation from the database.</p>
-				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. <i>OpenRelTable class<i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
+				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
 
@@ -659,13 +659,17 @@ private:
 	
 	/****** Deleting from relation cache******/
 	
+	//using the firstBlk and lastBlk fields of the relation catalog entry in the relId<sup>th</sup> relation cache entry, iteratively release the blocks of the relation calling <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+	
 	// delete the record entry corresponding to the relation from the relation catalog using the recId member field of the relId<sup>th</sup> entry in relation cache and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
 	
 	/****** Deleting from attribute cache ******/
 	
 	// iterate over all the entries in the linked list of the relId<sup>th</sup> entry in attribute cache.
 	{
-		
+	
+		//if the attribute corresponding to the entry has a B+ Tree associated with it, release the allocated index blocks using <a href="b+tree.html##destroy" target="_blank">BPlusTree::bPlusDestroy()</a>.
+	
 		// delete the record entry corresponding to the attribute cache entry in the attribute catalog using the recId member field of the attribute cache entry and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
 		
 		// free the memory dynamically alloted to this entry in attribute cache linked list.
@@ -673,7 +677,7 @@ private:
 	
 	/****** Deleting from open relation table ******/
 	
-	//free the relId<sup>th</sup> entry of the tableMetaInfo.
+	// free the relId<sup>th</sup> entry of the tableMetaInfo.
 
 	return SUCCESS;	
 	
@@ -705,7 +709,7 @@ private:
 							    </table>
 							</div>
 							<h5>Description:</h5>
-							<p>Copies Block Allocation Map from disk to buffer memory and updates the meta information of each buffer to initial empty conditions. Should be called at the beginning of the session after the <a href="../storage-model.html#disk_constructor" target="_blank">Disk constructor</a>. </p>
+							<p>Returns an unoccupied entry in the Open Relation Table. </p>
 							<h5><a data-toggle="collapse" href="#algo_get_free_open_rel_table_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_get_free_open_rel_table_entry" class="collapse">
 								<div class="code">
