@@ -375,6 +375,7 @@ public:
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
 					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attr_offset, AttrCatEntry *attrCatBuf){
+	
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
 		return E_OUTOFBOUND;
 	}
@@ -390,6 +391,7 @@ public:
 	// }
 	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
