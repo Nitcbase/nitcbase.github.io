@@ -293,7 +293,9 @@
 
 			<div id="open_rel_table_class" class="details">
 				<h2>class OpenRelTable</h2>
-				<p></p>
+				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. Thus, any operation on a relation requires it to be first loaded to the cache memory. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. The relation id, relId, of a relation is defined as the index of the relation's entry in the OpenRelTable. relId is required to access member fields and to call the functions of OpenRelTable, RelCacheTable, and AttrCacheTable specific to a relation. As per the NITCbase design,  the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to represent a single relation whose relation id is i. The public getRelId() of the OpenRelTable returns the relation id of the input relation name.</p>
+				<p>The class OpenRelTable contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the open relation table, close its entry in the open relation table, and to delete the relation from the database.</p>
+				<p>OpenRelTable is a static class, i.e., all member fields and methods are declared static. Memory is allocated statically for all member fields of the class. Static methods in a class can access the static member fields of the class. Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. OpenRelTable class is a friend class to both RelCacheTable class, and AtrrCacheTable class. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
 
@@ -315,7 +317,9 @@ private:
 	int getFreeOpenRelTableEntry();
 	
 };</code></pre>
+					
 				</div>
+				<p>The following are the specifications for the methods in class <i>OpenRelTable</i>. The stub code is availabe <a href="bufferStub.html#staticBuffer.h" target="_blank">here</a>.</p>
 				<ul class="methods">
 	     <!----------------------Constructor--------------------------->
 					<li>
