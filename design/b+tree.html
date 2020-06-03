@@ -149,7 +149,13 @@ private :
 		                     
 		            <h5>Description:</h5>
 		            <p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. It inserts the attribute value corresponding to <i>attrName</i> of all entries in the relation into the B+Tree using <i>bPlusInsert()</i>. If in between the insertion, the disk runs out of space, then the B+ Tree will not be created. This method also sets the object instance's member fields with the input arguments. </p>
-		                   
+		             
+			<p><b>NOTE:</b> 
+				<ul>
+					<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
+				</ul>
+			</p>
+				 
 		            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              	     <div id="algo-constructor" class="collapse">
                             	     	<div class="code"><pre><code>BPlusTree::BPlusTree(int relid, char attrName[ATTR_SIZE])
@@ -246,11 +252,7 @@ private :
 }</code></pre>
 								</div>
                    			</div>
-							 <p><b>NOTE:</b> 
-								<ul>
-									<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
-								</ul>
-							</p>
+							 
                         </div>
 			<!----Constructor ends --->	
 				</li>
@@ -331,6 +333,12 @@ private :
 			    			<h5>Description:</h5>
                             <p>Inserts a <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entry corresponding to the input attribute value and record id into the B+ tree. The disk might run out of memory during the insertion of the <i>Index</i> entry in which case the entire B+ Tree is destroyed.</p>
                             
+			<p><b>NOTE:</b> 
+				<ul>
+					<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
+				</ul>
+			</p>
+				
                             <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-insert" class="collapse">
                             	<div class="code"><pre><code>int BPlusTree::bPlusInsert(union Attribute val,recId recordId)
@@ -628,11 +636,7 @@ private :
  }</code></pre>
                             	</div>
                             </div>
-							<p><b>NOTE:</b> 
-								<ul>
-									<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
-								</ul>
-							</p>
+							
                         </div>		
 	<!---Insert ends here--->			    
 			    </li>
@@ -967,7 +971,14 @@ private :
                             <h5>Description:</h5>
                             <p>Used to delete a B+ Tree. The caller passes the root block of the B+ Tree as input to the method. The method recursively deletes the constituent index blocks, both <a href="../storage-model.html#intind_blk" target="_blank">internal</a> and <a href="../storage-model.html#leafind_blk">leaf</a> index blocks, until the full B+ Tree is deleted. This method is called in a situation where no further disk blocks can be allotted during the <a href="#constructor">creation of</a>/ <a href="#insert">insertion to</a> a B+ Tree. This function is also called while deleting an entire relation in NITCbase. </p>
                             
-                            <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
+              		  <p><b>NOTE:</b> 
+				<ul>
+					<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to E_DISKFULL after deletion.</li>
+					<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to E_DISKFULL after  deletion.</li>
+				</ul>
+			</p>            
+				
+			    <h5><a data-toggle="collapse" href="#algo-destroy"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-destroy" class="collapse">
                             	<div class="code"><pre><code>int BPlusTree::bPlusDestroy(int blockNum)
 {
@@ -1016,12 +1027,7 @@ private :
 </code></pre>
 								</div>
                             </div>
-							<p><b>NOTE:</b> 
-								<ul>
-									<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to E_DISKFULL after deletion.</li>
-									<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to E_DISKFULL after  deletion.</li>
-								</ul>
-							</p>
+							
                         </div>
 	    <!-----Destroy ends here----->
 			    </li>
