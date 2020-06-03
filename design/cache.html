@@ -246,7 +246,7 @@
 
 			<div id="attr_cache_table_class" class="details">
 				<h2>class AttrCacheTable</h2>
-				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog in NITCbase. The class contains an array of pointers to <a href="#attr_cat_entry">struct AttrCatEntry</a> with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> (the maximum number of open relations in NITCbase). Once a relation is opened using <i>class OpenRelTable</i>, the attributes of the relation is cached in <i>class AttributeCacheTable</i> with the same relation id.</p>
+				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog in NITCbase. The class contains an array of pointers to <a href="#attr_cat_entry">struct AttrCatEntry</a> with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> (the maximum number of open relations in NITCbase) as a private member field. Once a relation is opened using <i>class OpenRelTable</i>, the attributes of the relation is cached in <i>class AttributeCacheTable</i> with the same relation id.</p>
 				<div class="code">
 <pre><code>class AttrCacheTable{
 
