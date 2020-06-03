@@ -74,6 +74,7 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
                             <li> <a href="#intro">Introduction</a></li>
+                            <li> < a href="#indexstructure">Indexing Data Structures</a></li>
                             <li> <a href="#bplustree">B+ Tree</a></li>
                             <li> <a href="#insert">Insertion in B+ Tree</a></li>
                           
@@ -91,25 +92,33 @@
                             <h1>B+ Trees</h1>
                         </div>
                         
+                        <p>We know that the objective of indexing is to make the retrieval of records quicker. The key to achieve this lies in the choice of a suitable underlying data structure that defines the structure of index in the disk. Let us explore B+ Tree, which is the indexing data structure used in NITCbase.</p>
+
                             
                             <div class="detail" id="intro">
                                 <h2>Introduction</h2>
                                 
-                                <p>B Trees and B+ Trees are m-way search trees confined to rules of insertion and deletion. As you might already know, search becomes very easy in the case of a BST. Locating an entry in a BST accesses very few entries. In this case, the number of entries in each node is restricted to 1. Suppose we can increase this number and can introduce more branches to a single node so that the height of the tree as well as the number of accesses decreases. Such a tree is called the m-way search tree. Suppose you have 2 entries on a single node, then it can have at most 3 child nodes. For Example,
-                                </p>
+                                <p>We all are aware of how easy it is to locate a page or a topic in a book if you have an index. We can say that accessing each record in a database is also very easy when you have an index structure for the same.Creating an index is basically creating a data structure that holds the attribute value and a pointer to the records, i.e a 'key-pointer' pair. We store the index in the disk so that, each time one needs to access the records, they can do so by searching these index blocks. The disk blocks required for the index is lesser, as the index record size is lesser. The advantage of indexing is that records could be fetched from the disk with fewer disk accesses.</p><br>
+                                <p>Consider a disk having blocks of size 512 bytes. You need to store a relation Student having 5 attributes (Roll No, Name, Marks, Grade, Attendance) and 1000 records. If the size of the attribute is 4 bytes each, then each record requires 20 bytes. In turn the whole relation requires 2000 bytes for storage. </p><br>
+                                <p>The number of records that can be stored in a block = $\lfloor 512/20  \rfloor = 25 $. </p><br>
+                                <p>The number of blocks required for the storage of the whole relation=  $\lceil 1000/25 \rceil = 40 $.</p><br>
+                                <p>Suppose we need to fetch records of students who have secured more than 50 marks.</p><br>
+                                <p>Conventionally, one must access each of the records in these 40 blocks and check if they satisfy the search condition. The number of disk accesses can be reduced if an index is created for the attribute Marks. First, the index blocks are fetched. Then from it, based on each key that satisfies our search condition (key > 50), the records are fetched using the pointers. The number of index blocks would be considerably lesser than the number of record blocks i.e 40. </p><br><br>
+
+                            </div>
+                            <div class="details" id="indexstructure">
+                                <h2>Indexing Data Structures</h2>
+                                
+                                <p>For an exhaustive search on a linearly structured Index like an array, the number of disk accesses is in the order of N, where N is the number of blocks that store the Index. In the case of a Binary Search Tree(wikipedia), the time required for the search of any entry in the array is reduced to log(n to the base 2). The number of entries in each node of a BST is restricted to 1. Suppose we can increase this number and can introduce more branches to a single node so that the height of the tree as well as the number of accesses decreases. Such a tree is called the m-way search tree. Suppose you have 2 entries on a single node, then it can have at most 3 child nodes. For, eg:</p>                                
+                             
                                 <center><img class="img-fluid" src="../img/bplustree/1.png"></center>
                                 <br><br>
                                 <p> This is known as a 3-way search tree with 2 keys.<br>
-                                    Since there are no rules for insertion of elements into an m-way search tree, the order of search can expand to n. (Why? Because we do not know if the elements should be inserted in the same node or as a child i.e height of the tree is not defined.) <br> A <b>B tree</b> of<b> order m</b> is a tree which satisfies the following properties:
-                                    <ol>
-                                        <li>All leaves appear on the same level.</li>
-                                        <li>Every node has at most $m$ children. </li>
-                                        <li>Every non-leaf node (except root) has at least $\lceil m/2 \rceil$ child nodes.</li>
-                                        <li>The root has at least two children if it is not a leaf node.</li>
-                                        <li>A non-leaf node with $m$ children contains $m−1$ keys. </li>
-                                        <li>A leaf node can store between $\lfloor m/2 \rfloor$ and $m-1$ keys.</li>
-                                    </ol>
-                                </p>
+                                   The Order of a tree is the maximum number of children that a node in a tree can have. <br>
+                                   For a Multi-way search tree of order m, each node can have a maximum of m children and  m-1 entries.  The entries in each node are sorted. Similar to a BST all the entries on the left of a key in the node as well as their children, will be lesser than key. Consecutively, all the entries to the key’s right as well as its children will be greater than it. 
+                                </p><br>
+                                <p>How can we bring this to the database and relation? <br> Assume each entry in the node of the tree to be the key that stores a record pointer along with it that points to the original record in the Record block of the disk. The height of the tree will determine the number of disk accesses required. Each node in the tree is now an Index block in the disk. </p>
+                                 
 
                                 <p>The creation of a B Tree is bottom-up. We can visualize the tree as a multi-level index. The bottom layer can be considered the first level indexing, the layer above it as the second level indexing, so on. A pointer to access each of these entries is stored along with the key of the indices.</p>
                                 <p>Consider a table of 9 records that need to be indexed by a particular attribute. Let’s use a left-biased B-tree of order 4. If the attribute values corresponding to each record are inserted, we get a B Tree as shown below. 
