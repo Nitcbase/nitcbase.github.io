@@ -277,13 +277,13 @@ public:
 							<table class="table table-bordered table-hover">
 							    <tr>
 								<td>record</td>
-								    <td><a href="buffer.html#block_structures">union Attribute</a>[ATTRCAT_SIZE]</td>
+								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
 								<td>Record which has to be converted in to Attribute Cache Entry</td>
 							    </tr>
 								<tr>
 									<td> attrCacheEntry </td>
-									<td>AttrCacheEntry*</td>
-									<td>Pointer to <a href="#attr_cache_entry">struct AttrCacheEntry</a> to which the Attribute Cache Entry created using the given record has to be copied.</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry*</a></td>
+									<td>Pointer to <i>struct AttrCacheEntry</i> to which the Attribute Cache Entry created using the given record has to be copied.</td>
 								 </tr>
 							</table>
 					    </div>
@@ -292,6 +292,9 @@ public:
 
 					    <h5>Description:</h5>
 					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the corresponding records from Attribute Catalog to Attribute Cache Entry. The details of the implementation are left to you.</p>
+					<p><ul>
+				        <li>The caller should allocate memory to the pointer to <i>struct AttrCacheEntry</i> before calling the function.
+					</ul></p>
 					</div>
 					</li>
          <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
@@ -303,13 +306,13 @@ public:
 							<table class="table table-bordered table-hover">
 								<tr>
 									<td>attrCacheEntry</td>
-									<td>AttrCacheEntry*</td>
-									<td>Pointer to  <a href="#attr_cache_entry">struct AttrCacheEntry</a> which has to be converted to record of Attribute Catalog.</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry*</a>*</td>
+									<td>Pointer to  <i>struct AttrCacheEntry</i> which has to be converted to record of Attribute Catalog.</td>
 								 </tr>
 								<tr>
 									<td>record</td>
-									<td>union Attribute[ATTRCAT_SIZE]</td>
-									<td>Array of union Attributes to which record created using the given AttrCacheEntry has to be copied.</td>
+									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
+									<td>Array of <i>union Attributes</i> to which record created using the given Attribute Cache Entry has to be copied.</td>
 								 </tr>
 							</table>
 					   </div>
@@ -320,6 +323,7 @@ public:
 					    <h5>Description:</h5>
 					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache Entries to corresponding records to be written back to Attribute Catalog. The details of the implementation are left to you.</p>
 					</div>
+					
 					</li>
          <!-------------------------------getAttrCatEntry------------------------------------------------------------>
 					<li>
@@ -335,13 +339,13 @@ public:
 						    </tr>
 						    <tr>
 							<td>attrName / attrOffset</td>
-							<td>char[ATTR_SIZE] / int</td>
+							<td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
 							<td>The name/offset of the target attribute (this is an overloaded funtion).</td>
 						    </tr>
 						    <tr>
 							<td>attrCatBuf</td>
-							<td>AttrCatEntry*</td>
-							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> to which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
+							<td><a href="#attr_cat_entry">AttrCatEntry*</a></td>
+							<td>Pointer to the buffer of type <i>struct AttrCatEntry</i> to which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
 						    </tr>
 						</table>
 					    </div>
@@ -368,10 +372,10 @@ public:
 						</table>
 					    </div>
 					    <h5>Description:</h5>
-					    <p>Gives the Attribute catalog entry corresponding to the given attribute.</p>
+					    <p>Gives the Attribute Catalog Entry corresponding to the given attribute from Attribute Catalog Cache.</p>
 					<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument.
-				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
@@ -413,13 +417,13 @@ public:
                                     </tr>
                                     <tr>
                                         <td>attrName / attrOffset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
                                         <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>attrCatBuf</td>
-                                        <td>AttrCatEntry*</td>
-                                        <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> from which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
+				        <td><a href="#attr_cat_entry">AttrCatEntry*</a></td>
+                                        <td>Pointer to the buffer of type <i>struct AttrCatEntry</i> from which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -448,10 +452,10 @@ public:
                             </div>
 					
                             <h5>Description:</h5>
-                            <p>Gives the Attribute catalog entry corresponding to the given attribute.</p>
+                            <p>Sets the Attribute catalog entry corresponding to the given attribute in the Attribute Cache.</p>
 						<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
-				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
@@ -494,13 +498,13 @@ public:
                                     </tr>
                                     <tr>
                                         <td>attrName / attrOffset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
                                         <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td>IndexId *</td>
-                                        <td>Pointer to buffer of type <a href="buffer.html#indexid">IndexId</a> to which the search index of the given attribute has to be copied from Attribute Cache.</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId*</a></td>
+                                        <td>Pointer to buffer of type <i>IndexId</i> to which the search index of the given attribute has to be copied from Attribute Catalog Cache.</td>
                                     </tr>
                                 </table>
                              </div>
@@ -528,7 +532,7 @@ public:
                                 </div>
 
                             <h5>Description:</h5>
-					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cahe.<br>(note: this is used to track the record found in previous search and next search can start searching from this record)</p>
+					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cahe. This is used to track the record found in previous search and next search can start from this record.</p>
 				<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory to the pointer to <a href="buffer.html#indexid">IndexId</a> before calling the function.
@@ -573,12 +577,12 @@ public:
                                     </tr>
                                     <tr>
                                         <td>attrName / attrOffset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
+                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
                                         <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td>IndexId *</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId*</a></td>
                                         <td>Pointer to buffer of type <a href="buffer.html#indexid">IndexId</a> from which the search index of the given attribute has to be copied to Attribute Catalog Cache.</td>
                                     </tr>
                                 </table>
@@ -607,7 +611,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Sets the value of <i>searchIndex</i> field in Attribute Catalog Cache of the given attribute.</p>
+                            <p>Sets the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field in Attribute Catalog Cache of the given attribute.</p>
 					<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
