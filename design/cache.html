@@ -160,7 +160,7 @@
 					AttrCatEntry attrcat_entry;
 					bool dirty;
 					<a href="buffer.html#misc">recId</a> recid;
-					<a href="buffer.html#misc">IndexId</a> prev_indid;   /*IMPORTANT: see explanation below  */
+					<a href="buffer.html#misc">IndexId</a> searchIndex;   /*IMPORTANT: see explanation below  */
 					struct AttributeCacheEntry *next;
 				    } AttributeCacheEntry;</code></pre></div>
 				</div>
@@ -341,13 +341,10 @@ public:
 						    <tr>
 							<td>attrCatBuf</td>
 							<td>AttrCatEntry*</td>
-							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> where the attribute catalog entry corresponding to the given attribute is to be copied.</td>
+							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> to which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
 						    </tr>
 						</table>
 					    </div>
-					    <p><b>Note: </b>This method is overloaded in type of the second argument.</p>
-						    <br>WARNING: The caller should have allocated memory to the pointer.
-
 					    <h5>Return value:</h5>
 					    <div class="table-responsive">
 						<table class="table table-bordered table-hover">
@@ -422,7 +419,7 @@ public:
                                     <tr>
                                         <td>attrCatBuf</td>
                                         <td>AttrCatEntry*</td>
-                                        <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> from which the attribute catalog entry corresponding to the given attribute is to be copied.</td>
+                                        <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> from which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -493,60 +490,63 @@ public:
                                     <tr>
                                         <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attrOffset</td>
+                                        <td>attrName / attrOffset</td>
                                         <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
                                         <td>IndexId *</td>
-                                        <td>pointer to buffer of type IndexId where the seaech index has to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>Pointer to buffer of type <a href="buffer.html#indexid">IndexId</a> to which the search index of the given attribute has to be copied from Attribute Cache.</td>
                                     </tr>
                                 </table>
                              </div>
-                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
                                 <h5>Return value:</h5>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>SUCCESS</td>
-                                            <td>If index id of previous hit is copied to searchIndex. It means that the id pointed by searchIndex is valid.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_OUTOFBOUND</td>
-                                            <td>If the relId is out of the range 0-MAX_OPEN</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_NOTOPEN</td>
-                                            <td>If no open relation exists corresponding to the id given by relId</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_ATTRNOTEXIST</td>
-                                            <td>If there is no attribute with name attrName or having offset attrOffset</td>
-                                        </tr>
+                                    <table class="table table-bordered table-hover ">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If the index id of the previous search hit is copied to searchIndex successfully. It indicates that the index id pointed by seachIndex is valid.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relId is out of the range 0-MAXOPEN</td>
+                                    </tr>
+                                    <tr>
+					<td>E_NOTOPEN</td>
+					<td>If no open relation exists corresponding to the given by relId.</td>
+				    </tr>
+				    <tr>
+					<td>E_ATTRNOTEXIST</td>
+					<td>If no attribute exists with the given attribute name or offset.</td>
+				    </tr>
 
-                                    </table>
+                                </table>
                                 </div>
 
                             <h5>Description:</h5>
-                            <p>This method gives the value of <i>searchIndex</i> field of an attribute present in the relation as speified in arguments.<br>(note: this is used to track the record found in previous search and next search can start searching from the previously found record)</p>
-
+					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cahe.<br>(note: this is used to track the record found in previous search and next search can start searching from this record)</p>
+				<p><b>Note: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory to the pointer to <a href="buffer.html#indexid">IndexId</a> before calling the function.
+				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
                                 <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(int relId, char attrName[ATTR_SIZE/int attrOffset, IndexId *searchIndex){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relid) lies in the range
+	
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCahe[relid] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCahe[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
 	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
 		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			/*copy the previous search index id (in meta informatiom) corresponding to 
+			/*copy the previous search index id corresponding to 
 			  the attribute in the attribute cache to searchIndex*/
 			return SUCCESS;
 		//}
@@ -565,67 +565,74 @@ public:
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
+                                    <table class="table table-bordered table-hover">
                                     <tr>
                                         <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attrOffset</td>
+                                        <td>attrName / attrOffset</td>
                                         <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
                                         <td>IndexId *</td>
-                                        <td>pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>Pointer to buffer of type <a href="buffer.html#indexid">IndexId</a> from which the search index of the given attribute has to be copied to Attribute Catalog Cache.</td>
                                     </tr>
                                 </table>
+                                </table>
                             </div>
-                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
                             <h5>Return value:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td>SUCCESS</td>
-                                        <td>If index id pointed by searchIndex is successfully copied to the Attribute catalog cache.</td>
+                                        <td>If the index id given in the argument is copied to <i>searchIndex</i> field in Attribute Catalog Cache successfully.</td>
                                     </tr>
                                     <tr>
                                         <td>E_OUTOFBOUND</td>
-                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                        <td>If the relId is out of the range 0-MAXOPEN</td>
                                     </tr>
                                     <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If no open relation exists corresponding to the id given by relId</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_ATTRNOTEXIST</td>
-                                        <td>If there is no attribute with name attrName or having offset attrOffset</td>
-                                    </tr>
+					<td>E_NOTOPEN</td>
+					<td>If no open relation exists corresponding to the given by relId.</td>
+				    </tr>
+				    <tr>
+					<td>E_ATTRNOTEXIST</td>
+					<td>If no attribute exists with the given attribute name or offset.</td>
+				    </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>This method sets the value of <i>searchIndex</i> field of an attribute present in the relation as speified in arguments.</p>
-
+                            <p>Sets the value of <i>searchIndex</i> field in Attribute Catalog Cache of the given attribute.</p>
+					<p><b>Note: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setsearchindexid" class="collapse">
                                 <div class="code"><pre><code>int AttrCacheTable::setPrevIndexId(relId relId, char attrName[ATTR_SIZE/int attrOffset, IndexId *searchIndex){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+	
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCahe[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
 	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
 		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			/*copy searchIndex given in argument to searchIndex field (in meta informatiom)
-			  corresponding to the attribute in the attribute cache*/
+			/*copy searchIndex given in argument to searchIndex field
+			  corresponding to the attribute in the Attribute Catalog Cache*/
 			return SUCCESS;
 		//}
 	//}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
