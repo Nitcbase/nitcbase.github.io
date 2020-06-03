@@ -277,13 +277,13 @@ public:
 							<table class="table table-bordered table-hover">
 							    <tr>
 								<td>record</td>
-								<td>union Attribute[ATTRCAT_SIZE]</td>
-								<td>Record which has to be converted in to the form of <a href="#attr_cache_entry">struct AttrCacheEntry</a></td>
+								    <td><a href="buffer.html#block_structures">union Attribute</a>[ATTRCAT_SIZE]</td>
+								<td>Record which has to be converted in to Attribute Cache Entry</td>
 							    </tr>
 								<tr>
 									<td> attrCacheEntry </td>
 									<td>AttrCacheEntry*</td>
-									<td>Pointer to which <a href="#attr_cache_entry">struct AttrCacheEntry</a> created using the given record has to be copied.</td>
+									<td>Pointer to <a href="#attr_cache_entry">struct AttrCacheEntry</a> to which the Attribute Cache Entry created using the given record has to be copied.</td>
 								 </tr>
 							</table>
 					    </div>
@@ -304,7 +304,7 @@ public:
 								<tr>
 									<td>attrCacheEntry</td>
 									<td>AttrCacheEntry*</td>
-									<td>Pointer to  <a href="#attr_cache_entry">struct AttrCacheEntry</a> which has to be converted to record.</td>
+									<td>Pointer to  <a href="#attr_cache_entry">struct AttrCacheEntry</a> which has to be converted to record of Attribute Catalog.</td>
 								 </tr>
 								<tr>
 									<td>record</td>
@@ -341,18 +341,19 @@ public:
 						    <tr>
 							<td>attrCatBuf</td>
 							<td>AttrCatEntry*</td>
-							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> where the attribute catalog entry corresponding to the given attribute is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+							    <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> where the attribute catalog entry corresponding to the given attribute is to be copied.</td>
 						    </tr>
 						</table>
 					    </div>
 					    <p><b>Note: </b>This method is overloaded in type of the second argument.</p>
+						    <br>WARNING: The caller should have allocated memory to the pointer.
 
 					    <h5>Return value:</h5>
 					    <div class="table-responsive">
 						<table class="table table-bordered table-hover">
 						    <tr>
 							<td>SUCCESS</td>
-							<td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully.</td>
+							<td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully from Attribute Cache.</td>
 						    </tr>
 						    <tr>
 							<td>E_OUTOFBOUND</td>
@@ -370,8 +371,11 @@ public:
 						</table>
 					    </div>
 					    <h5>Description:</h5>
-					    <p>This methods gives the Attribute catalog entry (<a href="#attr_cat_entry">struct AttrCatEntry</a>) corresponding to the given attribute.</p>
-
+					    <p>Gives the Attribute catalog entry corresponding to the given attribute.</p>
+					<p><b>Note: </b>
+				    <ul><li>This method is overloaded in type of the second argument.
+				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				</ul></p>
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
 					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attr_offset, AttrCatEntry *attrCatBuf){
@@ -379,7 +383,7 @@ public:
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ // the attribute catalog entry corresponding to the relId is not open
+	if(attrCache[relId] == NULL){ // check the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
@@ -408,54 +412,58 @@ public:
                                     <tr>
                                         <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attrOffset</td>
+                                        <td>attrName / attrOffset</td>
                                         <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
+                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
                                     </tr>
                                     <tr>
                                         <td>attrCatBuf</td>
                                         <td>AttrCatEntry*</td>
-                                        <td>pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>Pointer to the buffer of type <a href="#attr_cache_entry">struct AttrCatEntry</a> from which the attribute catalog entry corresponding to the given attribute is to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
-                            <p><b>Note: </b>This method is overloaded in type of the second argument</p>
-
+                            
                             <h5>Return value:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover ">
                                     <tr>
                                         <td>SUCCESS</td>
-                                        <td>On successful copy of the attribute catalog entry into the cache corresponding to the relation with id relId and attribute with name attrName or having offset attrOffset</td>
+                                        <td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully in to Attribute Cache.</td>
                                     </tr>
                                     <tr>
                                         <td>E_OUTOFBOUND</td>
                                         <td>If the relId is out of the range 0-MAXOPEN</td>
                                     </tr>
                                     <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If no open relation exists corresponding to the id given by relId</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_ATTRNOTEXIST</td>
-                                        <td>If there is no attribute with name attrname or having offset attrOffset</td>
-                                    </tr>
+					<td>E_NOTOPEN</td>
+					<td>If no open relation exists corresponding to the given by relId.</td>
+				    </tr>
+				    <tr>
+					<td>E_ATTRNOTEXIST</td>
+					<td>If no attribute exists with the given attribute name or offset.</td>
+				    </tr>
 
                                 </table>
                             </div>
+					
                             <h5>Description:</h5>
-                            <p>This methods sets the Attribute catalog entry (AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
-
+                            <p>Gives the Attribute catalog entry corresponding to the given attribute.</p>
+						<p><b>Note: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
                                 <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE/int attrOffset, AttrCatEntry *attrCatBuf){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relid) lies in the range
+	
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ //slot corresponding to the relid in the relation is free
+	if(attrCache[relId] == NULL){ // check the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
@@ -466,7 +474,9 @@ public:
 			return SUCCESS;
 		//}
 	//}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
