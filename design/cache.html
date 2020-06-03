@@ -280,22 +280,22 @@ typedef struct AttributeCacheEntry {
 
 private:
 	//fields
-	AttrCacheEntry* attrCache[MAX_OPEN];
+	static AttrCacheEntry* attrCache[MAX_OPEN];
 	
 	//methods
-	void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
-	void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	static void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	static void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
 	
 public:
 	//methods
-	int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
-	int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
-	int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
-	int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
-	int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
-	int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
-	int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
-	int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+	static int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+	static int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+	static int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+	static int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
 	
 };</code></pre>
 				</div>	
@@ -305,7 +305,10 @@ public:
 				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    </p>
 			    <p><b>Note: </b>
-				    When NITCbase is running only a single static instance of the class need to be declared. 
+				    <ul>
+					    <li>C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.</li>
+					    <li> Only a single object of the class needs to be created when NITCbase is running.</li>
+			    	    </ul>
 			    </p>
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
