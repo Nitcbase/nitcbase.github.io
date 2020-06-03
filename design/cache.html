@@ -249,11 +249,11 @@
 			<div id="attr_cache_table_class" class="details">
 				<h2>class AttrCacheTable</h2>
 				<p>The <i>class AttrCacheTable</i> is used to cache information of attributes of open relations from Attribute Catalog in NITCbase.
-				The class contains a private member field, <i>attrCache</i>, which is an array of pointers to <a href="#attr_cat_entry">struct AttrCatEntry</a> with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> (the maximum number of open relations in NITCbase).
+				The class contains a private member field, <i>attrCache</i>, which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> (the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>attrCache</i>, at the index given by relation id of the relation.
-				This entry is a list of <a href="#attr_cache_entry">AttrCacheEntry</a>, which contains the attribute catalog information along with other meta information of an attribute.
-				Each element in the list corresponds to an attribute of the relation.
-			<p>Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>), Each Attribute cache is stored in the memory as a linked list of <i>Attribute Cache entries</i>.</p>	
+				This entry is the head of the linked list of <i>struct AttrCacheEntry</i> because a relation can have variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>) and each element in the linked list corresponds to an attribute of the relation. <i>AttrCacheEntry</i> contains the attribute catalog information along with other meta information of an attribute.
+				
+			</p>	
 		
 				<div class="code">
 <pre><code>class AttrCacheTable{
