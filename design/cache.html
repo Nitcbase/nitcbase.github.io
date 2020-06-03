@@ -144,27 +144,38 @@
                             
                             <div id = "attr_cat_entry" class= "subec">
 				    <h4>AttrCatEntry</h4>
-				    <p></p>
-				    <div class="code"><pre><code>     typedef struct AttrCatEntry {
-					char rel_name[ATTR_SIZE];
-					char attr_name[ATTR_SIZE];
-					int attr_type;     // can be INT/FLOAT/STR
-					bool primary_flag; // Currently unused
-					int root_block;    // root block# of the B+ tree if exists, else -1
-					int offset;        // offset of the attribute in the relation
-				    } AttrCatEntry ;</code></pre></div>
+				    <p>The structure <i>AttrCatEntry</i> stores all the meta information about an attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>.</p>
+				    <div class="code"><pre><code>     
+typedef struct AttrCatEntry {
+	char relName[ATTR_SIZE];
+	char attrName[ATTR_SIZE];
+	int attrType;     // can be INT/FLOAT/STR
+	bool primaryFlag; // currently unused
+	int rootBlock;    // root block# of the B+ tree if it exists, else -1
+	int offset;       // offset of the attribute in the relation
+} AttrCatEntry ;</code></pre></div>
 			    </div>
+				
 			<div id = "attr_cache_entry" class= "subec">
 			    <h4>AttrCacheEntry</h4>
-			    <p></p>
+			    <p>The structure <i>AttributeCacheEntry</i> stores the meta information about the attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> in structure <i>AttrCatEntry</i> and also stores some in memory information which will not be committed back to disk. </p>
 			    <div class="code"><pre><code>
-				    typedef struct AttributeCacheEntry {
-					AttrCatEntry attrcat_entry;
-					bool dirty;
-					<a href="buffer.html#misc">recId</a> recid;
-					<a href="buffer.html#misc">IndexId</a> searchIndex;   /*IMPORTANT: see explanation below  */
-					struct AttributeCacheEntry *next;
-				    } AttributeCacheEntry;</code></pre></div>
+typedef struct AttributeCacheEntry {
+	AttrCatEntry attrCatEntry;
+	bool dirty;
+	<a href="buffer.html#misc">recId</a> recid;
+	<a href="buffer.html#misc">IndexId</a> searchIndex;   /*IMPORTANT: see explanation below */
+	struct AttributeCacheEntry *next;
+} AttributeCacheEntry;
+			</code></pre></div>
+				<ul>
+					<li><i>entry</i>: Stores all the mets information about the attribute from Attribute Catalog.
+                           		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
+                    			<li><i>recId</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
+                                	<li><i>searchIndex</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
+					<li><i>next</i>: Pointer to next <i>AttrCacheEntry</i> structure in linked list implementation. Since a relation can have variable number of attributes, a linked list is used to cache all the attribute catalog entries together.  
+				</ul> 
+				
 				</div>
 				<!--
                           	<p>As already stated, AttributeCacheEntry also stores some in memory information which will not be committed back to disk. They are:</p>
@@ -294,8 +305,8 @@ public:
 				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    </p>
 			    <p><b>Note: </b>
-				    <ul><li>When NITCbase is running only a single static instance of the class need to be declared. 
-			    </ul></p>
+				    When NITCbase is running only a single static instance of the class need to be declared. 
+			    </p>
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
 	     <!----------------------RecordToAttrCacheEntry--------------------------->
