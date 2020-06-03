@@ -87,6 +87,7 @@
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <div class="pagetitle">
+                            <br>
                             <h1>Indexing in NITCbase</h1>
                         </div>
                         
@@ -95,25 +96,24 @@
                                 <h2>Understanding Indexing</h2>
                                 
                                 <p>
-
                                 On creating a database of your own, it is essential that we have access to the data stored without much time delay. Disk access is a high-latency operation. Therefore, as the size of relation increases, searching records that satisfy certain conditions by accessing every record in the disk blocks can adversely affect the performance. This necessitates indexing.
                                 </p>
-                                <p>Creating an index enables us to access the required entry with very few disk accesses. Indices are access structures that are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indices such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. In the end, a database index is a means to locate and read table data as quickly as possible. Thus, indexing attributes that are frequently used for search conditions can indeed optimize query proccessing. </p>
+                                <p>Creating an index is basically creating a data structure that holds the attribute value and a pointer to the records. It enables us to speed up the retrieval of records in response to certain search conditions. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indices such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. In the end, a database index is a means to locate and read table data as quickly as possible. Thus, indexing attributes that are frequently used for search conditions can indeed optimize query proccessing.</p>
                                 <p>So, an index is a collection of attribute values and their corresponding record pointers.
                                 When designing an index, the <b>structure of the index</b> determines how fast the index can be accessed and what kind of queries can leverage it.
                             
-                                Perhaps one of the most common types of index structures is the <b>B+ Tree</b>. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. The sorted nature of the B+ Tree lends itself well to range-based scanning and sequential access as well as equality-based access. NITCbase uses B+ Tree for indexing records. </p>
+                                Perhaps one of the most common types of index structures is the <b><a href="Bplustreedetails.html"  target="_blank">B+ Tree</a></b>. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. NITCbase uses B+ Tree for indexing records. </p>
                                 <div class="question">
                                     <div class="ques_card">
                                         <div class="card-header">
                                 <!--<div class="card-body">-->
-                                            <b>Click <a href="Bplustreedetails.html">here</a> to develop a thorough understanding of B+ Trees before you proceed with its implementation in NITCbase.</b>
+                                            <b>Click <a href="Bplustreedetails.html"  target="_blank">here</a> to develop a thorough understanding of B+ Trees before you proceed with its implementation in NITCbase.</b>
                                         </div>
                                     </div>
                                 </div>
                                 <br>
                                 <p>Let us understand indexing in NITCbase with an example. <br>Consider a relation of <b>10</b> attributes containing <b>12,000</b> records.
-                                The<b> Record block </b>size is <b>2048 </b>bytes. (Refer <a href="../storage-model.html">Physical Layer</a>)<br>
+                                The<b> Record block </b>size is <b>2048 </b>bytes. (Refer <a href="../storage-model.html"  target="_blank">Physical Layer</a>)<br>
                                 Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
 
                                 <b><p> \[ 
