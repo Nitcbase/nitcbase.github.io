@@ -337,6 +337,51 @@ private:
 								<pre><code>OpenRelTable::OpenRelTable(){
 
 	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
+	
+	/************ Setting up Relation Catalog in the cache ************/
+	
+	/* read the record entry at index 0 from block 4, the block corresponding to Relation Catalog in the disk, and create a relation cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this relation cache entry to {4,0}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// let listHead be used to hold the head of the linked list of attribute cache entries.
+	AttrCacheEntry listHead;
+	
+	for i from 0 to 5:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an attribute cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this attribute cache entry to {5,i}.
+		   add the attribute cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 0<sup>th</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 0<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the 'RelCatalog'.
+	
+	/************ Setting up Attribute Catalog in the cache ************/
+	
+	/* read the record entry at index 1 from block 4, the block corresponding to Relation Catalog in the disk, and create a relation cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this relation cache entry to {4,1}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// use listHead  to hold the head of the linked list of attribute cache entries.
+	
+	for i from 6 to 11:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an attribute cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this attribute cache entry to {5,i}.
+		   add the attribute cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 1<sup>st</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 1<sup>st</sup> entry of the tableMetaInfo with free as false and relName as the 'AttrCatalog'.
 
 }</code></pre>
 							    </div>
@@ -359,7 +404,15 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::~OpenRelTable(){
 
-	// close all the relations, except relation catalog and attribute catalog, that are still open using openRelTable::closeRel().
+	for i from MAX_OPEN-1 to 0:
+	{
+		if i<sup>th</sup> relation is still open:
+		{
+	
+			// close the relationusing openRelTable::closeRel().
+		
+		}
+	}
 
 }</code></pre>
 							    </div>
@@ -487,7 +540,7 @@ private:
 	/* read the record entry corresponding to relcatRecId and create a relation cache entry on it 
 	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
 	   update the recId field of this relation cache entry to relcatRecId.
-	   use it to set the relId<sup>th</sup> entry of the RelCacheTable.*/
+	   use the relation cache entry to set the relId<sup>th</sup> entry of the RelCacheTable.*/
 	
 	/****** Setting up attribute cache entry for the relation ******/
 	
@@ -509,11 +562,11 @@ private:
 		   add the attribute cache entry to the linked list of listHead .*/
 	}
 	
-	// set the relId<sup>th</sup> entry of the RelCacheTable to listHead.
+	// set the relId<sup>th</sup> entry of the AttrCacheTable to listHead.
 	
 	/****** Setting up metadata in the Open Relation Table for the relation******/
 	
-	//update the relId<sup>th</sup> entry of the tableMetaInfo with free as true and relName as the input.
+	//update the relId<sup>th</sup> entry of the tableMetaInfo with false as true and relName as the input.
 	
 	return relId;
 	
@@ -661,7 +714,10 @@ private:
 	
 	//using the firstBlk and lastBlk fields of the relation catalog entry in the relId<sup>th</sup> relation cache entry, iteratively release the blocks of the relation calling <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
 	
-	// delete the record entry corresponding to the relation from the relation catalog using the recId member field of the relId<sup>th</sup> entry in relation cache and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
+	/* delete the record entry corresponding to the relation from the relation catalog by setting the recId.slot entry in 
+	slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
+	
+
 	
 	/****** Deleting from attribute cache ******/
 	
@@ -670,7 +726,8 @@ private:
 	
 		//if the attribute corresponding to the entry has a B+ Tree associated with it, release the allocated index blocks using <a href="b+tree.html##destroy" target="_blank">BPlusTree::bPlusDestroy()</a>.
 	
-		// delete the record entry corresponding to the attribute cache entry in the attribute catalog using the recId member field of the attribute cache entry and <a href="buffer.html#deleterecord" target="_blank">RecBuffer::deleteRecord()</a>.
+		/* delete the record entry corresponding to the attribute cache entry from the attribute catalog by setting the recId.slot entry in 
+		   slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
 		
 		// free the memory dynamically alloted to this entry in attribute cache linked list.
 	}
