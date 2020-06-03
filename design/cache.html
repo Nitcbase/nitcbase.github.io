@@ -137,9 +137,11 @@
 	<!----------------Attribute catalog structues--------------------------------------------------------------->
                         <div id="attribute_cache" class="detail">
                             <h2>Attribute Catalog Cache Structures</h2>
-                            <p>The <a href="../storage-model.html#attrcat">Attribute catalog</a>, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information of all open relations is also cached in the main memory for performance reasons and easy access. For each opened relation, NITCbase maintains an attribute cache. The Attribute cache of an open relation is a list of Attribute catalog entries, where each entry corresponds to an attribute of the relation. (Thus for each open relation there is an Attribute cache and for each attribute of an open relation, there is an entry in the corresponding attribute cache). Since at most MAXOPEN=12 relations can be opened at a time, there are at most MAXOPEN Attribute Caches exist at a time. </p>
-                                
-                            <p>Each entry in the Attribute Cache of a relation contains all the fields from the attribute catalog entry of the corresponding attribute, and some extra fields for storing meta-data as explained below. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>), Each Attribute cache is stored in the memory as a linked list of <i>Attribute Cache entries</i>.</p>
+                            <p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>, analogous to the Relation Catalog stores the meta information of every attribute of all the relations in the system. 
+				    In addition to storing this catalog in the disk, the attribute catalog information of all open relations are also cached in the main memory for performance reasons and easy access.
+				   Each entry in the Attribute Cache of a relation contains all the fields from the attribute catalog entry of the corresponding attributes, and some extra fields for storing meta-data.</p>
+				<p>NITCbase caches attributes of a relation using two structures: <i>AttrCatEntry</i> and <i>AttrCacheEntry</i></p>
+                            
                             <div id = "attr_cat_entry" class= "subec">
 				    <h4>AttrCatEntry</h4>
 				    <p></p>
@@ -251,7 +253,7 @@
 				For each relation opened, an entry is made in the array <i>attrCache</i>, at the index given by relation id of the relation.
 				This entry is a list of <a href="#attr_cache_entry">AttrCacheEntry</a>, which contains the attribute catalog information along with other meta information of an attribute.
 				Each element in the list corresponds to an attribute of the relation.
-				
+			<p>Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>), Each Attribute cache is stored in the memory as a linked list of <i>Attribute Cache entries</i>.</p>	
 		
 				<div class="code">
 <pre><code>class AttrCacheTable{
