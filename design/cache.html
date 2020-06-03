@@ -262,12 +262,7 @@
 					and each element in the linked list corresponds to an attribute of the relation.
 				
 			</p>	
-				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to obtain and update the attribute catalog entries of an attribute in attribute cache. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <a href="#attr_cache_entry">searchIndex</a> field of attribute cache entry.</i> 
-			</p>
-			    <p>
-				    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
-				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
-			    </p>
+			
 		
 				<div class="code">
 <pre><code>class AttrCacheTable{
@@ -292,9 +287,15 @@ public:
 	int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
 	
 };</code></pre>
-				</div>
-			    <p>When NITCbase is running only a single static instance of the class need to be declared. 
+				</div>	
+				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to obtain and update the attribute catalog entries of an attribute in attribute cache. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <a href="#attr_cache_entry">searchIndex</a> field of attribute cache entry.</i> </p>
+			    <p>
+				    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    </p>
+			    <p><b>Note: </b>
+				    <ul><li>When NITCbase is running only a single static instance of the class need to be declared. 
+			    </ul></p>
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
 	     <!----------------------RecordToAttrCacheEntry--------------------------->
