@@ -306,7 +306,7 @@ public:
 							<table class="table table-bordered table-hover">
 								<tr>
 									<td>attrCacheEntry</td>
-									<td><a href="#attr_cache_entry">AttrCacheEntry*</a>*</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry*</a></td>
 									<td>Pointer to  <i>struct AttrCacheEntry</i> which has to be converted to record of Attribute Catalog.</td>
 								 </tr>
 								<tr>
@@ -535,7 +535,7 @@ public:
 					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cahe. This is used to track the record found in previous search and next search can start from this record.</p>
 				<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
-				        <li>The caller should allocate memory to the pointer to <a href="buffer.html#indexid">IndexId</a> before calling the function.
+				        <li>The caller should allocate memory to the pointer to <i>IndexId</i> before calling the function.
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
@@ -614,7 +614,7 @@ public:
                             <p>Sets the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field in Attribute Catalog Cache of the given attribute.</p>
 					<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
-				        <li>The caller should allocate memory to the pointer to <a href="#attr_cat_entry">struct AttrCatEntry</a> before calling the function.
+				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setsearchindexid" class="collapse">
