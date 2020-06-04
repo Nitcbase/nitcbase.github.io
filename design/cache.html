@@ -139,7 +139,9 @@
                             <h2>Attribute Catalog Cache Structures</h2>
                             <p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>, analogous to the Relation Catalog stores the meta information of every attribute of all the relations in the system. 
 				    In addition to storing this catalog in the disk, the attribute catalog information of all open relations are also cached in the main memory for performance reasons and easy access.
-				   Each entry in the Attribute Cache of a relation contains all the fields from the attribute catalog entry of the corresponding attributes, and some extra fields for storing meta-data.</p>
+				   This is called Attribute Cache.
+				    Each entry in the Attribute Cache stores all the meta information from attribute 
+				    catalog entry of the corresponding attributes of a relation along with some meta-data.</p>
 				<p>NITCbase caches attributes of a relation using two structures: <i>AttrCatEntry</i> and <i>AttrCacheEntry</i></p>
                             
                             <div id = "attr_cat_entry" class= "subec">
