@@ -172,17 +172,17 @@
                                 <li><i>prev_indid</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
                     		</ol> 
                         </div> -->
-  <!--------------------Open Relation Table Structures------------------------------------------------------------------------------------------------------>                      
+  <!--------------------Open Relation Table Structure------------------------------------------------------------------------------------------------------>                      
                         <div id="openrel_table_struct" class="detail">
-                            <h2>Open Relation Table Structures</h2>
-                            <p></p>
+                            <h2>Open Relation Table Structure</h2>
+                            <p>A relation must have an entry in the Open Relation Table for its Relation Catalog and Attribute Catalog entries to be cached in the  Relation Cache Table and Attribute Cache Table, respectively. The relId is the index common to the entries in all the three tables that are associated with the same relation. </p>
                             <div id = "open_rel_table_metainfo" class= "subec">
 				    <h4>OpenRelTableMetaInfo</h4>
-				    <p></p>
-				    <div class="code"><pre><code>     typedef struct OpenRelTableMetaInfo {
-					bool freee;
-					char rel_name[ATTR_SIZE];
-				    } OpenRelTableMetaInfo ;</code></pre></div>
+				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
+				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo {
+	bool freee;
+	char rel_name[ATTR_SIZE];
+} OpenRelTableMetaInfo ;</code></pre></div>
 			    </div>
 			</div>
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
