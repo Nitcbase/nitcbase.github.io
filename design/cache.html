@@ -107,7 +107,7 @@
                 <!----------------Relation catalog structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Catalog Cache Structures</h2>
-                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, the relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each entry in Relation Cache stores all the meta information of the relation from Relation Catalog along with some meta-data.
+                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, the relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. Each entry in Relation Cache stores all the meta information of the relation from Relation Catalog along with some meta-data.
 			    </p>
 			    <p>NITCbase caches relation catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
@@ -225,15 +225,27 @@ typedef struct AttributeCacheEntry {
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
 			<div id="rel_cache_table_class" class="details">
 				<h2>class RelCacheTable</h2>
-				<p></p>
+				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. The class contains a private member field, <i>relCache</i>, 
+					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
+					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
+					(the maximum number of open relations in NITCbase).
+				For each relation opened, an entry is made in the array <i>attrCache</i>,
+					at the index given by relation id of the relation.
+				This entry points towards <i>struct AttrCacheEntry</i>, which contains 
+					the relation catalog entry along with other meta-data of the relation. 
+					
+			</p>
 				<div class="code">
 					<pre><code>class RelCacheTable{
+
 private:
 	//fields
-	RelCacheEntry* relCache[MAXOPEN];
+	RelCacheEntry* relCache[MAX_OPEN];
+
 	//methods
 	RelCacheEntry* RecordtoRelCacheEntry(union Attribute record[RELCAT_SIZE]);
 	union Attribute* RelCacheEntrytoRecord(RelCacheEntry relCacheEntry);
+	
 public:
 	//methods
 	int getRelCatEntry(int relId, RelCatEntry *relCatBuf);
@@ -241,7 +253,7 @@ public:
 	int getSearchIndex(int relId, RecId *searchIndex);
 	int setSearchIndex(int relId, RecId *searchIndex);
 
-					};</code></pre>
+};</code></pre>
 				</div>
 				<ul class="methods">
 	     <!----------------------recordToRelCacheEntry--------------------------->
@@ -548,15 +560,14 @@ public:
 
 			<div id="attr_cache_table_class" class="details">
 				<h2>class AttrCacheTable</h2>
-				<p>The <i>class AttrCacheTable</i> is used to cache information of attributes of open relations from Attribute 
-					Catalog in NITCbase. The class contains a private member field, <i>attrCache</i>, 
+				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. The class contains a private member field, <i>attrCache</i>, 
 					which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
 					(the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>attrCache</i>,
 					at the index given by relation id of the relation.
-				This entry is the head of the linked list of <i>struct AttrCacheEntry</i> which contains 
-					the attribute catalog information along with other meta information of an attribute. 
+				This entry is the head of the linked list of <i>struct AttrCacheEntry</i>, which contains 
+					the attribute catalog entries along with other meta-data of the attribute. 
 					A linked list is used because a relation can have variable number of attributes 
 					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>)
 					and each element in the linked list corresponds to an attribute of the relation.
