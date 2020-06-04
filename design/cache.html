@@ -107,28 +107,36 @@
                 <!----------------Relation catalog structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Catalog Cache Structures</h2>
-                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
+                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, the relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each entry in Relation Cache stores all the meta information of the relation from Relation Catalog along with some meta-data.
+			    </p>
+			    <p>NITCbase caches relation catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-							<p></p>
-					<div class="code"><pre><code>typedef struct RelCatEntry {
-						    char rel_name[ATTR_SIZE];
-						    int num_attr;
-						    int num_rec;
-						    int first_blk;          //Head of linked list of blocks
-						    int num_slots_blk;      //Number of slots in a block
-						} RelCatEntry ;</code></pre>
+							<p>The structure RelCatEntry stores all the meta information about a relation from <a href="../storage-model.html#relcat">Relation catalog</a>.</p>
+<div class="code"><pre><code>typedef struct RelCatEntry {
+
+	char relName[ATTR_SIZE];
+	int numAttrs;
+	int numRecs;
+	int firstBlk;          
+	int lastBlk;
+	int numSlotsPerBlk;      
+
+} RelCatEntry ;</code></pre>
 					</div>
               			</div>
 				<div id="rel_cache_entry" class="subsec">
 					<h4>RelCacheEntry</h4>
-							<p></p>
-					<div class="code"><pre><code>typedef struct RelCacheEntry {
-						    RelCatEntry entry;
-						    bool dirty;
-						    RecId recId;
-						    RecId searchIndex;
-						} RelCacheEntry ;</code></pre>
+					<p>The structure <i>RelCacheEntry</i> stores the meta information about the attribute from <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> along with some in memory information which will not be committed back to the disk.</p>
+
+<div class="code"><pre><code>typedef struct RelCacheEntry {
+
+	RelCatEntry relCatEntry;
+	bool dirty;
+	RecId recId;
+	RecId searchIndex;
+
+} RelCacheEntry ;</code></pre>
 					</div>
               			</div>
 						
@@ -210,6 +218,18 @@ typedef struct AttributeCacheEntry {
 				<p></p>
 				<div class="code">
 					<pre><code>class RelCacheTable{
+private:
+	//fields
+	RelCacheEntry* relCache[MAXOPEN];
+	//methods
+	RelCacheEntry* RecordtoRelCacheEntry(union Attribute record[RELCAT_SIZE]);
+	union Attribute* RelCacheEntrytoRecord(RelCacheEntry relCacheEntry);
+public:
+	//methods
+	int getRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	int setRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	int getSearchIndex(int relId, RecId *searchIndex);
+	int setSearchIndex(int relId, RecId *searchIndex);
 
 					};</code></pre>
 				</div>
@@ -224,7 +244,7 @@ typedef struct AttributeCacheEntry {
 						    <tr>
 							<td>record</td>
 							<td>union Attribute[RELCAT_SIZE]</td>
-							<td></td>
+							<td>Record which has to be converted to struct RelCacheEntry</td>
 						    </tr>
 							</table>
 						    </div>
@@ -233,29 +253,282 @@ typedef struct AttributeCacheEntry {
 					    <div class="table-responsive">
 							<table class="table table-bordered table-hover">
 								<tr>
-										<td>RelCatEntry</td>
-										<td></td>
-									    </tr>
+									<td>RelCacheEntry</td>
+									<td>RelCacheEntry*</td>
+									<td>Pointer to struct RelCacheEntry created using the given record.</td>
+								</tr>
 							</table>
 						     </div>
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#relation_cache">RelCatEntry</a> structure. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#relation_cache">RelCacheEntry</a> structure. The details of the implementation are left to you.</p>
 						</div>	
 					</li>
 	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
 					<li>
+						<div class="detail" id="relcachetorec">
+                            			<h2><i>private</i> relCacheEntrytoRecord</h2>
+                            			<h5>Arguments:</h5>
+                            			<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+		                            		<tr>
+								<td>relCacheEntry</td>
+							        <td>RelCacheEntry</td>
+							        <td>struct RelCacheEntry which has to be converted to record.</td>
+						    	</tr>
+		                        	</table>
+		                   		 </div>
+                            
+                            		<h5>Return value:</h5>
+                            		<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+		                        		<tr>
+								<td>record</td>
+						                <td>union Attribute *</td>
+						                <td>record (array of union Attribute) created using the given RelCacheEntry.</td>
+						        </tr>
+		                     		</table>
+		                     	</div>
+
+                            	<h5>Description:</h5>
+                            	<p>This is an utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to the array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
+                        	</div>
 					</li>
 	<!--------getRelCatEntry--------------------------------------------------------------->
 					<li>
+						<div id="getrelcatentry" class="detail">
+                            <h2><i>public:</i> getRelCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relId</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>relCatBuf</td>
+                                        <td>RelCatEntry *</td>
+                                        <td>pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>On successful copy of the relation catalog entry corresponding to the relation with id relId</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relId</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method gives the Relation catalog(struct RelCatEntry) of specified relation in cache(RelCacheTable).</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getrelcatentry" class="collapse">
+                                <div class="code"><pre><code>int RelCacheTable::getRelCatEntry(int relId, RelCatEntry *relCatBuf){
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(relCache[relId] == NULL){ //slot corresponding to the relId in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relation catalog in the relation cache to the relCatBuf
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------setRelCatEntry--------------------------------------------------------------->
 					<li>
+						<div id="setrelcatentry" class="detail">
+                            <h2><i>public:</i> setRelCatEntry</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relId</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>relCatBuf</td>
+                                        <td>RelCatEntry *</td>
+                                        <td>pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache. <br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class=retval>
+                                <h5>Return value:</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <tr>
+                                            <td>SUCCESS</td>
+                                            <td>On successful copy of the relation catalog entry corresponding to the relation with id relId</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_OUTOFBOUND</td>
+                                            <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                        </tr>
+                                        <tr>
+                                            <td>E_NOTOPEN</td>
+                                            <td>If there is no open relation  corresponding to the id given by relId</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                            <h5>Description:</h5>
+                            <p>This method sets the Relation catalog(struct RelcatEntry) of specified relation in cache(RelCacheTable).</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setrelcatentry" class="collapse">
+                                <div class="code"><pre><code>int RelCacheTable::setRelCatEntry(int relId, RelCatEntry *relCatBuf){
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(relCache[relId] == NULL){ //slot corresponding to the relId in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	//copy the relCatBuf to the relation catalog in the relation cache
+	//set the dirty flag corresponding to the relation with Id relId in the relation cache
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------getSearchIndex--------------------------------------------------------------->
 					<li>
+						<div id="getsearchindex0" class="detail">
+                            <h2><i>public:</i> getSearchIndex</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relId</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>searchIndex</td>
+                                        <td>recId *</td>
+                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The record id field of the previous hit stored in the meta information of the relation cache is to be copied into searchIndex.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If record id of previous hit is copied to searchIndex. It means that the id pointed by searchIndex is valid.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation corresponding to the id given by relId</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method gives the value of <i>searchIndex</i> field corresponding to the specified relation in cache.(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getprevrecid" class="collapse">
+                                <div class="code"><pre><code>int relCacheTable::getSearchIndex(relId relid, recId *recidbuff_ptr){
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){//check whether relation id (relId) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(relCache[relId] == NULL){ //slot corresponding to the relId in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation in the relation cache to the searchIndex*/
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!--------setsearchIndex--------------------------------------------------------------->
 					<li>
+						<div id="setsearchindex0" class="detail">
+                            <h2><i>public:</i> setSearchIndex</h2>
+                            <h5>Arguments:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>relId</td>
+                                        <td>int</td>
+                                        <td>Relation Id of the Relation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>searchIndex</td>
+                                        <td>recId *</td>
+                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The searchIndex field corresponding to the previous hit is to be stored to the meta information of the relation cache from  searchIndex.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <h5>Return value:</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <tr>
+                                        <td>SUCCESS</td>
+                                        <td>If the record id is successfully copied into the Relation Catalog Cache.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_OUTOFBOUND</td>
+                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>E_NOTOPEN</td>
+                                        <td>If there is no open relation exist corresponding to the id given by relId</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <h5>Description:</h5>
+                            <p>This method sets the value of <i>searchIndex</i> field corresponding to the specified relation in cache.</p>
+
+                            <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setprevrecid" class="collapse">
+                                <div class="code"><pre><code>int RelCacheTable::setSearchIndex(int relId, recId *searchIndex){
+	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+		return E_OUTOFBOUND;
+	}
+	if(relCache[relid] == NULL){ //slot corresponding to the relId in the relation is free
+		return E_NOTOPEN;
+	}
+	
+	/*copy the previous record id of the relation from the searchIndex to the relation cache*/
+	return SUCCESS;
+}</code></pre>
+                                </div> <!-- End of algo div -->
+                                
+                            </div>
+                        </div>
 					</li>
 	<!----------------------------------------------------------------------->
 					
