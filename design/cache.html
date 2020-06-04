@@ -149,12 +149,14 @@
 				    <p>The structure <i>AttrCatEntry</i> stores all the meta information about an attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>.</p>
 				    <div class="code"><pre><code>     
 typedef struct AttrCatEntry {
+
 	char relName[ATTR_SIZE];
 	char attrName[ATTR_SIZE];
 	int attrType;     // can be INT/FLOAT/STR
 	bool primaryFlag; // currently unused
 	int rootBlock;    // root block# of the B+ tree if it exists, else -1
 	int offset;       // offset of the attribute in the relation
+
 } AttrCatEntry ;</code></pre></div>
 			    </div>
 				
@@ -163,11 +165,13 @@ typedef struct AttrCatEntry {
 			    <p>The structure <i>AttributeCacheEntry</i> stores the meta information about the attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> and also stores some in memory information which will not be committed back to disk. </p>
 			    <div class="code"><pre><code>
 typedef struct AttributeCacheEntry {
+
 	AttrCatEntry attrCatEntry;
 	bool dirty;
 	<a href="buffer.html#misc">recId</a> recid;
 	<a href="buffer.html#misc">IndexId</a> searchIndex;   /*IMPORTANT: see explanation below */
 	struct AttributeCacheEntry *next;
+
 } AttributeCacheEntry;
 			</code></pre></div>
 				<ul>
