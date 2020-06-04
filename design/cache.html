@@ -243,8 +243,8 @@ private:
 	RelCacheEntry* relCache[MAX_OPEN];
 
 	//methods
-	RelCacheEntry* RecordtoRelCacheEntry(union Attribute record[RELCAT_SIZE]);
-	union Attribute* RelCacheEntrytoRecord(RelCacheEntry relCacheEntry);
+	void RecordtoRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	void RelCacheEntrytoRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 	
 public:
 	//methods
