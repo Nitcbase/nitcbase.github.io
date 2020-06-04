@@ -185,17 +185,17 @@ typedef struct AttributeCacheEntry {
                                 <li><i>prev_indid</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
                     		</ol> 
                         </div> -->
-  <!--------------------Open Relation Table Structures------------------------------------------------------------------------------------------------------>                      
+  <!--------------------Open Relation Table Structure------------------------------------------------------------------------------------------------------>                      
                         <div id="openrel_table_struct" class="detail">
-                            <h2>Open Relation Table Structures</h2>
-                            <p></p>
+                            <h2>Open Relation Table Structure</h2>
+                            <p>A relation must have an entry in the Open Relation Table for its Relation Catalog and Attribute Catalog entries to be cached in the  Relation Cache Table and Attribute Cache Table, respectively. The relId is the index common to the entries in all the three tables that are associated with the same relation. </p>
                             <div id = "open_rel_table_metainfo" class= "subec">
 				    <h4>OpenRelTableMetaInfo</h4>
-				    <p></p>
-				    <div class="code"><pre><code>     typedef struct OpenRelTableMetaInfo {
-					bool freee;
-					char rel_name[ATTR_SIZE];
-				    } OpenRelTableMetaInfo ;</code></pre></div>
+				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
+				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo {
+	bool freee;
+	char rel_name[ATTR_SIZE];
+} OpenRelTableMetaInfo ;</code></pre></div>
 			    </div>
 			</div>
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
@@ -696,31 +696,494 @@ public:
 
 			<div id="open_rel_table_class" class="details">
 				<h2>class OpenRelTable</h2>
-				<p></p>
+				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. Thus, any operation on a relation requires it to be first loaded to the cache memory. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. The relation id, relId, of a relation is defined as the index of the relation's entry in the OpenRelTable. relId is required to access member fields and to call the functions of OpenRelTable, RelCacheTable, and AttrCacheTable specific to a relation. As per the NITCbase design,  the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
+				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database.</p>
+				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
-					<pre><code>class OpenRelTable{
+                                <pre><code>class OpenRelTable{
 
-					};</code></pre>
+public:
+
+	//methods
+	OpenRelTable();
+	~OpenRelTable();
+	static int getRelId(unsigned char relName[ATTR_SIZE]);
+	static int openRel(unsigned char relName[ATTR_SIZE]);
+	static int closeRel(int relId);
+	static int deleteRel(int relId);
+	
+private:
+	//field
+	static OpenRelTableMetaInfo tableMetaInfo[MAXOPEN];
+	
+	//method
+	static int getFreeOpenRelTableEntry();
+	
+};</code></pre>
+					
 				</div>
+				<p>The following are the specifications for the methods in <i>class OpenRelTable</i>. The stub code is availabe <a href="bufferStub.html#staticBuffer.h" target="_blank">here</a>.</p>
 				<ul class="methods">
 	     <!----------------------Constructor--------------------------->
 					<li>
-						
+						<div class="detail" id="open_rel_table_constructor">
+							<h2><i>public:</i> OpenRelTable (Constructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. Should be called at the beginning of the session.</p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_constructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::OpenRelTable(){
+
+	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
+	
+	/************ Setting up Relation Catalog in the cache ************/
+	
+	/* read the record entry at index 0 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to {4,0}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
+	AttrCacheEntry listHead;
+	
+	for i from 0 to 5:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to {5,i}.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 0<sup>th</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 0<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the 'RelCatalog'.
+	
+	/************ Setting up Attribute Catalog in the cache ************/
+	
+	/* read the record entry at index 1 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to {4,1}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// use listHead  to hold the head of the linked list of Attribute Cache entries.
+	
+	for i from 6 to 11:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to {5,i}.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 1<sup>st</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 1<sup>st</sup> entry of the tableMetaInfo with free as false and relName as the 'AttrCatalog'.
+
+}</code></pre>
+							    </div>
+							</div>
+							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</p>
+					    	</div>	
 					</li>
          <!-------------------------------Destructor------------------------------------------------------------>
 					<li>
+						<div class="detail" id="open_rel_table_destructor">
+							<h2><i>public:</i> ~OpenRelTable (Destructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Closes the still open relations in the Open Relation Table at the end of the current session. </p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_destructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::~OpenRelTable(){
+
+	for i from MAX_OPEN-1 to 0:
+	{
+		if i<sup>th</sup> relation is still open:
+		{
+	
+			// close the relationusing openRelTable::closeRel().
+		
+		}
+	}
+
+}</code></pre>
+							    </div>
+							</div>
+							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the destructor writes the cache contents to the main memory before the main memory is commited to disk.</p>
+					    	</div>	
 					</li>
          <!-------------------------------getRelId------------------------------------------------------------>
 					<li>
+					<div class="detail" id="getrelid">
+							<h2><i>public:</i> getRelId</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose relation id in the Open Relation Table is required.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>The relation id of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
+								    <td>int</td>
+								    <td>The relation corresponding to relationName do not have an open entry in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Returns the relation id, i.e., the index, of the entry corresponding to the input relation in the Open Relation Table. </p>
+							<h5><a data-toggle="collapse" href="#algo_getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_getrelid" class="collapse">
+							    <div class="code">
+								<pre><code>int OpenRelTable::getRelId(unsigned char relName[ATTR_SIZE]){
+
+	/* traverse through the tableMetaInfo array,
+		find the entry in the Open Relation Table corresponding to <i>relName</i>.*/
+    
+	// if found return the relation id, else indicate that the relation do not have an entry in the Open Relation Table.
+	
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
 					</li>
          <!-------------------------------openRel------------------------------------------------------------>
 					<li>
+					<div class="detail" id="openrel">
+							<h2><i>public:</i> openRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose entry is to be created in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
+								    <td>int</td>
+								    <td>No relation with name, relName, exists in the disk.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
+								    <td>int</td>
+								    <td>No free entries left in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Creates an entry for the input relation in the Open Relation Table and returns the corresponding relation id. </p>
+							<h5><a data-toggle="collapse" href="#algo_openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_openrel" class="collapse">
+							    <div class="code">
+								<pre><code>int OpenRelTable::openRel(unsigned char relName[ATTR_SIZE]){
+	
+	if the relation, <i>relName</i>, already has an entry in the Open Relation Table:
+	{ // checked using OpenRelTable::getRelId().
+	
+		// return that relation id;
+	}
+	
+	// find a free slot in the Open Relation Table using OpenRelTable::getFreeOpenRelTableEntry().
+	if free slot not available:
+	{
+		return E_CACHEFULL;
+	}
+	
+	// let relId be used to store the free slot.
+	int relId;
+	
+	/****** Setting up Relation Cache entry for the relation ******/
+	
+	/* search for the entry with relation name, <i>relName</i>, in the Relation Catalog using linear_search().
+	   care should be taken to reset the searchIndex of the relation, RELCAT_RELID, corresponding to 
+	   Relation Catalog before calling linear_search().*/
+	   
+	// let relcatRecId store the record id of the relation, <i>relName</i>, in the Relation Catalog.
+	RecId relcatRecId;
+	
+	if relcatRecId == {-1, -1}:
+	{ 
+		// the relation is not found in the Relation Catalog.
+		return E_RELNOTEXIST;
+	}
+	
+	/* read the record entry corresponding to relcatRecId and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to relcatRecId.
+	   use the Relation Cache entry to set the relId<sup>th</sup> entry of the RelCacheTable.*/
+	
+	/****** Setting up Attribute Cache entry for the relation ******/
+	
+	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
+	AttrCacheEntry listHead;
+	
+	/* iterate over all the entries in the Attribute Catalog corresponding to each attribute of
+	   the relation, <i>relName</i> by multiple calls of linear_search().
+	   care should be taken to reset the searchIndex of the relation, ATTRCAT_RELID, corresponding to 
+	   Attribute Catalog before the first call to linear_search().*/
+	{
+            	/* let attrcatRecId store a valid record id an entry of the relation, <i>relName</i>, 
+		   in the Attribute Catalog.*/
+		RecId attrcatRecId;
+	
+         	/* read the record entry corresponding to attrcatRecId and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to attrcatRecId.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the relId<sup>th</sup> entry of the AttrCacheTable to listHead.
+	
+	/****** Setting up metadata in the Open Relation Table for the relation******/
+	
+	//update the relId<sup>th</sup> entry of the tableMetaInfo with false as true and relName as the input.
+	
+	return relId;
+	
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
 					</li>
          <!-------------------------------closeRel------------------------------------------------------------>
 					<li>
+						<div class="detail" id="closerel">
+							<h2><i>public:</i> closeRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
+								    <td>int</td>
+								    <td>Successfully closed the entry of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
+								    <td>int</td>
+								    <td>Input relId is outside the valid set of possible relation ids.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_FREESLOT </a></td>
+								    <td>int</td>
+								    <td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Closes the entry of the input relation in the Open Relation Table.</p>
+							<h5><a data-toggle="collapse" href="#algo_closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_closerel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::closeRel(int relId){
+
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Releasing the Relation Cache entry of the relation ******/
+	
+	// if the Relation Catalog entry of the relId<sup>th</sup> Relation Cache entry has been modified: 
+	{
+		/* write back the entry to the Relation Catalog using 
+		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+	}
+	
+	/****** Releasing the Attribute Cache entry of the relation ******/
+	
+	// iterate over all the entries in the linked list of the relId<sup>th</sup> Attribute Cache entry.
+	{
+		if the entry has been modified:
+		{
+			/* write back the entry to the Attribute Catalog using
+			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			
+		}
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Updating metadata in the Open Relation Table of the relation  ******/
+	
+	//free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
 					</li>
          <!-------------------------------deleteRel------------------------------------------------------------>
 					<li>
+						<div class="detail" id="deleterel">
+							<h2><i>public:</i> deleteRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
+								    <td>int</td>
+								    <td>Successfully deleted the relation from the database.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
+								    <td>int</td>
+								    <td>Input relId is outside the valid set of possible relation ids.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_FREESLOT </a></td>
+								    <td>int</td>
+								    <td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Deletes the input relation from the database. This function releases the record and index blocks holding the relation's data in the disk, deletes the entry corresponding to the relation in the Relation Catalog and Attribute Catalog blocks in the disk and also removes the relation from the cache memory.</p>
+							<h5><a data-toggle="collapse" href="#algo_deleterel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_deleterel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::deleteRel(int relId){
+
+	if relid is outside the range [0, MAXOPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Deleting from Relation Cache******/
+	
+	//using the firstBlk and lastBlk fields of the Relation Catalog entry in the relId<sup>th</sup> Relation Cache entry, iteratively release the blocks of the relation calling <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+	
+	/* delete the record entry corresponding to the relation from the Relation Catalog by setting the recId.slot entry in 
+	slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
+	
+
+	
+	/****** Deleting from Attribute Cache ******/
+	
+	// iterate over all the entries in the linked list of the relId<sup>th</sup> entry in Attribute Cache.
+	{
+	
+		//if the attribute corresponding to the entry has a B+ Tree associated with it, release the allocated index blocks using <a href="b+tree.html##destroy" target="_blank">BPlusTree::bPlusDestroy()</a>.
+	
+		/* delete the record entry corresponding to the Attribute Cache entry from the Attribute Catalog by setting the recId.slot entry in 
+		   slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Deleting from Open Relation Table ******/
+	
+	// free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</li>
+
+         <!-------------------------------getFreeOpenRelTableEntry------------------------------------------------------------>
+					<li>
+						<div class="detail" id="get_free_open_rel_table_entry">
+							<h2><i>private:</i> getFreeOpenRelTableEntry</h2>
+							<h5>Arguments:</h5>
+							<p>void</p>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+									<td>relId</td>
+									<td>int</td>
+									<td>Index of a free entry in the Open Relation Table.</td>
+								</tr>
+								<tr>
+									<td><a href="../constants.html" target="_blank"> FAILURE </a></td>
+									<td>int</td>
+									<td>No free entries left in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Returns index of an unoccupied entry in the Open Relation Table. </p>
+							<h5><a data-toggle="collapse" href="#algo_get_free_open_rel_table_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_get_free_open_rel_table_entry" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::getFreeOpenRelTableEntry(){
+
+	/* traverse through the tableMetaInfo array,
+		find a free entry in the Open Relation Table.*/
+    
+	// if found return the relation id, else indicate failure.
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
 					</li>
 				</ul>
 			</div>
