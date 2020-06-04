@@ -138,6 +138,14 @@
 
 } RelCacheEntry ;</code></pre>
 					</div>
+					<ul>
+					 
+					<li><i>relCatEntry</i>: Cached <a href="#rel_cat_entry">Relation Catalog entry</a> of the relation.</li>
+                           		<li><i>dirty</i>: Indicates whether the relation catalog entry is modified.</li>
+                    			<li><i>recId</i>: Stores the record id (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
+                                	<li><i>searchIndex</i>: It stores the block# and slot# of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> on the relation. <a href="blockaccess.html#linear_search">Linear search algorithm</a> of the block access layer uses this information to search for the next hit, starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="blockaccess.html#linear_search">Linear search algorithm</a> sets the value to (-1, -1). </li> 
+					                        
+				</ul> 
               			</div>
 						
 		      </div>
@@ -183,13 +191,15 @@ typedef struct AttributeCacheEntry {
 } AttributeCacheEntry;
 			</code></pre></div>
 				<ul>
-					<li><i>attrCatEntry</i>: Stores all the meta information about the attribute from Attribute Catalog.
+					 
+					<li><i>attrCatEntry</i>: Cached <a href="#attr_cat_entry">Attribute Catalog entry</a> of an attribute.</li>
                            		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
                     			<li><i>recId</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
                                 	<li><i>searchIndex</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
-					<li><i>next</i>: Pointer to next <i>AttrCacheEntry</i> structure in linked list implementation. Since a relation can have variable number of attributes, a linked list is used to cache all the attribute catalog entries together.  
+					<li><i>next</i>: Pointer to next <i>AttrCacheEntry</i> structure in linked list implementation. Since a relation can have variable number of attributes, a linked list is used to cache all the attribute catalog entries together.</li>  
 				</ul> 
 				
+				</div>
 				</div>
 				<!--
                           	<p>As already stated, AttributeCacheEntry also stores some in memory information which will not be committed back to disk. They are:</p>
