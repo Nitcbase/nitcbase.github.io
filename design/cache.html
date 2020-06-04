@@ -229,9 +229,9 @@ typedef struct AttributeCacheEntry {
 					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
 					(the maximum number of open relations in NITCbase).
-				For each relation opened, an entry is made in the array <i>attrCache</i>,
+				For each relation opened, an entry is made in the array <i>relCache</i>,
 					at the index given by relation id of the relation.
-				This entry points towards <i>struct AttrCacheEntry</i>, which contains 
+				This entry points towards <i>struct RelCacheEntry</i>, which contains 
 					the relation catalog entry along with other meta-data of the relation. 
 					
 			</p>
@@ -255,6 +255,19 @@ public:
 
 };</code></pre>
 				</div>
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in <a href="#rel_cache_entry">Relation Cache</a>. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.</p>
+			    <p>
+				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
+			    </p>
+			    <p><b>Note: </b>
+				    <ul>
+					    <li>C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.</li>
+					    <li> Only a single object of the class needs to be created when NITCbase is running.</li>
+			    	    </ul>
+			    </p>
+<p>The following are the specifications for the methods in <i>class RelCacheTable</i>.</p>
+				
 				<ul class="methods">
 	     <!----------------------recordToRelCacheEntry--------------------------->
 					<li>
@@ -599,7 +612,7 @@ public:
 	
 };</code></pre>
 				</div>	
-				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to obtain and update the attribute catalog entries of an attribute in attribute cache. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <a href="#attr_cache_entry">searchIndex</a> field of attribute cache entry.</i> </p>
+				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to obtain and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in <a href="#attr_cache_entry">Attribute cache</a>. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> </p>
 			    <p>
 				    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
