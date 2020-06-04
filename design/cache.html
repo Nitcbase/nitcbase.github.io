@@ -107,28 +107,36 @@
                 <!----------------Relation catalog structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Catalog Cache Structures</h2>
-                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
+                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, the relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache. A maximum of MAXOPEN = 12 relations are cached at the same time. Each entry in Relation Cache stores all the meta information of the relation from Relation Catalog along with some meta-data.
+			    </p>
+			    <p>NITCbase caches relation catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-							<p></p>
-					<div class="code"><pre><code>typedef struct RelCatEntry {
-						    char rel_name[ATTR_SIZE];
-						    int num_attr;
-						    int num_rec;
-						    int first_blk;          //Head of linked list of blocks
-						    int num_slots_blk;      //Number of slots in a block
-						} RelCatEntry ;</code></pre>
+							<p>The structure RelCatEntry stores all the meta information about a relation from <a href="../storage-model.html#relcat">Relation catalog</a>.</p>
+<div class="code"><pre><code>typedef struct RelCatEntry {
+
+	char relName[ATTR_SIZE];
+	int numAttrs;
+	int numRecs;
+	int firstBlk;          
+	int lastBlk;
+	int numSlotsPerBlk;      
+
+} RelCatEntry ;</code></pre>
 					</div>
               			</div>
 				<div id="rel_cache_entry" class="subsec">
 					<h4>RelCacheEntry</h4>
-							<p></p>
-					<div class="code"><pre><code>typedef struct RelCacheEntry {
-						    RelCatEntry entry;
-						    bool dirty;
-						    RecId recId;
-						    RecId searchIndex;
-						} RelCacheEntry ;</code></pre>
+					<p>The structure <i>RelCacheEntry</i> stores the meta information about the attribute from <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> along with some in memory information which will not be committed back to the disk.</p>
+
+<div class="code"><pre><code>typedef struct RelCacheEntry {
+
+	RelCatEntry relCatEntry;
+	bool dirty;
+	RecId recId;
+	RecId searchIndex;
+
+} RelCacheEntry ;</code></pre>
 					</div>
               			</div>
 						
