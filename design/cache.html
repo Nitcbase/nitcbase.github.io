@@ -111,15 +111,15 @@
                             	<h2>relId</h2>
                              	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
                         </div>
-                <!----------------Relation Cache Table structues--------------------------------------------------------------->        
+                <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache Table Structures</h2>
-                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> blocks in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entries of every <i>open relation</i> (a relation on which operations can be done) is cached in the main memory for easy access and to better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attributes of the relation from Relation Catalog blocks in the disk along with some additional meta-data.
+                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> blocks in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every <i>open relation</i> (a relation that is cached) is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attributes of the relation's entry in the Relation Catalog blocks along with some additional meta-data.
 			    </p>
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-						<p>The structure <i>RelCatEntry</i> stores in its fields all the attributes in the <a href="../storage-model.html#relcat">Relation Catalog</a> blocks of the relation. </p>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes in the <a href="../storage-model.html#relcat">Relation Catalog</a> entry corresponding to the relation. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
 	char relName[ATTR_SIZE];
@@ -134,7 +134,7 @@
               			</div>
 				<div id="rel_cache_entry" class="subsec">
 					<h4>RelCacheEntry</h4>
-					<p>The structure <i>RelCacheEntry</i> stores the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> entry along with additonal runtime memory information which are not written back to the disk.</p>
+					<p>The structure <i>RelCacheEntry</i> stores the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> entry along with some additonal information in runtime memory.</p>
 
 <div class="code"><pre><code>typedef struct RelCacheEntry {
 
@@ -150,8 +150,8 @@
 
 							<li><i>relCatEntry</i>: Stores the relation's cached <a href="#rel_cat_entry">Relation Catalog entry</a>.</li>
 							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified.</li>
-							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank" record id</i> {blockNum, slotNum} of the Relation Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank" record id</i> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> on the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} when the relation is opened in the cache memory. When every record of the relation has been searched, Linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
+							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank" record id</a> {blockNum, slotNum} of the Relation Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
+							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank" record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} when the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
 
 						</ul>
 					</p>
@@ -159,35 +159,35 @@
 						
 		      </div>
 		
-	<!----------------Attribute catalog structues--------------------------------------------------------------->
+	<!----------------Attribute Cache Table Structues--------------------------------------------------------------->
                         <div id="attribute_cache" class="detail">
-                            <h2>Attribute Catalog Cache Structures</h2>
-                            <p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>, analogous to the Relation Catalog stores the meta information of every attribute of all the relations in the system. 
-				    In addition to storing this catalog in the disk, the attribute catalog information of all open relations are also cached in the main memory for performance reasons and easy access.
-				   This is called Attribute Cache.
-				    Each entry in the Attribute Cache stores all the meta information from attribute 
-				    catalog entry of the corresponding attributes of a relation along with some meta-data.</p>
-				<p>NITCbase caches Attribute Catalog of relations using two structures: <i>AttrCatEntry</i> and <i>AttrCacheEntry</i>.</p>
+                            	<h2>Attribute Cache Table Structues</h2>
+                            	<p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> blocks, analogous to the Relation Catalog blocks, stores the meta information of the attributes of all the relations in the database. 
+				    In addition to this, the Attribute Catalog entries of every <i>open relations</i> are also loaded to the cache memory.
+				    This is implemented using <i>Attribute Cache Table</i>.
+				    Each entry in the <i>Attribute Cache Table</i> stores the entries corresponding to each attribute 
+				    of the relation along with additional some meta-data.</p>
+				<p>NITCbase caches Attribute Catalog using two structures: <i>AttrCatEntry</i> and <i>AttrCacheEntry</i>.</p>
                             
-                            <div id = "attr_cat_entry" class= "subec">
+                            	<div id = "attr_cat_entry" class= "subec">
 				    <h4>AttrCatEntry</h4>
-				    <p>The structure <i>AttrCatEntry</i> stores all the meta information about an attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a>.</p>
+				    <p>The structure <i>AttrCatEntry</i> stores in its fields all the attributes in the <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entry corresponding to the relation's attribute.</p>
 				    <div class="code"><pre><code>     
 typedef struct AttrCatEntry {
 
 	char relName[ATTR_SIZE];
 	char attrName[ATTR_SIZE];
-	int attrType;     // can be INT/FLOAT/STR
-	bool primaryFlag; // currently unused
-	int rootBlock;    // root block# of the B+ tree if it exists, else -1
-	int offset;       // offset of the attribute in the relation
+	int attrType;
+	bool primaryFlag;
+	int rootBlock;
+	int offset;
 
-} AttrCatEntry ;</code></pre></div>
+} AttrCatEntry;</code></pre></div>
 			    </div>
 				
 			<div id = "attr_cache_entry" class= "subec">
 			    <h4>AttrCacheEntry</h4>
-			    <p>The structure <i>AttrCacheEntry</i> stores the meta information about the attribute from <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> along with some in memory information which will not be committed back to disk. </p>
+			    <p>The structure <i>AttrCacheEntry</i> stores the <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> along with some additonal information in runtime memory. </p>
 			    <div class="code"><pre><code>
 typedef struct AttributeCacheEntry {
 
@@ -199,25 +199,19 @@ typedef struct AttributeCacheEntry {
 
 } AttributeCacheEntry;
 			</code></pre></div>
-				<ul>
-					 
-					<li><i>attrCatEntry</i>: Cached <a href="#attr_cat_entry">Attribute Catalog entry</a> of an attribute.</li>
-                           		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
-                    			<li><i>recId</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                                	<li><i>searchIndex</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
-					<li><i>next</i>: Pointer to next <i>AttrCacheEntry</i> structure in linked list implementation. Since a relation can have variable number of attributes, a linked list is used to cache all the attribute catalog entries together.</li>  
-				</ul> 
+				<p> The RelCacheEntry field details are as follows:
+					<ul>
+
+						<li><i>attrCatEntry</i>: Stores the cached <a href="#attr_cat_entry">Attribute Catalog entry</a> corresponding to an attribute of the relation.</li>
+						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified.</li>
+						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank" record id</i> {blockNum, slotNum} of the Attribute Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had benn modified.</li>
+						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank" index id</i> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} when the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched, B+ search resets the searchIndex value to {-1, -1}. </li>
+						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> structure in the linked list. Since a relation can have variable number of attributes, a linked list is maintained to cache all the Attribute Catalog entries together.</li>  
+					</ul> 
+				</p>
+				</div>
+				</div>
 				
-				</div>
-				</div>
-				<!--
-                          	<p>As already stated, AttributeCacheEntry also stores some in memory information which will not be committed back to disk. They are:</p>
-                           	<ol>
-                           		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
-                    			<li><i>recid</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                                <li><i>prev_indid</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
-                    		</ol> 
-                        </div> -->
   <!--------------------Open Relation Table Structure------------------------------------------------------------------------------------------------------>                      
                         <div id="openrel_table_struct" class="detail">
                             <h2>Open Relation Table Structure</h2>
