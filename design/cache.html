@@ -100,8 +100,16 @@
                         </div>
                         
                          <div id="layout" class="detail">
-                            <h2>Layout</h2>
-                             <p> The job of this module is to cache the  <a href="../storage-model.html#relcat">relation catalog</a> and  <a href="../storage-model.html#attrcat">attribute catalog</a> of opened relations in memory. Some meta data related to open relations is also managed by the cache layer.  Since catalog information is frequently required by any query processing module, caching reduces the number of disk accesses for accessing the catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module showing its private and public methods. </p>
+                            	<h2>Layout</h2>
+                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. Thus each time the relation is processed, these blocks have to be bought to buffer memory where they are at risk of being replaced by the replacement algorithm before the next time it is accessed. To prevent multiple reads of the Catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides a clean interface for Catalog access, hiding the storage and maintenance details of the Catalogs from the higher layers. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
+				<p>Three tables are used by NITCbase for caching Catalogs- <i>Relation Cache Table</i> for Relation Catalog,<i> Attribute Cache Table</i> for Attribute Catalog and the <i>Open Relation Table</i> for operations that include both Relation and Attribute Catalogs. </p>
+				<p>NITCbase follows an Object-Oriented design for Cache Layer. The class diagram is as shown below. </p> 
+                            <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
+                        </div>
+		<!----------------relId--------------------------------------------------------------->        	    
+			<div id="relid" class="detail">
+                            	<h2>relId</h2>
+                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
                             <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
                         </div>
                 <!----------------Relation catalog structues--------------------------------------------------------------->        
