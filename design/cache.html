@@ -194,8 +194,8 @@ typedef struct AttributeCacheEntry {
 
 	AttrCatEntry attrCatEntry;
 	bool dirty;
-	<a href="buffer.html#misc">recId</a> recid;
-	<a href="buffer.html#misc">IndexId</a> searchIndex;   /*IMPORTANT: see explanation below */
+	RecId recid;
+	IndexId searchIndex;
 	struct AttributeCacheEntry *next;
 
 } AttributeCacheEntry;
@@ -220,10 +220,12 @@ typedef struct AttributeCacheEntry {
                             <div id = "open_rel_table_metainfo" class= "subec">
 				    <h4>OpenRelTableMetaInfo</h4>
 				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
-				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo {
+				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo{
+				    
 	bool freee;
 	char rel_name[ATTR_SIZE];
-} OpenRelTableMetaInfo ;</code></pre></div>
+	
+} OpenRelTableMetaInfo;</code></pre></div>
 			    </div>
 			</div>
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
@@ -234,21 +236,35 @@ typedef struct AttributeCacheEntry {
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
 					(the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>relCache</i>,
-					at the index given by relation id of the relation.
-				This entry points towards <i>struct RelCacheEntry</i>, which contains 
-					the relation catalog entry along with other meta-data of the relation. 
+					at the index corresponding to the <a href="#relid">relation id</a> of the relation.
+				This entry is a pointer to the <i>struct RelCacheEntry</i>, that contains 
+					the Relation Catalog entry along with other meta-data of the relation. 
 					
 			</p>
+				
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in <a href="#rel_cache_entry">Relation Cache</a>. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
+				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
+			    	</p>
+				
+				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.</p>
+				<p><b>Note: </b>
+					    <ul>
+						    <li>C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.</li>
+						    <li> Only a single object of the class needs to be created when NITCbase is running.</li>
+					    </ul>
+				</p>
+
 				<div class="code">
 					<pre><code>class RelCacheTable{
 
 private:
-	//fields
+	//field
 	RelCacheEntry* relCache[MAX_OPEN];
 
 	//methods
-	void RecordtoRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
-	void RelCacheEntrytoRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 	
 public:
 	//methods
@@ -259,17 +275,6 @@ public:
 
 };</code></pre>
 				</div>
-				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in <a href="#rel_cache_entry">Relation Cache</a>. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.</p>
-			    <p>
-				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
-				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
-			    </p>
-			    <p><b>Note: </b>
-				    <ul>
-					    <li>C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.</li>
-					    <li> Only a single object of the class needs to be created when NITCbase is running.</li>
-			    	    </ul>
-			    </p>
 <p>The following are the specifications for the methods in <i>class RelCacheTable</i>.</p>
 				
 				<ul class="methods">
