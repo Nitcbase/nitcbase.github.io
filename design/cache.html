@@ -723,8 +723,8 @@ public:
 						    </tr>
 						    <tr>
 							<td>attrName / attrOffset</td>
-							<td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
-							<td>The name/offset of the target attribute (this is an overloaded funtion).</td>
+							<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+							<td>The name/offset of the target attribute.</td>
 						    </tr>
 						    <tr>
 							<td>attrCatBuf</td>
@@ -738,7 +738,7 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							    <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-							<td>Successfully copied the Attribute Catalog entry corresponding to input relation id from Attribute Cache Table.</td>
+							<td>Successfully copied the Attribute Catalog entry for the input attribute corresponding to the input relation id from Attribute Cache Table.</td>
 						    </tr>
 						     <tr>
 							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -746,7 +746,7 @@ public:
 						    </tr>
 						    <tr>
 							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-							<td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
+							<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
 						    </tr>
 						    <tr>
 							    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
@@ -763,7 +763,7 @@ public:
 				</ul></p>
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
-					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attr_offset, AttrCatEntry *attrCatBuf){
+					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
 	
 	if relId is outside the range [0, MAXOPEN-1]:
 	{
@@ -775,11 +775,11 @@ public:
 		return E_NOTOPEN;
 	}
 	
-	// iterate over all the attributes in the Attribute Cache corresponding to the relation with relId.
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
 	{
-		// if the attrName/Offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
 		{
-			// copy the Attribute Catalog in the Attribute Cache to the attrCatBuf.
+			// copy that Attribute Catalog entry in the Attribute Cache Table to the attrCatBuf.
 			
 			return SUCCESS;
 		}
@@ -806,14 +806,14 @@ public:
                                         <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName / attrOffset</td>
-                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
-                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
                                         <td>attrCatBuf</td>
-				        <td><a href="#attr_cat_entry">AttrCatEntry*</a></td>
-                                        <td>Pointer to the buffer of type <i>struct AttrCatEntry</i> from which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
+				        <td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
+                                        <td>Pointer to <i>struct AttrCatEntry</i> from which the Attribute Catalog entry corresponding to the given attribute has to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -823,7 +823,7 @@ public:
                                 <table class="table table-bordered table-hover ">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully in to Attribute Cache.</td>
+                                        <td>Successfully copied the Attribute Catalog entry for the input attribute corresponding to the input relation id in to Attribute Cache Table.</td>
                                     </tr>
                                    <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -831,7 +831,7 @@ public:
 				    </tr>
 				    <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-					<td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
 				    </tr>
 				    <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
@@ -849,22 +849,29 @@ public:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
-                                <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE/int attrOffset, AttrCatEntry *attrCatBuf){
+                                <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
 	
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ // check the attribute catalog entry corresponding to the relId is open
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
-		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			//copy the attrCatBuf to the corresponding attibute node in the attribute cache
-			//set the dirty flag corresponding to the attribute in the attribute cache
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			//copy the attrCatBuf to the corresponding Attribute Catalog entry in the Attribute Cache Table.
+			
+			//set the dirty flag corresponding to the attribute in the Attribute Cache entry.
+			
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
 	
 	return E_ATTRNOTEXIST;
 	
@@ -887,14 +894,14 @@ public:
                                         <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName / attrOffset</td>
-                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
-                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td><a href="buffer.html#indexid" target="_blank">IndexId*</a></td>
-                                        <td>Pointer to buffer of type <i>IndexId</i> to which the search index of the given attribute has to be copied from Attribute Catalog Cache.</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
+                                        <td>Pointer <i>struct IndexId</i> to which the search index of the given attribute has to be copied from Attribute Cache Table.</td>
                                     </tr>
                                 </table>
                              </div>
@@ -903,49 +910,57 @@ public:
                                     <table class="table table-bordered table-hover ">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>If the index id of the previous search hit is copied to searchIndex successfully. It indicates that the index id pointed by seachIndex is valid.</td>
+                                        <td>Successfully copied the value of searchIndex field for the input attribute corresponding to the input relation id in the Attribute Cache Table to the input searchIndex variable.</td>
                                     </tr>
-                                    <tr>
-                                        <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-                                        <td>If the relId is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-					    <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-					<td>If no open relation exists corresponding to the given by relId.</td>
+                                     <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
 				    </tr>
 				    <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
-					<td>If no attribute exists with the given attribute name or offset.</td>
+					<td>No attribute with the input attribute name or offset exists.</td>
 				    </tr>
 
                                 </table>
                                 </div>
 
-                            <h5>Description:</h5>
-					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cache. This is used to track the record found in previous search and next search can start from this record.</p>
+                            	<h5>Description:</h5>
+				<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
+				
 				<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
-				        <li>The caller should allocate memory to the pointer to <i>IndexId</i> before calling the function.
+				        <li>The caller should allocate memory for the <i>struct IndexId</i> before calling the function.
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(int relId, char attrName[ATTR_SIZE/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(int relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
-		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			/*copy the previous search index id corresponding to 
-			  the attribute in the attribute cache to searchIndex*/
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			//copy the searchIndex field of the corresponding Attribute Catalog entry in the Attribute Cache Table to input searchIndex variable.
+
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
