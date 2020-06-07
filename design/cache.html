@@ -277,7 +277,7 @@ public:
 	     <!----------------------recordToRelCacheEntry--------------------------->
 					<li>
 						<div class="detail" id="rectorelcache">
-					    	<h2><i>private</i> recordToRelCacheEntry</h2>
+					    	<h2><i>private:</i> recordToRelCacheEntry</h2>
 					    	<h5>Arguments:</h5>
 					    	<div class="table-responsive">
 						<table class="table table-bordered table-hover">
@@ -300,14 +300,14 @@ public:
 							</table>
 						     </div>
 					    <h5>Description:</h5>
-					<p>An utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. To cache a relation in Relation Cache Table, this function can be used to convert the corresponding record in Relaton Catalog to Relation Cache Entry. The details of the implementation are left to you.</p>
+					<p>An utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. To cache a relation in Relation Cache Table, this function can be used to convert the corresponding record in Relation Catalog to Relation Cache Entry. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>	
 					</li>
 	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
 					<li>
 						<div class="detail" id="relcachetorec">
-                            			<h2><i>private</i> relCacheEntryToRecord</h2>
+                            			<h2><i>private:</i> relCacheEntryToRecord</h2>
                             			<h5>Arguments:</h5>
                             			<div class="table-responsive">
 		                        	<table class="table table-bordered table-hover">
@@ -384,7 +384,7 @@ public:
 		return E_OUTOFBOUND;
 	}
 	
-	if entry corresponding to the relId in the Open Relation Table is free:
+	if entry corresponding to the relId in the Relation Cache Table is free:
 	{
 		return E_NOTOPEN;
 	}
@@ -451,7 +451,7 @@ public:
 		return E_OUTOFBOUND;
 	}
 	
-	if entry corresponding to the relId in the Open Relation Table is free:
+	if entry corresponding to the relId in the Relation Cache Table is free:
 	{
 		return E_NOTOPEN;
 	}
@@ -508,7 +508,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cahe Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
+			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevrecid" class="collapse">
@@ -519,7 +519,7 @@ public:
 		return E_OUTOFBOUND;
 	}
 	
-	if entry corresponding to the relId in the Open Relation Table is free:
+	if entry corresponding to the relId in the Relation Cache Table is free:
 	{
 		return E_NOTOPEN;
 	}
@@ -583,7 +583,7 @@ public:
 		return E_OUTOFBOUND;
 	}
 	
-	if entry corresponding to the relId in the Open Relation Table is free:
+	if entry corresponding to the relId in the Relation Cache Table is free:
 	{
 		return E_NOTOPEN;
 	}
@@ -923,7 +923,7 @@ public:
                                 </div>
 
                             <h5>Description:</h5>
-					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cahe. This is used to track the record found in previous search and next search can start from this record.</p>
+					<p>Gives the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute from Attribute Cache. This is used to track the record found in previous search and next search can start from this record.</p>
 				<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory to the pointer to <i>IndexId</i> before calling the function.
@@ -935,7 +935,7 @@ public:
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCahe[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
+	if(attrCache[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
@@ -1014,7 +1014,7 @@ public:
 	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
 		return E_OUTOFBOUND;
 	}
-	if(attrCahe[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
+	if(attrCache[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
 		return E_NOTOPEN;
 	}
 	
