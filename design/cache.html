@@ -573,7 +573,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Sets the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field in Relation Catalog Cache of the given relation.  This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next record.</p>
+                            <p>Sets the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation in Relation Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next record.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setprevrecid" class="collapse">
@@ -902,7 +902,7 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
                                         <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
-                                        <td>Pointer to <i>struct IndexId</i> to which the searchIndex field of the given attribute has to be copied from Attribute Cache Table.</td>
+                                        <td>Pointer to <i>struct IndexId</i> to which the searchIndex field of the Attribute Cache entry corresponding to the input relid and attribute is to be copied. </td>
                                     </tr>
                                 </table>
                              </div>
@@ -911,7 +911,7 @@ public:
                                     <table class="table table-bordered table-hover ">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the value of searchIndex field for the input attribute corresponding to the input relation id in the Attribute Cache Table to the input searchIndex variable.</td>
+                                        <td>Successfully copied the searchIndex field.</td>
                                     </tr>
                                      <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -954,7 +954,8 @@ public:
 	{
 		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
 		{
-			//copy the searchIndex field of the corresponding Attribute Catalog entry in the Attribute Cache Table to input searchIndex variable.
+		
+			//copy the searchIndex field of the corresponding Attribute Cache entry in the Attribute Cache Table to input searchIndex variable.
 
 			return SUCCESS;
 		}
@@ -989,7 +990,7 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
                                         <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
-                                        <td>Pointer to <i>struct IndexId</i> from which the searchIndex field of the given attribute has to be copied to Attribute Cache Table.</td>
+                                        <td>Pointer to <i>struct IndexId</i> using which the searchIndex field of the Attribute Cache entry corresponding to the input relid and attribute is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -998,7 +999,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the value of input searchIndex variable to the searchIndex field for the input attribute corresponding to the input relation id in the Attribute Cache Table.</td>
+                                        <td>Successfully updated the searchIndex field.</td>
                                     </tr>
                                      <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -1040,7 +1041,7 @@ public:
 	{
 		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
 		{
-			// copy the value of input searchIndex variable to the searchIndex field of the corresponding Attribute Catalog entry in the Attribute Cache Table.
+			// copy the input searchIndex variable to the searchIndex field of the corresponding Attribute Cache entry in the Attribute Cache Table.
 			
 			return SUCCESS;
 		}
