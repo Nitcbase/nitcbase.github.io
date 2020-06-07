@@ -119,7 +119,7 @@
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes values in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
 	char relName[ATTR_SIZE];
@@ -171,7 +171,7 @@
                             
                             	<div id = "attr_cat_entry" class= "subec">
 				    <h4>AttrCatEntry</h4>
-				    <p>The structure <i>AttrCatEntry</i> stores in its fields all the attributes in the <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entry corresponding to the relation's attribute.</p>
+				    <p>The structure <i>AttrCatEntry</i> stores in its data fields all the attribute values in the record entry corresponding to one of the relation's attribute from an <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> block. </p>
 				    <div class="code"><pre><code>     
 typedef struct AttrCatEntry {
 
@@ -188,7 +188,7 @@ typedef struct AttrCatEntry {
 			<div id = "attr_cache_entry" class= "subec">
 			    <h4>AttrCacheEntry</h4>
 			    <p>The structure <i>AttrCacheEntry</i> stores the <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entry of an attribute of the relation along with some additonal information used during runtime.
-				 Since a relation can have variable number of attributes, a linked list of <i>struct AttributeCacheEntry</i> entries is maintained to cache all the Attribute Catalog entries together.</p>
+				 Since a relation can have variable number of attributes, a linked list of <i>struct AttributeCacheEntry</i> elements is maintained to cache all the Attribute Catalog entries together.</p>
 			    <div class="code"><pre><code>
 typedef struct AttributeCacheEntry {
 
@@ -205,9 +205,10 @@ typedef struct AttributeCacheEntry {
 
 						<li><i>attrCatEntry</i>: Stores the cached <a href="#attr_cat_entry">Attribute Catalog entry</a> corresponding to an attribute of the relation.</li>
 						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified.</li>
-						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the Attribute Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} when the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched, B+ search resets the searchIndex value to {-1, -1}. </li>
-						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> structure in the linked list.</li>  
+						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the record entry corresponding to the relation's attribute in the 
+							Attribute Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
+						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} each time the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched,  B+ Tree search resets the searchIndex value to {-1, -1}. </li>
+						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> element in the linked list.</li>  
 					</ul> 
 				</p>
 				</div>
