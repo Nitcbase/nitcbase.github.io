@@ -284,7 +284,7 @@ public:
 						    <tr>
 							<td>record</td>
 							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-							<td>Record which has to be converted to struct Relation Cache Entry.</td>
+							<td>Record which has to be converted to a Relation Cache Entry.</td>
 						    </tr>
 							</table>
 						    </div>
@@ -612,13 +612,19 @@ public:
 					(the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>attrCache</i>,
 					at the index given by relation id of the relation.
-				This entry is the head of the linked list of <i>struct AttrCacheEntry</i>.
+				This entry is the head of the linked list of <i>struct AttrCacheEntry</i> elements.
 					A linked list is used because a relation can have variable number of attributes 
 					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>)
 					and each element in the linked list corresponds to an attribute of the relation.
 				
 			</p>	
-			
+			<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
+			    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+			    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
+			</p>
+			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
+			   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.
+			</p>
 		
 				<div class="code">
 <pre><code>class AttrCacheTable{
@@ -644,13 +650,6 @@ public:
 	
 };</code></pre>
 				</div>	
-				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
-				    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
-				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
-			    	</p>
-				<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
-				   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.
-				</p>
 	
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
@@ -664,12 +663,12 @@ public:
 							    <tr>
 								<td>record</td>
 								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
-								<td>Record which has to be converted in to Attribute Cache Entry.</td>
+								<td>Record which has to be converted in to Attribute Cache entry.</td>
 							    </tr>
 								<tr>
 									<td> attrCacheEntry </td>
 									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
-									<td>Pointer to <i>struct AttrCacheEntry</i> to which the Attribute Cache Entry created using the given record has to be copied.</td>
+									<td>Pointer to <i>struct AttrCacheEntry</i> to which the Attribute Cache entry created using the given record has to be copied.</td>
 								 </tr>
 							</table>
 					    </div>
@@ -677,7 +676,7 @@ public:
 						<p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the corresponding records from Attribute Catalog to Attribute Cache Entry. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the corresponding records from Attribute Catalog to Attribute Cache entry. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					</li>
@@ -696,7 +695,7 @@ public:
 								<tr>
 									<td>record</td>
 									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
-									<td>Array of <i>union Attribute</i> to which the record created using the given Attribute Cache Entry has to be copied.</td>
+									<td>Array of <i>union Attribute</i> to which the record created using the given Attribute Cache entry has to be copied.</td>
 								 </tr>
 							</table>
 					   </div>
@@ -705,7 +704,7 @@ public:
 						    <p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache Entries to corresponding records that can be written back to Attribute Catalog. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog. The details of the implementation are left to you.</p>
 						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					
