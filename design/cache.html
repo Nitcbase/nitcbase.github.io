@@ -242,7 +242,7 @@ typedef struct AttributeCacheEntry {
 					
 			</p>
 				
-				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in <a href="#rel_cache_entry">Relation Cache</a>. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
 				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    	</p>
@@ -283,7 +283,7 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							<td>record</td>
-							<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
 							<td>Record which has to be converted to struct RelCacheEntry.</td>
 						    </tr>
 							</table>
@@ -324,7 +324,7 @@ public:
 		                        	<table class="table table-bordered table-hover">
 		                        		<tr>
 								<td>record</td>
-						                <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
 						                <td>Array of union Attributes to which the record created using the given Relation Cache Entry has to be copied.</td>
 						        </tr>
 		                     		</table>
@@ -350,7 +350,7 @@ public:
                                     <tr>
                                         <td>relCatBuf</td>
 					<td><a href="#rel_cat_entry">RelCatEntry</a>*</td>
-                                    	<td>Pointer to struct RelCatEntry into which the Relation Catalog Entry is to be copied from the Relation Cache.</td>
+                                    	<td>Pointer to struct RelCatEntry into which the Relation Catalog Entry is to be copied from the Relation Cache Table.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -359,7 +359,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the Relation Catalog entry corresponding to input relation id from Relation Cache.</td>
+                                        <td>Successfully copied the Relation Catalog entry corresponding to input relation id from Relation Cache Table.</td>
                                     </tr>
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -367,13 +367,13 @@ public:
                                     </tr>
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-                                        <td>Entry corresponding to input relId is free in the Relation Catalog Table.</td>
+                                        <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Gives the Relation Catalog Entry corresponding to the specified relation from Relation Catalog Cache.</p>
+                            <p>Gives the Relation Catalog Entry corresponding to the specified relation from Relation Catalog Cache Table.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getrelcatentry" class="collapse">
@@ -414,7 +414,7 @@ public:
                                     <tr>
                                         <td>relCatBuf</td>
                                         <td><a href="#rel_cat_entry">RelCatEntry</a>*</td>
-                                        <td>Pointer to struct RelCatEntry from which the Relation Catalog entry is to be copied into the Relation Cache.</td>
+                                        <td>Pointer to struct RelCatEntry from which the Relation Catalog entry is to be copied into the Relation Cache Table.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -432,7 +432,7 @@ public:
                                         </tr>
                                         <tr>
                                             <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-                                            <td>Entry corresponding to input relId is free in the Relation Catalog Table.</td>
+                                            <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                         </tr>
 
                                     </table>
@@ -440,7 +440,7 @@ public:
                             </div>
 
                             <h5>Description:</h5>
-                            <p>Sets the Relation Catalog entry corresponding to the specified relation in the Relation Cache.</p>
+                            <p>Sets the Relation Catalog entry corresponding to the specified relation in the Relation Cache Table.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setrelcatentry" class="collapse">
@@ -456,9 +456,9 @@ public:
 		return E_NOTOPEN;
 	}
 	
-	//copy the relCatBuf to the Relation Catalog in the Relation Cache.
+	//copy the relCatBuf to the Relation Catalog in the Relation Cache Table.
 	
-	//set the dirty flag corresponding to the relation with input relId in the Relation Cache.
+	//set the dirty flag corresponding to the relation with input relId in the Relation Cache Table.
 	
 	return SUCCESS;
 	
@@ -483,8 +483,8 @@ public:
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
-					    <td><a href="#recid">recId</a>*</td>
-                                        <td>Pointer to struct RecId to which the search index of the given relation has to be copied from Relation Catalog Cache.</td>
+					    <td><a href="#recid" target="_blank">RecId</a>*</td>
+                                        <td>Pointer to struct RecId to which the search index of the given relation has to be copied from Relation Cache Table.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -494,7 +494,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the relation the previous search corresponding to input relation id to input searchIndex.</td>
+                                        <td>Successfully copied the previous search hit of the relation corresponding to input relation id to the input searchIndex variable.</td>
                                     </tr>
                                     <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -502,30 +502,36 @@ public:
 					</tr>
 					<tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-					    <td>Entry corresponding to input relId is free in the Relation Catalog Table.</td>
+					    <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cahe. This is used to find the location of a previous hit so that the next search can start from this record.</p>
+			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cahe Table. This is used to find the location of a previous hit so that the next search can start from the next record.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevrecid" class="collapse">
                                 <div class="code"><pre><code>int relCacheTable::getSearchIndex(relId relid, recId *recidbuff_ptr){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){//check whether relation id (relId) lies in the range
+	
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(relCache[relId] == NULL){ //slot corresponding to the relId in the relation is free
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	/*copy the previous record id of the relation in the relation cache to the searchIndex*/
+	// copy the record id of the previous hit in the relation from the relation's cache to the input searchIndex variable.
+	
 	return SUCCESS;
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i>before calling the function.</p>
                         </div>
 					</li>
 	<!--------setsearchIndex--------------------------------------------------------------->
@@ -542,8 +548,8 @@ public:
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td><a href="#recid">recId *</a></td>
-					    <td>Pointer to buffer of type <a href="#recid">RecId</a> from which the search index of the given relation has to be copied to Relation Catalog Cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td><a href="#recid" target="_blank">RecId *</a></td>
+					    <td>Pointer  to struct RecId from which the search index of the given relation has to be copied to Relation Cache Table.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -584,6 +590,7 @@ public:
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i>before calling the function.</p>
                         </div>
 					</li>
 	<!----------------------------------------------------------------------->
