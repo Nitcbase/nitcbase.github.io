@@ -237,7 +237,7 @@ typedef struct AttributeCacheEntry {
 					(the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>relCache</i>,
 					at the index corresponding to the <a href="#relid">relation id</a> of the relation.
-				This entry is a pointer to the <i>struct RelCacheEntry</i>, that contains 
+				This entry points to the <i>struct RelCacheEntry</i>, that contains 
 					the Relation Catalog entry along with other meta-data of the relation. 
 					
 			</p>
@@ -284,7 +284,7 @@ public:
 						    <tr>
 							<td>record</td>
 							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-							<td>Record which has to be converted to struct RelCacheEntry.</td>
+							<td>Record which has to be converted to struct Relation Cache Entry.</td>
 						    </tr>
 							</table>
 						    </div>
@@ -373,7 +373,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Gives the Relation Catalog Entry corresponding to the specified relation from Relation Catalog Cache Table.</p>
+                            <p>Gives the Relation Catalog Entry corresponding to the specified relation from Relation Cache Table.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getrelcatentry" class="collapse">
@@ -389,14 +389,14 @@ public:
 		return E_NOTOPEN;
 	}
 	
-	//copy the Relation Catalog in the Relation Cache to the relCatBuf.
+	//copy the Relation Catalog in the Relation Cache to relCatBuf.
 	
 	return SUCCESS;
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i>before calling the function.</p>
+				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i> before calling the function.</p>
                         </div>
 					</li>
 	<!--------setRelCatEntry--------------------------------------------------------------->
@@ -424,7 +424,7 @@ public:
                                     <table class="table table-bordered table-hover">
                                         <tr>
                                             <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                            <td>Successfully copied the Relation Catalog entry corresponding to input relation id to Relation Cache.</td>
+                                            <td>Successfully copied the Relation Catalog entry corresponding to input relation id to Relation Cache Table.</td>
                                         </tr>
                                         <tr>
                                             <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -466,7 +466,7 @@ public:
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i>before calling the function.</p>
+			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i> before calling the function.</p>
                         </div>
 					</li>
 	<!--------getSearchIndex--------------------------------------------------------------->
@@ -494,7 +494,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the previous search hit of the relation corresponding to input relation id to the input searchIndex variable.</td>
+                                        <td>Successfully copied the value of searchIndex field of the relation from the Relation Cache Table corresponding to input relation id to the input searchIndex variable.</td>
                                     </tr>
                                     <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -508,7 +508,7 @@ public:
                                 </table>
                             </div>
                             <h5>Description:</h5>
-			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cahe Table. This is used to find the location of a previous hit so that the next search can start from the next record.</p>
+			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cahe Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevrecid" class="collapse">
@@ -531,7 +531,7 @@ public:
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i>before calling the function.</p>
+			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i> before calling the function.</p>
                         </div>
 					</li>
 	<!--------setsearchIndex--------------------------------------------------------------->
@@ -548,7 +548,7 @@ public:
                                     </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td><a href="#recid" target="_blank">RecId *</a></td>
+                                        <td><a href="#recid" target="_blank">RecId</a>*</td>
 					    <td>Pointer  to struct RecId from which the search index of the given relation has to be copied to Relation Cache Table.</td>
                                     </tr>
                                 </table>
@@ -558,39 +558,44 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>If the record id given in the argument is copied to searchIndex field in Relation Catalog Cache successfully.</td>
+                                        <td>Successfully copied the value from the input searchIndex variable to the searchIndex field in Relation Cache Table corresponding to input relation id.</td>
                                     </tr>
                                     <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-                                        <td>If the relId is out of the range 0-MAX_OPEN</td>
+                                        <td>Input relId is outside the valid set of possible relation ids.</td>
                                     </tr>
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-                                        <td>If no open relation exists corresponding to the given by relId.</td>
+                                        <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Sets the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field in Relation Catalog Cache of the given relation.</p>
+                            <p>Sets the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field in Relation Catalog Cache of the given relation.  This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next record.</p>
 
                             <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setprevrecid" class="collapse">
                                 <div class="code"><pre><code>int RelCacheTable::setSearchIndex(int relId, recId *searchIndex){
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check relation id (relId) lies in the range
+	
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(relCache[relid] == NULL){ //slot corresponding to the relId in the relation is free
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	/*copy the previous record id of the relation from the searchIndex to the relation cache*/
+	// copy the value of the input searchIndex variable to the record id of the previous hit of the relation from the relation's cache.
+	
 	return SUCCESS;
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i>before calling the function.</p>
+			<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i> before calling the function.</p>
                         </div>
 					</li>
 	<!----------------------------------------------------------------------->
@@ -607,8 +612,7 @@ public:
 					(the maximum number of open relations in NITCbase).
 				For each relation opened, an entry is made in the array <i>attrCache</i>,
 					at the index given by relation id of the relation.
-				This entry is the head of the linked list of <i>struct AttrCacheEntry</i>, which contains 
-					the attribute catalog entries along with other meta-data of the attribute. 
+				This entry is the head of the linked list of <i>struct AttrCacheEntry</i>.
 					A linked list is used because a relation can have variable number of attributes 
 					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>)
 					and each element in the linked list corresponds to an attribute of the relation.
@@ -620,7 +624,7 @@ public:
 <pre><code>class AttrCacheTable{
 
 private:
-	//fields
+	//field
 	static AttrCacheEntry* attrCache[MAX_OPEN];
 	
 	//methods
@@ -640,34 +644,31 @@ public:
 	
 };</code></pre>
 				</div>	
-				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to obtain and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in <a href="#attr_cache_entry">Attribute cache</a>. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> </p>
-			    <p>
+				<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
 				    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
-			    </p>
-			    <p><b>Note: </b>
-				    <ul>
-					    <li>C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.</li>
-					    <li> Only a single object of the class needs to be created when NITCbase is running.</li>
-			    	    </ul>
-			    </p>
+			    	</p>
+				<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
+				   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.
+				</p>
+	
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
 	     <!----------------------RecordToAttrCacheEntry--------------------------->
 					<li>
 					<div class="detail" id="rectoattrcache">
-					    <h2><i>private</i> recordToAttrCacheEntry</h2>
+					    <h2><i>private:</i> recordToAttrCacheEntry</h2>
 					    <h5>Arguments:</h5>
 					    <div class="table-responsive">
 							<table class="table table-bordered table-hover">
 							    <tr>
 								<td>record</td>
-								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
-								<td>Record which has to be converted in to Attribute Cache Entry</td>
+								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
+								<td>Record which has to be converted in to Attribute Cache Entry.</td>
 							    </tr>
 								<tr>
 									<td> attrCacheEntry </td>
-									<td><a href="#attr_cache_entry">AttrCacheEntry*</a></td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
 									<td>Pointer to <i>struct AttrCacheEntry</i> to which the Attribute Cache Entry created using the given record has to be copied.</td>
 								 </tr>
 							</table>
@@ -677,27 +678,25 @@ public:
 
 					    <h5>Description:</h5>
 					    <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the corresponding records from Attribute Catalog to Attribute Cache Entry. The details of the implementation are left to you.</p>
-					<p><ul>
-				        <li>The caller should allocate memory to the pointer to <i>struct AttrCacheEntry</i> before calling the function.
-					</ul></p>
+					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					</li>
          <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
 					<li>
 					    <div class="detail" id="attrcachetorec">
-					    <h2><i>private</i> attrCacheEntryToRecord</h2>
+					    <h2><i>private:</i> attrCacheEntryToRecord</h2>
 					    <h5>Arguments:</h5>
 					    <div class="table-responsive">
 							<table class="table table-bordered table-hover">
 								<tr>
 									<td>attrCacheEntry</td>
-									<td><a href="#attr_cache_entry">AttrCacheEntry*</a></td>
-									<td>Pointer to  <i>struct AttrCacheEntry</i> which has to be converted to record of Attribute Catalog.</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
+									<td>Pointer to  <i>struct AttrCacheEntry</i> which has to be converted to a record of Attribute Catalog.</td>
 								 </tr>
 								<tr>
 									<td>record</td>
 									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
-									<td>Array of <i>union Attributes</i> to which record created using the given Attribute Cache Entry has to be copied.</td>
+									<td>Array of <i>union Attribute</i> to which the record created using the given Attribute Cache Entry has to be copied.</td>
 								 </tr>
 							</table>
 					   </div>
@@ -706,7 +705,8 @@ public:
 						    <p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache Entries to corresponding records to be written back to Attribute Catalog. The details of the implementation are left to you.</p>
+					    <p>This is an utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to an array of <a href="buffer.html#block_structures">union Attribute</a> (record). While closing a relation, this function can be used to convert the Attribute Cache Entries to corresponding records that can be written back to Attribute Catalog. The details of the implementation are left to you.</p>
+						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					
 					</li>
@@ -729,8 +729,8 @@ public:
 						    </tr>
 						    <tr>
 							<td>attrCatBuf</td>
-							<td><a href="#attr_cat_entry">AttrCatEntry*</a></td>
-							<td>Pointer to the buffer of type <i>struct AttrCatEntry</i> to which the attribute catalog entry corresponding to the given attribute has to be copied.</td>
+							<td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
+							<td>Pointer to <i>struct AttrCatEntry</i> to which the Attribute Catalog entry corresponding to the given attribute is to be copied.</td>
 						    </tr>
 						</table>
 					    </div>
@@ -739,46 +739,52 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							    <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-							<td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully from Attribute Cache.</td>
+							<td>Successfully copied the Attribute Catalog entry corresponding to input relation id from Attribute Cache Table.</td>
+						    </tr>
+						     <tr>
+							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>Input relId is outside the valid set of possible relation ids.</td>
 						    </tr>
 						    <tr>
-							    <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-							<td>If the relId is out of the range 0-MAX_OPEN.</td>
-						    </tr>
-						    <tr>
-							    <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-							<td>If no open relation exists corresponding to the given by relId.</td>
+							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+							<td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
 						    </tr>
 						    <tr>
 							    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
-							<td>If no attribute exists with the given attribute name or offset.</td>
+							<td>No attribute with the input attribute name or offset exists.</td>
 						    </tr>
 
 						</table>
 					    </div>
 					    <h5>Description:</h5>
-					    <p>Gives the Attribute Catalog Entry corresponding to the given attribute from Attribute Catalog Cache.</p>
+					    <p>Gives the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
 					<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument.
-				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
+				        <li>The caller should allocate memory for the <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
 					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attr_offset, AttrCatEntry *attrCatBuf){
 	
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	// check relation id lies in the range
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relId] == NULL){ // check the attribute catalog entry corresponding to the relId is open
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	// Iterate over all the attributes in the attribute cache corresponding to the relation with Id relId{
-		// if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			// copy the attribute catalog in the attribute cache to the attrCatBuf
+	// iterate over all the attributes in the Attribute Cache corresponding to the relation with relId.
+	{
+		// if the attrName/Offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			// copy the Attribute Catalog in the Attribute Cache to the attrCatBuf.
+			
 			return SUCCESS;
-		// }
-	// }
+		}
+	}
 	
 	return E_ATTRNOTEXIST;
 	
@@ -820,24 +826,24 @@ public:
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
                                         <td>If the attribute catalog entry corresponding to the relation with given relation id and attribute name or attribute offset is copied successfully in to Attribute Cache.</td>
                                     </tr>
-                                    <tr>
-                                        <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-                                        <td>If the relId is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-					    <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-					<td>If no open relation exists corresponding to the given by relId.</td>
+                                   <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					<td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
 				    </tr>
 				    <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
-					<td>If no attribute exists with the given attribute name or offset.</td>
+					<td>No attribute with the input attribute name or offset exists.</td>
 				    </tr>
 
                                 </table>
                             </div>
 					
                             <h5>Description:</h5>
-                            <p>Sets the Attribute catalog entry corresponding to the given attribute in the Attribute Cache.</p>
+                            <p>Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
 						<p><b>Note: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
