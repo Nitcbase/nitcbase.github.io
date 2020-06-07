@@ -425,7 +425,7 @@ public:
                                     <table class="table table-bordered table-hover">
                                         <tr>
                                             <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                            <td>Successfully updated the Relation Catalog.</td>
+                                            <td>Successfully updated the Relation Catalog entry.</td>
                                         </tr>
                                         <tr>
                                             <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -485,7 +485,7 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
 					    <td><a href="#recid" target="_blank">RecId</a>*</td>
-                                        <td>Pointer to struct RecId to which the search index of the given relation has to be copied from Relation Cache Table.</td>
+                                        <td>Pointer to struct RecId to which the searchIndex field of the Relation Cache entry corresponding to input relId is to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -495,7 +495,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the value of searchIndex field of the relation from the Relation Cache Table corresponding to input relation id to the input searchIndex variable.</td>
+                                        <td>Successfully copied the searchIndex field.</td>
                                     </tr>
                                     <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -525,7 +525,7 @@ public:
 		return E_NOTOPEN;
 	}
 	
-	// copy the record id of the previous hit in the relation from the relation's cache to the input searchIndex variable.
+	// copy the searchIndex field of the Relation Cache entry corresponding to input relId to searchIndex variable.
 	
 	return SUCCESS;
 }</code></pre>
@@ -550,7 +550,7 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
                                         <td><a href="#recid" target="_blank">RecId</a>*</td>
-					    <td>Pointer  to struct RecId from which the search index of the given relation has to be copied to Relation Cache Table.</td>
+					    <td>Pointer to struct RecId using which the searchIndex field of the Relation Cache entry corresponding to input relId is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -559,7 +559,7 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the value from the input searchIndex variable to the searchIndex field in Relation Cache Table corresponding to input relation id.</td>
+                                        <td>Successfully updated the searchIndex field.</td>
                                     </tr>
                                     <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -589,9 +589,10 @@ public:
 		return E_NOTOPEN;
 	}
 	
-	// copy the value of the input searchIndex variable to the record id of the previous hit of the relation from the relation's cache.
+	// copy the searchIndex variable to the searchIndex field of the Relation Cache entry corresponding to input relId.
 	
 	return SUCCESS;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
@@ -729,7 +730,7 @@ public:
 						    <tr>
 							<td>attrCatBuf</td>
 							<td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
-							<td>Pointer to <i>struct AttrCatEntry</i> to which the Attribute Catalog entry corresponding to the given attribute is to be copied.</td>
+							<td>Pointer to <i>struct AttrCatEntry</i> to which the Attribute Catalog entry corresponding to the input relid and attribute is to be copied.</td>
 						    </tr>
 						</table>
 					    </div>
@@ -738,7 +739,7 @@ public:
 						<table class="table table-bordered table-hover">
 						    <tr>
 							    <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-							<td>Successfully copied the Attribute Catalog entry for the input attribute corresponding to the input relation id from Attribute Cache Table.</td>
+							<td>Successfully copied the Attribute Catalog entry.</td>
 						    </tr>
 						     <tr>
 							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -779,7 +780,7 @@ public:
 	{
 		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
 		{
-			// copy that Attribute Catalog entry in the Attribute Cache Table to the attrCatBuf.
+			// copy that Attribute Catalog entry in the Attribute Cache Table to attrCatBuf.
 			
 			return SUCCESS;
 		}
@@ -813,7 +814,7 @@ public:
                                     <tr>
                                         <td>attrCatBuf</td>
 				        <td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
-                                        <td>Pointer to <i>struct AttrCatEntry</i> from which the Attribute Catalog entry corresponding to the given attribute has to be copied.</td>
+                                        <td>Pointer to <i>struct AttrCatEntry</i> using which the Attribute Catalog entry corresponding to input relId and attribute is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -823,7 +824,7 @@ public:
                                 <table class="table table-bordered table-hover ">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>Successfully copied the Attribute Catalog entry for the input attribute corresponding to the input relation id in to Attribute Cache Table.</td>
+                                        <td>Successfully updated the Attribute Catalog entry.</td>
                                     </tr>
                                    <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
@@ -865,9 +866,9 @@ public:
 	{
 		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
 		{
-			//copy the attrCatBuf to the corresponding Attribute Catalog entry in the Attribute Cache Table.
+			// copy the attrCatBuf to the corresponding Attribute Catalog entry in the Attribute Cache Table.
 			
-			//set the dirty flag corresponding to the attribute in the Attribute Cache entry.
+			// set the dirty flag of the corresponding Attribute Cache entry in the Attribute Cache Table.
 			
 			return SUCCESS;
 		}
