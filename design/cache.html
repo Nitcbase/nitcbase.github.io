@@ -234,8 +234,7 @@ typedef struct AttributeCacheEntry {
 				<h2>class RelCacheTable</h2>
 				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. The class contains a private member field, <i>relCache</i>, 
 					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
-					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
-					(the maximum number of open relations in NITCbase).
+					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
 				For each relation opened, an entry is made in the array <i>relCache</i>,
 					at the index corresponding to the <a href="#relid">relation id</a> of the relation.
 				This entry points to the <i>struct RelCacheEntry</i>, that contains 
@@ -243,13 +242,13 @@ typedef struct AttributeCacheEntry {
 					
 			</p>
 				
-				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to obtain and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for obtaining and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
-				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to retrieve and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
+				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <i>RelCacheEntry</i> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    	</p>
 				
-				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
-				   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.
+				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class are used to access the static member fields of the class.
+				   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name().
 				</p>
 
 				<div class="code">
