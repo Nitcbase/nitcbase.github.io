@@ -206,7 +206,7 @@ typedef struct AttributeCacheEntry {
 						<li><i>attrCatEntry</i>: Stores the cached <a href="#attr_cat_entry">Attribute Catalog entry</a> corresponding to an attribute of the relation.</li>
 						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified.</li>
 						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the Attribute Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} when the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched, B+ search resets the searchIndex value to {-1, -1}. </li>
+						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} when the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched, B+ search resets the searchIndex value to {-1, -1}. </li>
 						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> structure in the linked list.</li>  
 					</ul> 
 				</p>
@@ -694,7 +694,7 @@ public:
 								 </tr>
 								<tr>
 									<td>record</td>
-									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a><a href="/constants.html#constants" target="_blank">[ATTRCAT_SIZE]<a></td>
+									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
 									<td>Array of <i>union Attribute</i> to which the record created using the given Attribute Cache entry has to be copied.</td>
 								 </tr>
 							</table>
@@ -757,7 +757,7 @@ public:
 					    </div>
 					    <h5>Description:</h5>
 					    <p>Gives the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
-					<p><b>Note: </b>
+					<p><b>NOTE: </b>
 				    <ul><li>This method is overloaded in type of the second argument.
 				        <li>The caller should allocate memory for the <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
@@ -841,9 +841,9 @@ public:
                                 </table>
                             </div>
 					
-                            <h5>Description:</h5>
-                            <p>Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
-						<p><b>Note: </b>
+                            	<h5>Description:</h5>
+                            	<p>Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
+				<p><b>NOTE: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
 				</ul></p>
@@ -901,7 +901,7 @@ public:
                                     <tr>
                                         <td>searchIndex</td>
                                         <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
-                                        <td>Pointer <i>struct IndexId</i> to which the search index of the given attribute has to be copied from Attribute Cache Table.</td>
+                                        <td>Pointer to <i>struct IndexId</i> to which the searchIndex field of the given attribute has to be copied from Attribute Cache Table.</td>
                                     </tr>
                                 </table>
                              </div>
@@ -929,9 +929,9 @@ public:
                                 </div>
 
                             	<h5>Description:</h5>
-				<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
+				<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next leaf index entry.</p>
 				
-				<p><b>Note: </b>
+				<p><b>NOTE: </b>
 				    <ul><li>This method is overloaded in type of the second argument
 				        <li>The caller should allocate memory for the <i>struct IndexId</i> before calling the function.
 				</ul></p>
@@ -981,16 +981,15 @@ public:
                                         <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName / attrOffset</td>
-                                        <td>char<a href="/constants.html#constants" target="_blank">[ATTR_SIZE]<a> / int</td>
-                                        <td>The name/offset of the target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
                                         <td>searchIndex</td>
-                                        <td><a href="buffer.html#indexid" target="_blank">IndexId*</a></td>
-                                        <td>Pointer to buffer of type <a href="buffer.html#indexid">IndexId</a> from which the search index of the given attribute has to be copied to Attribute Catalog Cache.</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
+                                        <td>Pointer to <i>struct IndexId</i> from which the searchIndex field of the given attribute has to be copied to Attribute Cache Table.</td>
                                     </tr>
-                                </table>
                                 </table>
                             </div>
                             <h5>Return value:</h5>
@@ -998,47 +997,53 @@ public:
                                 <table class="table table-bordered table-hover">
                                     <tr>
                                         <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
-                                        <td>If the index id given in the argument is copied to <i>searchIndex</i> field in Attribute Catalog Cache successfully.</td>
+                                        <td>Successfully copied the value of input searchIndex variable to the searchIndex field for the input attribute corresponding to the input relation id in the Attribute Cache Table.</td>
                                     </tr>
-                                    <tr>
-                                        <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-                                        <td>If the relId is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
+                                     <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
 					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
-					<td>If no open relation exists corresponding to the given by relId.</td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
 				    </tr>
 				    <tr>
 					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
-					<td>If no attribute exists with the given attribute name or offset.</td>
+					<td>No attribute with the input attribute name or offset exists.</td>
 				    </tr>
+
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>Sets the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field in Attribute Catalog Cache of the given attribute.</p>
-					<p><b>Note: </b>
+                            <p>Sets the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next leaf index entry.</p>
+				<p><b>NOTE: </b>
 				    <ul><li>This method is overloaded in type of the second argument
-				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
+				        <li>The caller should allocate memory for the <i>struct IndexId</i> before calling the function.
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::setPrevIndexId(relId relId, char attrName[ATTR_SIZE/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::setPrevIndexId(relId relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
-	if(relId&lt; 0 || relId&gt;= MAX_OPEN){	//check if the relation id lies in the range
+	if relId is outside the range [0, MAXOPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(attrCache[relid] == NULL){ // check if the attribute catalog entry corresponding to the relId is open
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
-		//if the attrName/attrOffset of the attribute equals to the given attrName/attrOffset{
-			/*copy searchIndex given in argument to searchIndex field
-			  corresponding to the attribute in the Attribute Catalog Cache*/
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			// copy the value of input searchIndex variable to the searchIndex field of the corresponding Attribute Catalog entry in the Attribute Cache Table.
+			
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
 	
 	return E_ATTRNOTEXIST;
 	
