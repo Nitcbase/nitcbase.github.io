@@ -101,7 +101,7 @@
                         
                          <div id="layout" class="detail">
                             	<h2>Layout</h2>
-                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. Thus each time the relation is processed, these blocks have to be bought to buffer memory where they are at risk of being written back by the replacement algorithm. To prevent multiple unnecessary reads and write backs of the catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides an interface for catalog access to the higher layers by hiding the storage and maintenance details of the catalogs. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
+                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. Thus each time the relation is processed, these blocks have to be bought to buffer memory where they are at risk of being written back by the replacement algorithm. To prevent multiple reads and write backs of the catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides an interface for catalog access to the higher layers by hiding the storage and maintenance details of the catalogs. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
 				<p>Three tables are used by NITCbase for caching Catalogs- the <i>Relation Cache Table</i> for Relation Catalog entries, the <i>Attribute Cache Table</i> for Attribute Catalog entries and the <i>Open Relation Table</i> for operations that include both Relation and Attribute Catalogs. </p>
 				<p>NITCbase follows an Object-Oriented design for Cache Layer. The class diagram is as shown below. </p> 
                             <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
@@ -109,17 +109,17 @@
 		<!----------------relId--------------------------------------------------------------->        	    
 			<div id="relid" class="detail">
                             	<h2>relId</h2>
-                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
+                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. An <b>open relation</b> is a relation that has been loaded to the cache memory. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
                         </div>
                 <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache Table Structures</h2>
-                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> blocks in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every <i>open relation</i> (a relation that is cached) is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attributes of the relation's entry in the Relation Catalog blocks along with some additional meta-data.
+                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attributes of the relation's entry from the Relation Catalog block along with some additional meta-data.
 			    </p>
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes in the <a href="../storage-model.html#relcat">Relation Catalog</a> entry corresponding to the relation. </p>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
 	char relName[ATTR_SIZE];
@@ -145,13 +145,13 @@
 
 } RelCacheEntry;</code></pre>
 					</div>
-					<p> The RelCacheEntry field details are as follows:
+					<p> The RelCacheEntry data field details are as follows:
 						<ul>
 
 							<li><i>relCatEntry</i>: Stores the relation's cached <a href="#rel_cat_entry">Relation Catalog entry</a>.</li>
 							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified.</li>
-							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the Relation Catalog entry in the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} when the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
+							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the relation's entry in the Relation Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
+							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} each time the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
 
 						</ul>
 					</p>
@@ -162,7 +162,7 @@
 	<!----------------Attribute Cache Table Structures--------------------------------------------------------------->
                         <div id="attribute_cache" class="detail">
                             	<h2>Attribute Cache Table Structures</h2>
-                            	<p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> blocks, analogous to the Relation Catalog blocks, stores the meta information of the attributes of all the relations in the database. 
+                            	<p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> blocks, analogous to the Relation Catalog block, stores the meta information of the attributes of all the relations in the database. 
 				    In addition to this, the Attribute Catalog entries of every <i>open relations</i> are also loaded to the cache memory.
 				    This is implemented using <i>Attribute Cache Table</i>.
 				    Each entry in the <i>Attribute Cache Table</i> stores the entries corresponding to each attribute 
