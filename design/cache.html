@@ -114,12 +114,12 @@
                 <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache Table Structures</h2>
-                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attributes of the relation's entry from the Relation Catalog block along with some additional meta-data.
+                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
 			    </p>
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attributes values in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attribute values in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
 	char relName[ATTR_SIZE];
@@ -237,8 +237,8 @@ typedef struct AttributeCacheEntry {
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
 				For each relation opened, an entry is made in the array <i>relCache</i>,
 					at the index corresponding to the <a href="#relid">relation id</a> of the relation.
-				This entry points to the <i>struct RelCacheEntry</i>, that contains 
-					the Relation Catalog entry along with other meta-data of the relation. 
+				This entry points to the <i>struct RelCacheEntry</i> that stores all the attribute values of the relation's entry from the Relation Catalog block
+					 along with other meta-data of the relation. 
 					
 			</p>
 				
@@ -248,7 +248,7 @@ typedef struct AttributeCacheEntry {
 			    	</p>
 				
 				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class are used to access the static member fields of the class.
-				   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name().
+				   C++ allows static methods to be accessed using the semantics class_name::function_name().
 				</p>
 
 				<div class="code">
@@ -284,7 +284,7 @@ public:
 						    <tr>
 							<td>record</td>
 							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-							<td>Record which has to be converted to a Relation Cache Entry.</td>
+							<td>Record which is to be converted to a Relation Cache Entry.</td>
 						    </tr>
 							</table>
 						    </div>
@@ -295,12 +295,12 @@ public:
 								<tr>
 									<td>RelCacheEntry</td>
 									<td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
-									<td>Pointer to struct RelCacheEntry to which the Relation Cache Entry created using the given record has to be copied.</td>
+									<td>Pointer to struct RelCacheEntry to which the contents of the input record is to be copied.</td>
 								</tr>
 							</table>
 						     </div>
 					    <h5>Description:</h5>
-					<p>An utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#rel_cache_entry">RelCacheEntry</a> structure. To cache a relation in Relation Cache Table, this function can be used to convert the corresponding record in Relation Catalog to Relation Cache Entry. The details of the implementation are left to you.</p>
+					<p>An utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. To cache a relation in Relation Cache Table, this function can be used to convert a record in Relation Catalog block to the corresponding Relation Cache Entry. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>	
 					</li>
@@ -314,7 +314,7 @@ public:
 		                            		<tr>
 								<td>relCacheEntry</td>
 							        <td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
-							        <td>Pointer to struct RelCacheEntry which has to be converted to a record.</td>
+							        <td>Pointer to struct RelCacheEntry which is to be converted to a record.</td>
 						    	</tr>
 		                        	</table>
 		                   		 </div>
@@ -325,13 +325,13 @@ public:
 		                        		<tr>
 								<td>record</td>
 						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-						                <td>Array of union Attributes to which the record created using the given Relation Cache Entry has to be copied.</td>
+						                <td>The record to which the given Relation Cache Entry is to be copied.</td>
 						        </tr>
 		                     		</table>
 		                     	</div>
 
                             	<h5>Description:</h5>
-                            	<p>An utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to the array of <a href="buffer.html#block_structures">union Attribute</a> (record).While closing a relation, this function can be used to convert the Relation Cache Entry to corresponding record to be written back to Relation Catalog. The details of the implementation are left to you.</p>
+                            	<p>An utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>. While closing a relation, this function can be used to convert the Relation Cache Entry to the corresponding record that can be written back to Relation Catalog block. The details of the implementation are left to you.</p>
 				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
                         	</div>
 					</li>
@@ -608,22 +608,21 @@ public:
 				<h2>class AttrCacheTable</h2>
 				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. The class contains a private member field, <i>attrCache</i>, 
 					which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> 
-					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> 
-					(the maximum number of open relations in NITCbase).
+					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
 				For each relation opened, an entry is made in the array <i>attrCache</i>,
 					at the index given by relation id of the relation.
 				This entry is the head of the linked list of <i>struct AttrCacheEntry</i> elements.
 					A linked list is used because a relation can have variable number of attributes 
-					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>)
-					and each element in the linked list corresponds to an attribute of the relation.
+					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>). 
+					Each element in the linked list corresponds to an attribute of the relation.
 				
 			</p>	
-			<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of an attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
-			    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+			<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of a relation's attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
+			    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to AttrCacheEntry structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 			    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			</p>
 			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
-			   C++ allows <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to be accessed using the semantics class_name::function_name(), instead of object_instance->function_name() as in the case of methods that are not declared statically.
+			   C++ allows static methods to be accessed using the semantics class_name::function_name().
 			</p>
 		
 				<div class="code">
