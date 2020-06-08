@@ -761,17 +761,17 @@ private :
 		                     </div>
 
                             <h5>Description:</h5>
-                            <p>Used to search the first/ next record entry in the relation whose attribute value corresponding to <i>attrName</i> member field satisfies the relational operation for the input attribute value. The method makes use of the <i>prevIndexid</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. A valid index id holds the <a href="buffer.html#indexid" target="_blank">index id</a> of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time. This method can be called multiple times to get all the records in the relation that satisfy op for input attrVal.</p>
+                            <p>Used to search the first/ next record entry in the relation whose attribute value corresponding to <i>attrName</i> member field satisfies the relational operation for the input attribute value. The method makes use of the <i>searchIndex</i> field of the attribute in the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> for this purpose. A valid index id holds the <a href="buffer.html#indexid" target="_blank">index id</a> of the entry in the leaf block of the B+ Tree that corresponded to a hit in the previous search. The search is resumed from the next index entry. An invalid index id means that the search is being done for the first time. This method can be called multiple times to get all the records in the relation that satisfy op for input attrVal.</p>
                             <h5><a data-toggle="collapse" href="#algo-search"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-search" class="collapse">
                             	<div class="code"><pre><code>struct RecId BPlusTree::BPlusSearch(union Attribute attrVal, int op){
 	
-	//let prevIndexid be used to store previous index id for attrName.
-	IndexId prevIndexid;
+	//let searchIndex be used to store search index for attrName.
+	IndexId searchIndex;
 	
-	//get the previous index id from the attribute cache using the <a href="cache.html#getprevindexid" target="_blank">OpenRelTable::getPrevIndexId()</a>.
+	//get the search index from the attribute cache using the <a href="cache.html#getsearchindex1" target="_blank">OpenRelTable::getSearchIndex()</a>.
 	
-	//reset the previous index id to {-1,-1} using <a href="cache.html#setprevindexid" target="_blank">OpenRelTable::setPrevIndexId()</a>.
+	//reset the search index to {-1,-1} using <a href="cache.html#setsearchindex1" target="_blank">OpenRelTable::setSearchIndex()</a>.
 	  (this will be set to the correct index id if an entry satisfying op for given attrVal is found in the course
 	   of the search.)
 	
@@ -787,9 +787,9 @@ private :
 	//let block and index variables be used to locate the entry to be searched.
 	int block, index;
 	
-	if prevIndexid == {-1,-1}:
+	if searchIndex == {-1,-1}:
 	{
-		//NOTE: an invalid prevIndexid means that the search is done for the first time.
+		//NOTE: an invalid searchIndex means that the search is done for the first time.
 		
 		block = rootBlock;
 		index = 0; //start the search from the root.
@@ -801,11 +801,11 @@ private :
 	}
 	else 
 	{
-		/*NOTE: a valid prevIndexid points to an entry in the leaf index of the attribute's B+ Tree which had 
+		/*NOTE: a valid searchIndex points to an entry in the leaf index of the attribute's B+ Tree which had 
 		  previously satisfied the op for the given attrVal.*/
 		
-		block = prevIndexid.block;
-		index = prevIndexid.index + 1; //search is resumed from the next index.
+		block = searchIndex.block;
+		index = searchIndex.index + 1; //search is resumed from the next index.
 		
 		//load block into leaf using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
 		IndLeaf leaf(block);
@@ -978,7 +978,7 @@ private :
 			}
 			if(cond == 1){ //an entry satisying op for the given attrVal found.
 			
-				//set previous index id to {block, index} using <a href="cache.html#setprevindexid" target="_blank">OpenRelTable::setPrevIndexId()</a>.
+				//set search index to {block, index} using <a href="cache.html#setsearchindex1" target="_blank">OpenRelTable::setSearchIndex()</a>.
 				
 				delete leafBlk;
 				
