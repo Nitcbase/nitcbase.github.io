@@ -300,7 +300,7 @@ public:
 							</table>
 						     </div>
 					    <h5>Description:</h5>
-					<p>An utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. To cache a relation in Relation Cache Table, this function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache Entry. The details of the implementation are left to you.</p>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. The record content is used to populate the relCatEntry field. The dirty, recId, and searchIndex fields are initialised with default values of false, {-1, -1}, and {-1, -1}, respectively. This function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache entry when caching a relation in Relation Cache Table. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>	
 					</li>
@@ -331,7 +331,7 @@ public:
 		                     	</div>
 
                             	<h5>Description:</h5>
-                            	<p>An utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>. While closing a relation, this function can be used to convert the Relation Cache Entry to the corresponding record that can be used to write back to Relation Catalog block. The details of the implementation are left to you.</p>
+				<p>A utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>. The record is populated with the contents of the relCatEntry field. The dirty, recId, and searchIndex fields are used only during runtime and are not written to the disk. This function can be used to convert the Relation Cache entry to the corresponding record that can be written back to Relation Catalog block when closing a relation in the cache memory. The details of the implementation are left to you.</p>
 				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
                         	</div>
 					</li>
@@ -677,7 +677,7 @@ public:
 						<p>void</p>
 
 					    <h5>Description:</h5>
-					    <p>An utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>, to <a href="#attr_cache_entry">AttrCacheEntry</a> structure. To cache the attributes of a relation to Attribute Cache Table, this function can be used to convert the records in Attribute Catalog block/blocks to the corresponding Attribute Cache entry. The details of the implementation are left to you.</p>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#attr_cache_entry">AttrCacheEntry</a> structure.  The record content is used to populate the attrCatEntry field. The dirty, recId, searchIndex, and next fields are initialized with default values of false, {-1, -1}, {-1, -1}, and NULL, respectively. This function can be used to convert the records in Attribute Catalog block/blocks to the corresponding Attribute Cache entries when caching a relation in Attribute Cache Table. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					</li>
@@ -704,8 +704,8 @@ public:
 					    <h5>Return value:</h5>
 						    <p>void</p>
 
-					    <h5>Description:</h5>
-					    <p>An utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to to a record, implemented as an array of <a href="buffer.html#block_structures">union Attribute</a>. While closing a relation, this function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog block/blocks. The details of the implementation are left to you.</p>
+					    	<h5>Description:</h5>
+						<p>A utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>. The record is populated with the contents of the attrCatEntry field. The dirty, recId, searchIndex, and next fields are used only during runtime and are not written to the disk. This function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog block/blocks when closing a relation in the cache memory. The details of the implementation are left to you.</p>
 						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
 					</div>
 					
