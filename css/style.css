@@ -56,7 +56,13 @@ header h3 {
 
 #collapsibleSidebar {
     overflow-x: auto;
-    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    margin-top: -100px;
+    z-index: 10;
+    height: 100%;
+    max-height: 1340px;
+    overflow-y: scroll;
 }
 
 #collapsibleSidebar ul li a.sec::before {
