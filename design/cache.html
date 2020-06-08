@@ -64,26 +64,52 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                             <ul class="nav flex-column sidemenu">
                                 <li> <a class="sec" href="#layout"> Layout</a></li>
-                                <li> <a class="sec" href="#relation_cache"> Relation Cache</a></li>
-                                <li> <a class="sec" href="#attribute_cache"> Attribute Cache</a></li>
-                                <li> <a class="sec" href="#openrel_table"> Open Relation Table</a></li>
-                                <br>
-                                Public Methods:
-                                <ul >
-                                    <li><a href="#constructor">openRelTable()</a></li>
-                                    <li><a href="#destructor">~openRelTable()</a></li>
-                                    <li><a href="#openrel">openRel()</a></li>
-                                    <li><a href="#closerel">closeRel()</a></li>
-                                    <li><a href="#getrelid">getRelId()</a></li>
-                                    <li><a href="#getrelcatentry">getRelCatEntry()</a></li>
-                                    <li><a href="#setrelcatentry">setrelCatEntry()</a></li>
-                                    <li><a href="#getprevrecid">getPrevRecId()</a></li>
-                                    <li><a href="#setprevrecid">setPrevRecId()</a></li>
-                                    <li><a href="#getattrcatentry">getAttrCatEntry()</a></li>
-                                    <li><a href="#setattrcatentry">setAttrCatEntry()</a></li>
-                                    <li><a href="#getprevindexid">getPrevIndexId()</a></li>
-                                    <li><a href="#setprevindexid">setPrevIndexId()</a></li>
-                                </ul>
+                                <li> <a class="sec" href="#relation_cache"> Relation Cache Table Structures</a></li>
+                                <li> <a class="sec" href="#attribute_cache"> Attribute Cache Table Structures</a></li>
+                                <li> <a class="sec" href="#openrel_table_struct"> Open Relation Table Structure</a></li>
+                                <li> <a class="sec" href="#rel_cache_table_class"> class RelCacheTable</a></li>
+					<br>
+					Public Methods:
+					<ul>
+					    <li><a href="#getrelcatentry">getRelCatEntry()</a></li>
+					    <li><a href="#setrelcatentry">setRelCatEntry()</a></li>
+					    <li><a href="#getsearchindex0">getSearchIndex()</a></li>
+					    <li><a href="#setsearchindex0">setSearchIndex()</a></li>
+					</ul>
+					 Private Methods:			    
+					  <ul>  
+					    <li><a href="#rectorelcache">recordToRelCacheEntry()</a></li>
+					    <li><a href="#relcachetorec">relCacheEntryToRecord()</a></li>
+					  </ul>
+				<li> <a class="sec" href="#attr_cache_table_class"> class AttrCacheTable</a></li>
+					<br>
+					Public Methods:
+					<ul >
+					     <li><a href="#getattrcatentry">getAttrCatEntry()</a></li>
+					    <li><a href="#setattrcatentry">setAttrCatEntry()</a></li>
+					    <li><a href="#getsearchindex1">getSearchIndex()</a></li>
+					    <li><a href="#setsearchindex1">setSearchIndex()</a></li>
+					</ul>
+				    	Private Methods:
+				    	<ul >
+					    <li><a href="#rectoattrcache">recordToAttrCacheEntry()</a></li>
+					    <li><a href="#attrcachetorec">attrCacheEntryToRecord()</a></li>
+				    	</ul>
+				<li> <a class="sec" href="#open_rel_table_class"> class OpenRelTable</a></li>
+					<br>
+					Public Methods:
+					<ul >
+					    <li><a href="#open_rel_table_constructor">OpenRelTable()</a></li>
+					    <li><a href="#open_rel_table_destructor">~OpenRelTable()</a></li>
+					    <li><a href="#getrelid">getRelId()</a></li>
+					    <li><a href="#openrel">openRel()</a></li>
+					    <li><a href="#closerel">closeRel()</a></li>
+					    <li><a href="#deleterel">deleteRel()</a></li>
+					</ul>
+					Private Methods:
+					<ul>
+					    <li><a href="#get_free_open_rel_table_entry">getFreeOpenRelTableEntry()</a></li>
+					</ul>
                                 
                             </ul>
                         </div>
@@ -98,562 +124,218 @@
                         <div class="pagetitle">
                             <h1>Cache Layer</h1>
                         </div>
+			    <div id="prerequisite" class=detail>
+				<h5>Pre-requisite Reading:</h5>
+					<ul>
+						<li> <a href="../storage-model.html" target="_blank">Physical Layer</a></li>
+						<li> <a href="buffer.html" target="_blank">Buffer Layer</a></li>
+					</ul>
+					<br>
+					<br>
+								
+											    
+			    </div>
                         
                          <div id="layout" class="detail">
-                            <h2>Layout</h2>
-                             <p> The job of this module is to cache the  <a href="../storage-model.html#relcat">relation catalog</a> and  <a href="../storage-model.html#attrcat">attribute catalog</a> of opened relations in memory. Some meta data related to open relations is also managed by the cache layer.  Since catalog information is frequently required by any query processing module, caching reduces the number of disk accesses for accessing the catalogs. The cache layer provides a clean interface to for catalog access, hiding from the higher layers how the catalogs are stored and maintained internally. The following diagram summarizes the design of this module showing its private and public methods. </p>
-                            <center><img class="img-fluid" src="/img/cache_class.png"></center>
+                            	<h2>Layout</h2>
+                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. Thus each time the relation is processed, these blocks have to be bought to buffer memory where they are at risk of being written back by the replacement algorithm. To prevent multiple reads and write backs of the catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides an interface for catalog access to the higher layers by hiding the storage and maintenance details of the catalogs. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
+				<p>Three tables are used by NITCbase for caching Catalogs- the <i>Relation Cache Table</i> for Relation Catalog entries, the <i>Attribute Cache Table</i> for Attribute Catalog entries and the <i>Open Relation Table</i> for operations that include both Relation and Attribute Catalogs. </p>
+				<p>NITCbase follows an Object-Oriented design for Cache Layer. The class diagram is as shown below. </p> 
+                            <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
+				 
                         </div>
-                        
+		<!----------------relId--------------------------------------------------------------->        	    
+			<div id="relid" class="detail">
+                            	<h2>relId</h2>
+                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. An <b>open relation</b> is a relation that has been loaded to the cache memory. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
+                        </div>
+                <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
-                        <h2>Relation Catalog Entry</h2>
-                            <p><a href="../storage-model.html#relcat">Relation catalog</a> stores metadata coresponding to all relations in the system. In addition to storing this information in the disk, The relation catalog entries of every open relation is cached in the main memory for easy access to this information and to achieves good performance. This is called Relation Cache (also called as Open Relation Table). A maximum of MAXOPEN = 12 relations are cached at the same time. Each cached relation catalog entry is stored as a <i>RelCatEntry</i> structure as shown below:</p>
-                		<div class="code"><pre><code>typedef struct RelCatEntry {
-    char rel_name[ATTR_SIZE];
-    int num_attr;
-    int num_rec;
-    int first_blk;          //Head of linked list of blocks
-    int num_slots_blk;      //Number of slots in a block
-} RelCatEntry ;</code></pre></div>
-                            <p>In addition to the cached copy of relation catalog entry, Nitcbase maintains some meta-data for each open relation in an <a href="#openrel_table">open relation table</a>. <i>RelCatEntry</i> for an open relation is part of the open relation table entry for the relation.</p>
-                        </div>
-                        
-                        <div id="attribute_cache" class="detail">
-                            <h2>Attribute Cache</h2>
-                            <p>The <a href="../storage-model.html#attrcat">Attribute catalog</a>, analogous to the relation catalog stores meta information for every attribute in every relation of the system. In addition to storing this catalog in the disk, the attribute catalog information of all open relations is also cached in the main memory for performance reasons and easy access. For each opened relation, NITCbase maintains an attribute cache. The Attribute cache of an open relation is a list of Attribute catalog entries, where each entry corresponds to an attribute of the relation. (Thus for each open relation there is an Attribute cache and for each attribute of an open relation, there is an entry in the corresponding attribute cache). Since at most MAXOPEN=12 relations can be opened at a time, there are at most MAXOPEN Attribute Caches exist at a time. </p>
-                                
-                            <p>Each entry in the Attribute Cache of a relation contains all the fields from the attribute catalog entry of the corresponding attribute, and some extra fields for storing meta-data as explained below. Since a relation can have a variable number of attributes (though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>), Each Attribute cache is stored in the memory as a linked list of <i>Attribute Cache entries</i>.</p>
-                            
-                            <div class="code"><pre><code>     typedef struct AttrCatEntry {
-        char rel_name[ATTR_SIZE];
-        char attr_name[ATTR_SIZE];
-        int attr_type;     // can be INT/FLOAT/STR
-        bool primary_flag; // Currently unused
-        int root_block;    // root block# of the B+ tree if exists, else -1
-        int offset;        // offset of the attribute in the relation
-    } AttrCatEntry ;
+                        <h2>Relation Cache Table Structures</h2>
+                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
+			    </p>
+			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
+                		<div id="rel_cat_entry" class="subsec">
+						<h4>RelCatEntry </h4>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attribute values in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
+<div class="code"><pre><code>typedef struct RelCatEntry{
 
-    typedef struct AttributeCacheEntry {
-        AttrCatEntry attrcat_entry;
-        bool dirty;
-        <a href="buffer.html#misc">recId</a> recid;
-        <a href="buffer.html#misc">IndexId</a> prev_indid;   /*IMPORTANT: see explanation below  */
-        struct AttributeCacheEntry *next;
-    } AttributeCacheEntry;</code></pre></div>
-                          	<p>As already stated, AttributeCacheEntry also stores some in memory information which will not be committed back to disk. They are:</p>
-                           	<ol>
-                           		<li><i>dirty</i>: Indicates whether the attribute catalog entry is modified.</li>
-                    			<li><i>recid</i>: Stores the record id (block#, slot#) of the attribute catalog entry in the disk. This is useful to commit the catalog entry to disk when it is modified.</li>
-                                <li><i>prev_indid</i>: This entry is valid only if there is an index created on the attribute. It stores the block# and index# of the B+ tree <a href="../storage-model.html#leafind_blk">leaf node</a> corresponding to the <b>last (previous) search hit</b> on the attribute. <a href="b+tree.html#search">B+ search algorithm</a> uses this information to search for the next hit starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="b+tree.html#search">B+ search</a> sets the value to (-1, -1). </li>
-                    		</ol> 
-                        </div>
-                        
-                        <div id = "openrel_table" class="detail">
-                        	<h2>Open Relation Table</h2>
-                        	<p>Cache layer stores the catalog caches in a tabular structure called Open Relation Table. Open relation table consists of a total of MAXOPEN=12 entries. Each entry corresponds to an open relation. The index to the entry in the open relation table is considered as the relation identifier (relId). Any layer that wishes to access the catalog information of an open relation needs to supply relId as an argument for the access functions of cache layer (access functions are described below). Each entry in the Open Relation Table has the following fields:</p>
-                        	<ol>
-                                <li><i>relcat_entry</i>: cached <a href="#relation_cache">relation catalog entry</a> of the relation</li>
-                                <li><i>free</i>: Indicates whether the entry is free or occupied.</li>
-                                <li><i>dirty</i>: Indicates whether <a href="#relation_cache">relation catalog entry</a> is modified.</li>
-                                <li><i>rec_id</i>: Stores the <a href="buffer.html#misc">record id</a> (block#, slot#) of the relation catalog entry in the disk. This is useful to commit the catalog entry to the disk if it is modified.</li>
-                                <li><i>prev_recid</i>: It stores the block# and slot# of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> on the relation. <a href="blockaccess.html#linear_search">Linear search algorithm</a> of the block access layer uses this information to search for the next hit, starting from the previous hit. The entries are initialized to (-1, -1) when the relation is open. The RST option of <a href="blockaccess.html#search">ba_search</a> also sets this to (-1, -1). When every record of the relation has been searched, <a href="blockaccess.html#linear_search">Linear search algorithm</a> sets the value to (-1, -1). </li>
-                                <li><i>attr_list</i>: Head of the linked list storing the <a href="#attribute_cache">attribute catalog cache</a> of the corresponding relation.</li>
-                			</ol>
-                        	<center><img class="img-fluid" src="/img/openreltable.png"></center>
-                        	<p>The above figure shows the structure of Open relation table.</p>
-                            <p>Relation catalog and the attribute catalog are the only two "default" relations in Nitcbase. <b>The catalogs (which store meta-information about other relations) are themselves treated as relations by Nitcbase</b>.  Hence both the relation catalog and the attribute catalog contain entries corresponding to themselves.  The relation catalog entry for <a href="../storage-model.html#relcat"><i>Relation Catalog</i></a> has <i>Relname="relcat"</i>.   The relation catalog entry for the <a href="../storage-model.html#attrcat"><i>attribute catalog</i></a> has <i>Relname="attrcat"</i>.  The attribute catalog will contain default entries corresponding each attribute of the relation catalog and each attribute of the attribute catalog.  The relation catalog and the attribute catalog are always open, with predefined relation ids as 0 and 1 respectively. Consequently, the first and the second entries of the open relation table corresponds to the Relation Catalog and the Attribute Catalog respectively.</p>
-                			<p>Open Relation Table is a static class<span style="color: dodgerblue">*</span>. <b>This means that there exists only a single static object of the class at any point of time</b>. The actual table (data) is private to the class and access to the information is provided through public methods which define interface to the cache layer. Since all interfaces are static, they can be called on the class name instead of calling on an instance (as the object is allocated statically). The class structure of the open relation table showing its public interfaces is shown below.</p>
-                            <p><b><span style="color: dodgerblue">*</span>Implementation note:</b>  In the case of the class <i>OpenRelTable</i>, only a single instance of this class needs to be created when NITCbase is running. One of the ways of implementing such a class is to declare all member fields and methods of the class <b>static</b>. By doing so, memory will be allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all variables of the class and any access to the member fields of the class will refer to the same statically allocated memory for the member field.  As the methods of the class are <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static</a>, C++ allows them to  be accessed using  the semantics <i>classname::methodname()</i>  (instead of <i>objectinstance->methodname()</i> as in the case of methods that are not declared statically).  Static methods in a class are allowed to access only static members of the class. Since the class is static, you need to create only a single object  of the class whose sole purpose is to run the <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructor</a> and the <a href="https://en.wikipedia.org/wiki/Destructor_(computer_programming)">destructor</a>.</p>
-                            
-                            <div class="code">
-                                <pre><code>typedef struct OpenRelTableEntry{
-	RelCatEntry relcat_entry;
-	struct AttributeCacheEntry *attr_list_head;
-	bool free, dirty;
-	recId rec_id, prev_recid;
-}OpenRelTableEntry;
+	char relName[ATTR_SIZE];
+	int numAttrs;
+	int numRecs;
+	int firstBlk;          
+	int lastBlk;
+	int numSlotsPerBlk;      
 
+} RelCatEntry;</code></pre>
+					</div>
+              			</div>
+				<div id="rel_cache_entry" class="subsec">
+					<h4>RelCacheEntry</h4>
+					<p>The structure <i>RelCacheEntry</i> stores the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> entry of the relation along with some additonal information used during runtime.</p>
 
-class OpenRelTable{
-private:
-	static OpenRelTableEntry rel_table[MAXOPEN];
-	static relId getFreeOpenRelTableEntry();
-	
-public:	
-    void openRelTable();
-    void ~openRelTable();
-	static relId OpenRel(char rel_name[ATTR_SIZE]);
-	static int CloseRel(relId rel_id);
-	static int getRelCatEntry(relId rel_id, RelCatEntry *relcat_buf);
-	static int setRelCatEntry(relId rel_id, RelCatEntry *relcat_buf);
-	static recId getPrevRecId(relId rel_id); /*CHANGE INTERFACE HERE*/
-	static int setPrevRecId(relId rel_id, recId rid);
-	static int getAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf);
-	static int getAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf);
-	static int setAttrCatEntry(relId rel_id, char attr_name[ATTR_SIZE], AttrCatEntry *attrcat_buf);
-	static int setAttrCatEntry(relId rel_id, int attr_offset, AttrCatEntry *attrcat_buf);
-	static IndexId getPrevIndexId(relId rel_id, char attr_name[ATTR_SIZE]);
-	static IndexId getPrevIndexId(relId rel_id, int attr_offset);
-	static int setPrevIndexId(relId rel_id, char attr_name[ATTR_SIZE], IndexId prev_indid);
-	static int setPrevIndexId(relId rel_id, int attr_offset, IndexId prev_indid);
-	static relId getRelId(char rel_name[ATTR_SIZE]);
-};</code></pre>
-                            </div>
-                            
-                        </div>
-                        
-                        <!-- METHODS OF CACHE LAYER -->
-                        
-                        <div class="pagetitle" id="methods">
-                            <h1>Methods of Cache Layer</h1>
-                        </div>
-                        
-                        <div class="detail" id="constructor">
-                            <h2>openRelTable (Constructor)</h2>
-                            <h5>Arguments:</h5>
-                            <p>Nil</p>
-                            <h5>Return type:</h5>
-                            <p>void</p>
-                            <h5>Description:</h5>
-                            <p>It initializes the open relation table. It also opens <a href="../storage-model.html#relcat">relation catalog</a> and <a href="../storage-model.html#attrcat">attribute catalog</a> with relId 0 and 1 respectively. </p>
-                            <p><b>Note:</b> Since the first block numbers of relation catalog and attribute catalog are known to us (they are fixed), we can directly fetch the entries from the disk blocks and populate the table.</p>
-                            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-constructor" class="collapse">
-                                <div class="code">
-                                    <pre><code>OpenRelTable::OpenRelTable(){
-	
-	//Initialize all open relation table entries as free and set the dirty flag to false. 
-	
-	/************Loading the relation catalog entries***********/
-    
-	//Let <i>block_num</i> and <i>slot_num</i> be the block and slot numbers of the relation catalog
-	RecBuffer *buffer = Buffer::<a href="buffer.html#getrecblk">getRecBlock</a>(block_num);
-	//let <i>relcat_rec</i> be an array of type <a href="buffer.html#block_structures">union Attribute</a>
-	//get the record corresponding to relation catalog into relcat_rec
-	buffer->getRecord(relcat_rec,slot_num); 
-	// Now copy the fields from the record to the 0<sup>th</sup> entry of the open relation table. 
-	// since the default relation id of relation catalog is 0
-	
-	//Let <i>block_num</i> and <i>slot_num</i> be the block and slot numbers of the attribute catalog
-	//let <i>attrcat_rec</i> be an array of type union Attribute
-	//get the record corresponding to attribute catalog into attrcat_rec
-	buffer->getRecord(attrcat_rec,slot_num); 
-	// Now copy the fields from the record to the 1<sup>st</sup> entry of the open relation table. 
-	// since the default relation id of attribute catalog is 1
-	
-	//Set the prev_recid field in both the entries to (-1, -1)
-	//Set the free bit to false for both the entries.
-	
-	delete buffer;
-	
-	/************Loading the attribute catalog entries***********/
-	
-	//Let block_num be the first block number of the attribute catalog
-	RecBuffer *buffer = Buffer::<a href="buffer.html#getrecblk">getRecBlock</a>(block_num);
-	//First 5 slots in this block corresponds to the attribute catalog entries of the relation catalog
-	// get the records from all the slots using getRecBlock of Buffer layer
-	// and arrange them as a linked list by filling all the fields of AttributeCacheEntry. (Attribute cache of relation catalog)
-	
-	// Next 6 slots in this block corresponds to the attribute catalog entries of the relation catalog
-	// get the records from all the slots using getRecBlock of Buffer layer
-	// and arrange them as a linked list by filling all the fields of AttributeCacheEntry. (Attribute cache of attribute catalog)
-	
-	//Set the prev_indid of all attributes to (-1, -1).
-	
-	delete buffer;
+<div class="code"><pre><code>typedef struct RelCacheEntry {
+
+	RelCatEntry relCatEntry;
+	bool dirty;
+	RecId recId;
+	RecId searchIndex;
+
+} RelCacheEntry;</code></pre>
+					</div>
+					<p> The RelCacheEntry data field details are as follows:
+						<ul>
+
+							<li><i>relCatEntry</i>: Stores the relation's cached <a href="#rel_cat_entry">Relation Catalog entry</a>.</li>
+							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified.</li>
+							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the relation's entry in the Relation Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
+							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} each time the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
+
+						</ul>
+					</p>
+              			</div>
+						
+		      </div>
 		
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="detail" id="destructor">
-                            <h2>~openRelTable (Destructor)</h2>
-                            <h5>Arguments:</h5>
-                            <p>Nil</p>                            
-                            <h5>Return type:</h5>
-                            <p>void</p>
-                            <h5>Description:</h5>
-                            <p>This closes all opened relations except the relation catalog and the attribute catalog. Entries corresponding to the relation catalog and attribute catalog will be committed back to the disk in the respective block and slot if they are marked as dirty.</p>
-                            <h5><a data-toggle="collapse" href="#algo-destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-destructor" class="collapse">
-                                <div class="code">
-                                    <pre><code>OpenRelTable::~OpenRelTable(){
-
-	// Close all the opened relations except relation catalog and attribute catalog
-	// using openRelTable::close() method.
-	
-	// Iterate over the linked list (Attribute Cache) of both the catalogs
-	//     Commit the entry to the disk if it is dirty
-	//     free the node from the list
-	
-	// Commit the relCatEntry of relation catalog and attribute catalog to
-	// the disk if they are dirty.
-	
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="detail" id="rectorelcat">
-                            <h2><i>private</i> recordtoRelCatEntry</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>record</td>
-								        <td>union Attribute[RELCAT_SIZE]</td>
-								        <td></td>
-								    </tr>
-		                        </table>
-		                    </div>
+	<!----------------Attribute Cache Table Structures--------------------------------------------------------------->
+                        <div id="attribute_cache" class="detail">
+                            	<h2>Attribute Cache Table Structures</h2>
+                            	<p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> blocks, analogous to the Relation Catalog block, stores the meta information of the attributes of all the relations in the database. 
+				    In addition to this, the Attribute Catalog entries of every <i>open relations</i> are also loaded to the cache memory.
+				    This is implemented using <i>Attribute Cache Table</i>.
+				    Each entry in the <i>Attribute Cache Table</i> stores the entries corresponding to each attribute 
+				    of the relation in the form a linked list along with some additional meta-data.</p>
+				<p>NITCbase caches Attribute Catalog using two structures: <i>AttrCatEntry</i> and <i>AttrCacheEntry</i>.</p>
                             
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>RelCatEntry</td>
-						                <td></td>
-						            </tr>
-		                     	</table>
-		                     </div>
-                            <h5>Description:</h5>
-                            <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#relation_cache">RelCatEntry</a> structure. The details of the implementation are left to you.</p>
-                        </div>
-                        
-                        <div class="detail" id="rectoattrcat">
-                            <h2><i>private</i> recordtoAttrCatEntry</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>record</td>
-								        <td>union Attribute[ATTRCAT_SIZE]</td>
-								        <td></td>
-								    </tr>
-		                        </table>
-		                    </div>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>AttrCatEntry</td>
-						                <td></td>
-						            </tr>
-		                     	</table>
-		                     </div>
+                            	<div id = "attr_cat_entry" class= "subec">
+				    <h4>AttrCatEntry</h4>
+				    <p>The structure <i>AttrCatEntry</i> stores in its data fields all the attribute values in the record entry corresponding to one of the relation's attribute from an <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> block. </p>
+				    <div class="code"><pre><code>     
+typedef struct AttrCatEntry {
 
-                            <h5>Description:</h5>
-                            <p>This is an utility function that converts the array of <a href="buffer.html#block_structures">union Attribute</a> (record) to <a href="#attribute_cache">AttrCatEntry</a> structure. The details of the implementation are left to you.</p>
-                        </div>
-                        
-                        <div class="detail" id="relcattorec">
-                            <h2><i>private</i> relCatEntrytoRecord</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>relcat_entry</td>
-								        <td>RelCatEntry</td>
-								        <td></td>
-								    </tr>
-		                        </table>
-		                    </div>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>union Attribute *</td>
-						                <td></td>
-						            </tr>
-		                     	</table>
-		                     </div>
+	char relName[ATTR_SIZE];
+	char attrName[ATTR_SIZE];
+	int attrType;
+	bool primaryFlag;
+	int rootBlock;
+	int offset;
 
-                            <h5>Description:</h5>
-                            <p>This is an utility function that converts <a href="#relation_cache">RelCatEntry</a> structure to the array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
-                        </div>
-                        
-                        <div class="detail" id="attrcattorec">
-                            <h2><i>private</i> attrCatEntrytoRecord</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>attrcat_entry</td>
-								        <td>AttrCatEntry</td>
-								        <td></td>
-								    </tr>
-		                        </table>
-		                    </div>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>union Attribute *</td>
-						                <td></td>
-						            </tr>
-		                     	</table>
-		                     </div>
+} AttrCatEntry;</code></pre></div>
+			    </div>
+				
+			<div id = "attr_cache_entry" class= "subec">
+			    <h4>AttrCacheEntry</h4>
+			    <p>The structure <i>AttrCacheEntry</i> stores the <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entry of an attribute of the relation along with some additonal information used during runtime.
+				 Since a relation can have variable number of attributes, a linked list of <i>struct AttributeCacheEntry</i> elements is maintained to cache all the Attribute Catalog entries together.</p>
+			    <div class="code"><pre><code>
+typedef struct AttributeCacheEntry {
 
-                            <h5>Description:</h5>
-                            <p>This is an utility function that converts <a href="#attribute_cache">AttrCatEntry</a> structure to the array of <a href="buffer.html#block_structures">union Attribute</a> (record). The details of the implementation are left to you.</p>
-                        </div>
-                        
-                        <div class="detail" id="getfreeentry">
-                            <h2><i>private</i> getFreeOpenrelTableEntry</h2>
-                            <h5>Arguments:</h5>
-                            <p>Nil</p>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>int</td>
-						                <td>the index to a free entry in the open relation table</td>
-						            </tr>
-		                     	</table>
-		                     </div>
+	AttrCatEntry attrCatEntry;
+	bool dirty;
+	RecId recid;
+	IndexId searchIndex;
+	struct AttributeCacheEntry *next;
 
-                            <h5>Description:</h5>
-                            <p>It searches for the free entry in the open relation table and returns it.  The details of the implementation are left to you. </p>
-                        </div>
-                        
-                        <div id="openrel" class="detail">
-                            <h2><i>public:</i> OpenRel</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>relName</td>
-								        <td>char[ATTR_SIZE]</td>
-								        <td>Name of Relation that has to be opened in cache.</td>
-								    </tr>
-		                        </table>
-		                    </div>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>relId</td>
-						                <td>Returns the relId on succesful opening of the relation</td>
-						            </tr>
-						            <tr>
-						                <td>E_RELNOTEXIST</td>
-						                <td>If the relation with name relName does not exist in the disk</td>
-						            </tr>
-						            <tr>
-						                <td>E_CACHEFULL</td>
-						                <td>If there are no free slots in the Open Relation table.</td>
-						            </tr>
-		                     	</table>
-		                     </div>
+} AttributeCacheEntry;
+			</code></pre></div>
+				<p> The AttrCacheEntry field details are as follows:
+					<ul>
 
-                            <h5>Description:</h5>
-                            <p>This method Opens the relation specified as name in cache/OpenRelTable.</p>
-
-							<h5><a data-toggle="collapse" href="#algo-openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-openrel" class="collapse">
-                                <div class="code"><pre><code>relId OpenRelTable::OpenRel(char relName[ATTR_SIZE]){
-
-	//check if the relation with relation name <i>relName</i> already opened
-	relid = OpenRelTable::getRelId(relName);
-	if(relid != E_NOTOPEN){
-		return relid;
-	}
+						<li><i>attrCatEntry</i>: Stores the cached <a href="#attr_cat_entry">Attribute Catalog entry</a> corresponding to an attribute of the relation.</li>
+						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified.</li>
+						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the record entry corresponding to the relation's attribute in the 
+							Attribute Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
+						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} each time the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched,  B+ Tree search resets the searchIndex value to {-1, -1}. </li>
+						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> element in the linked list.</li>  
+					</ul> 
+				</p>
+				</div>
+				</div>
+				
+  <!--------------------Open Relation Table Structure------------------------------------------------------------------------------------------------------>                      
+                        <div id="openrel_table_struct" class="detail">
+                            <h2>Open Relation Table Structure</h2>
+                            <p>A relation must have an entry in the Open Relation Table for its Relation Catalog and Attribute Catalog entries to be cached in the  Relation Cache Table and Attribute Cache Table, respectively. </p>
+                            <div id = "open_rel_table_metainfo" class= "subec">
+				    <h4>OpenRelTableMetaInfo</h4>
+				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
+				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo{
+				    
+	bool freee;
+	char rel_name[ATTR_SIZE];
 	
-	//find a free slot in the relation cache
-	//if free slot is not found in the relation cache
-		return E_CACHEFULL;
+} OpenRelTableMetaInfo;</code></pre></div>
+			    </div>
+			</div>
+<!-----------------------------------------Layer Diagram-------------------------------------->	
+	<div id="layer_diagram" class="detail">
+	<p>The following diagram summarizes the design of this module.</p>
+	<center><img class="img-fluid" src="/img/cacheLayerTables.png"></center>
+	</div>
+<!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
+			<div id="rel_cache_table_class" class="details">
+				<h2>class RelCacheTable</h2>
+				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. The class contains a private member field, <i>relCache</i>, 
+					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
+					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
+				For each relation opened, an entry is made in the array <i>relCache</i>,
+					at the index corresponding to the <a href="#relid">relation id</a> of the relation.
+				This entry points to the <i>struct RelCacheEntry</i> that stores all the attribute values of the relation's entry from the Relation Catalog block
+					 along with other meta-data of the relation. 
+					
+			</p>
+				
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to retrieve and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
+				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <i>RelCacheEntry</i> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
+			    	</p>
+				
+				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
+				   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of RelCacheTable is as given below:
+				</p>
+				<p><b>Note:</b> The class <i>OpenRelTable</i> is a friend class to <i>RelCacheTable</i> class. This allows all methods in <i>OpenRelTable</i> to access the private fields and methods of the <i>RelCacheTable</i> class.</p>
+
+				<div class="code">
+					<pre><code>class RelCacheTable{
+friend class OpenRelTable;
 	
-	//search for the relation catalog entry with relation name <i>relName</i> in the <a href="buffer.html#relcat">relation catalog</a> 
-	relcat_recid = <a href="blockaccess.html#linear_search" target="_blank">linear_search</a>(RELCAT_RELID, "<span style="color: deeppink">relation_name</span>", relName, EQ);
-    //Note: The name of the 0<sup>th</sup> attribute in the relation catalog is <span style="color: deeppink">relation_name</span>
-	if(relcat_recid == {-1, -1}){ //if relation is not found in the relation catalog
-		return E_RELNOTEXIST;
-	}
-	
-	//Iterate over all the attributes corresponding to the relation with relation name=<i>relName</i>{
-            //search for the attributes with relation name <i>relName</i> in the attribute catalog 
-            //using <a href="blockaccess.html#linear_search" target="_blank">linear_search</a> of the block access layer.
+public:
+	//methods
+	static int getRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	static int setRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	static int getSearchIndex(int relId, RecId *searchIndex);
+	static int setSearchIndex(int relId, RecId *searchIndex);
 
-            //get the attribute catalog record corresponding to attrcat_recid from the <a href="buffer.html#attrcat">attribute catalog</a>
-            rec_buffer = Buffer::<a href="buffer.html#getrecblk" target="_blank">getRecBlock</a>(attrcat_recid.block);
-            rec_buffer-><a href="buffer.html#getrecord" target="_blank">getRecord</a>(attrcat_record, attrcat_recid.slot);
+private:
+	//field
+	static RelCacheEntry* relCache[MAX_OPEN];
 
-            //since attribute cache is implemented as a linked list
-            //Create a new node of the type <a href="#attribute_cache">AttributeCacheEntry</a> for the attribute
-            /*Convert the attribute catalog entry from the record structure
-              to the structure AttrCatEntry using <a href="#rectoattrcat">RecordtoAttrCatEntry</a>()
-              and assign it to attrcat_entry field of the created new node.*/
-            //initialize the meta information of the attribute cache entry node as follows
-            // set the dirty flag in AttributeCacheEntry to false
-            // set the <a href="buffer.html#misc">prev_indid</a> to (-1, -1)
-            // set the recid to the id returned by linear_search.
+	//methods
+	static void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	static void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 
-            //Add the node to the attribute cache linked list.
-	//}
-	AttrCacheEntry *attrlist_head = head of the linked list of Attribute Cache entries.
-
-	//get the relation catalog entry with relation name <i>relName</i> from the relation catalog
-	rec_buffer = Buffer::<a href="buffer.html#getrecblk" target="_blank">getRecBlock</a>(relcat_recid.block); //(recid of the relation record = relcat_recid)
-	rec_buffer->getRecord(&amp;relcat_entry, relcat_recid.slot);
-    /*Convert the relation catalog entry from the record structure
-		  to the structure RelCatEntry using <a href="#rectorelcat">RecordtoRelCatEntry</a>() */
-													    
-	//initialize the meta information of the relation cache node as follows
-    //set the free flag to false and <a href="buffer.html#misc">prev_recid</a> to (-1, -1)
-    //set the recid to the value returned by linear search (relcat_recid)
-    //set the attribute cache head to the attr_list_head field.
-	
-	
-	return relid;
-}</code></pre></div>
-
-                            </div>
-                        </div>
-                        
-                        <div id="closerel" class="detail">
-                            <h2><i>public:</i> CloseRel</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                            <tr>
-								        <td>relid</td>
-								        <td>int</td>
-								        <td>Relation Id of Relation that has to be closed from cache.</td>
-								    </tr>
-		                        </table>
-		                    </div>
-                            
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-		                        <table class="table table-bordered table-hover">
-		                        	<tr>
-						                <td>SUCCESS</td>
-						                <td>On successful closing of the relation with id relid</td>
-						            </tr>
-						            <tr>
-						                <td>E_OUTOFBOUND</td>
-						                <td>If the relid is out of the range 0-MAXOPEN</td>
-						            </tr>
-						            <tr>
-						                <td>E_NOTOPEN</td>
-						                <td>If there is no open relation exist corresponding to the id given by relid</td>
-						            </tr>
-		                     	</table>
-		                     </div>
-
-                            <h5>Description:</h5>
-                            <p>This method closes the relation specified as name in cache/OpenRelTable.</p>
-
-							<h5><a data-toggle="collapse" href="#algo-closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div class="collapse" id="algo-closerel">
-                                <div class="code"><pre><code>int OpenRelTable::CloseRel(relId relid){
-
-	if(<i>relid</i>&lt; 0 || <i>relid</i>&gt;= MAXOPEN){	//check whether relation id (<i>relid</i>) lies in the range
-		return E_OUTOFBOUND;
-	}
-	if(Rel_Table[<i>relid</i>].free){ //slot corresponding to the relid in the relation is free
-		return E_NOTOPEN;
-	}
-	
-	//Iterate over all the attributes in the attribute cache of the relation{
-		//if the attribute catalog entry is modified (i.e, dirty flag is set){
-			//The following code commits the attribute catalog entry into the disk
-			/*We can extract the (block_num, slot_num) of the attribute catalog entry
-			using meta information in the attribute cache*/
-			rec_buffer= Buffer::<a href="buffer.html#getrecblk" target="_blank">getRecBlock</a>(block_num);	
-
-			/*Convert the cached attribute catalog entry from the structure AttrCatEntry 
-			  to the format of the record structure*/
-			record = <a href="#attrcattorec">AttrCatEntrytoRecord</a>(attrcat_entry);
-
-			//commit the attribute catalog entry to the disk (buffer)
-			rec_buffer-><a href="buffer.html#setrecord" target="_blank">setRecord</a>(record, slot_num); 
-		//}
-		//free the attribute catlog node in the attribute cache linked list
-	//}
-	
-	//if the relation catalog entry in the relation cache of the relation is modified{
-		//commit the relation catalog entry to the disk
-		/*We can extract the (block_num, slot_num) of the relation catalog entry
-		  using meta information in the relation cache*/
-		rec_buffer= Buffer::getRecBlock(block_num);	
-
-		/*Convert the cached relation catalog entry from the structure RelCatEntry 
-		  to the format of the record structure*/
-		record = <a href="#relcattorec">RelCatEntrytoRecord</a>(relcat_entry);
-
-		//commit the relation catalog entry to the disk(buffer)
-		buffer->setRecord(record, slot_num); 
-	//}
-	return SUCCESS;
-}</code></pre></div>
-
-                                </div>
-                        </div>
-                        
-                        <div id="getrelid" class="detail">
-                            <h2><i>public:</i> getRelId</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>relName</td>
-                                        <td>char[ATTR_SIZE]</td>
-                                        <td>Name of the Relation.</td>
-                                    </tr>
-                                </table>
-                            </div>
-
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>relId</td>
-                                        <td>Returns the relId corresponding to the relation with name relName, if it is already open</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If the relation with name relName is not open</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <h5>Description:</h5>
-                            <p>This methods gives the Relation Id of the specified relation in cache(OpenRelTable).</p>
-                            
-                            <h5><a data-toggle="collapse" href="#algo-getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-getrelid" class="collapse">
-                                <div class="code"><pre><code>relId OpenRelTable::getRelId(char relName[ATTR_SIZE]){
-	//Iterate over the relation cache{
-		//if relation with relation name relName is opened in the relation cache
-			return relid //return corresponding relid
-	//}
-	return E_NOTOPEN;
-}</code></pre></div>                            
-                            
-                            </div>
-                            
-                        </div>
-
-                        <div id="getrelcatentry" class="detail">
+};</code></pre>
+				</div>
+<p>The following are the specifications for the methods in <i>class RelCacheTable</i>.</p>
+				
+				<ul class="methods">
+	     
+	<!--------getRelCatEntry--------------------------------------------------------------->
+					<li>
+						<div id="getrelcatentry" class="detail">
                             <h2><i>public:</i> getRelCatEntry</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation.</td>
+                                        <td> The relation id of the relation in the Relation Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>relcat_buf</td>
-                                        <td>RelCatEntry *</td>
-                                        <td>pointer to the buffer of type RelCatEntry into which the relation catalog entry is to be copied from the relation cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>relCatBuf</td>
+					<td><a href="#rel_cat_entry">RelCatEntry</a>*</td>
+                                    	<td>Pointer to struct RelCatEntry to which the Relation Catalog entry corresponding to input relId is to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -661,55 +343,64 @@ public:
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>SUCCESS</td>
-                                        <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully copied the Relation Catalog entry.</td>
                                     </tr>
                                     <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+                                        <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+                                        <td>Input relId is outside the valid set of possible relation ids.</td>
                                     </tr>
                                     <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                        <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+                                        <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>This method gives the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
-
+                            <p>Gives the Relation Catalog Entry corresponding to the specified relation from Relation Cache Table.</p>
+<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i> before calling the function.</p>
                             <h5><a data-toggle="collapse" href="#algo-getrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getrelcatentry" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::getRelCatEntry(relId relid, RelCatEntry *relcat_buf){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                                <div class="code"><pre><code>int RelCacheTable::getRelCatEntry(int relId, RelCatEntry *relCatBuf){
+
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Relation Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//copy the relation catalog in the relation cache to the relcat_buf
+	//copy the corresponding Relation Catalog entry in the Relation Cache Table to relCatBuf.
+	
 	return SUCCESS;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+				
                         </div>
-
-                        <div id="setrelcatentry" class="detail">
+					</li>
+	<!--------setRelCatEntry--------------------------------------------------------------->
+					<li>
+						<div id="setrelcatentry" class="detail">
                             <h2><i>public:</i> setRelCatEntry</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation.</td>
+                                        <td>The relation id of the relation in the Relation Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>relcat_buf</td>
-                                        <td>RelCatEntry *</td>
-                                        <td>pointer to the buffer of type RelCatEntry from which the relation catalog entry is to be copied into the relation cache. <br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>relCatBuf</td>
+                                        <td><a href="#rel_cat_entry">RelCatEntry</a>*</td>
+                                        <td>Pointer to struct RelCatEntry using which the Relation Catalog entry corresponding to input relId is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -718,16 +409,16 @@ public:
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover">
                                         <tr>
-                                            <td>SUCCESS</td>
-                                            <td>On successful copy of the relation catalog entry corresponding to the relation with id relid</td>
+                                            <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                            <td>Successfully updated the Relation Catalog entry.</td>
                                         </tr>
                                         <tr>
-                                            <td>E_OUTOFBOUND</td>
-                                            <td>If the relid is out of the range 0-MAXOPEN</td>
+                                            <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+                                            <td>Input relId is outside the valid set of possible relation ids.</td>
                                         </tr>
                                         <tr>
-                                            <td>E_NOTOPEN</td>
-                                            <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                            <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+                                            <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                         </tr>
 
                                     </table>
@@ -735,41 +426,51 @@ public:
                             </div>
 
                             <h5>Description:</h5>
-                            <p>This method sets the Relation catalog(struct RelcatEntry) of specified relation in cache(OpenRelTable).</p>
-
+                            <p>Sets the Relation Catalog entry corresponding to the specified relation in the Relation Cache Table.</p>
+<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCatEntry</i> before calling the function.</p>
                             <h5><a data-toggle="collapse" href="#algo-setrelcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setrelcatentry" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::setRelCatEntry(relId relid, RelCatEntry *relcat_buf){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                                <div class="code"><pre><code>int RelCacheTable::setRelCatEntry(int relId, RelCatEntry *relCatBuf){
+				
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Relation Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//copy the relcat_buf to the relation catalog in the relation cache
-	//set the dirty flag corresponding to the relation with Id relid in the relation cache
+	//copy the relCatBuf to the corresponding Relation Catalog entry in the Relation Cache Table.
+	
+	//set the dirty flag of the corresponding Relation Cache entry in the Relation Cache Table.
+	
 	return SUCCESS;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+			
                         </div>
-
-                        <div id="getprevrecid" class="detail">
-                            <h2><i>public:</i> getPrevRecId</h2>
+					</li>
+	<!--------getSearchIndex--------------------------------------------------------------->
+					<li>
+						<div id="getsearchindex0" class="detail">
+                            <h2><i>public:</i> getSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Relation Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>recidbuff_ptr</td>
-                                        <td>recId *</td>
-                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The record id field of the previous hit stored in the meta information of the relation cache is to be copied into recid_ptr.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>searchIndex</td>
+					    <td><a href="#recid" target="_blank">RecId</a>*</td>
+                                        <td>Pointer to struct RecId to which the searchIndex field of the Relation Cache entry corresponding to input relId is to be copied.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -778,55 +479,63 @@ public:
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>SUCCESS</td>
-                                        <td>If record id of previous hit is copied to recid. It means that the id pointed by recid is valid.</td>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully copied the searchIndex field.</td>
                                     </tr>
                                     <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+					    <td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					    <td>Input relId is outside the valid set of possible relation ids.</td>
+					</tr>
+					<tr>
+					    <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					    <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>This method gives the value of <i>prevrecid</i> field corresponding to the specified relation in cache.(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
-
+			<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation from Relation Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next record.</p>
+<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i> before calling the function.</p>
                             <h5><a data-toggle="collapse" href="#algo-getprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getprevrecid" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::getPrevRecId(relId relid, recId *recidbuff_ptr){
-	if(relid&lt; 0 || relid&gt;= MAXOPEN){//check whether relation id (relid) lies in the range
+                                <div class="code"><pre><code>int relCacheTable::getSearchIndex(relId relid, recId *recidbuff_ptr){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Relation Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	/*copy the previous record id of the relation in the relation cache to the recidbuff_ptr*/
+	// copy the searchIndex field of the Relation Cache entry corresponding to input relId to searchIndex variable.
+	
 	return SUCCESS;
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+			
                         </div>
-
-                        <div id="setprevrecid" class="detail">
-                            <h2><i>public:</i> setPrevRecId</h2>
+					</li>
+	<!--------setsearchIndex--------------------------------------------------------------->
+					<li>
+						<div id="setsearchindex0" class="detail">
+                            <h2><i>public:</i> setSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Relation Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>recidbuff_ptr</td>
-                                        <td>recId *</td>
-                                        <td>pointer to buffer of type recId (recId is a structure carrying a (block_num, slot_num) pair).<br> The record id field of the previous hit is to be stored to the meta information of the relation cache from  recid_ptr.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>searchIndex</td>
+                                        <td><a href="#recid" target="_blank">RecId</a>*</td>
+					    <td>Pointer to struct RecId using which the searchIndex field of the Relation Cache entry corresponding to input relId is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -834,332 +543,1068 @@ public:
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>SUCCESS</td>
-                                        <td>If the record id is successfully copied into the Relation Catalog Cache.</td>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully updated the searchIndex field.</td>
                                     </tr>
                                     <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+                                        <td>Input relId is outside the valid set of possible relation ids.</td>
                                     </tr>
                                     <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
+                                        <td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+                                        <td>Entry corresponding to input relId is free in the Relation Cache Table.</td>
                                     </tr>
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>This method sets the value of <i>prevrecid</i> field corresponding to the specified relation in cache.</p>
-
+                            <p>Sets the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given relation in Relation Cache Table. This is used by the <a href="blockaccess.html#linear_search" target="_blank">linear search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next record.</p>
+<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RecId</i> before calling the function.</p>
                             <h5><a data-toggle="collapse" href="#algo-setprevrecid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setprevrecid" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::setPrevRecId(relId rel_id, recId *recidbuff_ptr){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                                <div class="code"><pre><code>int RelCacheTable::setSearchIndex(int relId, recId *searchIndex){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Relation Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	/*copy the previous record id of the relation from the recidbuff_ptr to the relation cache*/
+	// copy the searchIndex variable to the searchIndex field of the Relation Cache entry corresponding to input relId.
+	
 	return SUCCESS;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
+			
                         </div>
+					</li>
+	<!----------------------recordToRelCacheEntry--------------------------->
+					<li>
+						<div class="detail" id="rectorelcache">
+					    	<h2><i>private:</i> recordToRelCacheEntry</h2>
+					    	<h5>Arguments:</h5>
+					    	<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							<td>record</td>
+							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+							<td>Record which is to be converted to a Relation Cache Entry.</td>
+						    </tr>
+							<tr>
+									<td>RelCacheEntry</td>
+									<td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
+									<td>Pointer to struct RelCacheEntry to which the contents of the input record is to be copied.</td>
+								</tr>
+							</table>
+						    </div>
 
-                        <div id="getattrcatentry" class="detail">
-                            <h2><i>public:</i> getAttrCatEntry</h2>
-                            <h5>Arguments:</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>relid</td>
-                                        <td>int</td>
-                                        <td>Relation Id of the Relation</td>
-                                    </tr>
-                                    <tr>
-                                        <td>attrName/attr_offset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
-                                    </tr>
-                                    <tr>
-                                        <td>attrcat_buf</td>
-                                        <td>AttrCatEntry *</td>
-                                        <td>pointer to the buffer of type AttrCatEntry where the attribute catalog entry is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
+					    <h5>Return value:</h5>
+					    void
+					    <h5>Description:</h5>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. The record content is used to populate the relCatEntry field. The dirty, recId, and searchIndex fields are initialised with default values of false, {-1, -1}, and {-1, -1}, respectively. This function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache entry when caching a relation in Relation Cache Table. The details of the implementation are left to you.</p>
+					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>	
+					</li>
+	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
+					<li>
+						<div class="detail" id="relcachetorec">
+                            			<h2><i>private:</i> relCacheEntryToRecord</h2>
+                            			<h5>Arguments:</h5>
+                            			<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+							<tr>
+								<td>record</td>
+						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+						                <td>The record to which the contents of the input Relation Cache Entry is to be copied.</td>
+						        </tr>
+		                            		<tr>
+								<td>relCacheEntry</td>
+							        <td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
+							        <td>Pointer to struct RelCacheEntry which is to be converted to a record.</td>
+						    	</tr>
+		                        	</table>
+		                   		 </div>
+                            
+                            		<h5>Return value:</h5>
+                            		void
 
-                            <h5>Return value:</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <td>SUCCESS</td>
-                                        <td>On successful copy of the attribute catalog entry corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_ATTRNOTEXIST</td>
-                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
-                                    </tr>
+                            	<h5>Description:</h5>
+				<p>A utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>. The record is populated with the contents of the relCatEntry field. The dirty, recId, and searchIndex fields are used only during runtime and are not written to the disk. This function can be used to convert the Relation Cache entry to the corresponding record that can be written back to Relation Catalog block when closing a relation in the cache memory. The details of the implementation are left to you.</p>
+				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+                        	</div>
+					</li>
+	<!----------------------------------------------------------------------->
+					
+				</ul>
+			</div>
+<!-----------------------------------class AttrCacheTable----------------------------------------------------------------------------------->
 
-                                </table>
-                            </div>
-                            <h5>Description:</h5>
-                            <p>This methods gives the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
+			<div id="attr_cache_table_class" class="details">
+				<h2>class AttrCacheTable</h2>
+				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. The class contains a private member field, <i>attrCache</i>, 
+					which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> 
+					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
+				For each relation opened, an entry is made in the array <i>attrCache</i>,
+					at the index given by relation id of the relation.
+				This entry is the head of the linked list of <i>struct AttrCacheEntry</i> elements.
+					A linked list is used because a relation can have variable number of attributes 
+					(though the maximum number of attributes for a relation is bounded in Nitcbase by 125 - <b>why?</b>). 
+					Each element in the linked list corresponds to an attribute of the relation.
+				
+			</p>	
+			<p>The class provides public overloaded methods <i>getAttrCatEntry()</i> and <i>setAttrCatEntry()</i> to retrieve and update the <a href="#attr_cat_entry">Attribute Catalog Entry</a> of a relation's attribute in the Attribute Cache Table. The class also provides overloaded public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#attr_cache_entry">Attribute Cache Entry</a>.</i> 
+			    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to AttrCacheEntry structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+			    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
+			</p>
+			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
+			   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of AttrCacheTable is as given below:
+			</p>
+		<p><b>Note:</b> The class <i>OpenRelTable</i> is a friend class to <i>AttrCacheTable</i> class. This allows all methods in <i>OpenRelTable</i> to access the private fields and methods of the <i>AttrCacheTable</i> class.</p>
+				<div class="code">
+<pre><code>class AttrCacheTable{
 
-                            <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-getattrcatentry" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::getAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+friend class OpenRelTable;
+	
+public:
+	//methods
+	static int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+	static int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
+	static int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+	static int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+
+private:
+	//field
+	static AttrCacheEntry* attrCache[MAX_OPEN];
+	
+	//methods
+	static void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	static void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	
+};</code></pre>
+				</div>	
+	
+<p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
+				<ul class="methods">
+	     <!-------------------------------getAttrCatEntry------------------------------------------------------------>
+					<li>
+					    <div id="getattrcatentry" class="detail">
+					    <h2><i>public:</i> getAttrCatEntry</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							<td>relId</td>
+							<td>int</td>
+							<td>The relation id of the relation in the Attribute Cache Table.</td>
+						    </tr>
+						    <tr>
+							<td>attrName / attrOffset</td>
+							<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+							<td>The name/offset of the target attribute.</td>
+						    </tr>
+						    <tr>
+							<td>attrCatBuf</td>
+							<td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
+							<td>Pointer to <i>struct AttrCatEntry</i> to which the Attribute Catalog entry corresponding to the input relid and attribute is to be copied.</td>
+						    </tr>
+						</table>
+					    </div>
+					    <h5>Return value:</h5>
+					    <div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							    <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+							<td>Successfully copied the Attribute Catalog entry.</td>
+						    </tr>
+						     <tr>
+							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>Input relId is outside the valid set of possible relation ids.</td>
+						    </tr>
+						    <tr>
+							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+							<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
+						    </tr>
+						    <tr>
+							    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+							<td>No attribute with the input attribute name or offset exists.</td>
+						    </tr>
+
+						</table>
+					    </div>
+					    <h5>Description:</h5>
+					    <p>Gives the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
+					<p><b>NOTE: </b>
+				    <ul><li>This method is overloaded in type of the second argument.
+				        <li>The caller should allocate memory for the <i>struct AttrCatEntry</i> before calling the function.
+				</ul></p>
+				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+				    <div id="algo-getattrcatentry" class="collapse">
+					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
-		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
-			//copy the attribute catalog in the attribute cache to the attrcat_buf
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			// copy that Attribute Catalog entry in the Attribute Cache Table to attrCatBuf.
+			
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-                        </div>
-
-                        <div id="setattrcatentry" class="detail">
+</div>
+					</li>
+         <!-------------------------------setAttrCatEntry------------------------------------------------------------>
+					<li>
+						<div id="setattrcatentry" class="detail">
                             <h2><i>public:</i> setAttrCatEntry</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attr_offset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
-                                        <td>attrcat_buf</td>
-                                        <td>AttrCatEntry *</td>
-                                        <td>pointer to the buffer of type AttrCatEntry from where the attribute catalog entry is to be copied to the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>attrCatBuf</td>
+				        <td><a href="#attr_cat_entry">AttrCatEntry</a>*</td>
+                                        <td>Pointer to <i>struct AttrCatEntry</i> using which the Attribute Catalog entry corresponding to input relId and attribute is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
-
+                            
                             <h5>Return value:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover ">
                                     <tr>
-                                        <td>SUCCESS</td>
-                                        <td>On successful copy of the attribute catalog entry into the cache corresponding to the relation with id relid and attribute with name attrName or having offset attr_offset</td>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully updated the Attribute Catalog entry.</td>
                                     </tr>
-                                    <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_ATTRNOTEXIST</td>
-                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
-                                    </tr>
+                                   <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
+				    </tr>
+				    <tr>
+					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+					<td>No attribute with the input attribute name or offset exists.</td>
+				    </tr>
 
                                 </table>
                             </div>
-                            <h5>Description:</h5>
-                            <p>This methods sets the Attribute catalog entry(AttrCatEntry) corresponding to attribute present in a relation as specified in arguments.</p>
-
+					
+                            	<h5>Description:</h5>
+                            	<p>Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.</p>
+				<p><b>NOTE: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory to the pointer to <i>struct AttrCatEntry</i> before calling the function.
+				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
-                                <div class="code"><pre><code>int OpenRelTable::setAttrCatEntry(relId relid, char attr_name[ATTR_SIZE/int attr_offset, AttrCatEntry *attrcat_buf){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                                <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
-		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
-			//copy the attrcat_buf to the corresponding attibute node in the attribute cache
-			//set the dirty flag corresponding to the attribute in the attribute cache
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			// copy the attrCatBuf to the corresponding Attribute Catalog entry in the Attribute Cache Table.
+			
+			// set the dirty flag of the corresponding Attribute Cache entry in the Attribute Cache Table.
+			
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-                        </div>
-
-                         <div id="getprevindexid" class="detail">
-                            <h2><i>public:</i> getPrevIndexId</h2>
+</div>
+					</li>
+         <!-------------------------------getSearchIndex------------------------------------------------------------>
+					<li>
+						<div id="getsearchindex1" class="detail">
+                            <h2><i>public:</i> getSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attr_offset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
-                                        <td>indid</td>
-                                        <td>IndexId *</td>
-                                        <td>pointer to buffer of type IndexId where the index id is to be copied.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>searchIndex</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
+                                        <td>Pointer to <i>struct IndexId</i> to which the searchIndex field of the Attribute Cache entry corresponding to the input relid and attribute is to be copied. </td>
                                     </tr>
                                 </table>
                              </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
                                 <h5>Return value:</h5>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <tr>
-                                            <td>SUCCESS</td>
-                                            <td>If index id of previous hit is copied to indid. It means that the id pointed by indid is valid.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_OUTOFBOUND</td>
-                                            <td>If the relid is out of the range 0-MAXOPEN</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_NOTOPEN</td>
-                                            <td>If there is no open relation exist corresponding to the id given by relid</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E_ATTRNOTEXIST</td>
-                                            <td>If there is no attribute with name attrname or having offset attr_offset</td>
-                                        </tr>
+                                    <table class="table table-bordered table-hover ">
+                                    <tr>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully copied the searchIndex field.</td>
+                                    </tr>
+                                     <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
+				    </tr>
+				    <tr>
+					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+					<td>No attribute with the input attribute name or offset exists.</td>
+				    </tr>
 
-                                    </table>
+                                </table>
                                 </div>
 
-                            <h5>Description:</h5>
-                            <p>This method gives the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.<br>(note: this is used to track the record found in previous search and next search can start searching afer previously found record)</p>
-
-                            <h5><a data-toggle="collapse" href="#algo-getprevindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-getprevindexid" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::getPrevIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                            	<h5>Description:</h5>
+				<p>Gives the value of <a href="#rel_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> to find the location of the previous hit so that the search can be resumed from the next leaf index entry.</p>
+				
+				<p><b>NOTE: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory for the <i>struct IndexId</i> before calling the function.
+				</ul></p>
+                            <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-getsearchindexid" class="collapse">
+                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndex(int relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
-		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
-			/*copy the previous index id (in meta informatiom) corresponding to 
-			  the attribute in the attribute cache to the indid*/
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+		
+			//copy the searchIndex field of the corresponding Attribute Cache entry in the Attribute Cache Table to input searchIndex variable.
+
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                              </div>
-                        </div>
-
-                        <div id="setprevindexid" class="detail">
-                            <h2><i>public:</i> setPrevIndexId</h2>
+</div>
+					</li>
+         <!-------------------------------setSearchIndex------------------------------------------------------------>
+					<li>
+						<div id="setsearchindex1" class="detail">
+                            <h2><i>public:</i> setSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
+                                    <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>relid</td>
+                                        <td>relId</td>
                                         <td>int</td>
-                                        <td>Relation Id of the Relation</td>
+                                        <td>The relation id of the relation in the Attribute Cache Table.</td>
                                     </tr>
                                     <tr>
-                                        <td>attrName/attr_offset</td>
-                                        <td>char[ATTR_SIZE] / int</td>
-                                        <td>Name of attribute / offset of target attribute (this is an overloaded funtion).</td>
-                                    </tr>
+					<td>attrName / attrOffset</td>
+					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>The name/offset of the target attribute.</td>
+				    </tr>
                                     <tr>
-                                        <td>indid</td>
-                                        <td>IndexId *</td>
-                                        <td>pointer to buffer of type IndexId from where the index id is to be copied into the Attribute catalog cache.<br>WARNING: The caller should have allocated memory to the pointer.</td>
+                                        <td>searchIndex</td>
+                                        <td><a href="buffer.html#indexid" target="_blank">IndexId</a>*</td>
+                                        <td>Pointer to <i>struct IndexId</i> using which the searchIndex field of the Attribute Cache entry corresponding to the input relid and attribute is to be updated.</td>
                                     </tr>
                                 </table>
                             </div>
-                            <p><b>Note:</b>This method is overloaded in type of the second argument</p>
                             <h5>Return value:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <tr>
-                                        <td>SUCCESS</td>
-                                        <td>If index id pointed by indid is successfully copied to the Attribute catalog cache.</td>
+                                        <td><a href="/constants.html#errors" target="_blank">SUCCESS</a></td>
+                                        <td>Successfully updated the searchIndex field.</td>
                                     </tr>
-                                    <tr>
-                                        <td>E_OUTOFBOUND</td>
-                                        <td>If the relid is out of the range 0-MAXOPEN</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_NOTOPEN</td>
-                                        <td>If there is no open relation exist corresponding to the id given by relid</td>
-                                    </tr>
-                                    <tr>
-                                        <td>E_ATTRNOTEXIST</td>
-                                        <td>If there is no attribute with name attrname or having offset attr_offset</td>
-                                    </tr>
+                                     <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+					<td>Input relId is outside the valid set of possible relation ids.</td>
+				    </tr>
+				    <tr>
+					<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+					<td>Entry corresponding to input relId is free in the Attribute Cache Table.</td>
+				    </tr>
+				    <tr>
+					    <td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+					<td>No attribute with the input attribute name or offset exists.</td>
+				    </tr>
+
 
                                 </table>
                             </div>
                             <h5>Description:</h5>
-                            <p>This method sets the value of <i>sid</i> field of an attribute present in the relation as speified in arguments.</p>
-
-                            <h5><a data-toggle="collapse" href="#algo-setprevindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
-                            <div id="algo-setprevindexid" class="collapse">
-                                <div class="code"><pre><code>int OpenRelTable::setPrevIndexId(relId relid, char attr_name[ATTR_SIZE/int attr_offset, IndexId *indid){
-	if(rel_id&lt; 0 || rel_id&gt;= MAXOPEN){	//check relation id (relid) lies in the range
+                            <p>Sets the value of <a href="#attr_cache_entry"><i>searchIndex</i></a> field of the given attribute in the specified relation from Attribute Cache Table. This is used by the <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> to set the location of the previous hit so that the search can be resumed from the next leaf index entry.</p>
+				<p><b>NOTE: </b>
+				    <ul><li>This method is overloaded in type of the second argument
+				        <li>The caller should allocate memory for the <i>struct IndexId</i> before calling the function.
+				</ul></p>
+                            <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+                            <div id="algo-setsearchindexid" class="collapse">
+                                <div class="code"><pre><code>int AttrCacheTable::setSearchIndex(relId relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+	
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
 		return E_OUTOFBOUND;
 	}
-	if(Rel_Table[relid].free){ //slot corresponding to the relid in the relation is free
+	
+	if entry corresponding to the relId in the Attribute Cache Table is free:
+	{
 		return E_NOTOPEN;
 	}
 	
-	//Iterate over all the attributes in the attribute cache corresponding to the relation with Id relid{
-		//if the attrName/attr_offset of the attribute equals to the given attrName/attr_offset{
-			/*copy the indid to the previous index id (in meta informatiom)
-			  corresponding to the attribute in the attribute cache*/
+	// iterate over all the attributes in the Attribute Cache Table corresponding to the relation with relId.
+	{
+		// if the attrName/offset field of the Attribute Catalog entry is equal to the input attrName/attrOffset:
+		{
+			// copy the input searchIndex variable to the searchIndex field of the corresponding Attribute Cache entry in the Attribute Cache Table.
+			
 			return SUCCESS;
-		//}
-	//}
+		}
+	}
+	
 	return E_ATTRNOTEXIST;
+	
 }</code></pre>
                                 </div> <!-- End of algo div -->
                                 
                             </div>
-                        </div>
-                        
-                       
+</div>
+					</li>
+<!----------------------RecordToAttrCacheEntry--------------------------->
+					<li>
+					<div class="detail" id="rectoattrcache">
+					    <h2><i>private:</i> recordToAttrCacheEntry</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+							    <tr>
+								<td>record</td>
+								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
+								<td>Record which is to be converted to a Attribute Cache entry.</td>
+							    </tr>
+								<tr>
+									<td> attrCacheEntry </td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
+									<td>Pointer to <i>struct AttrCacheEntry</i> to which the contents of the input record is to be copied.</td>
+								 </tr>
+							</table>
+					    </div>
+					    <h5>Return value:</h5>
+						<p>void</p>
+
+					    <h5>Description:</h5>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#attr_cache_entry">AttrCacheEntry</a> structure.  The record content is used to populate the attrCatEntry field. The dirty, recId, searchIndex, and next fields are initialized with default values of false, {-1, -1}, {-1, -1}, and NULL, respectively. This function can be used to convert the records in Attribute Catalog block/blocks to the corresponding Attribute Cache entries when caching a relation in Attribute Cache Table. The details of the implementation are left to you.</p>
+					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>
+					</li>
+         <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
+					<li>
+					    <div class="detail" id="attrcachetorec">
+					    <h2><i>private:</i> attrCacheEntryToRecord</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<td>attrCacheEntry</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
+									<td>Pointer to  <i>struct AttrCacheEntry</i> which is to be converted to a record.</td>
+								 </tr>
+								<tr>
+									<td>record</td>
+									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
+									<td>The record to which the given Attribute Cache entry is to be copied.</td>
+								 </tr>
+							</table>
+					   </div>
+
+					    <h5>Return value:</h5>
+						    <p>void</p>
+
+					    	<h5>Description:</h5>
+						<p>A utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>. The record is populated with the contents of the attrCatEntry field. The dirty, recId, searchIndex, and next fields are used only during runtime and are not written to the disk. This function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog block/blocks when closing a relation in the cache memory. The details of the implementation are left to you.</p>
+						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>
+					
+					</li>
+         						
+	<!----------------------------------------------------------------------->
+				</ul>
+			</div>
+<!---------------------------------------------------------------------------------------------------------->
+            
+<!-----------------------------------class OpenRelTable----------------------------------------------------------------------------------->
+
+			<div id="open_rel_table_class" class="details">
+				<h2>class OpenRelTable</h2>
+				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. As per the NITCbase design, the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
+				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field and populates the Relation Cache Table and Attribute Cache Table with entries of Relation Catalog relation and Attribute Catalog relation. The OpenRelTable destructor closes any open relation remaining before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
+				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. The class definition of OpenRelTable is as given below:</p>
+				<div class="code">
+                                <pre><code>class OpenRelTable{
+
+public:
+
+	//methods
+	OpenRelTable();
+	~OpenRelTable();
+	static int getRelId(unsigned char relName[ATTR_SIZE]);
+	static int openRel(unsigned char relName[ATTR_SIZE]);
+	static int closeRel(int relId);
+	static int deleteRel(int relId);
+	
+private:
+	//field
+	static OpenRelTableMetaInfo tableMetaInfo[MAX_OPEN];
+	
+	//method
+	static int getFreeOpenRelTableEntry();
+	
+};</code></pre>
+					
+				</div>
+				<p>The following are the specifications for the methods in <i>class OpenRelTable</i>.
+	     <!----------------------Constructor--------------------------->
+					<li>
+						<div class="detail" id="open_rel_table_constructor">
+							<h2><i>public:</i> OpenRelTable (Constructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. It also loads the entries of the Relation Catalog relation and Attribute Catalog relation to the Relation Cache Table and Attribute Cache Table. Should be called at the beginning of the session.</p>
+							<p><b>NOTE:</b> 
+								<ul>
+									<li>The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
+									<li>The RELCAT_RELID and ATTRCAT_RELID entries in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
+								</ul>
+							</p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_constructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::OpenRelTable(){
+
+	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
+	
+	/************ Setting up Relation Catalog in the cache ************/
+	
+	/* read the record entry at index 0 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to {4,0}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
+	AttrCacheEntry listHead;
+	
+	for i from 0 to 5:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to {5,i}.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 0<sup>th</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 0<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the 'RelCatalog'.
+	
+	/************ Setting up Attribute Catalog in the cache ************/
+	
+	/* read the record entry at index 1 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to {4,1}.
+	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	// use listHead  to hold the head of the linked list of Attribute Cache entries.
+	
+	for i from 6 to 11:
+	{
+	
+         	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to {5,i}.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the 1<sup>st</sup> entry of the RelCacheTable to listHead.
+	
+	//update the 1<sup>st</sup> entry of the tableMetaInfo with free as false and relName as the 'AttrCatalog'.
+
+}</code></pre>
+							    </div>
+							</div>
+							
+					    	</div>	
+					</li>
+         <!-------------------------------Destructor------------------------------------------------------------>
+					<li>
+						<div class="detail" id="open_rel_table_destructor">
+							<h2><i>public:</i> ~OpenRelTable (Destructor)</h2>
+							<h5>Arguments:</h5>
+							<p>Nil</p>
+							<h5>Return type:</h5>
+							<p>Nil</p>
+							<h5>Description:</h5>
+							<p>Closes the still open relations in the Open Relation Table at the end of the current session. </p>
+							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the destructor writes the cache contents to the main memory before the main memory is commited to disk.</p>
+							<h5><a data-toggle="collapse" href="#algo_open_rel_table_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_open_rel_table_destructor" class="collapse">
+							    <div class="code">
+								<pre><code>OpenRelTable::~OpenRelTable(){
+
+	for i from MAX_OPEN-1 to 0:
+	{
+		if i<sup>th</sup> relation is still open:
+		{
+	
+			// close the relationusing openRelTable::closeRel().
+		
+		}
+	}
+
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>	
+					</li>
+         <!-------------------------------getRelId------------------------------------------------------------>
+					<li>
+					<div class="detail" id="getrelid">
+							<h2><i>public:</i> getRelId</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose relation id in the Open Relation Table is required.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>The relation id of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
+								    <td>int</td>
+								    <td>The relation corresponding to relationName do not have an open entry in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Returns the relation id, i.e., the index, of the entry corresponding to the input relation in the Open Relation Table. </p>
+							<h5><a data-toggle="collapse" href="#algo_getrelid"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_getrelid" class="collapse">
+							    <div class="code">
+								<pre><code>int OpenRelTable::getRelId(unsigned char relName[ATTR_SIZE]){
+
+	/* traverse through the tableMetaInfo array,
+		find the entry in the Open Relation Table corresponding to <i>relName</i>.*/
+    
+	// if found return the relation id, else indicate that the relation do not have an entry in the Open Relation Table.
+	
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
+					</li>
+         <!-------------------------------openRel------------------------------------------------------------>
+					<li>
+					<div class="detail" id="openrel">
+							<h2><i>public:</i> openRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relName</td>
+								    <td>unsigned char[<a href="../constants.html#constant" target="_blank">ATTR_SIZE</a>]</td>
+								    <td>Name of the relation whose entry is to be created in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_RELNOTEXIST </a></td>
+								    <td>int</td>
+								    <td>No relation with name, relName, exists in the disk.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_CACHEFULL </a></td>
+								    <td>int</td>
+								    <td>No free entries left in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Creates an entry for the input relation in the Open Relation Table and returns the corresponding relation id. </p>
+							<h5><a data-toggle="collapse" href="#algo_openrel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_openrel" class="collapse">
+							    <div class="code">
+								<pre><code>int OpenRelTable::openRel(unsigned char relName[ATTR_SIZE]){
+	
+	if the relation, <i>relName</i>, already has an entry in the Open Relation Table:
+	{ // checked using OpenRelTable::getRelId().
+	
+		// return that relation id;
+	}
+	
+	// find a free slot in the Open Relation Table using OpenRelTable::getFreeOpenRelTableEntry().
+	if free slot not available:
+	{
+		return E_CACHEFULL;
+	}
+	
+	// let relId be used to store the free slot.
+	int relId;
+	
+	/****** Setting up Relation Cache entry for the relation ******/
+	
+	/* search for the entry with relation name, <i>relName</i>, in the Relation Catalog using linear_search().
+	   care should be taken to reset the searchIndex of the relation, RELCAT_RELID, corresponding to 
+	   Relation Catalog before calling linear_search().*/
+	   
+	// let relcatRecId store the record id of the relation, <i>relName</i>, in the Relation Catalog.
+	RecId relcatRecId;
+	
+	if relcatRecId == {-1, -1}:
+	{ 
+		// the relation is not found in the Relation Catalog.
+		return E_RELNOTEXIST;
+	}
+	
+	/* read the record entry corresponding to relcatRecId and create a Relation Cache entry on it 
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   update the recId field of this Relation Cache entry to relcatRecId.
+	   use the Relation Cache entry to set the relId<sup>th</sup> entry of the RelCacheTable.*/
+	
+	/****** Setting up Attribute Cache entry for the relation ******/
+	
+	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
+	AttrCacheEntry listHead;
+	
+	/* iterate over all the entries in the Attribute Catalog corresponding to each attribute of
+	   the relation, <i>relName</i> by multiple calls of linear_search().
+	   care should be taken to reset the searchIndex of the relation, ATTRCAT_RELID, corresponding to 
+	   Attribute Catalog before the first call to linear_search().*/
+	{
+            	/* let attrcatRecId store a valid record id an entry of the relation, <i>relName</i>, 
+		   in the Attribute Catalog.*/
+		RecId attrcatRecId;
+	
+         	/* read the record entry corresponding to attrcatRecId and create an Attribute Cache entry on it
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   update the recId field of this Attribute Cache entry to attrcatRecId.
+		   add the Attribute Cache entry to the linked list of listHead .*/
+	}
+	
+	// set the relId<sup>th</sup> entry of the AttrCacheTable to listHead.
+	
+	/****** Setting up metadata in the Open Relation Table for the relation******/
+	
+	//update the relId<sup>th</sup> entry of the tableMetaInfo with false as true and relName as the input.
+	
+	return relId;
+	
+}</code></pre>
+							    </div>
+							</div>
+					    	</div>
+					</li>
+         <!-------------------------------closeRel------------------------------------------------------------>
+					<li>
+						<div class="detail" id="closerel">
+							<h2><i>public:</i> closeRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
+								    <td>int</td>
+								    <td>Successfully closed the entry of the relation in the Open Relation Table.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
+								    <td>int</td>
+								    <td>Input relId is outside the valid set of possible relation ids.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
+								    <td>int</td>
+								    <td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Closes the entry of the input relation in the Open Relation Table.</p>
+							<h5><a data-toggle="collapse" href="#algo_closerel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_closerel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::closeRel(int relId){
+
+	if relId is outside the range [0, MAX_OPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Releasing the Relation Cache entry of the relation ******/
+	
+	// if the Relation Catalog entry of the relId<sup>th</sup> Relation Cache entry has been modified: 
+	{
+		/* write back the entry to the Relation Catalog using 
+		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+	}
+	
+	/****** Releasing the Attribute Cache entry of the relation ******/
+	
+	// iterate over all the entries in the linked list of the relId<sup>th</sup> Attribute Cache entry.
+	{
+		if the entry has been modified:
+		{
+			/* write back the entry to the Attribute Catalog using
+			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			
+		}
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Updating metadata in the Open Relation Table of the relation  ******/
+	
+	//free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</li>
+         <!-------------------------------deleteRel------------------------------------------------------------>
+					<li>
+						<div class="detail" id="deleterel">
+							<h2><i>public:</i> deleteRel</h2>
+							<h5>Arguments:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td>relId</td>
+								    <td>int</td>
+								    <td>Relation id of a relation in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> SUCCESS </a></td>
+								    <td>int</td>
+								    <td>Successfully deleted the relation from the database.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
+								    <td>int</td>
+								    <td>Input relId is outside the valid set of possible relation ids.</td>
+								</tr>
+								<tr>
+								    <td><a href="../constants.html" target="_blank"> E_NOTOPEN </a></td>
+								    <td>int</td>
+								    <td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Deletes the input relation from the database. This function releases the record and index blocks holding the relation's data in the disk, deletes the entry corresponding to the relation in the Relation Catalog and Attribute Catalog blocks in the disk and also removes the relation from the cache memory.</p>
+							<h5><a data-toggle="collapse" href="#algo_deleterel"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_deleterel" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::deleteRel(int relId){
+
+	if relid is outside the range [0, MAX_OPEN-1]:
+	{
+		return E_OUTOFBOUND;
+	}
+	
+	if entry corresponding to the relId in the Open Relation Table is free:
+	{
+		return E_NOTOPEN;
+	}
+	
+	/****** Deleting from Relation Cache******/
+	
+	//using the firstBlk and lastBlk fields of the Relation Catalog entry in the relId<sup>th</sup> Relation Cache entry, iteratively release the blocks of the relation calling <a href="buffer.html#releaseblock" target="_blank">BlockBuffer::releaseBlock()</a>.
+	
+	/* delete the record entry corresponding to the relation from the Relation Catalog by setting the recId.slot entry in 
+	slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
+	
+
+	
+	/****** Deleting from Attribute Cache ******/
+	
+	// iterate over all the entries in the linked list of the relId<sup>th</sup> entry in Attribute Cache.
+	{
+	
+		//if the attribute corresponding to the entry has a B+ Tree associated with it, release the allocated index blocks using <a href="b+tree.html##destroy" target="_blank">BPlusTree::bPlusDestroy()</a>.
+	
+		/* delete the record entry corresponding to the Attribute Cache entry from the Attribute Catalog by setting the recId.slot entry in 
+		   slotMap of recId.block to 0 using <a href="buffer.html#getslotmap" target="_blank">RecBuffer::getSlotmap()</a> and  <a href="buffer.html#setslotmap" target="_blank">RecBuffer::setSlotmap()</a>.*/
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Deleting from Open Relation Table ******/
+	
+	// free the relId<sup>th</sup> entry of the tableMetaInfo.
+
+	return SUCCESS;	
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</li>
+
+         <!-------------------------------getFreeOpenRelTableEntry------------------------------------------------------------>
+					<li>
+						<div class="detail" id="get_free_open_rel_table_entry">
+							<h2><i>private:</i> getFreeOpenRelTableEntry</h2>
+							<h5>Arguments:</h5>
+							<p>void</p>
+							<h5>Return type:</h5>
+							<div class="table-responsive">
+							    <table class="table table-bordered table-hover">
+								<tr>
+									<td>relId</td>
+									<td>int</td>
+									<td>Index of a free entry in the Open Relation Table.</td>
+								</tr>
+								<tr>
+									<td><a href="../constants.html" target="_blank"> FAILURE </a></td>
+									<td>int</td>
+									<td>No free entries left in the Open Relation Table.</td>
+								</tr>
+							    </table>
+							</div>
+							<h5>Description:</h5>
+							<p>Returns index of an unoccupied entry in the Open Relation Table. </p>
+							<h5><a data-toggle="collapse" href="#algo_get_free_open_rel_table_entry"><span class="fas fa-code"></span>Algorithm:</a></h5>
+							<div id="algo_get_free_open_rel_table_entry" class="collapse">
+								<div class="code">
+									<pre><code>int OpenRelTable::getFreeOpenRelTableEntry(){
+
+	/* traverse through the tableMetaInfo array,
+		find a free entry in the Open Relation Table.*/
+    
+	// if found return the relation id, else indicate failure.
+	
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+<!---------------------------------------------------------------------------------------------------------->
+                                  
                         <!-- PAGE ENDS -->
                     </div>
                 </div>
@@ -1170,4 +1615,5 @@ public:
     <!-- END OF CONTENT -->
 </body>
 
-</html>
+</html>	
+	
