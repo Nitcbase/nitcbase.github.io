@@ -82,43 +82,43 @@
                         <div class="pagetitle">
                             <h1>B+ Tree Layer</h1>
                         </div>
+			    
+			<div id="prerequisite" class=detail>
+				<h5>Pre-requisite Reading:</h5>
+				<ul>
+					<li> <a href="./indexing.html" target="_blank">Indexing in NITCbase</a></li>
+					<li> <a href="../storage-model.html" target="_blank">Physical Layer</a></li>
+					<li> <a href="buffer.html" target="_blank">Buffer Layer</a></li>
+					<li> <a href="cache.html" target="_blank">Cache Layer</a></li>
+				</ul>
+				<br>							    
+			</div>
                         
                         <div class="detail">
-							<h5>Pre-requisite Reading : 
-								<ul>
-									<li> <a href="./indexing.html" target="_blank">Indexing in NITCbase</a></li>
-									<li> <a href="../storage-model.html" target="_blank">Physical Layer</a></li>
-									<li> <a href="buffer.html" target="_blank">Buffer Layer</a></li>
-									<li> <a href="cache.html" target="_blank">Cache Layer</a></li>
-								</ul>
-								<br>
-								<br>
-								
-							</h5>
-							<p>Indexing is used to quickly locate and access the data in a database. It reduces the number of disk accesses needed when a search query is processed. NITCbase uses B+ Trees for the purpose of indexing an attribute in a relation. The <i>B+ Tree Layer</i> provides specifications for the creation/ usage of B+ Trees. The data is structured in <a href="../storage-model.html#intind_blk" target="_blank">Internal Index blocks</a> and <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index blocks</a> in a B+ Tree. </p>
-							<p>An Internal Index block contains a maximum of 100 <a href="buffer.html#block_structures_internal_entry" target="_blank">struct InternalEntry</a> entries. Each InternalEntry entry contains an attribute value, a left child pointer, and a right child pointer. The attribute values in the left child are smaller or equal to, and the attribute values in the right child are larger than the attribute value of its parent. This property allows systematic traversal of the B+ Tree. The <a href="buffer.html#recid" target="_blank">record id</a> of all records in a relation are stored in Leaf Index blocks. A Leaf Index block contains a maximum of 63 <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entries. Each Index entry contains an attribute value and the record id of the block containing that attribute value. The Index entries are ordered in ascending order of attribute values. The Leaf Index blocks are also connected as a linked list. This allows easy access to an entry in the next Leaf Index block rather than traversing the entire B+ Tree from the root to reach that entry.</p>
-							<p>NITCbase follows Object Oriented design for implementing B+ Tree. The class diagram is as shown below.</p>
-							<center><img class="img-fluid" src="/img/bplustree_class.png"></center><br>
+				<p>Indexing is used to quickly locate and access the data in a database. It reduces the number of disk accesses needed when a search query is processed. NITCbase uses B+ Trees for the purpose of indexing an attribute in a relation. The <i>B+ Tree Layer</i> provides specifications for the creation/ usage of B+ Trees. The data is structured in <a href="../storage-model.html#intind_blk" target="_blank">Internal Index blocks</a> and <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index blocks</a> in a B+ Tree. </p>
+				<p>An Internal Index block contains a maximum of 100 <a href="buffer.html#block_structures_internal_entry" target="_blank">struct InternalEntry</a> entries. Each InternalEntry entry contains an attribute value, a left child pointer, and a right child pointer. The attribute values in the left child are smaller or equal to, and the attribute values in the right child are larger than the attribute value of its parent. This property allows systematic traversal of the B+ Tree. The <a href="buffer.html#recid" target="_blank">record id</a> of all records in a relation are stored in Leaf Index blocks. A Leaf Index block contains a maximum of 63 <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entries. Each Index entry contains an attribute value and the record id of the block containing that attribute value. The Index entries are ordered in ascending order of attribute values. The Leaf Index blocks are also connected as a linked list. This allows easy access to an entry in the next Leaf Index block rather than traversing the entire B+ Tree from the root to reach that entry.</p>
+				<p>NITCbase follows Object Oriented design for implementing B+ Tree. The class diagram is as shown below.</p>
+				<center><img class="img-fluid" src="/img/bplustree_class.png"></center><br>
                         </div>
 <!-------------------------------------B+ tree class--------------------------------------------> 
 					<div id="bplustree_class" class="detail">
 					    <h2>class BPlusTree</h2>
-						<p>The <i>BPlusTree</i> class is used to access/ modify the B+ Tree created for a particular attribute of a relation. The class contains three private member fields: <i>rootBlock</i>, <i>relId</i>, and <i>attrName</i>. The <i>BPlusTree</i> class constructor sets the <i>rootBlock</i> field of the object to the parent/root block number of the B+ Tree on successful creation of the B+ Tree. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST</a>) that arises during the creation of B+ Tree is stored in the <i>rootBlock</i> field. The <i>relId</i> field stores the <a href="cache.html#relid" target="_blank">relation id<a href="#" target="_blank"> of the relation in the <a href="cache.html#openrel_table" target="_blank">Open Relation Table</a>. The <i>attrName</i> field stores the attribute's name for which the B+ Tree is created. Both <i>relId</i> and <i>attrName</i> are provided as inputs to the <i>BPlusTree</i> class constructor.</p>
-						<p>For creating/accessing/modifying the B+ Tree of any attribute, an instance of the <i>BPlusTree</i> class has to be declared. When an object is instantiated, the constructor of the class creates a new B+ Tree and sets the member fields of the object. If a B+ Tree already exists for that attribute, it assigns the root block of the existing B+ Tree to <i>rootBlock</i> member field. During creation, the <i>bPlusCreate()</i> calls <i>bPlusInsert()</i> repeatedly and inserts entries for all records in the relation. <i>bPlusInsert()</i> can also be called independently to enter new entries to an existing B+ Tree. <i>bPlusDestroy()</i> is called by bPlusInsert() when the disk runs out of memory during the insertion of an entry. In such a case, the existing B+ Tree is destroyed and <i>rootBlock</i> is set to E_DISKFULL. Thus, declaring an object of <i>BPlusTree</i> class for an attribute does not guarantee the existence of a B+ Tree for it. All functions accessing/ modifying the B+ Tree should make sure that the object instance has a valid <i>rootBlock</i>.  <i>bPlusDestroy()</i> is also called when an entire relation has to be deleted from NITCbase.</p>
+						<p>The <i>BPlusTree</i> class is used to access/ modify the B+ Tree created for a particular attribute of a relation. The class contains three private member fields: <i>rootBlock</i>, <i>relId</i>, and <i>attrName</i>. The <i>BPlusTree</i> class constructor sets the <i>rootBlock</i> field of the object to the parent/root block number of the B+ Tree on successful creation of the B+ Tree. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_NOINDEX, E_DISKFULL, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST</a>) that arises during the creation of B+ Tree is stored in the <i>rootBlock</i> field. The <i>relId</i> field stores the <a href="cache.html#relid" target="_blank">relation id<a href="#" target="_blank"> of the relation in the <a href="cache.html#openrel_table" target="_blank">Open Relation Table</a>. The <i>attrName</i> field stores the attribute's name for which the B+ Tree is created. Both <i>relId</i> and <i>attrName</i> are provided as inputs to the <i>BPlusTree</i> class constructor.</p>
+						<p>For creating/accessing/modifying the B+ Tree of any attribute, an instance of the <i>BPlusTree</i> class has to be declared. When an object is instantiated, the constructor of the class creates a new B+ Tree and sets the member fields of the object. If a B+ Tree already exists for that attribute, it assigns the root block of the existing B+ Tree to <i>rootBlock</i> member field. During creation, the <i>bPlusCreate()</i> calls <i>bPlusInsert()</i> repeatedly and inserts entries for all records in the relation. <i>bPlusInsert()</i> can also be called independently to enter new entries to an existing B+ Tree. <i>bPlusDestroy()</i> can be called independently to destroy the B+ Tree created for an attribute of a relation. It can also be called by <i>bPlusInsert()</i> when the disk runs out of memory during the insertion of an entry in which case the existing B+ Tree is destroyed. Declaring an object of <i>BPlusTree</i> class for an attribute does not guarantee the existence of a B+ Tree for it. All functions accessing/ modifying the B+ Tree should make sure that the object instance has a valid <i>rootBlock</i>. </p>
 						
 						<div class="code">
 						<pre><code>class BPlusTree{
     
 public:
-	//methods
+    //methods
     BPlusTree(int relid, unsigned char attrName[ATTR_SIZE]);
-	int getRootBlock();
+    int getRootBlock();
     int bPlusInsert(union Attribute val, struct recId recordId);
     struct recId BPlusSearch(union Attribute attrVal, int op); 
     int bPlusDestroy(int blockNum);
 	
 private :
-	//fields
+    //fields
     int rootBlock, relId;
     unsigned char attrName[ATTR_SIZE];
 	
@@ -146,35 +146,62 @@ private :
 		                    			<td>Name of attribute whose B+ tree is to be created.</td>
 		                			</tr>
 		                        </table>
-                            </div>
-                            <h5>Return value:</h5> 
-							<p>Nil</p>
-		                     
-		            <h5>Description:</h5>
-		            <p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. It inserts the attribute value corresponding to <i>attrName</i> of all entries in the relation into the B+Tree using <i>bPlusInsert()</i>. If in between the insertion, the disk runs out of space, then the B+ Tree will not be created. This method also sets the object instance's member fields with the input arguments. </p>
+                            	</div>
+                            	<h5>Return value:</h5> 
+				<p>Nil</p>
+				<p>The status of the B+ Tree can be obtained from the rootBlock member field which can have the following values:</p>
+				<div class="table-responsive">
+		                        <table class="table table-bordered table-hover">
+		                        	<tr>
+							<td><a href="../constants.html#errors" target="_blank">rootBlock</a></td>
+							<td>int</td>
+						        <td>Successful creation of B+ tree.</td>
+						</tr>
+						<tr>
+							<td><a href="../constants.html#errors" target="_blank">E_DISKFULL</a></td>
+							<td>int</td>
+						 	<td>Disk space insufficient for creation of B+ tree.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>int</td>
+							<td>Input relId is outside the valid set of possible relation ids.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+							<td>int</td>
+							<td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+							<td>int</td>
+							<td>No attribute with the input attribute name exists.</td>
+						</tr>
+		                     	</table>
+		             		</div> 
+		            		<h5>Description:</h5>
+		            		<p>Creates a B+ Tree(Indexing) for the input attribute of the specified relation. It inserts the attribute value corresponding to <i>attrName</i> of all entries in the relation into the B+Tree using <i>bPlusInsert()</i>. If in between the insertion, the disk runs out of space, then the B+ Tree will not be created. This method also sets the object instance's member fields with the input arguments. </p>
 		             
-			<p><b>NOTE:</b> 
-				<ul>
-					<li>Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. This situation arises when the disk runs out of memory during insertion of the entries of relation into the B+ Tree. In such a case, the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
-				</ul>
-			</p>
+					<p><b>NOTE:</b> 
+					Creating an object of BPlusTree for an attribute in a relation may not create a B+ Tree for that attribute. In such a case, the <i>rootBlock</i> of the object instance will be set to the error status. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>.
+					</p>
 				 
 		            <h5><a data-toggle="collapse" href="#algo-constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
                              	     <div id="algo-constructor" class="collapse">
                             	     	<div class="code"><pre><code>BPlusTree::BPlusTree(int relid, char attrName[ATTR_SIZE])
 {					
-    //initialise the object instance member fields, relid and attrName, with the input relid and attrName.
+	//initialise the object instance member fields, relid and attrName, with the input relid and attrName.
+
+	//let attrCatEntry be used to store the attribute cache entry for attrName.
+	AttrCatEntry attrCatEntry;
+
+	//get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a> method.
+	int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
     
-    //let attrCatEntry be used to store the attribute cache entry for attrName.
-    AttrCatEntry attrCatEntry;
-    
-    //get the attribute catalog entry of target attribute using<a href="cache.html#getattrcatentry" target="_blank"> OpenRelTable::getAttrCatEntry()</a> method.
-    int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatBuf);
-    
-    if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
-	{
-    	//update member field rootBlock of the class with the status and return.
-	}
+	if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
+    	{
+    		//update member field rootBlock of the class with the status and return.
+    	}
 	
 	//let rootBlockNum be used to store the root block number of the B+ Tree, obtained from attrCatBuf.
 	int rootBlockNum;
@@ -213,8 +240,8 @@ private :
 	int attrOffset;
 	
 	/******Traverse all the blocks in the relation and insert them one by one into the B+ Tree******/
-	while(block != -1) {	
-		
+	while(block != -1) 
+	{		
 		//load the the block of the relation into recBlock using <a href="buffer.html#recbuff_constructor2" target="_blank">RecBuffer::RecBuffer()</a>.
 		RecBuffer recBlock(block);
 		
@@ -241,7 +268,7 @@ private :
 				if(status == <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>) //disk is full, i.e,  unable to get enough blocks to build the B+ Tree.
 					//update the rootBlock member field of the class with <a href="../constants.html#errors" target="_blank">E_DISKFULL</a> and return.
 			}
-		    else //all records in the relaton has been traversed.
+		    	else //all records in the relaton has been traversed.
 				break;
 		}
 		
@@ -272,17 +299,34 @@ private :
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-										<td>rootBlock</td>
+							<td>rootBlock</td>
 		                        		<td>int</td>
 		                        		<td>Root block number of the B+ tree.</td>
 		                    		</tr>
 						<tr>
 							<td><a href="../constants.html#errors" target="_blank">E_NOINDEX</a></td>
+							<td>int</td>
 							<td>B+ Tree does not exist for <i>attrName</i>.</td>
 						</tr>
 						<tr>
 							<td><a href="../constants.html#errors" target="_blank">E_DISKFULL</a></td>
-						        <td>Disk space insufficient for insertion of <i>Index</i> entry into B+ tree.</td>
+							<td>int</td>
+						        <td>Disk space insufficient for storing the B+ tree.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>int</td>
+							<td>Input relId is outside the valid set of possible relation ids.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+							<td>int</td>
+							<td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+							<td>int</td>
+							<td>No attribute with the input attribute name exists.</td>
 						</tr>
 		                     	</table>
 		                     </div>
@@ -355,17 +399,15 @@ private :
 						<tr>
 							<td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
 							<td>int</td>
-							<td>No attribute with the input attribute name or offset exists.</td>
+							<td>No attribute with the input attribute name exists.</td>
 						</tr>
 		                     	</table>
 		             		</div>
 			    			<h5>Description:</h5>
-                            <p>Inserts a <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entry corresponding to the input attribute value and record id into the B+ tree. The disk might run out of memory during the insertion of the <i>Index</i> entry in which case the entire B+ Tree is destroyed.</p>
+                            <p>Inserts a <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entry corresponding to the input attribute value and record id into the B+ tree.</p>
                             
 			<p><b>NOTE:</b> 
-				<ul>
-					<li>During insertion of an entry to B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>. </li>
-				</ul>
+				During insertion of an entry to a valid B+ Tree, the disk may run out of memory. In such a case, the existing B+ Tree will be destroyed, and the <i>rootBlock</i> of the object instance will be set to E_DISKFULL. Any operation on the B+ Tree must ensure that the object instance has a valid <i>rootBlock</i>.
 			</p>
 				
                             <h5><a data-toggle="collapse" href="#algo-insert"><span class="fas fa-code"></span>Algorithm:</a></h5>
@@ -379,13 +421,23 @@ private :
 	int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
 	if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
-	return status;
+	{
+		//update rootBlock member field to status;
+
+		//update the rootBlock of attribute catalog cache entry to -1 using OpenRelTable::setAttrCatEntry().
+		
+		return status;
+	}
 
 	//store the rootBlock of B+ Tree in blockNum. 
 	int blockNum;
 	
 	if invalid blockNum: //B+ Tree does not exist for <i>attrName</i>.
 	{
+		//update rootBlock member field to E_NOINDEX;
+
+		//update the rootBlock of attribute catalog cache entry to -1 using OpenRelTable::setAttrCatEntry().
+		
 		return <a href="../constants.html#errors" target="_blank">E_NOINDEX</a>;
 	}
 	
@@ -1008,8 +1060,8 @@ private :
                             
               		  <p><b>NOTE:</b> 
 				<ul>
-					<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog to E_DISKFULL after deletion.</li>
-					<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance to E_DISKFULL after  deletion.</li>
+					<li>The caller is responsible for updating the <i>rootBlock</i> field in the corresponding attribute catalog after deletion.</li>
+					<li>The caller is also responsible for setting the <i>rootBlock</i> member field of the B+ Tree object instance after deletion.</li>
 				</ul>
 			</p>            
 				
