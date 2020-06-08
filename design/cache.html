@@ -124,6 +124,17 @@
                         <div class="pagetitle">
                             <h1>Cache Layer</h1>
                         </div>
+			    <div id="prerequisite" class=detail>
+				<h5>Pre-requisite Reading:</h5>
+					<ul>
+						<li> <a href="../storage-model.html" target="_blank">Physical Layer</a></li>
+						<li> <a href="buffer.html" target="_blank">Buffer Layer</a></li>
+					</ul>
+					<br>
+					<br>
+								
+											    
+			    </div>
                         
                          <div id="layout" class="detail">
                             	<h2>Layout</h2>
@@ -131,8 +142,7 @@
 				<p>Three tables are used by NITCbase for caching Catalogs- the <i>Relation Cache Table</i> for Relation Catalog entries, the <i>Attribute Cache Table</i> for Attribute Catalog entries and the <i>Open Relation Table</i> for operations that include both Relation and Attribute Catalogs. </p>
 				<p>NITCbase follows an Object-Oriented design for Cache Layer. The class diagram is as shown below. </p> 
                             <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
-				 <p>The following diagram summarizes the design of this module.</p>
-				 <center><img class="img-fluid" src="/img/cacheLayerTables.png"></center>
+				 
                         </div>
 		<!----------------relId--------------------------------------------------------------->        	    
 			<div id="relid" class="detail">
@@ -257,6 +267,11 @@ typedef struct AttributeCacheEntry {
 } OpenRelTableMetaInfo;</code></pre></div>
 			    </div>
 			</div>
+<!-----------------------------------------Layer Diagram-------------------------------------->	
+	<div id="layer_diagram" class="detail">
+	<p>The following diagram summarizes the design of this module.</p>
+	<center><img class="img-fluid" src="/img/cacheLayerTables.png"></center>
+	</div>
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
 			<div id="rel_cache_table_class" class="details">
 				<h2>class RelCacheTable</h2>
@@ -283,14 +298,6 @@ typedef struct AttributeCacheEntry {
 				<div class="code">
 					<pre><code>class RelCacheTable{
 friend class OpenRelTable;
-
-private:
-	//field
-	static RelCacheEntry* relCache[MAX_OPEN];
-
-	//methods
-	static void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
-	static void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 	
 public:
 	//methods
@@ -299,66 +306,20 @@ public:
 	static int getSearchIndex(int relId, RecId *searchIndex);
 	static int setSearchIndex(int relId, RecId *searchIndex);
 
+private:
+	//field
+	static RelCacheEntry* relCache[MAX_OPEN];
+
+	//methods
+	static void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	static void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+
 };</code></pre>
 				</div>
 <p>The following are the specifications for the methods in <i>class RelCacheTable</i>.</p>
 				
 				<ul class="methods">
-	     <!----------------------recordToRelCacheEntry--------------------------->
-					<li>
-						<div class="detail" id="rectorelcache">
-					    	<h2><i>private:</i> recordToRelCacheEntry</h2>
-					    	<h5>Arguments:</h5>
-					    	<div class="table-responsive">
-						<table class="table table-bordered table-hover">
-						    <tr>
-							<td>record</td>
-							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-							<td>Record which is to be converted to a Relation Cache Entry.</td>
-						    </tr>
-							<tr>
-									<td>RelCacheEntry</td>
-									<td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
-									<td>Pointer to struct RelCacheEntry to which the contents of the input record is to be copied.</td>
-								</tr>
-							</table>
-						    </div>
-
-					    <h5>Return value:</h5>
-					    void
-					    <h5>Description:</h5>
-					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. The record content is used to populate the relCatEntry field. The dirty, recId, and searchIndex fields are initialised with default values of false, {-1, -1}, and {-1, -1}, respectively. This function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache entry when caching a relation in Relation Cache Table. The details of the implementation are left to you.</p>
-					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
-					</div>	
-					</li>
-	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
-					<li>
-						<div class="detail" id="relcachetorec">
-                            			<h2><i>private:</i> relCacheEntryToRecord</h2>
-                            			<h5>Arguments:</h5>
-                            			<div class="table-responsive">
-		                        	<table class="table table-bordered table-hover">
-							<tr>
-								<td>record</td>
-						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-						                <td>The record to which the contents of the input Relation Cache Entry is to be copied.</td>
-						        </tr>
-		                            		<tr>
-								<td>relCacheEntry</td>
-							        <td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
-							        <td>Pointer to struct RelCacheEntry which is to be converted to a record.</td>
-						    	</tr>
-		                        	</table>
-		                   		 </div>
-                            
-                            		<h5>Return value:</h5>
-                            		void
-
-                            	<h5>Description:</h5>
-				<p>A utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>. The record is populated with the contents of the relCatEntry field. The dirty, recId, and searchIndex fields are used only during runtime and are not written to the disk. This function can be used to convert the Relation Cache entry to the corresponding record that can be written back to Relation Catalog block when closing a relation in the cache memory. The details of the implementation are left to you.</p>
-				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
-                        	</div>
-					</li>
+	     
 	<!--------getRelCatEntry--------------------------------------------------------------->
 					<li>
 						<div id="getrelcatentry" class="detail">
@@ -624,6 +585,61 @@ public:
 			
                         </div>
 					</li>
+	<!----------------------recordToRelCacheEntry--------------------------->
+					<li>
+						<div class="detail" id="rectorelcache">
+					    	<h2><i>private:</i> recordToRelCacheEntry</h2>
+					    	<h5>Arguments:</h5>
+					    	<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+						    <tr>
+							<td>record</td>
+							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+							<td>Record which is to be converted to a Relation Cache Entry.</td>
+						    </tr>
+							<tr>
+									<td>RelCacheEntry</td>
+									<td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
+									<td>Pointer to struct RelCacheEntry to which the contents of the input record is to be copied.</td>
+								</tr>
+							</table>
+						    </div>
+
+					    <h5>Return value:</h5>
+					    void
+					    <h5>Description:</h5>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. The record content is used to populate the relCatEntry field. The dirty, recId, and searchIndex fields are initialised with default values of false, {-1, -1}, and {-1, -1}, respectively. This function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache entry when caching a relation in Relation Cache Table. The details of the implementation are left to you.</p>
+					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>	
+					</li>
+	<!--------RelCacheEntryToRecord--------------------------------------------------------------->
+					<li>
+						<div class="detail" id="relcachetorec">
+                            			<h2><i>private:</i> relCacheEntryToRecord</h2>
+                            			<h5>Arguments:</h5>
+                            			<div class="table-responsive">
+		                        	<table class="table table-bordered table-hover">
+							<tr>
+								<td>record</td>
+						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+						                <td>The record to which the contents of the input Relation Cache Entry is to be copied.</td>
+						        </tr>
+		                            		<tr>
+								<td>relCacheEntry</td>
+							        <td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
+							        <td>Pointer to struct RelCacheEntry which is to be converted to a record.</td>
+						    	</tr>
+		                        	</table>
+		                   		 </div>
+                            
+                            		<h5>Return value:</h5>
+                            		void
+
+                            	<h5>Description:</h5>
+				<p>A utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>. The record is populated with the contents of the relCatEntry field. The dirty, recId, and searchIndex fields are used only during runtime and are not written to the disk. This function can be used to convert the Relation Cache entry to the corresponding record that can be written back to Relation Catalog block when closing a relation in the cache memory. The details of the implementation are left to you.</p>
+				<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+                        	</div>
+					</li>
 	<!----------------------------------------------------------------------->
 					
 				</ul>
@@ -655,14 +671,6 @@ public:
 <pre><code>class AttrCacheTable{
 
 friend class OpenRelTable;
-
-private:
-	//field
-	static AttrCacheEntry* attrCache[MAX_OPEN];
-	
-	//methods
-	static void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
-	static void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
 	
 public:
 	//methods
@@ -674,69 +682,21 @@ public:
 	static int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
 	static int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
 	static int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
+
+private:
+	//field
+	static AttrCacheEntry* attrCache[MAX_OPEN];
+	
+	//methods
+	static void recordToAttrCacheEntry(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
+	static void attrCacheEntryToRecord(union Attribute record[ATTRCAT_SIZE], AttrCatEntry *attrCatEntry);
 	
 };</code></pre>
 				</div>	
 	
 <p>The following are the specifications for the methods in <i>class AttrCacheTable</i>.</p>
 				<ul class="methods">
-	     <!----------------------RecordToAttrCacheEntry--------------------------->
-					<li>
-					<div class="detail" id="rectoattrcache">
-					    <h2><i>private:</i> recordToAttrCacheEntry</h2>
-					    <h5>Arguments:</h5>
-					    <div class="table-responsive">
-							<table class="table table-bordered table-hover">
-							    <tr>
-								<td>record</td>
-								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
-								<td>Record which is to be converted to a Attribute Cache entry.</td>
-							    </tr>
-								<tr>
-									<td> attrCacheEntry </td>
-									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
-									<td>Pointer to <i>struct AttrCacheEntry</i> to which the contents of the input record is to be copied.</td>
-								 </tr>
-							</table>
-					    </div>
-					    <h5>Return value:</h5>
-						<p>void</p>
-
-					    <h5>Description:</h5>
-					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#attr_cache_entry">AttrCacheEntry</a> structure.  The record content is used to populate the attrCatEntry field. The dirty, recId, searchIndex, and next fields are initialized with default values of false, {-1, -1}, {-1, -1}, and NULL, respectively. This function can be used to convert the records in Attribute Catalog block/blocks to the corresponding Attribute Cache entries when caching a relation in Attribute Cache Table. The details of the implementation are left to you.</p>
-					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
-					</div>
-					</li>
-         <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
-					<li>
-					    <div class="detail" id="attrcachetorec">
-					    <h2><i>private:</i> attrCacheEntryToRecord</h2>
-					    <h5>Arguments:</h5>
-					    <div class="table-responsive">
-							<table class="table table-bordered table-hover">
-								<tr>
-									<td>attrCacheEntry</td>
-									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
-									<td>Pointer to  <i>struct AttrCacheEntry</i> which is to be converted to a record.</td>
-								 </tr>
-								<tr>
-									<td>record</td>
-									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
-									<td>The record to which the given Attribute Cache entry is to be copied.</td>
-								 </tr>
-							</table>
-					   </div>
-
-					    <h5>Return value:</h5>
-						    <p>void</p>
-
-					    	<h5>Description:</h5>
-						<p>A utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>. The record is populated with the contents of the attrCatEntry field. The dirty, recId, searchIndex, and next fields are used only during runtime and are not written to the disk. This function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog block/blocks when closing a relation in the cache memory. The details of the implementation are left to you.</p>
-						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
-					</div>
-					
-					</li>
-         <!-------------------------------getAttrCatEntry------------------------------------------------------------>
+	     <!-------------------------------getAttrCatEntry------------------------------------------------------------>
 					<li>
 					    <div id="getattrcatentry" class="detail">
 					    <h2><i>public:</i> getAttrCatEntry</h2>
@@ -1081,6 +1041,63 @@ public:
                             </div>
 </div>
 					</li>
+<!----------------------RecordToAttrCacheEntry--------------------------->
+					<li>
+					<div class="detail" id="rectoattrcache">
+					    <h2><i>private:</i> recordToAttrCacheEntry</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+							    <tr>
+								<td>record</td>
+								    <td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
+								<td>Record which is to be converted to a Attribute Cache entry.</td>
+							    </tr>
+								<tr>
+									<td> attrCacheEntry </td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
+									<td>Pointer to <i>struct AttrCacheEntry</i> to which the contents of the input record is to be copied.</td>
+								 </tr>
+							</table>
+					    </div>
+					    <h5>Return value:</h5>
+						<p>void</p>
+
+					    <h5>Description:</h5>
+					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#attr_cache_entry">AttrCacheEntry</a> structure.  The record content is used to populate the attrCatEntry field. The dirty, recId, searchIndex, and next fields are initialized with default values of false, {-1, -1}, {-1, -1}, and NULL, respectively. This function can be used to convert the records in Attribute Catalog block/blocks to the corresponding Attribute Cache entries when caching a relation in Attribute Cache Table. The details of the implementation are left to you.</p>
+					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>
+					</li>
+         <!-------------------------------AttrCacheEntryToRecord------------------------------------------------------------>
+					<li>
+					    <div class="detail" id="attrcachetorec">
+					    <h2><i>private:</i> attrCacheEntryToRecord</h2>
+					    <h5>Arguments:</h5>
+					    <div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<td>attrCacheEntry</td>
+									<td><a href="#attr_cache_entry">AttrCacheEntry</a>*</td>
+									<td>Pointer to  <i>struct AttrCacheEntry</i> which is to be converted to a record.</td>
+								 </tr>
+								<tr>
+									<td>record</td>
+									<td><a href="buffer.html#block_structures" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">ATTRCAT_SIZE<a>]</td>
+									<td>The record to which the given Attribute Cache entry is to be copied.</td>
+								 </tr>
+							</table>
+					   </div>
+
+					    <h5>Return value:</h5>
+						    <p>void</p>
+
+					    	<h5>Description:</h5>
+						<p>A utility function that converts <a href="#attr_cache_entry">AttrCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>. The record is populated with the contents of the attrCatEntry field. The dirty, recId, searchIndex, and next fields are used only during runtime and are not written to the disk. This function can be used to convert the Attribute Cache entries to corresponding records that can be written back to Attribute Catalog block/blocks when closing a relation in the cache memory. The details of the implementation are left to you.</p>
+						<p><b>NOTE:</b> The caller should allocate memory for the <i>struct AttrCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
+					</div>
+					
+					</li>
+         						
 	<!----------------------------------------------------------------------->
 				</ul>
 			</div>
