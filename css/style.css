@@ -56,14 +56,12 @@ header h3 {
 
 #collapsibleSidebar {
     overflow-x: auto;
-    position: absolute;
-    width: 100%;
-    margin-top: -100px;
+    position: fixed;
     z-index: 10;
     height: 100%;
     max-height: 1340px;
     overflow-y: scroll;
-        color: #0056B3;
+     color: #0056B3;
 
 }
 
