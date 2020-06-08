@@ -250,24 +250,26 @@ typedef struct AttributeCacheEntry {
 				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
 				   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of RelCacheTable is as given below:
 				</p>
+				<p><b>Note:</b> The class <i>OpenRelTable</i> is a friend class to <i>RelCacheTable</i> class. This allows all methods in <i>OpenRelTable</i> to access the private fields and methods of the <i>RelCacheTable</i> class.</p>
 
 				<div class="code">
 					<pre><code>class RelCacheTable{
+friend class OpenRelTable;
 
 private:
 	//field
-	RelCacheEntry* relCache[MAX_OPEN];
+	static RelCacheEntry* relCache[MAX_OPEN];
 
 	//methods
-	void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
-	void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	static void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
+	static void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 	
 public:
 	//methods
-	int getRelCatEntry(int relId, RelCatEntry *relCatBuf);
-	int setRelCatEntry(int relId, RelCatEntry *relCatBuf);
-	int getSearchIndex(int relId, RecId *searchIndex);
-	int setSearchIndex(int relId, RecId *searchIndex);
+	static int getRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	static int setRelCatEntry(int relId, RelCatEntry *relCatBuf);
+	static int getSearchIndex(int relId, RecId *searchIndex);
+	static int setSearchIndex(int relId, RecId *searchIndex);
 
 };</code></pre>
 				</div>
@@ -286,19 +288,16 @@ public:
 							<td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
 							<td>Record which is to be converted to a Relation Cache Entry.</td>
 						    </tr>
-							</table>
-						    </div>
-
-					    <h5>Return value:</h5>
-					    <div class="table-responsive">
-							<table class="table table-bordered table-hover">
-								<tr>
+							<tr>
 									<td>RelCacheEntry</td>
 									<td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
 									<td>Pointer to struct RelCacheEntry to which the contents of the input record is to be copied.</td>
 								</tr>
 							</table>
-						     </div>
+						    </div>
+
+					    <h5>Return value:</h5>
+					    void
 					    <h5>Description:</h5>
 					<p>A utility function that converts a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>, to <a href="#rel_cache_entry">RelCacheEntry</a> structure. The record content is used to populate the relCatEntry field. The dirty, recId, and searchIndex fields are initialised with default values of false, {-1, -1}, and {-1, -1}, respectively. This function can be used to convert a record in a Relation Catalog block to the corresponding Relation Cache entry when caching a relation in Relation Cache Table. The details of the implementation are left to you.</p>
 					<p><b>NOTE:</b> The caller should allocate memory for the <i>struct RelCacheEntry</i> and array of <i>union Attribute</i> before calling the function.</p>
@@ -311,6 +310,11 @@ public:
                             			<h5>Arguments:</h5>
                             			<div class="table-responsive">
 		                        	<table class="table table-bordered table-hover">
+							<tr>
+								<td>record</td>
+						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
+						                <td>The record to which the contents of the input Relation Cache Entry is to be copied.</td>
+						        </tr>
 		                            		<tr>
 								<td>relCacheEntry</td>
 							        <td><a href="#rel_cache_entry">RelCacheEntry</a>*</td>
@@ -320,15 +324,7 @@ public:
 		                   		 </div>
                             
                             		<h5>Return value:</h5>
-                            		<div class="table-responsive">
-		                        	<table class="table table-bordered table-hover">
-		                        		<tr>
-								<td>record</td>
-						                <td><a href="buffer.html#block_structures target="_blank"" target="_blank">union Attribute</a>[<a href="/constants.html#constants" target="_blank">RELCAT_SIZE</a>]</td>
-						                <td>The record to which the contents of the input Relation Cache Entry is to be copied.</td>
-						        </tr>
-		                     		</table>
-		                     	</div>
+                            		void
 
                             	<h5>Description:</h5>
 				<p>A utility function that converts <a href="#relation_cache">RelCacheEntry</a> structure to a record, implemented as an array of <a href="buffer.html#block_structures"  target="_blank">union Attribute</a>. The record is populated with the contents of the relCatEntry field. The dirty, recId, and searchIndex fields are used only during runtime and are not written to the disk. This function can be used to convert the Relation Cache entry to the corresponding record that can be written back to Relation Catalog block when closing a relation in the cache memory. The details of the implementation are left to you.</p>
@@ -626,9 +622,11 @@ public:
 			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
 			   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of AttrCacheTable is as given below:
 			</p>
-		
+		<p><b>Note:</b> The class <i>OpenRelTable</i> is a friend class to <i>AttrCacheTable</i> class. This allows all methods in <i>OpenRelTable</i> to access the private fields and methods of the <i>AttrCacheTable</i> class.</p>
 				<div class="code">
 <pre><code>class AttrCacheTable{
+
+friend class OpenRelTable;
 
 private:
 	//field
