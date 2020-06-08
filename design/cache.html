@@ -64,26 +64,52 @@
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                             <ul class="nav flex-column sidemenu">
                                 <li> <a class="sec" href="#layout"> Layout</a></li>
-                                <li> <a class="sec" href="#relation_cache"> Relation Cache</a></li>
-                                <li> <a class="sec" href="#attribute_cache"> Attribute Cache</a></li>
-                                <li> <a class="sec" href="#openrel_table"> Open Relation Table</a></li>
-                                <br>
-                                Public Methods:
-                                <ul >
-                                    <li><a href="#constructor">openRelTable()</a></li>
-                                    <li><a href="#destructor">~openRelTable()</a></li>
-                                    <li><a href="#openrel">openRel()</a></li>
-                                    <li><a href="#closerel">closeRel()</a></li>
-                                    <li><a href="#getrelid">getRelId()</a></li>
-                                    <li><a href="#getrelcatentry">getRelCatEntry()</a></li>
-                                    <li><a href="#setrelcatentry">setrelCatEntry()</a></li>
-                                    <li><a href="#getprevrecid">getPrevRecId()</a></li>
-                                    <li><a href="#setprevrecid">setPrevRecId()</a></li>
-                                    <li><a href="#getattrcatentry">getAttrCatEntry()</a></li>
-                                    <li><a href="#setattrcatentry">setAttrCatEntry()</a></li>
-                                    <li><a href="#getprevindexid">getPrevIndexId()</a></li>
-                                    <li><a href="#setprevindexid">setPrevIndexId()</a></li>
-                                </ul>
+                                <li> <a class="sec" href="#relation_cache"> Relation Cache Table Structures</a></li>
+                                <li> <a class="sec" href="#attribute_cache"> Attribute Cache Table Structures</a></li>
+                                <li> <a class="sec" href="#openrel_table_struct"> Open Relation Table Structure</a></li>
+                                <li> <a class="sec" href="#rel_cache_table_class"> class RelCacheTable</a></li>
+					<br>
+					Public Methods:
+					<ul>
+					    <li><a href="#getrelcatentry">getRelCatEntry()</a></li>
+					    <li><a href="#setrelcatentry">setRelCatEntry()</a></li>
+					    <li><a href="#getsearchindex0">getSearchIndex()</a></li>
+					    <li><a href="#setsearchindex0">setSearchIndex()</a></li>
+					</ul>
+					 Private Methods:			    
+					  <ul>  
+					    <li><a href="#rectorelcache">recordToRelCacheEntry()</a></li>
+					    <li><a href="#relcachetorec">relCacheEntryToRecord()</a></li>
+					  </ul>
+				<li> <a class="sec" href="#attr_cache_table_class"> class AttrCacheTable</a></li>
+					<br>
+					Public Methods:
+					<ul >
+					     <li><a href="#getattrcatentry">getAttrCatEntry()</a></li>
+					    <li><a href="#setattrcatentry">setAttrCatEntry()</a></li>
+					    <li><a href="#getsearchindex1">getSearchIndex()</a></li>
+					    <li><a href="#setsearchindex1">setSearchIndex()</a></li>
+					</ul>
+				    	Private Methods:
+				    	<ul >
+					    <li><a href="#rectoattrcache">recordToAttrCacheEntry()</a></li>
+					    <li><a href="#attrcachetorec">attrCacheEntryToRecord()</a></li>
+				    	</ul>
+				<li> <a class="sec" href="#open_rel_table_class"> class OpenRelTable</a></li>
+					<br>
+					Public Methods:
+					<ul >
+					    <li><a href="#open_rel_table_constructor">OpenRelTable()</a></li>
+					    <li><a href="#open_rel_table_destructor">~OpenRelTable()</a></li>
+					    <li><a href="#getrelid">getRelId()</a></li>
+					    <li><a href="#openrel">openRel()</a></li>
+					    <li><a href="#closerel">closeRel()</a></li>
+					    <li><a href="#deleterel">deleteRel()</a></li>
+					</ul>
+					Private Methods:
+					<ul>
+					    <li><a href="#get_free_open_rel_table_entry">getFreeOpenRelTableEntry()</a></li>
+					</ul>
                                 
                             </ul>
                         </div>
@@ -884,8 +910,8 @@ public:
 					</li>
          <!-------------------------------getSearchIndex------------------------------------------------------------>
 					<li>
-						<div id="getsearchindexid1" class="detail">
-                            <h2><i>public:</i> getSearchIndexId</h2>
+						<div id="getsearchindex1" class="detail">
+                            <h2><i>public:</i> getSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -938,7 +964,7 @@ public:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndexId(int relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndex(int relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
@@ -971,8 +997,8 @@ public:
 					</li>
          <!-------------------------------setSearchIndex------------------------------------------------------------>
 					<li>
-						<div id="setsearchindexid1" class="detail">
-                            <h2><i>public:</i> setSearchIndexId</h2>
+						<div id="setsearchindex1" class="detail">
+                            <h2><i>public:</i> setSearchIndex</h2>
                             <h5>Arguments:</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -1025,7 +1051,7 @@ public:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::setPrevIndexId(relId relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::setSearchIndex(relId relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
