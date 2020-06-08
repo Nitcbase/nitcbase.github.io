@@ -62,56 +62,73 @@
                             <i class="fas fa-align-left"></i>
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
-                            <ul class="nav flex-column sidemenu">
-                                <li> <a class="sec" href="#layout"> Layout</a></li>
-                                <li> <a class="sec" href="#relation_cache"> Relation Cache Table Structures</a></li>
-                                <li> <a class="sec" href="#attribute_cache"> Attribute Cache Table Structures</a></li>
-                                <li> <a class="sec" href="#openrel_table_struct"> Open Relation Table Structure</a></li>
-                                <li> <a class="sec" href="#rel_cache_table_class"> class RelCacheTable</a></li>
-					<br>
-					Public Methods:
-					<ul>
-					    <li><a href="#getrelcatentry">getRelCatEntry()</a></li>
-					    <li><a href="#setrelcatentry">setRelCatEntry()</a></li>
-					    <li><a href="#getsearchindex0">getSearchIndex()</a></li>
-					    <li><a href="#setsearchindex0">setSearchIndex()</a></li>
-					</ul>
-					 Private Methods:			    
-					  <ul>  
-					    <li><a href="#rectorelcache">recordToRelCacheEntry()</a></li>
-					    <li><a href="#relcachetorec">relCacheEntryToRecord()</a></li>
-					  </ul>
-				<li> <a class="sec" href="#attr_cache_table_class"> class AttrCacheTable</a></li>
-					<br>
-					Public Methods:
-					<ul >
-					     <li><a href="#getattrcatentry">getAttrCatEntry()</a></li>
-					    <li><a href="#setattrcatentry">setAttrCatEntry()</a></li>
-					    <li><a href="#getsearchindex1">getSearchIndex()</a></li>
-					    <li><a href="#setsearchindex1">setSearchIndex()</a></li>
-					</ul>
-				    	Private Methods:
-				    	<ul >
-					    <li><a href="#rectoattrcache">recordToAttrCacheEntry()</a></li>
-					    <li><a href="#attrcachetorec">attrCacheEntryToRecord()</a></li>
-				    	</ul>
-				<li> <a class="sec" href="#open_rel_table_class"> class OpenRelTable</a></li>
-					<br>
-					Public Methods:
-					<ul >
-					    <li><a href="#open_rel_table_constructor">OpenRelTable()</a></li>
-					    <li><a href="#open_rel_table_destructor">~OpenRelTable()</a></li>
-					    <li><a href="#getrelid">getRelId()</a></li>
-					    <li><a href="#openrel">openRel()</a></li>
-					    <li><a href="#closerel">closeRel()</a></li>
-					    <li><a href="#deleterel">deleteRel()</a></li>
-					</ul>
-					Private Methods:
-					<ul>
-					    <li><a href="#get_free_open_rel_table_entry">getFreeOpenRelTableEntry()</a></li>
-					</ul>
-                                
-                            </ul>
+                        <ul class="nav flex-column sidemenu">
+                            	<li> <a class="sec" href="#layout"> Layout</a></li>
+				
+				<li> <a class="sec" href="#relid"> RelID</a></li>
+				
+				<li> <a class="sec" data-toggle="collapse" href="#relcache_structures_card" role="button" aria-expanded="false" aria-controls="relcache_structures_card"> RelCache table structures</a></li>
+				<div class="collapse" id="relcache_structures_card"><div class="card card-body">
+                            	<ul>
+					<li><a href="#relation_cache">structure details</a> </li>
+                                	<li><a href="#rel_cat_entry">RelCatEntry</a> </li>
+                                 	<li><a href="#rel_cache_entry">RelCacheEntry</a> </li>
+                            	</ul>
+                                </div></div>
+				
+				<li> <a class="sec" data-toggle="collapse" href="#attrcache_structures_card" role="button" aria-expanded="false" aria-controls="attrcache_structures_card"> AttrCache table structures</a></li>
+				<div class="collapse" id="attrcache_structures_card"><div class="card card-body">
+                            	<ul>
+					<li><a href="#attribute_cache">structure details</a> </li>
+                                	<li><a href="#attr_cat_entry">AttrCatEntry</a> </li>
+                                 	<li><a href="#attr_cache_entry">AttrCacheEntry</a> </li>
+                            	</ul>
+                                </div></div>
+				
+				<li> <a class="sec" href="#openrel_table_struct"> OpenRelTable Structure</a></li>
+				
+				<li> <a class="sec" data-toggle="collapse" href="#RelCacheTable_card" role="button" aria-expanded="false" aria-controls="RelCacheTable_card"> class RelCacheTable</a></li>
+				<div class="collapse" id="RelCacheTable_card"><div class="card card-body">
+                            	<ul>
+					<li><a href="#rel_cache_table_class">class RelCacheTable</a> </li>
+                                	<li><a href="#getrelcatentry">getRelCatEntry()</a> </li>
+                                 	<li><a href="#setrelcatentry">setRelCatEntry()</a> </li>
+					<li><a href="#getsearchindex0">getSearchIndex()</a> </li>
+					<li><a href="#setsearchindex0">setSearchIndex()</a> </li>
+					<li><a href="#rectorelcache">recordToRelCacheEntry()</a> </li>
+					<li><a href="#relcachetorec">relCacheEntryToRecord()</a> </li>
+                            	</ul>
+                                </div></div>
+				
+				<li> <a class="sec" data-toggle="collapse" href="#AttrCacheTable_card" role="button" aria-expanded="false" aria-controls="AttrCacheTable_card"> class AttrCacheTable</a></li>
+				<div class="collapse" id="AttrCacheTable_card"><div class="card card-body">
+                            	<ul>
+					<li><a href="#attr_cache_table_class">class AttrCacheTable</a> </li>
+                                	<li><a href="#getattrcatentry">getAttrCatEntry()</a> </li>
+                                 	<li><a href="#setattrcatentry">setAttrCatEntry()</a> </li>
+					<li><a href="#getsearchindex1">getSearchIndex()</a> </li>
+					<li><a href="#setsearchindex1">setSearchIndex()</a> </li>
+					<li><a href="#rectoattrcache">recordToAttrCacheEntry()</a> </li>
+					<li><a href="#attrcachetorec">attrCacheEntryToRecord()</a> </li>
+                            	</ul>
+                                </div></div>
+				
+				<li> <a class="sec" data-toggle="collapse" href="#OpenRelTable_card" role="button" aria-expanded="false" aria-controls="OpenRelTable_card"> class OpenRelTable</a></li>
+				<div class="collapse" id="OpenRelTable_card"><div class="card card-body">
+                            	<ul>
+					<li><a href="#open_rel_table_class">class OpenRelTable</a> </li>
+                                	<li><a href="#open_rel_table_constructor">OpenRelTable Constructor</a> </li>
+                                 	<li><a href="#open_rel_table_destructor">~OpenRelTable Destructor</a> </li>
+					<li><a href="#getrelid">getRelId()</a> </li>
+					<li><a href="#openrel">openRel()</a> </li>
+					<li><a href="#closerel">closeRel()</a> </li>
+					<li><a href="#deleterel">deleteRel()</a> </li>
+					<li><a href="#get_free_open_rel_table_entry">getFreeOpenRelTableEntry()</a> </li>
+                            	</ul>
+                                </div></div>
+
+                          
+                        </ul>
                         </div>
                     </nav>
                 </div>
