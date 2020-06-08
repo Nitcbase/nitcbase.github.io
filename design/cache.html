@@ -155,7 +155,7 @@
                         
                          <div id="layout" class="detail">
                             	<h2>Layout</h2>
-                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. Thus each time the relation is processed, these blocks have to be bought to buffer memory where they are at risk of being written back by the replacement algorithm. To prevent multiple reads and write backs of the catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides an interface for catalog access to the higher layers by hiding the storage and maintenance details of the catalogs. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
+                             	<p>Almost all operations on a relation require access to its corresponding <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> entries. NITCbase stores these catalogs as relations in the disk. To prevent multiple reads and write backs of the catalog blocks, the <i>Cache Layer</i> caches the catalog blocks along with some extra metadata associated with the relation that allows faster and easier processing of operations such as search. The <i>Cache Layer</i>, thus, provides an interface for catalog access to the higher layers by hiding the storage and maintenance details of the catalogs. <i>Cache Layer</i> can cache a maximum of <a href="/constants.html#constants" target="_blank">MAX_OPEN</a> number of relations at any given time. NITCbase requires that the relation be first loaded to cache memory before any operation is performed on it. </p>
 				<p>Three tables are used by NITCbase for caching Catalogs- the <i>Relation Cache Table</i> for Relation Catalog entries, the <i>Attribute Cache Table</i> for Attribute Catalog entries and the <i>Open Relation Table</i> for operations that include both Relation and Attribute Catalogs. </p>
 				<p>NITCbase follows an Object-Oriented design for Cache Layer. The class diagram is as shown below. </p> 
                             <center><img class="img-fluid" src="/img/cache_class_new.png"></center>
@@ -218,7 +218,7 @@
                         <div id="attribute_cache" class="detail">
                             	<h2>Attribute Cache Table Structures</h2>
                             	<p>The <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog</a> blocks, analogous to the Relation Catalog block, stores the meta information of the attributes of all the relations in the database. 
-				    In addition to this, the Attribute Catalog entries of every <i>open relations</i> are also loaded to the cache memory.
+				    In addition to this, the Attribute Catalog entries of every <i>open relation</i> is also loaded to the cache memory.
 				    This is implemented using <i>Attribute Cache Table</i>.
 				    Each entry in the <i>Attribute Cache Table</i> stores the entries corresponding to each attribute 
 				    of the relation in the form a linked list along with some additional meta-data.</p>
@@ -278,7 +278,7 @@ typedef struct AttributeCacheEntry {
 				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
 				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo{
 				    
-	bool freee;
+	bool free;
 	char rel_name[ATTR_SIZE];
 	
 } OpenRelTableMetaInfo;</code></pre></div>
@@ -302,7 +302,7 @@ typedef struct AttributeCacheEntry {
 					
 			</p>
 				
-				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to retrieve and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
+				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to retrieve and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in the Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
 				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <i>RelCacheEntry</i> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    	</p>
@@ -314,6 +314,7 @@ typedef struct AttributeCacheEntry {
 
 				<div class="code">
 					<pre><code>class RelCacheTable{
+					
 friend class OpenRelTable;
 	
 public:
@@ -330,7 +331,7 @@ private:
 	//methods
 	static void RecordToRelCacheEntry(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
 	static void RelCacheEntryToRecord(union Attribute record[RELCAT_SIZE], RelCacheEntry* relCacheEntry);
-
+	
 };</code></pre>
 				</div>
 <p>The following are the specifications for the methods in <i>class RelCacheTable</i>.</p>
