@@ -56,9 +56,8 @@ header h3 {
 
 #collapsibleSidebar {
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: scroll;
   position: absolute;
-    color: #0056B3;
 }
 
 #collapsibleSidebar ul li a.sec::before {
