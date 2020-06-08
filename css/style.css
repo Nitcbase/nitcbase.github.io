@@ -63,6 +63,8 @@ header h3 {
     height: 100%;
     max-height: 1340px;
     overflow-y: scroll;
+        color: #0056B3;
+
 }
 
 #collapsibleSidebar ul li a.sec::before {
