@@ -85,14 +85,15 @@
                         
                         <div class="detail">
 							<h5>Pre-requisite Reading : 
-								<br>
-								<br>
 								<ul>
 									<li> <a href="./indexing.html" target="_blank">Indexing in NITCbase</a></li>
 									<li> <a href="../storage-model.html" target="_blank">Physical Layer</a></li>
 									<li> <a href="buffer.html" target="_blank">Buffer Layer</a></li>
 									<li> <a href="cache.html" target="_blank">Cache Layer</a></li>
 								</ul>
+								<br>
+								<br>
+								
 							</h5>
 							<p>Indexing is used to quickly locate and access the data in a database. It reduces the number of disk accesses needed when a search query is processed. NITCbase uses B+ Trees for the purpose of indexing an attribute in a relation. The <i>B+ Tree Layer</i> provides specifications for the creation/ usage of B+ Trees. The data is structured in <a href="../storage-model.html#intind_blk" target="_blank">Internal Index blocks</a> and <a href="../storage-model.html#leafind_blk" target="_blank">Leaf Index blocks</a> in a B+ Tree. </p>
 							<p>An Internal Index block contains a maximum of 100 <a href="buffer.html#block_structures_internal_entry" target="_blank">struct InternalEntry</a> entries. Each InternalEntry entry contains an attribute value, a left child pointer, and a right child pointer. The attribute values in the left child are smaller or equal to, and the attribute values in the right child are larger than the attribute value of its parent. This property allows systematic traversal of the B+ Tree. The <a href="buffer.html#recid" target="_blank">record id</a> of all records in a relation are stored in Leaf Index blocks. A Leaf Index block contains a maximum of 63 <a href="buffer.html#block_structures_index" target="_blank">struct Index</a> entries. Each Index entry contains an attribute value and the record id of the block containing that attribute value. The Index entries are ordered in ascending order of attribute values. The Leaf Index blocks are also connected as a linked list. This allows easy access to an entry in the next Leaf Index block rather than traversing the entire B+ Tree from the root to reach that entry.</p>
@@ -102,7 +103,7 @@
 <!-------------------------------------B+ tree class--------------------------------------------> 
 					<div id="bplustree_class" class="detail">
 					    <h2>class BPlusTree</h2>
-						<p>The <i>BPlusTree</i> class is used to access/ modify the B+ Tree created for a particular attribute of a relation. The class contains three private member fields: <i>rootBlock</i>, <i><a href="#" target="_blank">relId</a></i>, and <i>attrName</i>. The <i>BPlusTree</i> class constructor sets the <i>rootBlock</i> field of the object to the parent/root block number of the B+ Tree on successful creation of the B+ Tree. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST</a>) that arises during the creation of B+ Tree is stored in the <i>rootBlock</i> field. The <i>relId</i> field stores the relation id of the relation in the <a href="cache.html#openrel_table" target="_blank">Open Relation Table</a>. The <i>attrName</i> field stores the attribute's name for which the B+ Tree is created. Both <i>relId</i> and <i>attrName</i> are provided as inputs to the <i>BPlusTree</i> class constructor.</p>
+						<p>The <i>BPlusTree</i> class is used to access/ modify the B+ Tree created for a particular attribute of a relation. The class contains three private member fields: <i>rootBlock</i>, <i>relId</i>, and <i>attrName</i>. The <i>BPlusTree</i> class constructor sets the <i>rootBlock</i> field of the object to the parent/root block number of the B+ Tree on successful creation of the B+ Tree. Otherwise, the status (<a href="../constants.html#errors" target="_blank">E_DISKFULL, SUCCESS, E_OUTOFBOUND, E_NOTOPEN, E_ATTRNOTEXIST</a>) that arises during the creation of B+ Tree is stored in the <i>rootBlock</i> field. The <i>relId</i> field stores the <a href="cache.html#relid" target="_blank">relation id<a href="#" target="_blank"> of the relation in the <a href="cache.html#openrel_table" target="_blank">Open Relation Table</a>. The <i>attrName</i> field stores the attribute's name for which the B+ Tree is created. Both <i>relId</i> and <i>attrName</i> are provided as inputs to the <i>BPlusTree</i> class constructor.</p>
 						<p>For creating/accessing/modifying the B+ Tree of any attribute, an instance of the <i>BPlusTree</i> class has to be declared. When an object is instantiated, the constructor of the class creates a new B+ Tree and sets the member fields of the object. If a B+ Tree already exists for that attribute, it assigns the root block of the existing B+ Tree to <i>rootBlock</i> member field. During creation, the <i>bPlusCreate()</i> calls <i>bPlusInsert()</i> repeatedly and inserts entries for all records in the relation. <i>bPlusInsert()</i> can also be called independently to enter new entries to an existing B+ Tree. <i>bPlusDestroy()</i> is called by bPlusInsert() when the disk runs out of memory during the insertion of an entry. In such a case, the existing B+ Tree is destroyed and <i>rootBlock</i> is set to E_DISKFULL. Thus, declaring an object of <i>BPlusTree</i> class for an attribute does not guarantee the existence of a B+ Tree for it. All functions accessing/ modifying the B+ Tree should make sure that the object instance has a valid <i>rootBlock</i>.  <i>bPlusDestroy()</i> is also called when an entire relation has to be deleted from NITCbase.</p>
 						
 						<div class="code">
@@ -327,17 +328,35 @@ private :
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
-						                <td>Successful insertion of <i>Index</i> entry into B+ tree.</td>
-						            </tr>
-						            <tr>
-								    <td><a href="../constants.html#errors" target="_blank">E_NOINDEX</a></td>
-										<td>B+ Tree does not exist for <i>attrName</i>.</td>
-						            </tr>
-						            <tr>
-								    <td><a href="../constants.html#errors" target="_blank">E_DISKFULL</a></td>
-						                <td>Disk space insufficient for insertion of <i>Index</i> entry into B+ tree.</td>
-						            </tr>
+							<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+							<td>int</td>
+						        <td>Successful insertion of <i>Index</i> entry into B+ tree.</td>
+						</tr>
+						<tr>
+							<td><a href="../constants.html#errors" target="_blank">E_NOINDEX</a></td>
+							<td>int</td>
+							<td>B+ Tree does not exist for <i>attrName</i>.</td>
+						</tr>
+						<tr>
+							<td><a href="../constants.html#errors" target="_blank">E_DISKFULL</a></td>
+							<td>int</td>
+						 	<td>Disk space insufficient for insertion of <i>Index</i> entry into B+ tree.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>int</td>
+							<td>Input relId is outside the valid set of possible relation ids.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_NOTOPEN</a></td>
+							<td>int</td>
+							<td>Entry corresponding to input relId is free in the Open Relation Table.</td>
+						</tr>
+						<tr>
+							<td><a href="/constants.html#errors" target="_blank">E_ATTRNOTEXIST</a></td>
+							<td>int</td>
+							<td>No attribute with the input attribute name or offset exists.</td>
+						</tr>
 		                     	</table>
 		             		</div>
 			    			<h5>Description:</h5>
@@ -353,123 +372,123 @@ private :
                             <div id="algo-insert" class="collapse">
                             	<div class="code"><pre><code>int BPlusTree::bPlusInsert(union Attribute val,recId recordId)
 {
-    //let attrCatBuf store the attribute catalog cache entry for attrName.
-    AttrCatEntry attrCatEntry;
+	//let attrCatBuf store the attribute catalog cache entry for attrName.
+	AttrCatEntry attrCatEntry;
 
-    //get the attribute catalog cache entry of <i>attrName</i> using <a href="cache.html#getattrcatentry" target="_blank">OpenRelTable::getAttrCatEntry()</a>.
+	//get the attribute catalog cache entry of <i>attrName</i> using <a href="cache.html#getattrcatentry" target="_blank">OpenRelTable::getAttrCatEntry()</a>.
 	int status = OpenRelTable::getAttrCatEntry(relid, attrName, &attrCatEntry);
 	
-    if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
-    	return status;
-    
-    //store the rootBlock of B+ Tree in blockNum. 
-    int blockNum;
-    
-    if invalid blockNum: //B+ Tree does not exist for <i>attrName</i>.
-	{
-    	return <a href="../constants.html#errors" target="_blank">E_NOINDEX</a>;
-    }
+	if(status != <a href="../constants.html#errors" target="_blank">SUCCESS</a>)
+	return status;
+
+	//store the rootBlock of B+ Tree in blockNum. 
+	int blockNum;
 	
-    //store type of attribute in attrType.
-    int attrType;
+	if invalid blockNum: //B+ Tree does not exist for <i>attrName</i>.
+	{
+		return <a href="../constants.html#errors" target="_blank">E_NOINDEX</a>;
+	}
+	
+	//store type of attribute in attrType.
+	int attrType;
    
-   	/*let block be a buffer of type IndBuffer; as IndBuffer is the parent class of IndLeaf and IndInternal, 
+	/*let block be a buffer of type IndBuffer; as IndBuffer is the parent class of IndLeaf and IndInternal, 
 	  block can be used to store a disk block of either type.*/
-    class IndBuffer *block;
-    
+	class IndBuffer *block;
+	
 	//let blockHeader be used to hold the header of block.
-    HeadInfo blockHeader;
+	HeadInfo blockHeader;
 	
 	/******Traverse the B+ Tree to reach the appropriate leaf where insertion can be done******/
-    while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: // <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used.
+	while block is not of the type <a href="../constants.html#constant" target="_blank">IND_LEAF</a>: // <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a> can be used.
 	{
 	
-    	//load the block using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
-        block = new IndInternal(blockNum);
-        
-        //load header of block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
-        
-        //store number of entries in block, obtained from blockHeader, in nEntries.
-        int nEntries;
-        
-        /*iterate through all the entries, to find first the entry whose attibute value >= value to be inserted.
-         NOTE: the helper function compare() can be used to compare two Union Attribute values based on attrType.*/
-        
-        if no such entry is found: 
-		{      
-        	//update blockNum with rChild of nEntries-1'th (i.e. last) entry of the block.  
-        	
-			delete block;
-        }      
-        else 
-		{
-         	//update blockNum with lChild of the entry of block.
-         	
-			delete block; 
-         }
-    }
+		//load the block using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
+		block = new IndInternal(blockNum);
 
-    //NOTE: now blockNum is the leaf index block to which insertion of val is to be done.
-    
-    /******Insertion of entry in the appropriate leaf block******/
-    
-    //load the block using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
-    block = new IndLeaf(blockNum);
-    
+		//load header of block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
+
+		//store number of entries in block, obtained from blockHeader, in nEntries.
+		int nEntries;
+
+		/*iterate through all the entries, to find first the entry whose attibute value >= value to be inserted.
+		 NOTE: the helper function compare() can be used to compare two Union Attribute values based on attrType.*/
+
+		if no such entry is found: 
+		{	  
+			//update blockNum with rChild of nEntries-1'th (i.e. last) entry of the block.  
+
+			delete block;
+		}	  
+		else 
+		{
+			//update blockNum with lChild of the entry of block.
+
+			delete block; 
+		}
+	}
+
+	//NOTE: now blockNum is the leaf index block to which insertion of val is to be done.
+	
+	/******Insertion of entry in the appropriate leaf block******/
+	
+	//load the block using <a href="buffer.html#leafindbuff_constructor2" target="_blank">IndLeaf::IndLeaf()</a>.
+	block = new IndLeaf(blockNum);
+	
 	//load header of the block into blockHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 
-    //let indexval be used to store the Index entry to be inserted into B+ Tree.
-    Index indexval;
+	//let indexval be used to store the Index entry to be inserted into B+ Tree.
+	Index indexval;
 	
-    //update indexval with as that of recid, val.
+	//update indexval with as that of recid, val.
 
-    //let indices be an array of struct Index of size blockHeader.numEntries+1.
-    Index indices[blockHeader.numEntries+1];
-    
-    /*iterate through all the entries in the block and copy them to the array indices. 
-	Also insert indexval at appropriate position in the indices array.*/
-    
-    if (blockHeader.numEntries != 63) //leaf block has not reached max limit.
-    {
-        //increment blockHeader.numEntries and set this as header of block using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
-        
-        //iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>.
-        
-        delete block;
-        
-        return <a href="../constants.html#errors" target="_blank">SUCCESS</a>;
-    } 
-    else //leaf block is full- need a new leaf to make the entry; split the entries between the two blocks.
-    {
-    	//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafindbuff_constructor1" target="_blank">IndLeaf::IndLeaf()</a>.
-        class IndBuffer * newRightBlk = new IndLeaf();
-        
-        //assign the existing block as the left block in the splitting.
-        class IndBuffer * leftBlk = block;
-        
+	//let indices be an array of struct Index of size blockHeader.numEntries+1.
+	Index indices[blockHeader.numEntries+1];
+	
+	/*iterate through all the entries in the block and copy them to the array indices. 
+	  Also insert indexval at appropriate position in the indices array.*/
+	
+	if (blockHeader.numEntries != 63) //leaf block has not reached max limit.
+	{
+		//increment blockHeader.numEntries and set this as header of block using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>. 
+		
+		//iterate through all the entries of indices array and populate the entries of block with them using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>.
+		
+		delete block;
+		
+		return <a href="../constants.html#errors" target="_blank">SUCCESS</a>;
+	} 
+	else //leaf block is full- need a new leaf to make the entry; split the entries between the two blocks.
+	{
+		//obtain new leaf index block to be used as the right block in the splitting <a href="buffer.html#leafindbuff_constructor1" target="_blank">IndLeaf::IndLeaf()</a>.
+		class IndBuffer * newRightBlk = new IndLeaf();
+		
+		//assign the existing block as the left block in the splitting.
+		class IndBuffer * leftBlk = block;
+		
 		/*store the block numbers of both blocks in variables newRightBlkNum and leftBlkNum 
 		  using  <a href="buffer.html#getblkNum" target="_blank">BlockBuffer::getBlockNum()</a>.*/
-        int newRightBlkNum;
-        int leftBlkNum;
+		int newRightBlkNum;
+		int leftBlkNum;
 		
-        if(newRightBlkNum == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty leaf index becauase the disk is full.
+		if(newRightBlkNum == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty leaf index becauase the disk is full.
 		{
-				//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
-				
-				//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-				
-				//update the rootBlock of attribute catalog cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
-				
-				return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-        }
-        
+			//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
+
+			//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+
+			//update the rootBlock of attribute catalog cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
+
+			return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
+		}
+		
 		//let leftBlkHeader be the header of the left block(which is presently stored in blockHeader)
-        struct HeadInfo leftBlkHeader = blockHeader;
+		struct HeadInfo leftBlkHeader = blockHeader;
 		
 		//store the block after leftBlk that appears in the linked list in prevRblock.
 		int prevRblock = leftBlkHeader.rblock;
-			
-        /*update number of enteries in leftBlkHeader as 32 and its rblock as newRightBlkNum
+		
+		/*update number of enteries in leftBlkHeader as 32 and its rblock as newRightBlkNum
 		  using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.*/
 
 		//let newRightBlkHeader be the header of the right block.
@@ -477,30 +496,30 @@ private :
 
 		//load the header of newRightBlk in newRightBlkHeader using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a>.
 		
-        /*update number of enteries in newRightBlkHeader as 32, its pblock as the pblock of leftBlk, 
+		/*update number of enteries in newRightBlkHeader as 32, its pblock as the pblock of leftBlk, 
 		  its lblock as leftBlkNum and its rblock as prevRblock using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.*/
 
-     	/*set the first 32 entries of leftBlk as the first 32 entries of indices array 
-   		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>.*/
+		/*set the first 32 entries of leftBlk as the first 32 entries of indices array 
+		  and set the first 32 entries of newRightBlk as the next 32 entries of indices array using <a href="buffer.html#leafsetentry" target="_blank">IndLeaf::setEntry()</a>.*/
 
-        //store pblock of leftBlk in parBlkNum.
-        int parBlkNum;
-        
-        delete leftBlk;
-        delete newRightBlk; 
-        
-        /*store the attribute value of indices[31] in newAttrval; 
+		//store pblock of leftBlk in parBlkNum.
+		int parBlkNum;
+		
+		delete leftBlk;
+		delete newRightBlk; 
+		
+		/*store the attribute value of indices[31] in newAttrval; 
 		  this is attribute value which needs to be inserted in the parent block.*/
-        union Attribute newAttrval;
+		union Attribute newAttrval;
 		
 		/******Traverse the internal index blocks of the B+ Tree bottom up making insertions wherever required******/
 
 		//let done indicate whether the insertion is complete or not.
-        bool done = false;
-        
-        while(!done)
+		bool done = false;
+		
+		while(!done)
 		{
-        	if (parBlkNum != -1) //parBlkNum is a valid parent block.
+			if (parBlkNum != -1) //parBlkNum is a valid parent block.
 			{
 				//load the block corresponding to parBlkNum to parblk using <a href="buffer.html#intindbuff_constructor2" target="_blank">IndInternal::IndInternal()</a>.
 				class IndInternal *parblk= new IndInternal(parBlkNum);
@@ -529,75 +548,76 @@ private :
 					
 				}
 				else  /*the parent internal index is full- need a new internal index to make the entry; 
-						split the entries between the two blocks*/
+					split the entries between the two blocks*/
 				{
+				
 					//obtain a new internal index block in dummy using <a href="buffer.html#intindbuff_constructor1" target="_blank">IndInternal::IndInternal()</a>.
-			    	class IndInternal* dummy = new IndInternal();
+					class IndInternal* dummy = new IndInternal();
 
-			    	if(dummy->getBlockNum() == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty internal index becauase the disk is full.
+					if(dummy->getBlockNum() == <a href="../constants.html#errors" target="_blank">FAILURE</a>) //failed to obtain an empty internal index becauase the disk is full.
 					{
 						//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy()</a>.
-						
+
 						//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
-						
+
 						//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-						
+
 						//update the rootBlock of attribute cache entry to -1 using <a href="cache.html#setattrcatentry" target="_blank">OpenRelTable::setAttrCatEntry()</a>.
-						
+
 						return <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>;
-			     	}
+					}
 
-			    	//assign dummy as the left block in the splitting.
-			    	newRightBlk= (class IndInternal* )dummy;
+					//assign dummy as the left block in the splitting.
+					newRightBlk= (class IndInternal* )dummy;
 
-			        //assign parblk as the right block in the splitting.
-			        leftBlk= (class IndInternal* )parblk;
+					//assign parblk as the right block in the splitting.
+					leftBlk= (class IndInternal* )parblk;
 
-			        //update leftBlkNum with parBlkNum.
+					//update leftBlkNum with parBlkNum.
 					
 					//udpate newRightBlkNum with block number of newRightBlk using <a href="buffer.html#getblkNum" target="_blank">BlockBuffer::getBlockNum()</a>.
 
-			        //update leftBlkHeader with parheader.
+					//update leftBlkHeader with parheader.
 
-			        //update number of enteries of leftBlkHeader as 50 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
+					//update number of enteries of leftBlkHeader as 50 using <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-			        //update number of enteries of newRightBlkHeader as 50 using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
+					//update number of enteries of newRightBlkHeader as 50 using <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.
 
-			    	/*set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and 
+					/*set the first 50 entries of leftBlk as the first 50 entries of internalEntries array and 
 					  set the first 50 entries of newRightBlk as the entries from 51 to 100 of internalEntries array 
 					  using <a href="buffer.html#intsetentry" target="_blank">IndInternal::setEntry()</a>.*/
 
-			        IndBuffer *childBuff;
-			    	struct HeadInfo childBuffHead;
+					IndBuffer *childBuff;
+					struct HeadInfo childBuffHead;
 
-			    	/*store the block type of a child of any entry (say, the rchild of 50th entry) of the 
+					/*store the block type of a child of any entry (say, the rchild of 50th entry) of the 
 					  internalEntries array in type, using <a href="buffer.html#getstaticblocktype" target="_blank">StaticBuffer::getStaticBlockType()</a>.*/
-			    	int type;
+					int type;
 
-			     	//iterate from 50 to 100:
+					//iterate from 50 to 100:
 					{
 						//assign the rchild block of ith index in internalEntries of the appropriate type to childBuff.
 						if(type == <a href="../constants.html#constants" target="_blank">IND_LEAF</a>)
 							childBuff = (IndBuffer*) new IndLeaf(internalEntries[i].rChild);
-						 else
+						else
 							childBuff = (IndBuffer*) new IndInternal(internalEntries[i].rChild);
 
 						/*update pblock of the childBuff block to newRightBlkNum using
 						  <a href="buffer.html#getheader" target="_blank">BlockBuffer::getHeader()</a> and <a href="buffer.html#setheader" target="_blank">BlockBuffer::setHeader()</a>.*/
 
-						delete childBuff;                    
-			    	}
+						delete childBuff;
+					}
 
-			    	delete leftBlk;
-			    	delete newRightBlk;
+					delete leftBlk;
+					delete newRightBlk;
 
-			    	//update parBlkNum as the pblock of leftBlk.
+					//update parBlkNum as the pblock of leftBlk.
 
-			    	/*update newAttrval to the attribute value of 50th entry in the internalEntries array; 
+					/*update newAttrval to the attribute value of 50th entry in the internalEntries array; 
 					  this is attribute value which needs to be inserted in the parent block.*/
 				}
-            }		
-        	else  //when parBlkNum is invalid.
+			}		
+			else  //when parBlkNum is invalid.
 			{
 				//NOTE: Need to allot a new block which would be the root of the B+ Tree.
 
@@ -611,7 +631,7 @@ private :
 				{
 					
 					//destroy the right subtree, given by newRightBlkNum, build up till now that has not yet been connected to the existing B+ Tree, using <a href="#destroy">bPlusDestroy()</a>.
-						
+					
 					//destroy the existing B+ tree by passing <i>rootBlock</i> member field to <a href="#destroy">bPlusDestroy()</a>.
 
 					//update <i>rootBlock</i> member field to <a href="../constants.html#errors" target="_blank">E_DISKFULL</a>.
@@ -642,7 +662,7 @@ private :
 			}
 		}
 	}
-	return SUCCESS;		
+	return SUCCESS;
  }</code></pre>
                             	</div>
                             </div>
@@ -676,13 +696,15 @@ private :
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-						                <td>recordId</td>
-										<td><a href="buffer.html#recid" target="_blank">Record id</a> of the first/ next block entry in the relation that satisfies <i>op</i> for <i>attrVal</i>.</td>
-						            </tr>
-						            <tr>
-						                <td>Invalid recordId {-1,-1}</td>
-										<td>No first/ next block entry found satisfisying <i>op</i> for <i>attrVal</i>.</td>
-						            </tr>
+						 	<td>recordId</td>
+							<td><a href="buffer.html#recid" target="_blank">RecId</a></td>
+							<td>Record id of the first/ next block entry in the relation that satisfies <i>op</i> for <i>attrVal</i>.</td>
+						</tr>
+						<tr>
+						        <td>Invalid recordId {-1,-1}</td>
+							<td><a href="buffer.html#recid" target="_blank">RecId</a></td>
+							<td>No first/ next block entry found satisfisying <i>op</i> for <i>attrVal</i>.</td>
+						</tr>
 		                     	</table>
 		                     </div>
 
@@ -964,16 +986,19 @@ private :
                             <div class="table-responsive">
 		                        <table class="table table-bordered table-hover">
 		                        	<tr>
-										<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+							<td><a href="../constants.html#errors" target="_blank">SUCCESS</a></td>
+							<td>int</td>
 		                        		<td>Successful deletion of index block.</td>
 		                    		</tr>
 		                    		<tr>
-										<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
-		                    		    <td>Input blockNum is outside the valid range of block numbers.</td>
+							<td><a href="../constants.html#errors" target="_blank">E_OUTOFBOUND</a></td>
+							<td>int</td>
+		                    		    	<td>Input blockNum is outside the valid range of block numbers.</td>
 		                    		</tr>
 		                    		<tr>
-										<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
-		                    		    <td>Input blockNum do not correspond to an index block.</td>
+							<td><a href="../constants.html#errors" target="_blank">E_INVALIDBLOCK</a></td>
+							<td>int</td>
+		                    		    	<td>Input blockNum do not correspond to an index block.</td>
 		                    		</tr>
 		                     	</table>
 		                     </div>
