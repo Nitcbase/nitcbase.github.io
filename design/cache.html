@@ -247,8 +247,8 @@ typedef struct AttributeCacheEntry {
 				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    	</p>
 				
-				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class are used to access the static member fields of the class.
-				   C++ allows static methods to be accessed using the semantics class_name::function_name().
+				<p>RelCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
+				   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of RelCacheTable is as given below:
 				</p>
 
 				<div class="code">
@@ -623,8 +623,8 @@ public:
 			    The private method <i>recordToAttrCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to AttrCacheEntry structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 			    Similarly, the private method <i>attrCacheEntryToRecord()</i> is used to convert <i>AttrCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			</p>
-			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class.
-			   C++ allows static methods to be accessed using the semantics class_name::function_name().
+			<p>AttrCacheTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields.
+			   C++ allows static methods to be accessed using the semantics class_name::function_name(). The class definition of AttrCacheTable is as given below:
 			</p>
 		
 				<div class="code">
@@ -1065,8 +1065,8 @@ public:
 			<div id="open_rel_table_class" class="details">
 				<h2>class OpenRelTable</h2>
 				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. As per the NITCbase design, the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
-				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field, and the OpenRelTable destructor closes any open relation before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database.</p>
-				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">Static methods</a> in a class can access the static member fields of the class. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes. The class definition of OpenRelTable is as given below:</p>
+				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field and populates the Relation Cache Table and Attribute Cache Table with entries of Relation Catalog relation and Attribute Catalog relation. The OpenRelTable destructor closes any open relation remaining before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
+				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
 
@@ -1090,8 +1090,7 @@ private:
 };</code></pre>
 					
 				</div>
-				<p>The following are the specifications for the methods in <i>class OpenRelTable</i>. The stub code is availabe <a href="bufferStub.html#staticBuffer.h" target="_blank">here</a>.</p>
-				<ul class="methods">
+				<p>The following are the specifications for the methods in <i>class OpenRelTable</i>.
 	     <!----------------------Constructor--------------------------->
 					<li>
 						<div class="detail" id="open_rel_table_constructor">
@@ -1101,7 +1100,13 @@ private:
 							<h5>Return type:</h5>
 							<p>Nil</p>
 							<h5>Description:</h5>
-							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. Should be called at the beginning of the session.</p>
+							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. It also loads the entries of the Relation Catalog relation and Attribute Catalog relation to the Relation Cache Table and Attribute Cache Table. Should be called at the beginning of the session.</p>
+							<p><b>NOTE:</b> 
+								<ul>
+									<li>The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
+									<li>The RELCAT_RELID and ATTRCAT_RELID entries in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
+								</ul>
+							</p>
 							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_open_rel_table_constructor" class="collapse">
 							    <div class="code">
@@ -1157,7 +1162,7 @@ private:
 }</code></pre>
 							    </div>
 							</div>
-							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</p>
+							
 					    	</div>	
 					</li>
          <!-------------------------------Destructor------------------------------------------------------------>
@@ -1170,6 +1175,7 @@ private:
 							<p>Nil</p>
 							<h5>Description:</h5>
 							<p>Closes the still open relations in the Open Relation Table at the end of the current session. </p>
+							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the destructor writes the cache contents to the main memory before the main memory is commited to disk.</p>
 							<h5><a data-toggle="collapse" href="#algo_open_rel_table_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_open_rel_table_destructor" class="collapse">
 							    <div class="code">
@@ -1188,7 +1194,6 @@ private:
 }</code></pre>
 							    </div>
 							</div>
-							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the destructor writes the cache contents to the main memory before the main memory is commited to disk.</p>
 					    	</div>	
 					</li>
          <!-------------------------------getRelId------------------------------------------------------------>
