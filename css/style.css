@@ -58,7 +58,7 @@ header h3 {
     overflow-x: auto;
     overflow-y: auto;
   position: absolute;
-    height: 100%;
+    color: #0056B3;
 }
 
 #collapsibleSidebar ul li a.sec::before {
