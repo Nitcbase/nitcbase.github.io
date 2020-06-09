@@ -114,21 +114,21 @@
                             <div class="detail" id="indexstructure">
                                 <h2>Indexing Data Structures</h2>
                                 
-                                <p>For an exhaustive search on a linearly structured Index like an array, the number of disk accesses is in the order of N, where N is the number of blocks that store the Index. In the case of a <a href="https://en.wikipedia.org/wiki/Binary_search_tree"  target="_blank">Binary Search Tree</a>, the time required for the search of any entry in the array is reduced to log(n to the base 2). The number of entries in each node of a BST is restricted to 1. Suppose we can increase this number and can introduce more branches to a single node so that the height of the tree as well as the number of accesses decreases. Such a tree is called the m-way search tree. Suppose you have 2 entries on a single node, then it can have at most 3 child nodes. For, eg:</p>                                
+                                <p>For an exhaustive search on a linearly structured Index like an array, the time required for disk accesses is of complexity O(n), where n is the number of blocks that store the Index. In the case of a <a href="https://en.wikipedia.org/wiki/Binary_search_tree"  target="_blank">Binary Search Tree</a>, the time required for the search of any entry in the array is reduced to log(n to the base 2). The number of entries in each node of a BST is restricted to 1. Suppose we can increase this number and can introduce more branches to a single node so that the height of the tree as well as the number of accesses decreases. Such a tree is called the <i>m-way search tree</i>. Suppose you have 2 entries on a single node, then it can have at most 3 child nodes. For, eg:</p>                                
                              
                                 <center><img class="img-fluid" src="../img/bplustree/1.png"></center>
                                 <br><br>
                                 <p> This is known as a 3-way search tree with 2 keys.<br>
-                                   The Order of a tree is the maximum number of children that a node in a tree can have. <br>
+                                   The <i>Order</i> of a tree is the maximum number of children that a node in a tree can have. <br>
                                    For a Multi-way search tree of order m, each node can have a maximum of m children and  m-1 entries.  The entries in each node are sorted. Similar to a BST all the entries on the left of a key in the node as well as their children, will be lesser than key. Consecutively, all the entries to the key’s right as well as its children will be greater than it. 
-                                </p><br>
-                                <p>How can we bring this to the database and relation? <br> Assume each entry in the node of the tree to be the key that stores a record pointer along with it that points to the original record in the Record block of the disk. The height of the tree will determine the number of disk accesses required. Each node in the tree is now an Index block in the disk. </p>
-                                <p>The disadvantage of m-way search trees is that they are <b>unbalanced</b>. i.e.. every path from the root node to a leaf node is not of the same length. 
+                                </p>
+                                <p>How can we connect this to the database and relation? <br> Assume each entry in the node of the tree to be the key that stores a record pointer along with it that points to the original record in the Record block of the disk. The height of the tree will determine the number of disk accesses required. Each node in the tree is now an Index block in the disk. </p>
+                                <p>The disadvantage of m-way search trees is that they are <i>unbalanced</i>. i.e. every path from the root node to a leaf node is not of the same length. 
                                 Since there are no rules for insertion of elements into an m-way search tree, it could be skewed to one side, i.e. every node could fall on one side increasing the time complexity of search from log(n) to O(n) in the worst case.
+                                <br>
+                                B Trees and B+ Trees are <a href="https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree"  target="_blank">self-balancing</a> m-way search trees confined to rules of insertion and deletion. So, every root to leaf paths is of the same length. <br><br>
 
-                                B Trees and B+ Trees are self-balancing m-way search trees confined to rules of insertion and deletion. So, every root to leaf paths is of the same length. <br>
-
-                                The properties of a B tree with order m are : </p>
+                                The properties of a <i><b>B Tree</b></i> with order <i>m</i> are : </p>
 
                                 <ul>
                                     <li>In a B tree, there are two kinds of nodes, Leaf Nodes and Internal(Non-Leaf) Nodes.</li>
