@@ -178,9 +178,9 @@
 
 
                                 <p>
-                                As the size of the relation increases, this value B could be very large. Inorder to optimize the performance of the database by minimizing the number of disk accesses required when a Search query is processed, indexing is used. <br>
-                                As mentioned earlier, NITCBase uses B+ tree data structure for indexing records in a relation. There are two types of nodes for a B+ tree. These are called internal nodes and leaf nodes. A disk block that stores an internal node of the B+ tree is called an <a href="../storage-model.html#intind_blk"  target="_blank">Internal Index block</a>. Each internal index block in NITCBase stores a maximum of 100 attribute values. Each of these values has an associated pair of left and right child pointers.Since the right child of one value is the same as the left child of the next value each Internal Index block stores 101 child pointers.<br>
-                                A leaf node in the B+ tree stores the actual Record pointers for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <a href="../storage-model.html#leafind_blk"  target="_blank">Leaf Index Block</a> which is also of 2048 bytes with first 32 bytes storing the header.Each index stored in the leaf block is a 3-tuple (attribute value-16 bytes, block number-4 bytes, slot number-4 bytes and 8 bytes of unused space). So the maximum number of leaf indices that can be stored in a Leaf Index Block is:
+                                As the size of the relation increases, this value B could be very large. In order to optimize the performance of the database by minimizing the number of disk accesses required when a Search query is processed, indexing is used. <br>
+                                As mentioned earlier, NITCbase uses B+ tree data structure for indexing records in a relation. There are two types of nodes for a B+ tree. These are called internal nodes and leaf nodes. A disk block that stores an internal node of the B+ tree is called an <a href="../storage-model.html#intind_blk"  target="_blank">Internal Index block</a>. Each internal index block in NITCBase stores a maximum of 100 attribute values. Each of these values has an associated pair of left and right child pointers. Since the right child of one value is the same as the left child of the next value each Internal Index block stores 101 child pointers.<br>
+                                A leaf node in the B+ tree stores the actual Record pointers for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <a href="../storage-model.html#leafind_blk"  target="_blank">Leaf Index Block</a> which is also of 2048 bytes with first 32 bytes storing the header. Each index stored in the leaf block is a 3-tuple (attribute value-16 bytes, block number-4 bytes, slot number-4 bytes and 8 bytes of unused space). So the maximum number of leaf indices that can be stored in a Leaf Index Block is:
 
                                <b><p> \[ 
                                 
@@ -662,7 +662,7 @@ When 14 is to be inserted, we traverse down the tree starting from the root bloc
 
                     We proceed onto the next iteration of search. searchIndex is updated with the Search Index field of Attribute Catalog Cache and Search Index field of Attribute Catalog Cache is reset to (-1, -1).
                     <br>
-                    searchIndex = (L6, 0)
+                    searchIndex = (L6, 1)
                     <br>
                     Set block = L6 and index = 1+1 = 2<br>
                     Header of the block L6 indicates that number of entries is 2 and so the maximum value of offset possible is 1.So, update the block to its right block and set index = 0. Since L6 is the last and rightmost Leaf Index Block in our linked list, RBlock of L6 is -1. <br>
