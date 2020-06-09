@@ -65,22 +65,34 @@
         <div class="container-fluid">
             <div class="row">
                 
+
                 <!-- SIDEBAR BEGIN -->
-                <div class="col-sm-2">
-                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                <div class="col-md-2">
+                    <nav class="navbar navbar-expand-md sticky-top sticky-offset">
                         <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
                             <i class="fas fa-align-left"></i>
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
+                            <li> <a class="sec" href="#introduction">Introduction</a></li>
                             <li> <a class="sec" href="#indexing">Understanding Indexing</a></li>
                             <li> <a class="sec" href="#implementation">Implementation in NITCbase</a></li>
-                          
+                            <ul>
+                                <li> <a class="sec" href="#createindex">Create Index</a></li>
+                                <li> <a class="sec" href="#insertion">Insertion</a></li>
+                                <li> <a class="sec" href="#searching">Search</a></li>
+
+                                
+                            </ul>
+
                         </ul>
                         </div>
                     </nav>
                 </div>
                 <!-- END OF SIDEBAR -->
+
+
+                
                 
                 <!--MAIN CONTENT START-->
                 <div class="col-sm-10">
@@ -90,63 +102,36 @@
                             <br>
                             <h1>Indexing in NITCbase</h1>
                         </div>
+
+
+                            <div class="detail" id="introduction">
+                                <h2>Introduction</h2>
+
+                                <p> A database consists of a collection of files where each file contains a sequence of records corresponding to a relation. These records spread across several blocks when stored in the disk, depending on the number of records that can fit into a block. A block also contains a pointer to the next block of the file, allowing sequential search on the records of a file. A relation is defined by a set of attributes. Each record is a set of values corresponding to those attributes. </p>
+                                
+                                <p>
+                                On developing a database of your own, it is essential that we have access to records stored in the disk without much time delay. Disk access is a high-latency operation. Therefore, as the size of relation increases, searching records that satisfy certain conditions by accessing every record in the disk blocks, can adversely affect the performance. This necessitates indexing.
+                                </p>
+                                
+                               
+                        
+                            </div>     
                         
                             
                             <div class="detail" id="indexing">
                                 <h2>Understanding Indexing</h2>
                                 
+                                <p>Creating an index on an attribute of a relation is basically creating a data structure that holds the attribute value and a pointer to the records. It enables us to speed up the retrieval of records in response to certain search conditionns on the attribute value. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indices such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. In the end, a database index is a means to locate and read table data as quickly as possible. </p>
                                 <p>
-                                On creating a database of your own, it is essential that we have access to the data stored without much time delay. Disk access is a high-latency operation. Therefore, as the size of relation increases, searching records that satisfy certain conditions by accessing every record in the disk blocks can adversely affect the performance. This necessitates indexing.
-                                </p>
-                                <p>Creating an index is basically creating a data structure that holds the attribute value and a pointer to the records. It enables us to speed up the retrieval of records in response to certain search conditions. An <b>index</b> in a database is very much like the index in a book. And, just as a book's index points to locations within the book, a database's index points to records within the disk. The database organizes the indices such that these pointer values can be found extremely fast. And, once the database has located the desired set of pointer values, it can then turn around and quickly read the full record. In the end, a database index is a means to locate and read table data as quickly as possible. Thus, indexing attributes that are frequently used for search conditions can indeed optimize query proccessing.</p>
-                                <p>So, an index is a collection of attribute values and their corresponding record pointers.
-                                When designing an index, the <b>structure of the index</b> determines how fast the index can be accessed and what kind of queries can leverage it.
-                            
+                                Consider a query to fetch records with a particular attribute value greater than X. Suppose, you create an index for that attribute. When a new index is created for a (relation, attribute) pair, the database system creates a new data structure which is again stored in different blocks in the disk, say Index Blocks. For a given value of the attribute, this disk data structure helps us to locate  the data block(s) that contain the records of the relation  with the attribute value that satisfies our search condition(attribute value >X). Consequently, we require much lesser number of disk accesses than a linear search on the blocks of the file. </p>
+                                <p>
+                                Thus, the objective of creating an index on an (attribute, relation) pair, is to make search operation on a relation for records with attribute value that satisfy a search condition, faster than linear search on the blocks of the file. If n is the number of records in a file, the time required to search based on an attribute is only O(log n) whereas it would take  O(n) time for a linear search in the absence of an index. 
+                                Creating an index itself is an expensive operation requiring O(n) time and space. Hence indices are normally created only on those attributes on which frequent queries are performed on the database. </p>
+                                <p>As index is a collection of attribute values and their corresponding record pointers, the <b>structure of the index</b> plays a key role in determining how fast the index can be accessed and the kind of queries that can be proccessed.
+    
                                 Perhaps one of the most common types of index structures is the <b><a href="Bplustreedetails.html"  target="_blank">B+ Tree</a></b>. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. NITCbase uses B+ Tree for indexing records. </p>
-                                <div class="question">
-                                    <div class="ques_card">
-                                        <div class="card-header">
-                                <!--<div class="card-body">-->
-                                            <b>Click <a href="Bplustreedetails.html"  target="_blank">here</a> to develop a thorough understanding of B+ Trees before you proceed with its implementation in NITCbase.</b>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <p>Let us understand indexing in NITCbase with an example. <br>Consider a relation of <b>10</b> attributes containing <b>12,000</b> records.
-                                The<b> Record block </b>size is <b>2048 </b>bytes. (Refer <a href="../storage-model.html"  target="_blank">Physical Layer</a>)<br>
-                                Number of slots (Maximum number of records, L) that fits in a block for any given relation can be calculated as:</p>
-
-                                <b><p> \[ 
                                 
-                                \#Slots = L = \left \lfloor \frac {2048 - 32} {((16 * \#Attributes(K)) + 1)} \right \rfloor \\
-                                       = \left \lfloor \frac {2016} {((16 * 10 + 1)} \right \rfloor = 12
-                                \]</p></b>
-
-                                <p>Therefore, the number of record blocks required to store the given relation is: </p>
-
-                                <b><p> \[ 
                                 
-                                \#Record Blocks = \left \lceil \frac {12000} {12} \right \rceil = 1000
-                                       
-                                \]</p></b>
-                                <p>This implies that the number of disk accesses required to process a query in the absence of an index is <b>1000</b>.<br>Suppose, we have a query based on an indexed attribute satisfying a certain condition. In NITCBase, the maximum number of entries in an Internal index block and Leaf index block are 100 and 63 respectively. Similarly, the minimum number of entries are 50 and 32 respectively(Why?). We know that all the attribute values appear in any of the leaf blocks. So the maximum number of Leaf index blocks is:</p>
-
-                                <b><p> \[ 
-                                
-                                \#Leaf Index Blocks = \left \lceil \frac {12000} {32} \right \rceil = 375
-                                       
-                                \]</p></b>
-                                <p>
-
-                                Given that the minimum number of Internal Index block entries being 50, the minimum number of children is 51.
-                                Therefore, the maximum depth of the B+ Tree is :</p>
-
-                                <b><p> \[ 
-                                
-                                \#Height = \left \lceil \log_{51} {375}  \right \rceil = 2
-                                       
-                                \]</p></b>
-                                <p>So, the total number of disk accesses required is 2+1= <b>3</b>.<br>We notice that from 1000 disk accesses to 3 disk accesses, the performance increase is substantial.</p>
                                 
 
 
@@ -158,14 +143,131 @@
                                  
                         <div id="implementation" class="detail">
                             <h2>B+Tree Implementation in NITCbase</h2>
-                            <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.</p>
-                            <center><img class="img-fluid" src="../img/indexing/Table.png"></center>
+
+
+                            <div class="question">
+                                    <div class="ques_card">
+                                        <div class="card-header">
+                                <!--<div class="card-body">-->
+                                            <h5>Pre-requisite Reading:</h5>
+                                            <ul>
+                                                <li><a href="../storage-model.html"  target="_blank">Physical Layer</a></li>
+                                                <li><a href="Bplustreedetails.html"  target="_blank">B+ Trees</a></li>
+                                            </ul>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            <br>
+
+                            <p>
+
+                            In NITCbase, each <a href="../storage-model.html#record_blk"  target="_blank">Record block</a> is of size 2048 bytes of which first 32 bytes is allocated for the header that gives the metadata of the block. Consider a record block structure for a relation with K attributes. The size allotted for an attribute is 16 bytes. <br>
+                            Number of slots (Maximum number of records, L) that fits in a Record block for any given relation can be calculated as:</p>
+
+                                <b><p> \[ 
+                                
+                                \#Slots = L = \left \lfloor \frac {2048 - 32} {((16 * \#Attributes(K)) + 1)} \right \rfloor \] </p></b>
+                                <p>
+                                Suppose there are R records in the relation , we would require B block accesses(equivalent to the number of Record Blocks required to store the relation) in order to traverse through the entire relation.</p>
+                                <b><p> \[ 
+                                
+                                B = \#Record Blocks = \left \lceil \frac {R} {L} \right \rceil
+                                       
+                                \]</p></b>
+
+
+                                <p>
+                                As the size of the relation increases, this value B could be very large. Inorder to optimize the performance of the database by minimizing the number of disk accesses required when a Search query is processed, indexing is used. <br>
+                                As mentioned earlier, NITCBase uses B+ tree data structure for indexing records in a relation. There are two types of nodes for a B+ tree. These are called internal nodes and leaf nodes. A disk block that stores an internal node of the B+ tree is called an <a href="../storage-model.html#intind_blk"  target="_blank">Internal Index block</a>. Each internal index block in NITCBase stores a maximum of 100 attribute values. Each of these values has an associated pair of left and right child pointers.Since the right child of one value is the same as the left child of the next value each Internal Index block stores 101 child pointers.<br>
+                                A leaf node in the B+ tree stores the actual Record pointers for the records in a relation. A disk block that stores a leaf node of a B+ tree is called a <a href="../storage-model.html#leafind_blk"  target="_blank">Leaf Index Block</a> which is also of 2048 bytes with first 32 bytes storing the header.Each index stored in the leaf block is a 3-tuple (attribute value-16 bytes, block number-4 bytes, slot number-4 bytes and 8 bytes of unused space). So the maximum number of leaf indices that can be stored in a Leaf Index Block is:
+
+                               <b><p> \[ 
+                                
+                                 Maximum Leaf Entries = \left \lfloor \frac {2016} {32} \right \rfloor = 63 \] </p></b>
+                                <p>
+
+                                As a consequence, more number of records can be accessed through record pointers stored in an Index block with respect to an attribute resulting in a much lesser disk block accesses to process a query.
+
+                               </p>
+
+                               <br>
+                               <p>Let us understand indexing in NITCbase with an example.</p>
+
+
+
+                               <div class="question">
+                                <div class="ques_card">
+                                    <div class="card-header">
+                                        <a data-toggle="collapse" href="#collapse_eg">
+                                          <p>Consider a relation of <b>10</b> attributes(Attribute_1, Attribute_2,....., Attribute_10) containing <b>12,000</b> records.
+                                <br>We need to process a query to fetch Records with the value of Attribute_2 greater than X.<br>
+                                Compare the number of disk accesses required in the presence and absence of an Index on Attribute_2.  </p>
+                                        </a>
+                                    </div>
+                                    <div id="collapse_eg" class="collapse">
+                                        <div class="card-body"> 
+
+
+                                                         The <a href="../storage-model.html#record_blk"  target="_blank">Record block</a> size is <b>2048 </b>bytes. <br>
+                                            Number of slots (Maximum number of records, L) that fits in a block for the given relation can be calculated as:
+
+                                            <b><p> \[ 
+                                            
+                                            \#Slots = L = \left \lfloor \frac {2048 - 32} {((16 * \#Attributes(K)) + 1)} \right \rfloor \\
+                                                   = \left \lfloor \frac {2016} {((16 * 10 + 1)} \right \rfloor = 12
+                                            \]</p></b>
+
+                                            <p>Therefore, the number of record blocks required to store the given relation is: </p>
+
+                                            <b><p> \[ 
+                                            
+                                            \#Record Blocks = \left \lceil \frac {12000} {12} \right \rceil = 1000
+                                                   
+                                            \]</p></b>
+                                            <p>
+                                             To proccess our search query in the absence of an Index, we need to fetch all the records from disk blocks one by one, and check if they satisfy our search condition(Attribute_2 >X). This implies that the number of disk accesses required to process a query in the absence of an index is <b>1000</b>.<br>
+
+                                            Suppose, an Index is created on Attribute_2 of this Relation. In NITCBase, the maximum number of entries in an Internal index block and Leaf index block are 100 and 63 respectively. When an Index Block is full, it is split into two, i.e a new Index Block is allocated such that each of them is atleast half full. So, if there is more than one Internal Index Block and Leaf Index Block, the minimum number of entries in an Internal index block and Leaf index block are 50 and 32 respectively. We know that all the attribute values along with their Record Pointers appear in any of the leaf blocks. So the maximum number of Leaf index blocks is:</p>
+
+                                            <b><p> \[ 
+                                            
+                                            \#Leaf Index Blocks = \left \lceil \frac {12000} {32} \right \rceil = 375
+                                                   
+                                            \]</p></b>
+                                            <p>
+
+                                            Given that the minimum number of Internal Index block entries being 50, the minimum number of children is 51.
+                                            Therefore, the maximum height of the B+ Tree is :</p>
+
+                                            <b><p> \[ 
+                                            
+                                            \#Height = \left \lceil \log_{51} {375}  \right \rceil = 2
+                                                   
+                                            \]</p></b>
+                                            <p>While traversing down the tree from the root, we access 2 Index Blocks in the disk(including the Leaf Index Block). The final Leaf Index Block gives us the Record Id i.e(Block Number, Slot Number) of the record required. We fetch the record from that Record Block using Record Id.<br>So, the total number of disk accesses required when an Index is created is,  2+1= <b>3</b>.<br>We notice that from 1000 disk accesses to 3 disk accesses, the performance increase is substantial.</p>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <br><br> 
+                               
+                            Now, let us understand the creation of B+ Tree in NITCbase in detail, and Insert and Search operations on it.<br><br>
+
+
+                            <h4 id="createindex">Create Index</h4><br>
+                            <p>Consider a Relation<b> Student (Name, Roll No, Batch, Marks) </b>with 4 attributes.<br>An index is to be created on the attribute Roll No.</p><br>
+                            <center><img class="img-fluid" src="../img/indexing/Table.png"></center><br>
                             <p>For simplicity, we have taken the size of Record Block as 320 bytes analogous to 2048 bytes in NITCBase. Therefore, keeping all other factors the same, the number of slots per block would be 4. Given Relation has 14 records. Hence, the number of Record blocks required is 4.<br> The Record Block structure is as follows :</p>
 
                             <center><img class="img-fluid" src="../img/indexing/recordblk.png"></center>
                             <br>
                             <p>The maximum number of entries in Internal index block and Leaf index block are taken to be <b>4</b> and <b>3</b> respectively analogous to <b>100 </b>and <b>63</b> in NITCBase.<br>
-                           We need to create an Index for the <b>attribute RollNo</b>. As discussed in <a href="../storage-model.html">Physical Layer</a>, each <b>Attribute Catalog entry</b> contains the <b>Root block Index</b> which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise.</p>
+                           We need to create an Index for the <b>attribute RollNo</b>. As discussed in <a href="../storage-model.html">Physical Layer</a>, each <a href="../storage-model.html#attrcat">Attribute Catalog entry</a> contains the <b>Root block Index</b> which stores the root block number of the B+ Tree if there is an index created on the attribute; and contains -1 otherwise.</p>
                            <center><img class="img-fluid" src="../img/indexing/attrcat1.png"></center>
                            <p>In order to create the Index, we begin by getting a free Leaf index block, say <b>L1</b> allocated for the root block. (Why?) <br> 
                             We then update the Root Block in the Attribute Catalog Entry.
@@ -173,8 +275,12 @@
                             <center><img class="img-fluid" src="../img/indexing/attrcat2.png"></center>
                             <p>We need to insert the following set of key values of the attribute RollNo with respect to each row of the table in a sequential manner.<br>
                             <b>1,3,8,7,6,4,11,13,10,9,5,12,14,2 </b> <br>
-                            The algorithmic procedure for <b>insertion</b> is given below:
+                            We'll see the insertion in detail in the next section.
+                            <br><br>
 
+                            <h4 id="insertion">Insertion in B+ Tree</h4><br>
+
+                            Considering the simplified version of B+ Tree implemntation similar to NITCbase, the algorithmic procedure for <b>insertion</b> is given below:
                             </p>
 
 
@@ -207,12 +313,24 @@
                                 </code>
                                 </div>
                             </div>
-                          <div>
-                              Before the first entry insertion is performed in a B+ tree, the attribute catalog entry is obtained from the cache layer. The root block number of the attribute is checked and if not -1, we proceed further. We obtain a free buffer for the rootblock. The first entry will always be a leaf entry. <br>
+                    
+
+                            <br>
+                            <br>
+                                                        <p>We need to insert the following entries, a set of key values of the attribute RollNo along with their corresponding record pointers i.e Record ID(Block number, Slot number) in a sequential manner.<br>
+                            {Attribute Value: 1, (Block# 7, Slot# 0)}, {Attribute Value: 3, (Block# 7, Slot# 1)},<br>
+                             {Attribute Value: 8, (Block# 7, Slot# 2)}, {Attribute Value: 7, (Block# 7, Slot# 3)}, <br>
+                             {Attribute Value: 6, (Block# 8, Slot# 0)}, {Attribute Value: 4, (Block# 8, Slot# 1)}, <br>
+                             {Attribute Value: 11, (Block# 8, Slot# 2)}, {Attribute Value: 13, (Block# 8, Slot# 3)}, <br>
+                             {Attribute Value: 10, (Block# 9, Slot# 0)}, {Attribute Value: 9, (Block# 9, Slot# 1)},<br> 
+                             {Attribute Value: 5, (Block# 9, Slot# 2)}, {Attribute Value: 12, (Block# 9, Slot# 3)},<br>
+                              {Attribute Value: 14, (Block# 10, Slot# 0)}, {Attribute Value: 2, (Block# 10, Slot# 1)}<br> 
+                              <br>Before the first entry insertion is performed in a B+ tree, the attribute catalog entry is obtained from the cache layer. The root block number of the attribute is checked and if not -1, we proceed further. 
+                              The first entry will always be a leaf entry. <br><br></p>
  
-                          </div>
+                          
                             <div class="question">
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse1">
                                             <b>Insert 1,3,8</b> 
@@ -220,16 +338,18 @@
                                     </div>
                                     <div id="collapse1" class="collapse">
                                         <div class="card-body"> 
-                                        <center><img class="img-fluid" src="../img/indexing/1.png"></center>
+                                        <center><img class="img-fluid" src="../img/indexing/1.png"></center> 
 
 When 1 is to be inserted, a temporary array of indices containing the entry is created. The purpose of the array is to ensure all the entries are in sorted order. Since the size of the array is less than three, we rewrite the entries of the leaf index block in the sorted order from the array. The header of the block will be updated. <br>
 
 Similarly, 3 and 8 are inserted. The parent block (PBlock) value remains -1 throughout these insertions as there is no parent block introduced in the B+ tree yet.                                         
-                                        <center><img class="img-fluid" src="../img/indexing/01.JPG"></center>                                         </div>
+                                        <center><img class="img-fluid" src="../img/indexing/01.JPG"></center>                                         
+                                        </div>
                                     </div>
                                 </div>
+
                             
-                                <div class="card">
+                                <div class="ques-card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse2">
                                             <b>Insert 7</b> 
@@ -258,7 +378,7 @@ The attribute catalog will be updated with the changes including the new root bl
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse3">
                                             <b>Insert 6</b> 
@@ -273,7 +393,7 @@ When 6 is to be inserted, we traverse down the tree starting from the root block
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse4">
                                             <b>Insert 4</b> 
@@ -293,7 +413,7 @@ When 6 is to be inserted, we traverse down the tree starting from the root block
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse5">
                                             <b>Insert 11</b> 
@@ -309,7 +429,7 @@ When 11 is to be inserted, we traverse down the tree starting from the root bloc
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse6">
                                             <b>Insert 13</b> 
@@ -329,7 +449,7 @@ When 11 is to be inserted, we traverse down the tree starting from the root bloc
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse7">
                                             <b>Insert 10</b> 
@@ -346,7 +466,7 @@ When 10 is to be inserted, we traverse down the tree starting from the root bloc
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse8">
                                             <b>Insert 9</b> 
@@ -366,7 +486,7 @@ When 10 is to be inserted, we traverse down the tree starting from the root bloc
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse9">
                                             <b>Insert 5</b> 
@@ -382,7 +502,7 @@ When 5 is to be inserted, we traverse down the tree starting from the root block
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse10">
                                             <b>Insert 12</b> 
@@ -398,7 +518,7 @@ When 12 is to be inserted, we traverse down the tree starting from the root bloc
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse11">
                                             <b>Insert 14</b> 
@@ -424,7 +544,7 @@ When 14 is to be inserted, we traverse down the tree starting from the root bloc
                                     </div>
                                 </div>
 
-                                                                <div class="card">
+                                <div class="ques_card">
                                     <div class="card-header">
                                         <a data-toggle="collapse" href="#collapse12">
                                             <b>Insert 2</b> 
@@ -443,6 +563,117 @@ When 14 is to be inserted, we traverse down the tree starting from the root bloc
                                 </div>
 
                             </div>
+                    <br><br>
+                    <h4 id="searching">Search on B+ Tree</h4><br>
+
+                    <p>
+                    Search is done on attributes that are indexed to get a record hit based on certain search conditions given (i.e op, attrval). op represents one amongst the 6 relation operators(EQ, LE, LT, GE, GT, NE corresponds to equal, less than equal, less than, greater than equal, greater than, not equal operators respectively). Attribute that is to be checked against the operater is denoted by attrval. Attribute cache provides the information on previous hit and it is modified if a new record hit is encountered. Record ID (block number, slot number) corresponding to the found record is returned. Search is continued until (-1, -1) is returned as the Record ID, indicating complete scan of all Leaf Blocks, thereby completing search.
+                    <br>
+                    A concise algorithmic procedure for search on a B+ Tree implemented in NITCbase is given below.</p>
+
+                    <br>
+                    <h5><b><span class="fas fa-code"></span>Algorithm:</h5></b>
+                    <div id="algo-create" >
+                                <div class="code"><code>
+                                    <ol>
+                                        <li>Get the Search Index from the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> and store it in the variable <b>searchIndex</b>. Search Index is a structure of type <a href="buffer.html#indexid" target="_blank">IndexId</a>{int block, int index}. IndexId is a combination of block number of the corresponding leaf index block and index number, which is the offset of the index in that block. Search Index represents the previous hit in the leaf blocks, i.e the previous record that satisfied the search condition. This is used to take advantage the linked list structure of leaf blocks after the first hit.</li>
+                                        <li>Reset the value of Search Index in the Attribute Catalog Cache to (-1, -1). This will be set to the correct index id if an entry satisfying op for given attrVal is found in the course of the search.</li>
+                                        <li>If <b>searchIndex</b> is (-1, -1), i.e the search is done for the first time :</li>
+                                        <ol type="i">
+                                            <li>Traverse down the tree starting from the root, to find the first record in the leaf block that satisfies the search condition. Set the Search Index in the Attribute Catalog Cache to this new index found in the leaf block. Return the Record Id of the record that satisfied the search condition.</li>
+                                            <li>If there is no record that satisfies the search condition, return (-1, -1) as the Record ID.</li>
+                                            
+                                        </ol>
+                                        Else (A record satisfying search condition was already found):</li>
+                                        <ol type="i">
+                                            <li>Set the variable block = searchIndex.block and index = searchIndex + 1 <br>
+                                            If index exceeds the number of entries present in the leaf index block, update block to its right block and set index = 0.</li>
+                                            <li>Scan the leaf blocks linearly until from the current (block,index) until you find a record that satisfies the search condition. Set the Search Index in the Attribute Catalog Cache to this new index found in the leaf block. Return the Record Id of the record that satisfied the search condition.</li>
+                                            <li>If blocknum reaches -1, it implies that all the leaf blocks have been scanned, and search is completed. Return (-1, -1) as the Record ID.</li>
+                                            
+                                        </ol>
+
+                                    </ol>
+
+                                </code>
+                                </div>
+                    </div>
+
+                    <br>
+                    <br>
+
+                                            <b>Let us try to understand the trace of a search query on the B+ Tree implemented by the series of insert operations in the above section.</b> <br><br><br>
+               
+                                            <center><img class="img-fluid" src="../img/indexing/12.jpg"></center>
+                                            <br>
+                                            <br>
+
+                                            <center><img class="img-fluid" src="../img/indexing/012.JPG"></center>
+
+
+                    <br>
+                    <br>
+                    
+                    Consider a query to fetch the student records of all the students with RollNo >= 11<br> 
+                    <br>Here, the search condition represented in the form (op, attrval) is <b>(GE, 85)</b>.<br>
+                    At first we retrieve the value of Search Index field from the <a href="cache.html" target="_blank">Attribute Catalog Cache</a> and store it in the variable <b>searchIndex(block,index)</b>. Then, we reset the value of Search Index in the Attribute Catalog Cache to (-1, -1). This will be set to the correct index id if a record satisfying our condition i.e RollNo >= 11, is found in courseof the search.
+                    Since, it is the first search the value retrieved and stored earlier in the searchIndex would be invalid.<br>
+                    i.e searchIndex = (-1, -1)
+                    <br> Traverse down the tree starting from the root, to find the first record in the leaf block that satisfies the search condition, i.e. attribute value of Roll No >= 11. First such record is that of student with RollNo 11. Since this is the first entry in the Leaf Block L5, Search Index in the Attribute Catalog Cache is set to this new index found, i.e (L5, 0). L5 is block number of the corresponding leaf index block and 0 is the offset of the index in that block. The The Record ID of this record that succeeded in satisfying the search condition, i.e <b>(Block# 8, Slot# 2)</b> is returned. <br><br>
+
+                    Now, we proceed to the second iteration of Search. The searchIndex is updated with the new value retrieved from Search Index field of Attribute Catalog Cache. Search Index filed in the Attribute Catalog Cache is then reset to (-1, -1).
+                    Since, there has been a previous hit, i.e. a previous record that satisfied the search condition, searchIndex would contain a valid Search index.<br>
+                    i.e searchIndex = (L5, 0)<br>
+                    <br>
+                    Set the variable block = searchIndex.block and index = searchIndex + 1<br>
+                    block = L5 and index = 0+1 = 1
+                    We, linearly scan the leaf blocks from this point. As we begin, we get the next record that satisfies our search condition, the record with Rollno=12 wich lies at the offset 1 in the Leaf Index Block L5. Search Index in the Attribute Catalog Cache is set to this new index found, i.e (L5, 1) and the Record ID<b>(Block# 9, Slot# 3)</b> is returned. <br><br>
+
+                    Now, we proceed to the third iteration of Search. The searchIndex is updated with the new value retrieved from Search Index field of Attribute Catalog Cache. Then, Search Index field of Attribute Catalog Cache is reset to (-1, -1). searchIndex would contain a valid Search index as there has been a previous hit.<br>
+                    i.e searchIndex = (L5, 1)
+                    <br>We set block = L5 and increment the index, i.e index = 1+1 = 2. <br>
+                    From, the header of the Leaf Block L5, we observe that the number of entries is 2 which implies that the maximum value of offset possible is 1. So, update the block to its right block and set index = 0.<br>
+                    Therefore, block = L6 and index = 0.
+                    <br>As Leaf blocks are scanned linearly from this block, we immediately get the next hit at RollNo 13. Search Index field in the Attribute Catalog Cache is updated to this new index found (L6, 0). The Record ID of the corresponding record <b>(Block# 8, Slot# 3)</b> is returned.<br><br>
+
+                    On proceeding with the next iteration of Search, searchIndex is updated with the Search Index field of Attribute Catalog Cache and then the Search Index field of Attribute Catalog Cache is reset to (-1, -1).
+                    <br>
+                    searchIndex = (L6, 0)
+                    <br>
+                    We set block = L6 and index = 0+1 = 1
+                    On beginning linear scan from this point, we get a hit at RollNo 14. Search Index field in the Attribute Catalog Cache is updated to (L6, 1) and the corresponding Record ID <b>(Block# 10, Slot# 0)</b> is returned.<br><br>
+
+                    We proceed onto the next iteration of search. searchIndex is updated with the Search Index field of Attribute Catalog Cache and Search Index field of Attribute Catalog Cache is reset to (-1, -1).
+                    <br>
+                    searchIndex = (L6, 0)
+                    <br>
+                    Set block = L6 and index = 1+1 = 2<br>
+                    Header of the block L6 indicates that number of entries is 2 and so the maximum value of offset possible is 1.So, update the block to its right block and set index = 0. Since L6 is the last and rightmost Leaf Index Block in our linked list, RBlock of L6 is -1. <br>
+                    block = -1 
+                    <br>This implies that all the leaf blocks have been scanned, and search is completed. Return (-1, -1) as the Record ID to indicate this.
+                    <br>
+                    <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             
 
