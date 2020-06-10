@@ -164,7 +164,7 @@
 		<!----------------relId--------------------------------------------------------------->        	    
 			<div id="relid" class="detail">
                             	<h2>relId</h2>
-                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. An <b>open relation</b> is a relation that has been loaded to the cache memory. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
+                             	<p>Any relation that is stored in the cache memory will have an entry in each of the three tables- <i>Relation Cache Table</i>, <i>Attribute Cache Table</i>, and <i>Open Relation Table</i>. An <i>open relation</i> is a relation that has been loaded to the cache memory while a <i>closed relation<i> is one that is not loaded to the cache memory. NITCbase is designed in such a way that the entries in all the three tables will be stored at the same index. This common index is called the <i>relId</i> of the relation. All further operations on the relation require this <i>relId</i>. </p> 
                         </div>
                 <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
@@ -204,7 +204,7 @@
 						<ul>
 
 							<li><i>relCatEntry</i>: Stores the relation's cached <a href="#rel_cat_entry">Relation Catalog entry</a>.</li>
-							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified.</li>
+							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified. The Relation Catalog entries with the set dirty bit are written back to disk when an open relation is closed in the cache memory.</li>
 							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the relation's entry in the Relation Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
 							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} each time the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
 
@@ -255,11 +255,11 @@ typedef struct AttributeCacheEntry {
 
 } AttributeCacheEntry;
 			</code></pre></div>
-				<p> The AttrCacheEntry field details are as follows:
+				<p> The AttrCacheEntry data field details are as follows:
 					<ul>
 
 						<li><i>attrCatEntry</i>: Stores the cached <a href="#attr_cat_entry">Attribute Catalog entry</a> corresponding to an attribute of the relation.</li>
-						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified.</li>
+						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified. The Attribute Catalog entries with the set dirty bit are written back to disk when an open relation is closed in the cache memory.</li>
 						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the record entry corresponding to the relation's attribute in the 
 							Attribute Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
 						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} each time the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched,  B+ Tree search resets the searchIndex value to {-1, -1}. </li>
