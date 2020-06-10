@@ -292,7 +292,9 @@ typedef struct AttributeCacheEntry {
 <!-----------------------------------class RelCacheTable----------------------------------------------------------------------------------->
 			<div id="rel_cache_table_class" class="details">
 				<h2>class RelCacheTable</h2>
-				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. The class contains a private member field, <i>relCache</i>, 
+				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. 
+					The first two entries of the <i>Relation Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in cache memory throughout the session and can only be closed only by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
+					The class contains a private member field, <i>relCache</i>, 
 					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
 				For each relation opened, an entry is made in the array <i>relCache</i>,
@@ -666,7 +668,9 @@ private:
 
 			<div id="attr_cache_table_class" class="details">
 				<h2>class AttrCacheTable</h2>
-				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. The class contains a private member field, <i>attrCache</i>, 
+				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. 
+					The first two entries of the <i>Attribute Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in cache memory throughout the session and can only be closed only by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
+					The class contains a private member field, <i>attrCache</i>, 
 					which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
 				For each relation opened, an entry is made in the array <i>attrCache</i>,
@@ -1126,7 +1130,10 @@ private:
 			<div id="open_rel_table_class" class="details">
 				<h2>class OpenRelTable</h2>
 				<p>NITCbase requires that a relation be cached for the duration it is accessed to improve the processing time. The <i>Open Relation Table</i> is a data structure used as an interface for operations that accesses both Relation Cache and Attribute Cache together. The <i>OpenRelTable class</i> is used for this purpose. As per the NITCbase design, the i<sup>th</sup> entry of the OpenRelTable corresponds to the i<sup>th</sup> entry of the RelCacheTable and AttrCacheTable and is used to store the data of a single relation whose relation id is i. The public getRelId() method of the OpenRelTable returns the relation id of the input relation name.</p>
-				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. The OpenRelTable constructor initializes the tableMetaInfo field and populates the Relation Cache Table and Attribute Cache Table with entries of Relation Catalog relation and Attribute Catalog relation. The OpenRelTable destructor closes any open relation remaining before the system is shut down.   The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
+				<p>The <i>class OpenRelTable</i> contains as its private member field, tableMetaInfo, an array of <a href="#openrel_table_struct">struct OpenRelTableMetaInfo</a> that stores the meta information of the entries of the table. The OpenRelTable allows <a href="../constants.html#constant" target="_blank">MAX_OPEN</a> number of entries in the cache at any given time. 
+					The first two entries of the <i>Open Relation Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. 
+					These relations remain in cache memory throughout the session. The OpenRelTable constructor initializes the tableMetaInfo field and populates the Relation Cache Table and Attribute Cache Table with entries of both Relation Catalog relation and Attribute Catalog relation. The OpenRelTable destructor closes any open relation remaining, including the Relation Catalog and Attribute Catalog relations, when the system is shut down.
+					The public functions openRel(), closeRel(), and deleteRel() are used to open an entry in the Open Relation Table, close its entry in the Open Relation Table, and to delete the relation from the database. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
 				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
@@ -1165,7 +1172,7 @@ private:
 							<p><b>NOTE:</b> 
 								<ul>
 									<li>The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
-									<li>The RELCAT_RELID and ATTRCAT_RELID entries in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
+									<li>The The first two entries, corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
 								</ul>
 							</p>
 							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
