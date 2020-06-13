@@ -1428,12 +1428,12 @@ private:
 								<pre><code>int OpenRelTable::openRel(unsigned char relName[ATTR_SIZE]){
 	
 	if the relation, <i>relName</i>, already has an entry in the Open Relation Table:
-	{ // checked using OpenRelTable::getRelId().
+	{ // checked using <a href="#getrelid">OpenRelTable::getRelId()</a>.
 	
 		// return that relation id;
 	}
 	
-	// find a free slot in the Open Relation Table using OpenRelTable::getFreeOpenRelTableEntry().
+	// find a free slot in the Open Relation Table using <a href="#get_free_open_rel_table_entry">OpenRelTable::getFreeOpenRelTableEntry()</a>.
 	if free slot not available:
 	{
 		return E_CACHEFULL;
@@ -1444,7 +1444,7 @@ private:
 	
 	/****** Setting up Relation Cache entry for the relation ******/
 	
-	/* search for the entry with relation name, <i>relName</i>, in the Relation Catalog using linear_search().
+	/* search for the entry with relation name, <i>relName</i>, in the Relation Catalog using <a href="blockaccess.html#linear_search" target="_blank">linear_search()</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a>.
 	   care should be taken to reset the searchIndex of the relation, RELCAT_RELID, corresponding to 
 	   Relation Catalog before calling linear_search().*/
 	   
@@ -1458,7 +1458,7 @@ private:
 	}
 	
 	/* read the record entry corresponding to relcatRecId and create a Relation Cache entry on it 
-	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and <a href="#rectorelcache">RelCacheTable::recordToRelCacheEntry()</a>.
 	   update the recId field of this Relation Cache entry to relcatRecId.
 	   use the Relation Cache entry to set the relId<sup>th</sup> entry of the RelCacheTable.*/
 	
@@ -1468,7 +1468,7 @@ private:
 	AttrCacheEntry listHead;
 	
 	/* iterate over all the entries in the Attribute Catalog corresponding to each attribute of
-	   the relation, <i>relName</i> by multiple calls of linear_search().
+	   the relation, <i>relName</i> by multiple calls of <a href="blockaccess.html#linear_search" target="_blank">linear_search()</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a>.
 	   care should be taken to reset the searchIndex of the relation, ATTRCAT_RELID, corresponding to 
 	   Attribute Catalog before the first call to linear_search().*/
 	{
@@ -1477,7 +1477,7 @@ private:
 		RecId attrcatRecId;
 	
          	/* read the record entry corresponding to attrcatRecId and create an Attribute Cache entry on it
-		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and <a href="#rectoattrcache">AttrCacheTable::recordToAttrCacheEntry()</a>.
 		   update the recId field of this Attribute Cache entry to attrcatRecId.
 		   add the Attribute Cache entry to the linked list of listHead .*/
 	}
@@ -1486,7 +1486,7 @@ private:
 	
 	/****** Setting up metadata in the Open Relation Table for the relation******/
 	
-	//update the relId<sup>th</sup> entry of the tableMetaInfo with false as true and relName as the input.
+	//update the relId<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the input.
 	
 	return relId;
 	
