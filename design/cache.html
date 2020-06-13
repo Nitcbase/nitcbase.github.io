@@ -1161,9 +1161,9 @@ private:
 				<p>The following are the specifications for the methods in <i>class OpenRelTable</i>.
 	     <!----------------------Constructor--------------------------->
 					<li>
-						<div class="detail" id="open_rel_table_constructor">
-							<h2><i>public:</i> OpenRelTable (Constructor)</h2>
-							<h5>Arguments:</h5>
+						<div id="open_rel_table_constructor" class="detail">
+                            				<h2><i>public:</i> OpenRelTable (Constructor)</h2>
+                            				<h5>Arguments:</h5>
 							<p>Nil</p>
 							<h5>Return type:</h5>
 							<p>Nil</p>
@@ -1182,12 +1182,16 @@ private:
 
 	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
 	
-	/************ Setting up Relation Catalog in the cache ************/
+	/************ Setting up Relation Catalog relation in the cache ************/
+	
+	/****populating the 0<sup>th</sup> entry of the RelCacheTable with the 0<sup>th</sup> entry of the Relation Catalog block corresponding to Relation Catalog relation****/
 	
 	/* read the record entry at index 0 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
 	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
 	   update the recId field of this Relation Cache entry to {4,0}.
 	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	
+	/****populating the 0<sup>th</sup> entry of the AttrCacheTable with the first 6 entries of the Attribute Catalog block corresponding to Relation Catalog relation****/
 	
 	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
 	AttrCacheEntry listHead;
@@ -1201,16 +1205,20 @@ private:
 		   add the Attribute Cache entry to the linked list of listHead .*/
 	}
 	
-	// set the 0<sup>th</sup> entry of the RelCacheTable to listHead.
+	// set the 0<sup>th</sup> entry of the AttrCacheTable to listHead.
 	
 	//update the 0<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the 'RelCatalog'.
 	
 	/************ Setting up Attribute Catalog in the cache ************/
 	
+	/****populating the 1<sup>st</sup> entry of the RelCacheTable with the 1<sup>st</sup> entry of the Relation Catalog block corresponding to Attribute Catalog relation****/
+	
 	/* read the record entry at index 1 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
 	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
 	   update the recId field of this Relation Cache entry to {4,1}.
-	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
+	   use it to set the 1<sup>st</sup> index entry of the RelCacheTable.*/
+	
+	/****populating the 1<sup>st</sup> entry of the AttrCacheTable with the next 6 entries of the Attribute Catalog block corresponding to Attribute Catalog relation****/
 	
 	// use listHead  to hold the head of the linked list of Attribute Cache entries.
 	
@@ -1223,7 +1231,7 @@ private:
 		   add the Attribute Cache entry to the linked list of listHead .*/
 	}
 	
-	// set the 1<sup>st</sup> entry of the RelCacheTable to listHead.
+	// set the 1<sup>st</sup> entry of the AttrCacheTable to listHead.
 	
 	//update the 1<sup>st</sup> entry of the tableMetaInfo with free as false and relName as the 'AttrCatalog'.
 
@@ -1507,6 +1515,7 @@ private:
 					<li>
 						<div class="detail" id="deleterel">
 							<h2><i>public:</i> deleteRel</h2>
+							<p><b>Note to NITCbase designers: This function is not part of this class. The same funcionality has to be written in Schema Layer. Function included for refernce purpose only. Remove after use.</b></p>
 							<h5>Arguments:</h5>
 							<div class="table-responsive">
 							    <table class="table table-bordered table-hover">
