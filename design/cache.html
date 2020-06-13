@@ -1176,10 +1176,10 @@ private:
 							<h5>Description:</h5>
 							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. 
 							It also loads the entries of the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> relation and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog<a/> relation to the <a href="#rel_cache_table_class">Relation Cache Table</a> and <a href="#attr_cache_table_class">Attribute Cache Table</a>. 
-							The function should be called at the beginning of the session.</p>
+							This function should be called at the beginning of the session.</p>
 							<p><b>NOTE:</b> 
 								<ul>
-									<li>The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
+									<li>The object of the OpenRelTable class must be declared after the objects of the <a href="../storage-model.html" target="_blank">Physical Layer</a> and the <a href="buffer.html" target="_blank">Buffer Layer</a> to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
 									<li>The first two entries corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
 								</ul>
 							</p>
@@ -1188,7 +1188,7 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::OpenRelTable(){
 
-	// initialize <i>tableMetaInfo</i> of all the entries of the Open Relation Table with <i>free</i> as true and <i>relName</i> as an empty string.
+	// initialize tableMetaInfo of all the entries of the Open Relation Table with free as true and relName as an empty string.
 	
 	/************ Setting up Relation Catalog relation in the cache ************/
 	
@@ -1263,7 +1263,7 @@ private:
 							<p>Nil</p>
 							<h5>Description:</h5>
 							<p>Closes the still open relations in the Open Relation Table at the end of the current session. </p>
-							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the destructor writes the cache contents to the main memory before the main memory is commited to disk.</p>
+							<p><b>NOTE:</b> The object of the OpenRelTable class must be declared after the objects of the <a href="../storage-model.html" target="_blank">Physical Layer</a> and the <a href="buffer.html" target="_blank">Buffer Layer</a> to ensure that the destructor writes the cache contents to the main memory before the main memory is commited back to the disk.</p>
 							<h5><a data-toggle="collapse" href="#algo_open_rel_table_destructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_open_rel_table_destructor" class="collapse">
 							    <div class="code">
@@ -1274,64 +1274,64 @@ private:
 		if i<sup>th</sup> relation is still open:
 		{
 	
-			// close the relation using openRelTable::closeRel().
+			// close the relation using <a href="#closerel">openRelTable::closeRel()</a>.
 		
 		}
 	}
 	
 	/************ Closing Attribute Catalog relation in the cache ************/
 	
-	/****** Releasing the entry corresponding to Attribute Catalog relation from Relation Cache Table ******/
+	/****** releasing the entry corresponding to Attribute Catalog relation from Relation Cache Table ******/
 	
-	// if the Relation Catalog entry of the ATTRCAT_RELID<sup>th</sup> Relation Cache entry has been modified: 
+	// if the Relation Catalog entry of the <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a><sup>th</sup> Relation Cache entry has been modified: 
 	{
 		/* write back the entry to the Relation Catalog block using 
-		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+		   <a href="#relcachetorec">RelCacheTable::relCacheEntryToRecord()</a>, recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 	}
 	
-	/****** Releasing the entry corresponding to Attribute Catalog relation from Attribute Cache Table ******/
+	/****** releasing the entry corresponding to Attribute Catalog relation from Attribute Cache Table ******/
 	
 	// iterate over all the entries in the linked list of the ATTRCAT_RELID<sup>th</sup> Attribute Cache entry.
 	{
 		if the entry has been modified:
 		{
 			/* write back the entry to the Attribute Catalog block using
-			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			   <a href="#attrcachetorec">AttrCacheTable::attrCacheEntryToRecord()</a>, recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 			
 		}
 		
 		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
 	}
 	
-	/****** Updating metadata corresponding to Attribute Catalog relation in the Open Relation Table ******/
+	/****** updating metadata corresponding to Attribute Catalog relation in the Open Relation Table ******/
 	
 	//free the ATTRCAT_RELID<sup>th</sup> entry of the tableMetaInfo.
 
 	/************ Closing Relation Catalog relation in the cache ************/
 
-	/****** Releasing the entry corresponding to Relation Catalog relation from Relation Cache Table ******/
+	/****** releasing the entry corresponding to Relation Catalog relation from Relation Cache Table ******/
 	
-	// if the Relation Catalog entry of the RELCAT_RELID<sup>th</sup> Relation Cache entry has been modified: 
+	// if the Relation Catalog entry of the <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a><sup>th</sup> Relation Cache entry has been modified: 
 	{
 		/* write back the entry to the Relation Catalog block using 
-		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+		   <a href="#relcachetorec">RelCacheTable::relCacheEntryToRecord()</a>, recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 	}
 	
-	/****** Releasing the entry corresponding to Relation Catalog relation from Attribute Cache Table ******/
+	/****** releasing the entry corresponding to Relation Catalog relation from Attribute Cache Table ******/
 	
 	// iterate over all the entries in the linked list of the RELCAT_RELID<sup>th</sup> Attribute Cache entry.
 	{
 		if the entry has been modified:
 		{
 			/* write back the entry to the Attribute Catalog block using
-			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			   <a href="#attrcachetorec">AttrCacheTable::attrCacheEntryToRecord()</a>, recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 			
 		}
 		
 		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
 	}
 	
-	/****** Updating metadata corresponding to Relation Catalog relation in the Open Relation Table ******/
+	/****** updating metadata corresponding to Relation Catalog relation in the Open Relation Table ******/
 	
 	//free the RELCAT_RELID<sup>th</sup> entry of the tableMetaInfo.
 
