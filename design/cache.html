@@ -1617,7 +1617,7 @@ private:
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_NOTPERMITTED </a></td>
 								    <td>int</td>
-								    <td>Relation Catalog and Attribute Catalog relations cannot be closed during the session.</td>
+								    <td>Relation Catalog and Attribute Catalog relations cannot be deleted from the database.</td>
 								</tr>
 								<tr>
 								    <td><a href="../constants.html" target="_blank"> E_OUTOFBOUND </a></td>
@@ -1633,7 +1633,7 @@ private:
 							</div>
 							<h5>Description:</h5>
 							<p>Deletes the input relation from the database. This function releases the record and index blocks holding the relation's data in the disk, deletes the entry corresponding to the relation in the Relation Catalog and Attribute Catalog blocks in the disk and also removes the relation from the cache memory. This function cannot however delete Relation and Attribute Catalog relations.</p>
-							<p><b>NOTE:</b> This function can not delete the entries corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a>.</p>
+							<p><b>NOTE:</b> This function, however, can not delete the entries corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a>.</p>
 							<h5><a data-toggle="collapse" href="#algo_deleterel"><span class="fas fa-code"></span>Algorithm:</a></h5>
 							<div id="algo_deleterel" class="collapse">
 								<div class="code">
