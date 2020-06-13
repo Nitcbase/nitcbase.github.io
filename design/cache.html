@@ -122,7 +122,6 @@
 					<li><a href="#getrelid">getRelId()</a> </li>
 					<li><a href="#openrel">openRel()</a> </li>
 					<li><a href="#closerel">closeRel()</a> </li>
-					<li><a href="#deleterel">deleteRel()</a> </li>
 					<li><a href="#get_free_open_rel_table_entry">getFreeOpenRelTableEntry()</a> </li>
                             	</ul>
                                 </div></div>
@@ -169,7 +168,7 @@
                 <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache Table Structures</h2>
-                            <p>The <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
+                            <p>The <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> block in the disk stores metadata corresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
 			    </p>
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
@@ -1139,7 +1138,7 @@ private:
 					These relations remain in cache memory throughout the session and can be closed only at shutdown. 
 					The <i>OpenRelTable</i> constructor initializes the <i>tableMetaInfo</i> field and populates the Relation Cache Table and Attribute Cache Table with entries of both Relation Catalog relation and Attribute Catalog relation. 
 					The <i>OpenRelTable</i> destructor closes any open relation remaining, including the Relation Catalog and Attribute Catalog relations, when the system is shut down.
-					The public functions <i>openRel()</i>, <i>closeRel()</i>, and <i>deleteRel()</i> are used to open an entry in the <i>Open Relation Table</i>, close its entry in the <i>Open Relation Table</i>, and to delete the relation from the database. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
+					The public functions <i>openRel()</i> and <i>closeRel()</i> are used to open and close an entry in the <i>Open Relation Table</i>. <i>OpenRelTable class</i> is a friend class to both <i>RelCacheTable class</i>, and <i>AtrrCacheTable class</i>. This allows it to access the private fields and methods of the two classes.</p>
 				<p>OpenRelTable is a <b>static class</b>, i.e., all member fields and methods are declared static. Memory is allocated <a href="https://en.wikipedia.org/wiki/Static_variable" target="_blank">statically</a> for all member fields of the class. This class uses <a href="https://en.wikipedia.org/wiki/Method_(computer_programming)#Static_methods" target="_blank">static methods</a> to access the static member fields. Static methods are accessed using the semantics class_name::function_name(). Only a single static object of the class needs to be created when NITCbase is running, whose sole purpose is to run the constructor and the destructor. The class definition of OpenRelTable is as given below:</p>
 				<div class="code">
                                 <pre><code>class OpenRelTable{
@@ -1152,7 +1151,6 @@ public:
 	static int getRelId(unsigned char relName[ATTR_SIZE]);
 	static int openRel(unsigned char relName[ATTR_SIZE]);
 	static int closeRel(int relId);
-	static int deleteRel(int relId);
 	
 private:
 	//field
