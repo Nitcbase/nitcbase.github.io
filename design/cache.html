@@ -169,12 +169,12 @@
                 <!----------------Relation Cache Table Structues--------------------------------------------------------------->        
                         <div id="relation_cache" class="detail">
                         <h2>Relation Cache Table Structures</h2>
-                            <p>The <a href="../storage-model.html#relcat">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
+                            <p>The <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> block in the disk stores metadata coresponding to all the relations in the database. In addition to this, the Relation Catalog entry of every open relation is loaded to the cache memory for easy access and for better performance. This is implemented using <i>Relation Cache Table</i>. Each entry in the <i>Relation Cache Table</i> stores all the attribute values of the relation's entry from the Relation Catalog block along with some additional meta-data.
 			    </p>
 			    <p>NITCbase caches Relation Catalog using two structures: <i>RelCatEntry</i> and <i>RelCacheEntry</i>.</p>
                 		<div id="rel_cat_entry" class="subsec">
 						<h4>RelCatEntry </h4>
-						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attribute values in the relation's record entry from the <a href="../storage-model.html#relcat">Relation Catalog</a> block. </p>
+						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attribute values in the relation's record entry from the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> block. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
 	char relName[ATTR_SIZE];
@@ -206,7 +206,7 @@
 							<li><i>relCatEntry</i>: Stores the relation's cached <a href="#rel_cat_entry">Relation Catalog entry</a>.</li>
 							<li><i>dirty</i>: Indicates whether the Relation Catalog entry has been modified. The Relation Catalog entries with the set dirty bit are written back to disk when an open relation is closed in the cache memory.</li>
 							<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the relation's entry in the Relation Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} each time the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
+							<li><i>searchIndex</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the <a href="../storage-model.html#record_blk" target="_blank">record block</a> corresponding to the <b>last (previous) search hit</b> in the relation. <a href="blockaccess.html#linear_search" target="_blank">Linear search algorithm</a> of the <a href="blockaccess.html" target="_blank">Block Access Layer</a> starts searching for the next hit from the previous hit location. The entries are initialized to {-1, -1} each time the relation is loaded to the cache memory. When every record of the relation has been searched, the linear search algorithm resets the searchIndex value to {-1, -1}. </li> 
 
 						</ul>
 					</p>
@@ -262,7 +262,7 @@ typedef struct AttributeCacheEntry {
 						<li><i>dirty</i>: Indicates whether the Attribute Catalog entry has been modified. The Attribute Catalog entries with the set dirty bit are written back to disk when an open relation is closed in the cache memory.</li>
 						<li><i>recId</i>: Stores the <a href="buffer.html#recid" target="_blank"> record id</a> {blockNum, slotNum} of the record entry corresponding to the relation's attribute in the 
 							Attribute Catalog block on the disk. This is useful during the write back of the catalog entry to disk if it had been modified.</li>
-						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk">Leaf Index Block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} each time the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched,  B+ Tree search resets the searchIndex value to {-1, -1}. </li>
+						<li><i>searchIndex</i>: Stores the <a href="buffer.html#indexid" target="_blank"> index id</a> {blockNum, indexNum} of the <a href="../storage-model.html#leafind_blk" target="_blank">leaf index block</a> corresponding to the <b>last (previous) search hit</b> for the attribute. This entry is used only if there is a <a href="b+tree.html" target="_blank">B+ Tree</a> created on the attribute. <a href="b+tree.html#search" target="_blank">B+ Tree search algorithm</a> of the <a href="b+tree.html" target="_blank">B+ Tree Layer</a> starts searching from the previous hit location for the next hit. The entries are initialized to {-1, -1} each time the relation is opened in the cache memory. When every Index Leaf Block entry of the B+ Tree has been searched,  B+ Tree search resets the searchIndex value to {-1, -1}. </li>
 						<li><i>next</i>: Gives the pointer to the next <i>AttrCacheEntry</i> element in the linked list.</li>  
 					</ul> 
 				</p>
@@ -275,7 +275,7 @@ typedef struct AttributeCacheEntry {
                             <p>A relation must have an entry in the Open Relation Table for its Relation Catalog and Attribute Catalog entries to be cached in the  Relation Cache Table and Attribute Cache Table, respectively. </p>
                             <div id = "open_rel_table_metainfo" class= "subec">
 				    <h4>OpenRelTableMetaInfo</h4>
-				    <p>The struct OpenRelTableMetaInfo stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
+				    <p>The struct <i>OpenRelTableMetaInfo</i> stores whether the given entry in the OpenRelTable, the Relation Cache Table, and Attribute Cache Table is occupied and also stores the name of the relation if occupied.</p>
 				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo{
 				    
 	bool free;
@@ -293,7 +293,7 @@ typedef struct AttributeCacheEntry {
 			<div id="rel_cache_table_class" class="details">
 				<h2>class RelCacheTable</h2>
 				<p>The <i>class RelCacheTable</i> is used to cache Relation Catalog entries of all the open relations in NITCbase. 
-					The first two entries of the <i>Relation Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in cache memory throughout the session and can only be closed only by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
+					The first two entries of the <i>Relation Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in the cache memory throughout the session and can only be closed by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
 					The class contains a private member field, <i>relCache</i>, 
 					which is an array of pointers to <a href="#rel_cache_entry">struct RelCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
@@ -305,7 +305,7 @@ typedef struct AttributeCacheEntry {
 			</p>
 				
 				<p>The class provides public methods <i>getRelCatEntry()</i> and <i>setRelCatEntry()</i> to retrieve and update the <a href="rel_cat_entry">Relation Catalog Entry</a> of a relation in the Relation Cache Table. The class also provides public methods <i>getSearchIndex()</i> and <i>setSearchIndex()</i> for retrieving and updating the <i>searchIndex</i> field of <a href="#rel_cache_entry">Relation Cache Entry</a>.
-				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures" target="_blank">union Attribute</a>) to <i>RelCacheEntry</i> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
+				    The private method <i>recordToRelCacheEntry()</i> is used to convert a record (implemented as an array of <a href="buffer.html#block_structures_attribute" target="_blank">union Attribute</a>) to <i>RelCacheEntry</i> structure. This function is called by the friend class, <a href="#open_rel_table_class">OpenRelTable</a>, while opening a relation.
 				    Similarly, the private method <i>relCacheEntryToRecord()</i> is used to convert <i>RelCacheEntry</i> structure in to a record. This function is also called from the friend class, <i>OpenRelTable</i>, while closing a relation.
 			    	</p>
 				
@@ -669,7 +669,7 @@ private:
 			<div id="attr_cache_table_class" class="details">
 				<h2>class AttrCacheTable</h2>
 				<p>The <i>class AttrCacheTable</i> is used to cache Attribute Catalog entries of the attributes of open relations in NITCbase. 
-					The first two entries of the <i>Attribute Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in cache memory throughout the session and can only be closed only by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
+					The first two entries of the <i>Attribute Cache Table</i> corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> are reserved for storing the entries of Relation Catalog relation and Attribute Catalog relation, respectively. These are loaded into the cache by the <a href="#open_rel_table_constructor">OpenRelTable constructor</a> at the start of the session. These relations remain in the cache memory throughout the session and can only be closed by the <a href="#open_rel_table_destructor">OpenRelTable destructor</a> at shutdown.
 					The class contains a private member field, <i>attrCache</i>, 
 					which is an array of pointers to <a href="#attr_cache_entry">struct AttrCacheEntry</a> 
 					with size <a href="/constants.html#constants" target="_blank">MAX_OPEN</a>.
