@@ -1174,11 +1174,13 @@ private:
 							<h5>Return type:</h5>
 							<p>Nil</p>
 							<h5>Description:</h5>
-							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. It also loads the entries of the Relation Catalog relation and Attribute Catalog relation to the Relation Cache Table and Attribute Cache Table. Should be called at the beginning of the session.</p>
+							<p>Initializes the meta information of each entry of the Open Relation Table to initial empty conditions. 
+							It also loads the entries of the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> relation and <a href="../storage-model.html#attrcat" target="_blank">Attribute Catalog<a/> relation to the <a href="#rel_cache_table_class">Relation Cache Table</a> and <a href="#attr_cache_table_class">Attribute Cache Table</a>. 
+							The function should be called at the beginning of the session.</p>
 							<p><b>NOTE:</b> 
 								<ul>
 									<li>The object of the OpenRelTable class must be declared after the objects of the Physical Layer and the Buffer Layer to ensure that the main memory is properly set up before the constructor initializes cache memory.</li>
-									<li>The The first two entries corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
+									<li>The first two entries corresponding to <a href="/constants.html#constants" target="_blank">RELCAT_RELID</a> and <a href="/constants.html#constants" target="_blank">ATTRCAT_RELID</a> in the all the three tables are reserved for Relation Catalog relation and Attribute Catalog relation, respectively.</li>
 								</ul>
 							</p>
 							<h5><a data-toggle="collapse" href="#algo_open_rel_table_constructor"><span class="fas fa-code"></span>Algorithm:</a></h5>
@@ -1190,14 +1192,14 @@ private:
 	
 	/************ Setting up Relation Catalog relation in the cache ************/
 	
-	/****populating the 0<sup>th</sup> entry of the RelCacheTable with the 0<sup>th</sup> entry of the Relation Catalog block corresponding to Relation Catalog relation****/
+	/**** setting up Relation Catalog relation in the Relation Cache Table ****/
 	
 	/* read the record entry at index 0 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
-	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
+	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and <a href="#rectorelcache">RelCacheTable::recordToRelCacheEntry()</a>.
 	   update the recId field of this Relation Cache entry to {4,0}.
 	   use it to set the 0<sup>th</sup> index entry of the RelCacheTable.*/
 	
-	/****populating the 0<sup>th</sup> entry of the AttrCacheTable with the first 6 entries of the Attribute Catalog block corresponding to Relation Catalog relation****/
+	/**** setting up Relation Catalog relation in the Attribute Cache Table ****/
 	
 	// let listHead be used to hold the head of the linked list of Attribute Cache entries.
 	AttrCacheEntry listHead;
@@ -1206,25 +1208,27 @@ private:
 	{
 	
          	/* read the i<sup>th</sup> record entry from bock 5, the block corresponding to Attribute Catalog in the disk, and create an Attribute Cache entry on it
-		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and AttrCacheTable::recordToAttrCacheEntry().
+		   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and <a href="#rectoattrcache">AttrCacheTable::recordToAttrCacheEntry()</a>.
 		   update the recId field of this Attribute Cache entry to {5,i}.
 		   add the Attribute Cache entry to the linked list of listHead .*/
 	}
 	
 	// set the 0<sup>th</sup> entry of the AttrCacheTable to listHead.
 	
+	/**** setting up Relation Catalog relation in the Open Relation Table ****/
+	
 	//update the 0<sup>th</sup> entry of the tableMetaInfo with free as false and relName as the 'RelCatalog'.
 	
-	/************ Setting up Attribute Catalog in the cache ************/
+	/************ Setting up Attribute Catalog relation in the cache ************/
 	
-	/****populating the 1<sup>st</sup> entry of the RelCacheTable with the 1<sup>st</sup> entry of the Relation Catalog block corresponding to Attribute Catalog relation****/
+	/**** setting up Attribute Catalog relation in the Relation Cache Table ****/
 	
 	/* read the record entry at index 1 from block 4, the block corresponding to Relation Catalog in the disk, and create a Relation Cache entry on it 
 	   using <a href="buffer.html#getrecord" target="_blank">RecBuffer::getRecord()</a> and RelCacheTable::recordToRelCacheEntry().
 	   update the recId field of this Relation Cache entry to {4,1}.
 	   use it to set the 1<sup>st</sup> index entry of the RelCacheTable.*/
 	
-	/****populating the 1<sup>st</sup> entry of the AttrCacheTable with the next 6 entries of the Attribute Catalog block corresponding to Attribute Catalog relation****/
+	/**** setting up Attribute Catalog relation in the Attribute Cache Table ****/
 	
 	// use listHead  to hold the head of the linked list of Attribute Cache entries.
 	
@@ -1238,6 +1242,8 @@ private:
 	}
 	
 	// set the 1<sup>st</sup> entry of the AttrCacheTable to listHead.
+	
+	/**** setting up Attribute Catalog relation in the Open Relation Table ****/
 	
 	//update the 1<sup>st</sup> entry of the tableMetaInfo with free as false and relName as the 'AttrCatalog'.
 
