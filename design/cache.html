@@ -1257,7 +1257,7 @@ private:
 							    <div class="code">
 								<pre><code>OpenRelTable::~OpenRelTable(){
 
-	for i from MAX_OPEN-1 to 0:
+	for i from 2 to MAX_OPEN-1:
 	{
 		if i<sup>th</sup> relation is still open:
 		{
@@ -1266,6 +1266,62 @@ private:
 		
 		}
 	}
+	
+	/************ Closing Attribute Catalog relation in the cache ************/
+	
+	/****** Releasing the entry corresponding to Attribute Catalog relation from Relation Cache Table ******/
+	
+	// if the Relation Catalog entry of the ATTRCAT_RELID<sup>th</sup> Relation Cache entry has been modified: 
+	{
+		/* write back the entry to the Relation Catalog block using 
+		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+	}
+	
+	/****** Releasing the entry corresponding to Attribute Catalog relation from Attribute Cache Table ******/
+	
+	// iterate over all the entries in the linked list of the ATTRCAT_RELID<sup>th</sup> Attribute Cache entry.
+	{
+		if the entry has been modified:
+		{
+			/* write back the entry to the Attribute Catalog block using
+			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			
+		}
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Updating metadata corresponding to Attribute Catalog relation in the Open Relation Table ******/
+	
+	//free the ATTRCAT_RELID<sup>th</sup> entry of the tableMetaInfo.
+
+	/************ Closing Relation Catalog relation in the cache ************/
+
+	/****** Releasing the entry corresponding to Relation Catalog relation from Relation Cache Table ******/
+	
+	// if the Relation Catalog entry of the RELCAT_RELID<sup>th</sup> Relation Cache entry has been modified: 
+	{
+		/* write back the entry to the Relation Catalog block using 
+		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+	}
+	
+	/****** Releasing the entry corresponding to Relation Catalog relation from Attribute Cache Table ******/
+	
+	// iterate over all the entries in the linked list of the RELCAT_RELID<sup>th</sup> Attribute Cache entry.
+	{
+		if the entry has been modified:
+		{
+			/* write back the entry to the Attribute Catalog block using
+			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
+			
+		}
+		
+		// free the memory dynamically alloted to this entry in Attribute Cache linked list.
+	}
+	
+	/****** Updating metadata corresponding to Relation Catalog relation in the Open Relation Table ******/
+	
+	//free the RELCAT_RELID<sup>th</sup> entry of the tableMetaInfo.
 
 }</code></pre>
 							    </div>
@@ -1482,7 +1538,7 @@ private:
 	
 	// if the Relation Catalog entry of the relId<sup>th</sup> Relation Cache entry has been modified: 
 	{
-		/* write back the entry to the Relation Catalog using 
+		/* write back the entry to the Relation Catalog block using 
 		   RelCacheTable::relCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 	}
 	
@@ -1492,7 +1548,7 @@ private:
 	{
 		if the entry has been modified:
 		{
-			/* write back the entry to the Attribute Catalog using
+			/* write back the entry to the Attribute Catalog block using
 			   AttrCacheTable::attrCacheEntryToRecord(), recId member field, and <a href="buffer.html#setrecord" target="_blank">RecBuffer::setRecord()</a>.*/
 			
 		}
