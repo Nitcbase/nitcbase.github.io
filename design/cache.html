@@ -176,7 +176,7 @@
 						<p>The structure <i>RelCatEntry</i> stores in its data fields all the attribute values in the relation's record entry from the <a href="../storage-model.html#relcat" target="_blank">Relation Catalog</a> block. </p>
 <div class="code"><pre><code>typedef struct RelCatEntry{
 
-	char relName[ATTR_SIZE];
+	unsigned char relName[ATTR_SIZE];
 	int numAttrs;
 	int numRecs;
 	int firstBlk;          
@@ -229,8 +229,8 @@
 				    <div class="code"><pre><code>     
 typedef struct AttrCatEntry {
 
-	char relName[ATTR_SIZE];
-	char attrName[ATTR_SIZE];
+	unsigned char relName[ATTR_SIZE];
+	unsigned char attrName[ATTR_SIZE];
 	int attrType;
 	bool primaryFlag;
 	int rootBlock;
@@ -278,7 +278,7 @@ typedef struct AttributeCacheEntry {
 				    <div class="code"><pre><code>typedef struct OpenRelTableMetaInfo{
 				    
 	bool free;
-	char rel_name[ATTR_SIZE];
+	unsigned char rel_name[ATTR_SIZE];
 	
 } OpenRelTableMetaInfo;</code></pre></div>
 			    </div>
@@ -695,13 +695,13 @@ friend class OpenRelTable;
 	
 public:
 	//methods
-	static int getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int getAttrCatEntry(int relId, unsigned char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
 	static int getAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
-	static int setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
+	static int setAttrCatEntry(int relId, unsigned char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf);
 	static int setAttrCatEntry(int relId, int attrOffset, AttrCatEntry *attrCatBuf);
-	static int getSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int getSearchIndex(int relId, unsigned char attrName[ATTR_SIZE], IndexId *searchIndex);
 	static int getSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
-	static int setSearchIndex(int relId, char attrName[ATTR_SIZE], IndexId *searchIndex);
+	static int setSearchIndex(int relId, unsigned char attrName[ATTR_SIZE], IndexId *searchIndex);
 	static int setSearchIndex(int relId, int attrOffset, IndexId *searchIndex);
 
 private:
@@ -731,7 +731,7 @@ private:
 						    </tr>
 						    <tr>
 							<td>attrName / attrOffset</td>
-							<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+							<td>unsigned char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
 							<td>The name/offset of the target attribute.</td>
 						    </tr>
 						    <tr>
@@ -771,7 +771,7 @@ private:
 				</ul></p>
 				    <h5><a data-toggle="collapse" href="#algo-getattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
 				    <div id="algo-getattrcatentry" class="collapse">
-					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
+					<div class="code"><pre><code>int AttrCacheTable::getAttrCatEntry(int relId, unsigned char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
@@ -815,7 +815,7 @@ private:
                                     </tr>
                                     <tr>
 					<td>attrName / attrOffset</td>
-					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>unsigned char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
 					<td>The name/offset of the target attribute.</td>
 				    </tr>
                                     <tr>
@@ -857,7 +857,7 @@ private:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setattrcatentry"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div class="collapse" id="algo-setattrcatentry">
-                                <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
+                                <div class="code"><pre><code>int AttrCacheTable::setAttrCatEntry(relId relId, unsigned char attrName[ATTR_SIZE]/int attrOffset, AttrCatEntry *attrCatBuf){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
@@ -903,7 +903,7 @@ private:
                                     </tr>
                                     <tr>
 					<td>attrName / attrOffset</td>
-					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>unsigned char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
 					<td>The name/offset of the target attribute.</td>
 				    </tr>
                                     <tr>
@@ -945,7 +945,7 @@ private:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-getsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-getsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndex(int relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::getSearchIndex(int relId, unsigned char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
@@ -991,7 +991,7 @@ private:
                                     </tr>
                                     <tr>
 					<td>attrName / attrOffset</td>
-					<td>char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
+					<td>unsigned char[<a href="/constants.html#constants" target="_blank">ATTR_SIZE<a>] / int</td>
 					<td>The name/offset of the target attribute.</td>
 				    </tr>
                                     <tr>
@@ -1032,7 +1032,7 @@ private:
 				</ul></p>
                             <h5><a data-toggle="collapse" href="#algo-setsearchindexid"><span class="fas fa-code"></span>Algorithm:</a></h5>
                             <div id="algo-setsearchindexid" class="collapse">
-                                <div class="code"><pre><code>int AttrCacheTable::setSearchIndex(relId relId, char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
+                                <div class="code"><pre><code>int AttrCacheTable::setSearchIndex(relId relId, unsigned char attrName[ATTR_SIZE]/int attrOffset, IndexId *searchIndex){
 	
 	if relId is outside the range [0, MAX_OPEN-1]:
 	{
