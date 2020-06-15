@@ -241,7 +241,7 @@ The datatypes of the attributes are determined from the values of the attributes
                             <h5> Description:</h5>
                             <p>This command is used to create a relation of the given name, with given attribute names and types.The type of an attribute can be INT, STR or FLOAT.</p>
                             <h5>Note:</h5>
-                            <p>In NITCBase, the maximum size of an attribute is 16 bytes. Since relation names and attribute names are attributes themselves in the catalog structures, the table name and attribute names in the queries must only have a maximum of 15 characters. If the length is greater than 16, only the first 15 characters will be taken.</p>
+                            <p>In NITCBase, the maximum size of an attribute is 16 bytes. Since relation names and attribute names are attributes themselves in the catalog structures, the table name and attribute names in the queries must only have a maximum of 15 characters. If the length is greater than 16, only the first 15 characters will be taken.A relation cannot be named as "temp", since it is used for internal operations.</p>
                             <h5> Example:</h5>
                             <div class="algo">
                                 <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
@@ -403,7 +403,7 @@ The datatypes of the attributes are determined from the values of the attributes
                         <div id="insert_single" class="detail">
                             <h4>INSERT INTO TABLE VALUES</h4>
                             <h5>Syntax :</h5>
-                            <p> INSERT INTO TABLE<i> tablename</i> VALUES ( <i>value1</i>,<i>value2</i>,<i>value3</i>,... );</p>
+                            <p> INSERT INTO <i> tablename</i> VALUES ( <i>value1</i>,<i>value2</i>,<i>value3</i>,... );</p>
                         
                             <h5> Description:</h5>
                             <p>This command is used to insert a single record into the given relation. The attribute values of the record are to be given as comma separated values. The order of the values must be the same as the order of attributes of the relation. For example, if a relation Students was created </p>
@@ -471,7 +471,7 @@ The datatypes of the attributes are determined from the values of the attributes
                          <div id="insert_from_file" class="detail">
                             <h4>INSERT INTO TABLE FROM FILE</h4>
                             <h5>Syntax :</h5>
-                            <p>INSERT INTO TABLE <i>tablename</i> VALUES FROM <i>filepath</i>;</p>
+                            <p>INSERT INTO <i>tablename</i> VALUES FROM <i>filepath</i>;</p>
                           
                        
                             <h5> Description:</h5>
