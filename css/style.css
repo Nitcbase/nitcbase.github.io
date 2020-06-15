@@ -55,10 +55,9 @@ header h3 {
 }
 
 #collapsibleSidebar {
-    max-height: 50%;
+    max-height: 150%;
     overflow-y: auto;
-        height:auto;
-        color: #0056B3;
+        height:100px;
 
 
 
