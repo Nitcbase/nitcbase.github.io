@@ -127,7 +127,7 @@
                                 <p>
                                 Thus, the objective of creating an index on an (attribute, relation) pair, is to make search operation on a relation for records with attribute value that satisfy a search condition, faster than linear search on the blocks of the file. If n is the number of records in a file, the time required to search based on an attribute is only O(log n) whereas it would take  O(n) time for a linear search in the absence of an index. 
                                 Creating an index itself is an expensive operation requiring O(n) time and space. Hence indices are normally created only on those attributes on which frequent queries are performed on the database. </p>
-                                <p>As index is a collection of attribute values and their corresponding record pointers, the <b>structure of the index</b> plays a key role in determining how fast the index can be accessed and the kind of queries that can be proccessed.
+                                <p>As index is a collection of attribute values and their corresponding record pointers, the <b>structure of the index</b> plays a key role in determining how fast the index can be accessed and the kind of queries that can be processed.
     
                                 Perhaps one of the most common types of index structures is the <b><a href="Bplustreedetails.html"  target="_blank">B+ Tree</a></b>. It is a self-balancing, sorted variation on the binary tree structure that stores the index values in a relatively shallow but wide shape. NITCbase uses B+ Tree for indexing records. </p>
                                 
