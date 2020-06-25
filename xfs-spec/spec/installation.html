@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>XFS Interface Installation Guidelines</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!--FAVICON-->
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png" />
+    
+    <script type="text/javascript" src="../js/jquery-3.4.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js" charset="utf-8"></script>
+</head>
+    
+    
+<body>
+    
+    <!-- HEADER BEGIN -->
+    <header id="header">
+        <nav class="navbar navbar-expand-sm fixed-top bg-dark navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/index.html">
+                    <h3><span style="color:DodgerBlue">NITC</span>base</h3>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/documentation.html">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/roadmap.html">Roadmap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.html">About Us</a>
+                    </li>
+                </ul>
+                </div>  
+            </div>
+        </nav>
+    </header>
+    <!-- END OF HEADER -->
+    
+    <!-- CONTENT BEGIN -->
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                 <!-- SIDEBAR BEGIN -->
+                <div class="col-sm-2">
+                    <nav class="navbar navbar-expand-sm sticky-top sticky-offset">
+                        <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleSidebar">
+                        <ul class="nav flex-column sidemenu">
+		  
+                            </ul>
+			
+                            
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+                <!-- END OF SIDEBAR -->
+             
+                <!--MAIN CONTENT START-->
+                <div class="col-sm-10">
+                    <div id="top">
+                        <!-- PAGE STARTS -->
+                        <div class="pagetitle"><br>
+                            <h1>XFS Interface Installation Guidelines</h1>
+                        </div>
+                        <p>
+		       
+XFS Interface is a command line external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a binary file. This interface aims to provide the functionality of transferring relations from/to the host system to/from the disk and can be helpful in debugging the system during implementation. .There are three types of commands that can be given as input to the XFS interface:
+                        </p>
+                        <ol>
+		        <li> External File System Commands</li>
+                            <li> Data Definition Language Commands</li>
+                            <li>Data Manipulation Language Commands</li>
+                        </ol>
+		<br>
+
+		 <h2>Setting Up</h2>
+		The following are the instructions to be followed for installation in linux:
+                      <ol style="list-style-type: decimal;margin-left: 2px"><br>
+                      <li> Download the NITCBase XFS Interface package from <a href="https://github.com/Nitcbase/nitcbase/raw/master/disk/B16_disk/xfs-interface.tar.gz">here</a>.</li>   <br>
+		  <li> Copy the tar file to your home directory.
+
+			  <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                            cp xfs-interface.tar.gz $HOME/<br>cd $HOME
+			</div>
+			</div>
+                            </li> <br>
+                            <li> Extract the contents using the command.
+			  <div class="algo">
+                                <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
+                              tar -xvf xfs-interface.tar.gz 
+			</div>
+			</div>
+                              Now you will have a directory <tt>xfs-interface</tt> in your home drectory, with components
+                              required for XFS Interface.</li> <br>
+                            <li> Install prerequisites such as <b>g++</b>
+			<br>
+                              For Debian-based linux distros:
+                              <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">sudo apt install g++
+			</div> <br>
+                             </li>
+                             
+                            <li> Change directory to <tt>xfs-interface</tt> directory.
+                             <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">cd $HOME/xfs-interface/xfs_interface_new
+			</div><br>
+                            </li>
+                            <li> Make to build all the components:
+                              <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">make </div>
+			</div><br>
+                            </li>
+			
+                          </ol>
+  			<h2>Running XFS Interface</h2><br>
+			<ul><li> To run the xfs interface:
+			<div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">			./xfs-interface</div></li>
+</ul>
+		<br><br>
+                     </div>
+                       
+                        <!-- PAGE ENDS -->
+                    </div>
+                </div>
+                <!-- END OF MAIN CONTENT -->
+            </div>
+        </div>
+        
+    </div>
+    <!-- END OF CONTENT -->
+</body>
+
+</html>
