@@ -62,9 +62,9 @@
                         </button>
                         <div class="collapse navbar-collapse" id="collapsibleSidebar">
                         <ul class="nav flex-column sidemenu">
-		  
+          
                             </ul>
-			
+            
                             
                         </ul>
                         </div>
@@ -80,58 +80,61 @@
                             <h1>XFS Interface Installation Guidelines</h1>
                         </div>
                         <p>
-		       
+               
 XFS Interface is a command line external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a binary file. This interface aims to provide the functionality of transferring relations from/to the host system to/from the disk and can be helpful in debugging the system during implementation. .There are three types of commands that can be given as input to the XFS interface:
                         </p>
                         <ol>
-		        <li> External File System Commands</li>
+                <li> External File System Commands</li>
                             <li> Data Definition Language Commands</li>
                             <li>Data Manipulation Language Commands</li>
                         </ol>
-		<br>
+        <br>
 
-		 <h2>Setting Up</h2>
-		The following are the instructions to be followed for installation in linux:
+         <h2>Setting Up</h2>
+        The following are the instructions to be followed for installation in linux:
                       <ol style="list-style-type: decimal;margin-left: 2px"><br>
                       <li> Download the NITCBase XFS Interface package from <a href="https://github.com/Nitcbase/nitcbase/raw/master/disk/B16_disk/NITCBase.tar.xz" download>here</a>.</li>   <br>
-		  <li> Copy the tar file to your home directory.
+          <li> Copy the tar file to your home directory.
 
-			  <div class="algo">
+              <div class="algo">
                                 <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
                             cp NITCBase.tar.xz $HOME/<br>cd $HOME
-			</div>
-			</div>
+            </div>
+            </div>
                             </li> <br>
                             <li> Extract the contents using the command.
-			  <div class="algo">
+              <div class="algo">
                                 <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
                               tar -xvf NITCBase.tar.xz 
-			</div>
-			</div>
+            </div>
+            </div>
                               Now you will have a directory <tt>NITCBase</tt> in your home directory, with components
                               required for XFS Interface.</li> <br>
                             <li> Install prerequisites such as <b>g++</b>
-			<br>
+            <br>
                               For Debian-based linux distros:
                               <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">sudo apt install g++
-			</div> <br>
+            </div> <br>
                              </li>
                              
                             <li> Change directory to <tt>xfs-interface</tt> directory.
                              <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">cd $HOME/NITCBase/xfs-interface
-			</div><br>
+            </div><br>
                             </li>
                             <li> Make to build all the components:
                               <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">make </div>
-			</div><br>
+            </div><br>
                             </li>
-			
+            
                           </ol>
-  			<h2>Running XFS Interface</h2><br>
-			<ul><li> To run the xfs interface:
-			<div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">			./xfs-interface</div></li>
+            <p> Note : Sample CSV Files can be found in the path $HOME/NITCBase/CSV_files.</p>
+            <h2>Running XFS Interface</h2><br>
+            <ul><li> To run the xfs interface:
+            <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">         ./xfs-interface</div></li>
 </ul>
-		<br><br>
+        <br>
+
+        <br>
                      </div>
                        
                         <!-- PAGE ENDS -->
