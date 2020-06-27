@@ -138,12 +138,12 @@ XFS Interface is a command line external interface to access the NITCBase filesy
                           <div id="import_relation" class="detail">
                             <h4>Import Relation</h4>
                             <h5>Syntax :</h5>
-                            <p>  import  <i>filepath</i> </p>
+                            <p>  import  <i>filename</i> </p>
                           
                             <h5> Description:</h5>
-                            <p>The command import is used to load relations from the UNIX filesystem to the XFS disk.The argument <i>filepath</i> specifies the absolute path of the file which contains the contents of the relation to be uploaded.All path names and filenames should not contain whitespaces or any special characters except '-' or '_'. The command checks the size of the relation in the csv file, allocates the required number of blocks for the relation, updates the Block allocation map, Relation catalog and Attribute catalog.</p>
+                            <p>The command import is used to load relations from the UNIX filesystem to the XFS disk.The argument <i>filename</i> specifies the name of the CSV file which contains the contents of the relation to be uploaded. TheFilenames should not contain whitespaces or any special characters except '-' or '_'. The command checks the size of the relation in the csv file, allocates the required number of blocks for the relation, updates the Block allocation map, Relation catalog and Attribute catalog.</p>
 		       <h5>File Format:</h5>
-                            <p>The contents of the relation must be in a file and must follow CSV (comma separated values) format.The first line of the CSV file must contain the names of the attributes of the relation. The data types of the attributes in the first line are inferred from the values of the corresponding attributes on the second line of the CSV file. The name of the csv file must be the same as the relation to be imported to the disk. i.e. the csv file should be in the format  "<i>relname.csv</i>". If a relation with name as the name of the CSV file already exists, then the import will not happen. First 15 characters of name of file  will be taken as relation name. Also the first 15 characters of attribute values will only be taken.
+                            <p>The contents of the relation must be in a file and must follow CSV (comma separated values) format.The first line of the CSV file must contain the names of the attributes of the relation. The data types of the attributes in the first line are inferred from the values of the corresponding attributes on the second line of the CSV file. The name of the csv file must be the same as the relation to be imported to the disk. i.e. the CSV file name should be in the format  "<i>relname.csv</i>". All files to be imported should be stored in the path <i>$HOME/NITCBase/Files</i> . If a relation with the same name as that of the CSV file already exists, then the import will not happen. First 15 characters of name of file  will be taken as relation name. Also the first 15 characters of attribute values will only be taken.
 The csv file should not contain any null values. The number of attribute values in each row should match the number of attributes.(ie the number of attribute values in first row).
 </p>
                            <h5> Example:</h5>
@@ -160,7 +160,7 @@ The csv file should not contain any null values. The number of attribute values 
 					7,Ralph,7.5
                                                 </p>
 				
-				     "import /home/mycomputer/Desktop/xfs_interface/sample.csv" command will import relation 'Students' into the disk. <br></br>
+				     "import sample.csv" command will import relation 'Students' into the disk. <br></br>
                                             The first line in the csv file represents the list of attributes in the relation which in this case are No, Name, Cgpa.
 The datatypes of the attributes are determined from the values of the attributes in the second line. An attribute can be an integer,float or a string. In this example the datatypes will be integer, string, float respectively.  
                                     </table>
@@ -170,17 +170,17 @@ The datatypes of the attributes are determined from the values of the attributes
                          <div id="export_relation" class="detail">
                             <h4>Export Relation</h4>
                             <h5>Syntax :</h5>
-                            <p> export <i> tablename</i> <i> pathname </i></p>
+                            <p> export <i> tablename</i> <i> filename</i></p>
                            
                             <h5> Description:</h5>
-                            <p>This command is used to export a relation from XFS disk to UNIX file system.The contents of the relation are written to the specified location as per the argument <i>pathname</i> in the CSV format specified above.</p>
+                            <p>This command is used to export a relation from XFS disk to UNIX file system.The contents of the relation are written to the specified file given by <i>filename</i>, in the CSV format specified above, in the path <i>$HOME/NITCBase/Files</i> .</p>
                             <h5> Example:</h5>
                             <div class="algo">
                                 <div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .5em;padding:.2em .6em;border-radius:4px;">
                                     <table>
                                         <tr>
                                             <td>
-                                                <pre style="margin: 0; line-height: 125%">export Students /home/mycomputer/Desktop/xfs_interface/Marks.csv</pre>
+                                                <pre style="margin: 0; line-height: 125%">export Students Marks.csv</pre>
                                             </td>
                                         </tr>
 				The following command will export relation "Students" to a csv file named "Marks".
@@ -472,11 +472,12 @@ The datatypes of the attributes are determined from the values of the attributes
                          <div id="insert_from_file" class="detail">
                             <h4>INSERT INTO TABLE FROM FILE</h4>
                             <h5>Syntax :</h5>
-                            <p>INSERT INTO <i>tablename</i> VALUES FROM <i>filepath</i>;</p>
+                            <p>INSERT INTO <i>tablename</i> VALUES FROM <i>filename</i>;</p>
                           
                        
                             <h5> Description:</h5>
-                            <p>This command is used to insert multiple records into the relation from a csv file containing the values for the corresponding attributes. The order of values in the csv file must be the same as the attributes of the relation. Each line in the csv file corresponds to a record to be inserted in to the relation.The argument filepath specifies the absolute path of the file which contains the contents of the relation to be uploaded.All path names and filenames should not contain whitespaces or any special characters except - or _.The csv file should not contain any null values. The number of attribute values in each row should match the number of attributes.(ie the number of attribute values in first row).
+                            <p>This command is used to insert multiple records into the relation from a CSV file containing the values for the corresponding attributes. The order of values in the CSV file must be the same as the attributes of the relation. Each line in the CSV file corresponds to a record to be inserted in to the relation.The argument <i>filename</i> specifies the name of the CSV file which contains the contents of the relation to be uploaded. Filenames should not contain whitespaces or any special characters except - or _. The CSV file should not contain any null values. The number of attribute values in each row should match the number of attributes.(ie the number of attribute values in first row).
+                            The CSV file from which the values are to be inserted, must be stored in the path <i>$HOME/NITCBase/Files</i> .
 							</p>
                             <h5> Example:</h5>
                             <div class="algo">
@@ -492,7 +493,7 @@ The datatypes of the attributes are determined from the values of the attributes
                                             	<br>
                                                 </p>
                                             	<p> The query to insert all records from <i>students.csv</i> into the relation <i>Students</i> is :<br>
-                                            	INSERT INTO Students VALUES FROM /home/mycomputer/Desktop/xfs_interface/students.csv;
+                                            	INSERT INTO Students VALUES FROM students.csv;
                                             	</p>		    
                                             </td>
                                         </tr>
