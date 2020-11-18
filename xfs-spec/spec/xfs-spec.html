@@ -114,7 +114,7 @@
                         </div>
                         <p>
 		       
-XFS Interface is a command line external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a binary file. This interface aims to provide the functionality of transferring relations from/to the host system to/from the disk and can be helpful in debugging the system during implementation. .There are three types of commands that can be given as input to the XFS interface:
+XFS Interface is a command line external interface to access the NITCBase filesystem from the host (UNIX) system. The filesystem is simulated on a binary file. This interface aims to provide the functionality of transferring relations from/to the host system to/from the disk and can be helpful in debugging the system during implementation. There are three types of commands that can be given as input to the XFS interface:
                         </p>
                         <ol>
 		        <li> External File System Commands</li>
@@ -124,7 +124,7 @@ XFS Interface is a command line external interface to access the NITCBase filesy
 <br>
                         <div id="xfs_commands">
                             <h2>External File System Commands</h2>
-                          The External File System commands are used to format the disk, dump data structures like Block allocation map,Relation catalog and Attribute catalog, load/remove relations, list relations and copy specified block of a relation on the XFS disk to a UNIX file. The following are the  External File System commands that can be queried into NITCbase :
+                          The External File System commands are used to format the disk, dump data structures like Block Allocation Map, Relation Catalog and Attribute Catalog, load/remove relations, list relations and copy specified block of a relation on the XFS disk to a UNIX file. The following are the  External File System commands that can be queried into NITCbase :
                           
                          <div id="format_disk" class="detail">
                             <h4>Format Disk</h4>
@@ -132,7 +132,7 @@ XFS Interface is a command line external interface to access the NITCBase filesy
                             <p>fdisk</p>
                            
                             <h5> Description:</h5>
-                            <p>It is used to create the disk (”disk”) or to format the disk if already created. On a newly created/formatted disk default entries for the Block allocation map, Relation Catalog and Attribute Catalog are initialized according to the specification for the physical layer of NITCBase. </p>
+                            <p>It is used to create a simulated disk (the file is named "disk") or to format the disk if already created. On a newly created/formatted disk default entries for the Block allocation map, Relation Catalog and Attribute Catalog are initialized according to the specification for the physical layer of NITCBase. </p>
                         
                          </div>
                           <div id="import_relation" class="detail">
