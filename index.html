@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
     <!--FAVICON-->
     <link rel="shortcut icon" type="image/png" href="favicon.png" />
- 
+
     <script type="text/javascript" src="js/jquery-3.4.0.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/bootstrap.min.js" charset="utf-8"></script>
 </head>
@@ -33,11 +33,11 @@
     </header>
     <!-- END OF HEADER -->
     <!-- CONTENT START -->
-     <div id="content">
+    <div id="content">
         <div class="container-fluid">
             <div class="row">
                 <!-- SIDEBAR STARTS -->
-                 <div class="col-md-2">
+                <div class="col-md-2">
                     <nav class="navbar navbar-expand-md sticky-top sticky-offset">
                         <button class="navbar-toggler sticky-top sticky-offset" type="button" data-toggle="collapse" data-target="#collapsibleSidebar">
                             <i class="fas fa-align-left"></i>
@@ -54,17 +54,21 @@
                 <!-- SIDEBAR ENDS--> 
 
                 <!-- MAIN CONTENT START -->
-                 <div class="col-sm-10" style="font-size: 13px;">
+                <div class="col-sm-10" style="font-size: 17px;">
                     <div id="top">
                         <!-- PAGE STARTS -->
                         <h1 style=" border-bottom: 1px solid #DDD;"><img class="img-fluid" src="./img/favicon.png"><span style="color:DodgerBlue">NITC</span>base</h1>
                         <p>
-                            NITCbase is an online Database Management tutoring system that is intended to help undergraduate students understand the concepts of DBMS through the creation and manipulation of relations and records. This project presents a step-by-step guide for the students to implement the data structures and process the query that can manipulate the data stored in the disk using the XFS interface provided by NITCbase. Students are provided with learning modules which enhances their knowledge of the concepts as well as the system.
-                        </p><br>
+                            NITCbase is a Relational Database Management System Implementation (RDBMS) project that is intended to help an undergraduate student understand the design and data structures of an elementary RDBMS by implementing one herself.  A step-by-step implementation roadmap of the project guides the students through various stages of implementation of the RDBMS.  The documentation of the project includes tutorials that help the student to assimilate the concepts, data structures and design details that she needs to understand at each phase of the project.   The complete design of the RDBMS and specifications of the various component subsystems are clearly specified and are made available to the student.   The final RDBMS implemented by the student supports elementary SQL queries such as Select,  Project, Equi-Join and provides B+ Tree based Indexing.
+                        </p>
+                        <br>
                         <p>
-                            There are seven layers to be implemented in this project. Starting from the bottom layer, the Physical layer to the top layers Algebra and Schema layer. NITCbase provides a front-end command-line interface for query processing. The implementation is to be done in C++ throughout the project. 
+                            The database system design has a seven layer <a href="/design/sys_design.html">design</a>, starting from the Physical layer at the bottom  (a disk simulator provided to the student) progressing to Buffer layer, B+tree layer, Block access layer, Cache layer, Algebra layer and Schema layer at the intermediate levels and a Front-end command-line interface for user interface at the top.    All except the front-end and the physical layer completely implemented by the student, following the instructions of the road map (writing around 3000 lines of C++ code). 
                         </p> 
-                        <p> Let's begin this project. Continue to the <a href="/roadmap.html">Roadmap</a></p>
+                        <p>
+                            The project assumes that the student has adequate background in programming in C/C++ and data structures.
+                        </p>
+                        <p> To begin with the project. Continue to the <a href="/roadmap.html">Roadmap</a></p>
                         <!-- PAGE ENDS -->
                     </div>
                 </div>
@@ -73,7 +77,7 @@
         </div>
         <!-- CONTENT ENDS -->
     </div>
-       
+
     <footer style="font-size:12px; position: fixed; left: 0; bottom: 0; width: 100%;">
         <div class="divide-top" style="border-top: 1px solid #ccc; padding-top: 0.75em; margin-top: 1.5em;"> </div>
             <div class="row">
